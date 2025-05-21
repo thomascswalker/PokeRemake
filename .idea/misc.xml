@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakePythonSetting">
+    <option name="pythonIntegrationState" value="YES" />
+  </component>
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/Source">
+    <contentRoot DIR="$PROJECT_DIR$" />
+  </component>
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/Source" />
+    </sourceRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/Source/cmake-build-debug" />
+    </excludeRoots>
+  </component>
+</project>
