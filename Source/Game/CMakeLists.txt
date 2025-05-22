@@ -1,7 +1,8 @@
 project(PokeRemakeGame)
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(
-        ${PROJECT_NAME} PokeRemakeRuntime
-)
+include_directories(../Runtime)
+include_directories(../../ThirdParty/SDL/include)
+
+add_library(${PROJECT_NAME} Main.cpp)
+
