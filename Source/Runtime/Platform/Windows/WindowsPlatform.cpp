@@ -4,5 +4,6 @@
 
 #include "WindowsPlatform.h"
 
-void WindowsPlatform::Start() {}
+void WindowsPlatform::Start() { bIsRunning = true; }
 void WindowsPlatform::Stop() {}
+bool WindowsPlatform::IsRunning() { return bIsRunning; }
