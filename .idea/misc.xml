@@ -9,6 +9,8 @@
       <file path="$PROJECT_DIR$/Source" />
     </sourceRoots>
     <excludeRoots>
+      <file path="$PROJECT_DIR$/Debug" />
+      <file path="$PROJECT_DIR$/Release" />
       <file path="$PROJECT_DIR$/Source/cmake-build-debug" />
       <file path="$PROJECT_DIR$/Source/cmake-build-release" />
     </excludeRoots>

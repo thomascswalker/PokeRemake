@@ -2,9 +2,8 @@ project(PokeRemakeRuntime)
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-        Platform/Generic/Platform.cpp
-        Platform/Windows/WindowsPlatform.cpp
-        Platform/Windows/WindowsPlatform.h
+        Platform/Generic/IPlatform.cpp
+        Renderer/Generic/IRenderer.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
