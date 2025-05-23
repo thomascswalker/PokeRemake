@@ -1,6 +1,7 @@
+#include <iostream>
 #include <memory>
 
-#include <Platform/SDL/SDLPlatform.h>
+#include "Platform/SDL/SDLPlatform.h"
 
 int main(int argc, char** argv)
 {
