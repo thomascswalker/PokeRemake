@@ -1,10 +1,9 @@
 #include "Engine.h"
+#include "Core/Logging.h"
 #include "InputManager.h"
 
-#include <iostream>
-
-static void PrintUp(uint32_t Value) { std::cout << "Up: " << Value << std::endl; }
-static void PrintDown(uint32_t Value) { std::cout << "Down: " << Value << std::endl; }
+static void PrintUp(uint32_t Value) { Warning("Up: {}", Value); }
+static void PrintDown(uint32_t Value) { Error("Down: {}", Value); }
 
 Engine::Engine()
 {
