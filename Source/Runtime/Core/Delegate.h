@@ -1,7 +1,6 @@
 // https://github.com/simco50/CppDelegates/tree/master
 
-#ifndef CPP_DELEGATES
-#define CPP_DELEGATES
+#pragma once
 
 #include <memory>
 #include <tuple>
@@ -976,7 +975,3 @@ private:
 	std::vector<DelegateHandlerPair> m_Events;
 	unsigned int					 m_Locks;
 };
-
-unsigned int DelegateHandle::CURRENT_ID = 0;
-
-#endif

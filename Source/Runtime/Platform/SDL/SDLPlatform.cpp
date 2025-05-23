@@ -29,6 +29,9 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	// Store initial time
 	mCurrentTime = SDL_GetTicks();
 
+	// Setup input
+	SetInputManager(this);
+
 	// Construct the game engine
 	mEngine = std::make_unique<Engine>();
 
@@ -108,5 +111,5 @@ void SDLPlatform::OnDraw()
 	SDL_RenderPresent(gRenderer);
 }
 
-void SDLPlatform::OnKeyDown(uint32_t KeyCode) {}
-void SDLPlatform::OnKeyUp(uint32_t KeyCode) {}
+void SDLPlatform::OnKeyDown(uint32_t KeyCode) { KeyDown.Broadcast(KeyCode); }
+void SDLPlatform::OnKeyUp(uint32_t KeyCode) { KeyUp.Broadcast(KeyCode); }

@@ -5,14 +5,15 @@ set(SOURCES
         Platform/Generic/IPlatform.cpp
         Renderer/Generic/IRenderer.cpp
         Platform/SDL/SDLPlatform.cpp
-        Platform/SDL/SDLPlatform.h
         Engine/Engine.cpp
-        Engine/Engine.h
         Engine/InputManager.cpp
-        Engine/InputManager.h
+        Core/Delegate.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
-include_directories(../../ThirdParty)
-include_directories(../../ThirdParty/SDL/include)
+include_directories(
+        ${PROJECT_SOURCE_DIR}
+        ../../ThirdParty
+        ../../ThirdParty/SDL/include
+)
