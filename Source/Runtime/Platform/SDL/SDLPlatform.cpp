@@ -1,6 +1,4 @@
-//
-// Created by thoma on 5/22/2025.
-//
+#include <format>
 
 #include <SDL3/SDL.h>
 
@@ -28,8 +26,12 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	}
 	SDL_ShowWindow(gWindow);
 
-	SDL_LogDebug(SDL_LOG_PRIORITY_DEBUG, "Poll");
-	bIsRunning = true;
+	// Store initial time
+	mCurrentTime = SDL_GetTicks();
+
+	// Construct the game engine
+	mEngine = std::make_unique<Engine>();
+
 	return true;
 }
 
@@ -37,26 +39,38 @@ void SDLPlatform::OnStop()
 {
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
-	bIsRunning = false;
+	mEngine->Stop();
 }
 
-bool SDLPlatform::OnLoop()
+void SDLPlatform::OnLoop()
 {
+	// Handle events
 	SDL_Event Event;
 	if (SDL_PollEvent(&Event))
 	{
-		OnEvent(&Event);
+		if (!OnEvent(&Event))
+		{
+			return;
+		}
 	}
+
+	// Tick the engine
+	const uint64_t Now = SDL_GetTicksNS();
+	const uint64_t DeltaTimeNS = Now - mCurrentTime; // Get delta time in nanoseconds
+	const float DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	mEngine->Tick(DeltaTime);
+	mCurrentTime = Now;
+
+	// Draw to the screen
 	OnDraw();
-	return false;
 }
 
-void SDLPlatform::OnEvent(void* Event)
+bool SDLPlatform::OnEvent(void* Event)
 {
 	const auto* SDLEvent = static_cast<SDL_Event*>(Event);
 	if (!SDLEvent)
 	{
-		return;
+		return false;
 	}
 
 	switch (SDLEvent->type)
@@ -64,11 +78,23 @@ void SDLPlatform::OnEvent(void* Event)
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 			{
 				OnStop();
+				return false;
+			}
+		case SDL_EVENT_KEY_DOWN:
+			{
+				OnKeyDown(SDLEvent->key.key);
+				break;
+			}
+		case SDL_EVENT_KEY_UP:
+			{
+				OnKeyUp(SDLEvent->key.key);
 				break;
 			}
 		default:
 			break;
 	}
+
+	return true;
 }
 void SDLPlatform::OnDraw()
 {
@@ -81,3 +107,6 @@ void SDLPlatform::OnDraw()
 	SDL_RenderClear(gRenderer);
 	SDL_RenderPresent(gRenderer);
 }
+
+void SDLPlatform::OnKeyDown(uint32_t KeyCode) {}
+void SDLPlatform::OnKeyUp(uint32_t KeyCode) {}
