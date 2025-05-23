@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "Core/Logging.h"
 #include "SDLPlatform.h"
 
 SDL_Window*	  gWindow = nullptr;
@@ -10,20 +11,21 @@ static auto	  gWindowTitle = "PokeRemake";
 
 bool SDLPlatform::OnStart(int argc, char** argv)
 {
+	Info("Constructing SDLPlatform");
 	SDL_SetAppMetadata(gWindowTitle, "1.0", gWindowTitle);
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
-		SDL_LogDebug(SDL_LOG_PRIORITY_ERROR, "Couldn't initialize SDL: %s", SDL_GetError());
+		Debug("Couldn't initialize SDL: {}", SDL_GetError());
 		return false;
 	}
 
 	if (!SDL_CreateWindowAndRenderer(gWindowTitle, 640, 480, 0, &gWindow, &gRenderer))
 	{
-		SDL_LogDebug(
-			SDL_LOG_PRIORITY_ERROR, "Couldn't create %s: %s", gWindowTitle, SDL_GetError());
+		Debug("Couldn't create %s: %s", gWindowTitle, SDL_GetError());
 		return false;
 	}
+	Debug("Displaying window");
 	SDL_ShowWindow(gWindow);
 
 	// Store initial time
@@ -35,13 +37,17 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	// Construct the game engine
 	mEngine = std::make_unique<Engine>();
 
+	Info("SDLPlatform constructed");
 	return true;
 }
 
 void SDLPlatform::OnStop()
 {
+	Debug("Destroying SDL Renderer");
 	SDL_DestroyRenderer(gRenderer);
+	Debug("Destroying SDL Window");
 	SDL_DestroyWindow(gWindow);
+	Debug("Stopping Engine");
 	mEngine->Stop();
 }
 

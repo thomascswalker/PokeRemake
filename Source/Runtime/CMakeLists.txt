@@ -8,6 +8,7 @@ set(SOURCES
         Engine/Engine.cpp
         Engine/InputManager.cpp
         Core/Delegate.cpp
+        Core/Logging.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
