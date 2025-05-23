@@ -9,22 +9,21 @@ add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
 target_link_libraries(
         ${PROJECT_NAME} PUBLIC PokeRemakeRuntime
 )
-target_link_libraries(
-        ${PROJECT_NAME} PUBLIC PokeRemakeGame
-)
 
-# set the output directory for built objects.
+# Set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 
-# This assumes the SDL source is available in vendored/SDL
+# Third Party Libraries
+
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
-message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 
+# Windows specific
 if (WIN32)
+    # Add a post-build command to copy the SDL DLL to the output directory
     add_custom_command(
             TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND "${CMAKE_COMMAND}"
