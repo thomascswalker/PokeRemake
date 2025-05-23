@@ -977,4 +977,6 @@ private:
 	unsigned int					 m_Locks;
 };
 
+unsigned int DelegateHandle::CURRENT_ID = 0;
+
 #endif
