@@ -3,14 +3,16 @@
 
 #include <iostream>
 
-static void Print(uint32_t Value) { std::cout << "Value: " << Value << std::endl; }
+static void PrintUp(uint32_t Value) { std::cout << "Up: " << Value << std::endl; }
+static void PrintDown(uint32_t Value) { std::cout << "Down: " << Value << std::endl; }
 
 Engine::Engine()
 {
 	bIsRunning = true;
 	if (const auto InputManager = GetInputManager())
 	{
-		InputManager->KeyUp.AddStatic(&Print);
+		InputManager->KeyUp.AddStatic(&PrintUp);
+		InputManager->KeyDown.AddStatic(&PrintDown);
 	}
 }
 
