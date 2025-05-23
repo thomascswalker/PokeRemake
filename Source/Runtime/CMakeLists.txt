@@ -6,6 +6,10 @@ set(SOURCES
         Renderer/Generic/IRenderer.cpp
         Platform/SDL/SDLPlatform.cpp
         Platform/SDL/SDLPlatform.h
+        Engine/Engine.cpp
+        Engine/Engine.h
+        Engine/InputManager.cpp
+        Engine/InputManager.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
