@@ -1,12 +1,16 @@
 #pragma once
 
-class Engine
+#include "Actors/World.h"
+
+class PEngine
 {
-	bool bIsRunning = false;
+	bool					bIsRunning = false;
+	std::unique_ptr<PWorld> mWorld;
 
 public:
-	Engine();
-	void Stop();
-	void Tick(float DeltaTime);
-	bool IsRunning() const { return bIsRunning; }
+	PEngine();
+	void	Stop();
+	void	Tick(float DeltaTime);
+	bool	IsRunning() const { return bIsRunning; }
+	PWorld* GetWorld() const { return mWorld.get(); }
 };
