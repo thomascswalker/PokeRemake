@@ -2,15 +2,15 @@
 
 #include "Actors/World.h"
 
-class Engine
+class PEngine
 {
 	bool					bIsRunning = false;
-	std::unique_ptr<AWorld> mWorld;
+	std::unique_ptr<PWorld> mWorld;
 
 public:
-	Engine();
+	PEngine();
 	void	Stop();
 	void	Tick(float DeltaTime);
 	bool	IsRunning() const { return bIsRunning; }
-	AWorld* GetWorld() const { return mWorld.get(); }
+	PWorld* GetWorld() const { return mWorld.get(); }
 };

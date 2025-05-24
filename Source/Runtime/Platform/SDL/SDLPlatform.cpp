@@ -38,7 +38,7 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	SetInputManager(this);
 
 	// Construct the game engine
-	mEngine = std::make_unique<Engine>();
+	mEngine = std::make_unique<PEngine>();
 	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
 
 	Info("SDLPlatform constructed");
@@ -97,12 +97,12 @@ bool SDLPlatform::OnEvent(void* Event)
 			}
 		case SDL_EVENT_KEY_DOWN:
 			{
-				OnKeyDown(SDLEvent->key.key);
+				OnKeyDown(SDLEvent->key.scancode);
 				break;
 			}
 		case SDL_EVENT_KEY_UP:
 			{
-				OnKeyUp(SDLEvent->key.key);
+				OnKeyUp(SDLEvent->key.scancode);
 				break;
 			}
 		default:
@@ -113,18 +113,18 @@ bool SDLPlatform::OnEvent(void* Event)
 }
 void SDLPlatform::OnDraw()
 {
+	SDL_SetRenderDrawColor(mSDLRenderer, 38, 38, 38, 255);
+	SDL_RenderClear(mSDLRenderer);
+
 	const auto Now = static_cast<double>(SDL_GetTicks()) / 1000.0;
 	const auto Red = static_cast<float>(0.5 + 0.5 * SDL_sin(Now));
 	const auto Green = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 2 / 3));
 	const auto Blue = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 4 / 3));
 	SDL_SetRenderDrawColorFloat(mSDLRenderer, Red, Green, Blue, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(mSDLRenderer);
-
-	SDL_SetRenderDrawColor(mSDLRenderer, 255, 255, 255, 255);
-	mEngine->GetWorld()->Draw(mRenderer.get());
+	mEngine->GetWorld()->GetGrid()->Draw(mRenderer.get());
 
 	SDL_RenderPresent(mSDLRenderer);
 }
 
-void SDLPlatform::OnKeyDown(uint32_t KeyCode) { KeyDown.Broadcast(KeyCode); }
-void SDLPlatform::OnKeyUp(uint32_t KeyCode) { KeyUp.Broadcast(KeyCode); }
+void SDLPlatform::OnKeyDown(uint32_t ScanCode) { KeyDown.Broadcast(ScanCode); }
+void SDLPlatform::OnKeyUp(uint32_t ScanCode) { KeyUp.Broadcast(ScanCode); }

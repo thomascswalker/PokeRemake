@@ -2,22 +2,20 @@
 #include "Core/Logging.h"
 #include "InputManager.h"
 
-static void PrintUp(uint32_t Value) { Warning("Up: {}", Value); }
-static void PrintDown(uint32_t Value) { Error("Down: {}", Value); }
+static void PrintUp(uint32_t Value) { Warning("ScanCode: {:03x}", Value); }
 
-Engine::Engine()
+PEngine::PEngine()
 {
 	bIsRunning = true;
 	if (const auto InputManager = GetInputManager())
 	{
 		InputManager->KeyUp.AddStatic(&PrintUp);
-		InputManager->KeyDown.AddStatic(&PrintDown);
 	}
 
 	// Construct the world
-	mWorld = std::make_unique<AWorld>();
+	mWorld = std::make_unique<PWorld>();
 }
 
-void Engine::Stop() { bIsRunning = false; }
+void PEngine::Stop() { bIsRunning = false; }
 
-void Engine::Tick(float DeltaTime) {}
+void PEngine::Tick(float DeltaTime) { mWorld->GetGrid()->Tick(DeltaTime); }
