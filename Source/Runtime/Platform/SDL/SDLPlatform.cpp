@@ -5,14 +5,14 @@
 #include "Core/Logging.h"
 #include "SDLPlatform.h"
 
-SDL_Window*	  gWindow = nullptr;
-SDL_Renderer* gRenderer = nullptr;
-static auto	  gWindowTitle = "PokeRemake";
+constexpr uint32_t mWindowDefaultHeight = 480;
+constexpr uint32_t mWindowDefaultWidth = 640;
+static auto		   mWindowTitle = "PokeRemake";
 
 bool SDLPlatform::OnStart(int argc, char** argv)
 {
 	Info("Constructing SDLPlatform");
-	SDL_SetAppMetadata(gWindowTitle, "1.0", gWindowTitle);
+	SDL_SetAppMetadata(mWindowTitle, "1.0", mWindowTitle);
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
@@ -20,13 +20,16 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 		return false;
 	}
 
-	if (!SDL_CreateWindowAndRenderer(gWindowTitle, 640, 480, 0, &gWindow, &gRenderer))
+	if (!SDL_CreateWindowAndRenderer(
+			mWindowTitle, mWindowDefaultWidth, mWindowDefaultHeight, 0, &mSDLWindow, &mSDLRenderer))
 	{
-		Debug("Couldn't create %s: %s", gWindowTitle, SDL_GetError());
+		Debug("Couldn't create {}: {}", mWindowTitle, SDL_GetError());
 		return false;
 	}
+	SDL_SetWindowResizable(mSDLWindow, true);
+
 	Debug("Displaying window");
-	SDL_ShowWindow(gWindow);
+	SDL_ShowWindow(mSDLWindow);
 
 	// Store initial time
 	mCurrentTime = SDL_GetTicks();
@@ -36,6 +39,7 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 
 	// Construct the game engine
 	mEngine = std::make_unique<Engine>();
+	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
 
 	Info("SDLPlatform constructed");
 	return true;
@@ -44,9 +48,11 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 void SDLPlatform::OnStop()
 {
 	Debug("Destroying SDL Renderer");
-	SDL_DestroyRenderer(gRenderer);
+	SDL_DestroyRenderer(mSDLRenderer);
+
 	Debug("Destroying SDL Window");
-	SDL_DestroyWindow(gWindow);
+	SDL_DestroyWindow(mSDLWindow);
+
 	Debug("Stopping Engine");
 	mEngine->Stop();
 }
@@ -111,10 +117,13 @@ void SDLPlatform::OnDraw()
 	const auto Red = static_cast<float>(0.5 + 0.5 * SDL_sin(Now));
 	const auto Green = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 2 / 3));
 	const auto Blue = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 4 / 3));
+	SDL_SetRenderDrawColorFloat(mSDLRenderer, Red, Green, Blue, SDL_ALPHA_OPAQUE);
+	SDL_RenderClear(mSDLRenderer);
 
-	SDL_SetRenderDrawColorFloat(gRenderer, Red, Green, Blue, SDL_ALPHA_OPAQUE_FLOAT);
-	SDL_RenderClear(gRenderer);
-	SDL_RenderPresent(gRenderer);
+	SDL_SetRenderDrawColor(mSDLRenderer, 255, 255, 255, 255);
+	mEngine->GetWorld()->Draw(mRenderer.get());
+
+	SDL_RenderPresent(mSDLRenderer);
 }
 
 void SDLPlatform::OnKeyDown(uint32_t KeyCode) { KeyDown.Broadcast(KeyCode); }

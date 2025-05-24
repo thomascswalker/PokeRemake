@@ -13,6 +13,9 @@ Engine::Engine()
 		InputManager->KeyUp.AddStatic(&PrintUp);
 		InputManager->KeyDown.AddStatic(&PrintDown);
 	}
+
+	// Construct the world
+	mWorld = std::make_unique<AWorld>();
 }
 
 void Engine::Stop() { bIsRunning = false; }
