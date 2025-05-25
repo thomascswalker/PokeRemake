@@ -15,16 +15,6 @@ public:
 	void DrawLine(float X1, float Y1, float X2, float Y2) override;
 
 	SDL_Window* GetRenderWindow() const { return SDL_GetRenderWindow(mRenderer); }
-	uint32_t	GetScreenWidth() const override
-	{
-		int32_t Width, Height;
-		SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
-		return Width;
-	}
-	uint32_t GetScreenHeight() const override
-	{
-		int32_t Width, Height;
-		SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
-		return Height;
-	}
+	int32_t		GetScreenWidth() const override;
+	int32_t		GetScreenHeight() const override;
 };

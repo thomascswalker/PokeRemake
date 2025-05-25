@@ -8,7 +8,7 @@ class PGrid : public PActor
 {
 	uint32_t mSizeX;
 	uint32_t mSizeY;
-	uint32_t mCellSize;
+	float	 mZoomFactor;
 
 	float mOffsetX;
 	float mOffsetY;
