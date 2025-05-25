@@ -20,6 +20,10 @@ set(SOURCES
         Engine/Object.h
         Engine/Actors/Grid.cpp
         Engine/Actors/Grid.h
+        Engine/Actors/Character.cpp
+        Engine/Actors/Character.h
+        Core/Rect.cpp
+        Core/Rect.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

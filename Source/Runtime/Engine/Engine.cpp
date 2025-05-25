@@ -14,7 +14,6 @@ void PEngine::Stop() { bIsRunning = false; }
 
 void PEngine::Tick(float DeltaTime) const
 {
-	mWorld->GetGrid()->Tick(DeltaTime);
 	for (PActor* Actor : mWorld->GetActors())
 	{
 		Actor->Tick(DeltaTime);
