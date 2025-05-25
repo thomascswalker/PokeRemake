@@ -5,14 +5,12 @@
 
 #include <cmath>
 
-PGrid::PGrid(const uint32_t InX, const uint32_t InY, const uint32_t InCellSize)
-	: mSizeX(InX), mSizeY(InY), mZoomFactor(InCellSize), mOffsetX(0), mOffsetY(0)
+PGrid::PGrid() : mOffsetX(0), mOffsetY(0)
 {
 	if (IInputManager* InputManager = GetInputManager())
 	{
 		InputManager->KeyDown.AddRaw(this, &PGrid::OnKeyDown);
 		InputManager->KeyUp.AddRaw(this, &PGrid::OnKeyUp);
-		InputManager->MouseScroll.AddRaw(this, &PGrid::OnMouseScroll);
 	}
 }
 
@@ -46,24 +44,25 @@ void PGrid::Draw(IRenderer* Renderer)
 
 	// Compute the origin (center of the screen - half of a cell size in order to
 	// center the grid).
-	const auto OriginX = ScreenWidth / 2.0f - mZoomFactor / 2.0f;
-	const auto OriginY = ScreenHeight / 2.0f - mZoomFactor / 2.0f;
+	auto	   ZoomFactor = Renderer->GetZoomFactor();
+	const auto OriginX = ScreenWidth / 2.0f - ZoomFactor / 2.0f;
+	const auto OriginY = ScreenHeight / 2.0f - ZoomFactor / 2.0f;
 
 	// Compute the number of steps to draw based on the screen size and zoom factor. Only do this
 	// for the width, in turn forcing the grid cells to be square.
-	const float Steps = ScreenWidth / mZoomFactor;
+	const float Steps = ScreenWidth / ZoomFactor;
 
 	// Compute the render offset given the world offset and zoom factor.
 	// This gives the perception of an infinite grid.
-	const float OffsetX = std::fmod(mOffsetX, mZoomFactor);
-	const float OffsetY = std::fmod(mOffsetY, mZoomFactor);
+	const float OffsetX = std::fmod(mOffsetX, ZoomFactor);
+	const float OffsetY = std::fmod(mOffsetY, ZoomFactor);
 
 	float X0, X1, Y0, Y1;
 
 	// Draw vertical lines
 	for (int32_t Index = -Steps; Index <= Steps; Index++)
 	{
-		X0 = OffsetX + OriginX - Index * mZoomFactor;
+		X0 = OffsetX + OriginX - Index * ZoomFactor;
 		X1 = X0;
 		Y0 = 0;
 		Y1 = ScreenHeight;
@@ -75,7 +74,7 @@ void PGrid::Draw(IRenderer* Renderer)
 	{
 		X0 = 0;
 		X1 = ScreenWidth;
-		Y0 = OffsetY + OriginY - Index * mZoomFactor;
+		Y0 = OffsetY + OriginY - Index * ZoomFactor;
 		Y1 = Y0;
 		Renderer->DrawLine(X0, Y0, X1, Y1);
 	}
@@ -120,4 +119,3 @@ void PGrid::OnKeyUp(uint32_t ScanCode)
 			break;
 	}
 }
-void PGrid::OnMouseScroll(float Value) { mZoomFactor += Value; }

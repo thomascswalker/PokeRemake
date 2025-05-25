@@ -10,6 +10,17 @@ void SDLRenderer::DrawLine(float X1, float Y1, float X2, float Y2)
 	SDL_RenderLine(mRenderer, X1, Y1, X2, Y2);
 }
 
+void SDLRenderer::DrawRect(FRect& Rect)
+{
+	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
+	SDL_RenderRect(mRenderer, &SRect);
+}
+void SDLRenderer::DrawFillRect(FRect& Rect)
+{
+	SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
+	SDL_RenderFillRect(mRenderer, &SRect);
+}
+
 int32_t SDLRenderer::GetScreenWidth() const
 {
 	int32_t Width, Height;

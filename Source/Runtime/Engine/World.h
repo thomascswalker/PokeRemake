@@ -15,8 +15,6 @@ public:
 	PWorld();
 	~PWorld() = default;
 
-	PGrid* GetGrid() const { return mGrid.get(); }
-
 	template <class T, class = std::enable_if_t<std::is_base_of_v<PActor, T>>, typename... ArgsType>
 	void ConstructActor(ArgsType... Args)
 	{

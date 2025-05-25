@@ -5,6 +5,8 @@
 #include "Core/Logging.h"
 #include "SDLPlatform.h"
 
+#include "Engine/Actors/Character.h"
+
 #define WINDOW_DEFAULT_HEIGHT 432
 #define WINDOW_DEFAULT_WIDTH 480
 #define WINDOW_TITLE "PokeRemake"
@@ -42,7 +44,8 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	gEngine = mEngine.get();
 	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
 
-	gEngine->GetWorld()->ConstructActor<PGrid>(20, 18, 20);
+	gEngine->GetWorld()->ConstructActor<PGrid>();
+	gEngine->GetWorld()->ConstructActor<PCharacter>();
 
 	Info("SDLPlatform constructed");
 	return true;
@@ -112,6 +115,7 @@ bool SDLPlatform::OnEvent(void* Event)
 		case SDL_EVENT_MOUSE_WHEEL:
 			{
 				OnMiddleMouseScroll(SDLEvent->wheel.y);
+				mRenderer->SetZoomFactor(mRenderer->GetZoomFactor() + SDLEvent->wheel.y);
 				break;
 			}
 		default:
