@@ -5,14 +5,14 @@
 #include "Core/Logging.h"
 #include "SDLPlatform.h"
 
-constexpr uint32_t mWindowDefaultHeight = 480;
-constexpr uint32_t mWindowDefaultWidth = 640;
-static auto		   mWindowTitle = "PokeRemake";
+#define WINDOW_DEFAULT_HEIGHT 432
+#define WINDOW_DEFAULT_WIDTH 480
+#define WINDOW_TITLE "PokeRemake"
 
 bool SDLPlatform::OnStart(int argc, char** argv)
 {
 	Info("Constructing SDLPlatform");
-	SDL_SetAppMetadata(mWindowTitle, "1.0", mWindowTitle);
+	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
@@ -20,10 +20,10 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 		return false;
 	}
 
-	if (!SDL_CreateWindowAndRenderer(
-			mWindowTitle, mWindowDefaultWidth, mWindowDefaultHeight, 0, &mSDLWindow, &mSDLRenderer))
+	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 0,
+			&mSDLWindow, &mSDLRenderer))
 	{
-		Debug("Couldn't create {}: {}", mWindowTitle, SDL_GetError());
+		Debug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
 	}
 	SDL_SetWindowResizable(mSDLWindow, true);
@@ -39,7 +39,10 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();
+	gEngine = mEngine.get();
 	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
+
+	gEngine->GetWorld()->ConstructActor<PGrid>(20, 18, 20);
 
 	Info("SDLPlatform constructed");
 	return true;
@@ -55,6 +58,7 @@ void SDLPlatform::OnStop()
 
 	Debug("Stopping Engine");
 	mEngine->Stop();
+	gEngine = nullptr;
 }
 
 void SDLPlatform::OnLoop()
@@ -105,6 +109,11 @@ bool SDLPlatform::OnEvent(void* Event)
 				OnKeyUp(SDLEvent->key.scancode);
 				break;
 			}
+		case SDL_EVENT_MOUSE_WHEEL:
+			{
+				OnMiddleMouseScroll(SDLEvent->wheel.y);
+				break;
+			}
 		default:
 			break;
 	}
@@ -116,15 +125,17 @@ void SDLPlatform::OnDraw()
 	SDL_SetRenderDrawColor(mSDLRenderer, 38, 38, 38, 255);
 	SDL_RenderClear(mSDLRenderer);
 
-	const auto Now = static_cast<double>(SDL_GetTicks()) / 1000.0;
-	const auto Red = static_cast<float>(0.5 + 0.5 * SDL_sin(Now));
-	const auto Green = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 2 / 3));
-	const auto Blue = static_cast<float>(0.5 + 0.5 * SDL_sin(Now + SDL_PI_D * 4 / 3));
-	SDL_SetRenderDrawColorFloat(mSDLRenderer, Red, Green, Blue, SDL_ALPHA_OPAQUE);
-	mEngine->GetWorld()->GetGrid()->Draw(mRenderer.get());
+	// Draw all renderables in the world
+	for (IDrawable* Drawable : mEngine->GetWorld()->GetDrawables())
+	{
+		Drawable->Draw(mRenderer.get());
+	}
 
 	SDL_RenderPresent(mSDLRenderer);
 }
 
+bool SDLPlatform::IsRunning() { return mEngine->IsRunning(); }
+
 void SDLPlatform::OnKeyDown(uint32_t ScanCode) { KeyDown.Broadcast(ScanCode); }
 void SDLPlatform::OnKeyUp(uint32_t ScanCode) { KeyUp.Broadcast(ScanCode); }
+void SDLPlatform::OnMiddleMouseScroll(float Delta) { MouseScroll.Broadcast(Delta); }

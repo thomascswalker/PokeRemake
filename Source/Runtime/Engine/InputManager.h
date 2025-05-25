@@ -5,6 +5,7 @@
 
 DECLARE_MULTICAST_DELEGATE(DKeyDown, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DKeyUp, uint32_t);
+DECLARE_MULTICAST_DELEGATE(DMiddleMouseScroll, float);
 
 enum PKey
 {
@@ -54,12 +55,14 @@ enum PKey
 class IInputManager
 {
 public:
-	DKeyDown KeyDown;
-	DKeyUp	 KeyUp;
+	DKeyDown		   KeyDown;
+	DKeyUp			   KeyUp;
+	DMiddleMouseScroll MouseScroll;
 
 	virtual ~IInputManager() = default;
 	virtual void OnKeyDown(uint32_t KeyCode) = 0;
 	virtual void OnKeyUp(uint32_t KeyCode) = 0;
+	virtual void OnMiddleMouseScroll(float Delta) = 0;
 };
 
 IInputManager* GetInputManager();

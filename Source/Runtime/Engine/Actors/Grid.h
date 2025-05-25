@@ -1,8 +1,6 @@
 #pragma once
 
 #include <bitset>
-#include <memory>
-#include <stdint.h>
 
 #include "Actor.h"
 
@@ -26,17 +24,7 @@ public:
 	void Draw(IRenderer* Renderer) override;
 	void OnKeyDown(uint32_t ScanCode);
 	void OnKeyUp(uint32_t ScanCode);
+	void OnMouseScroll(float Value);
 	void AddOffsetX(float Value) { mOffsetX += Value; }
 	void AddOffsetY(float Value) { mOffsetY += Value; }
-};
-
-class PWorld : public PObject
-{
-	std::unique_ptr<PGrid> mGrid;
-
-public:
-	PWorld();
-	~PWorld() = default;
-
-	PGrid* GetGrid() const { return mGrid.get(); }
 };

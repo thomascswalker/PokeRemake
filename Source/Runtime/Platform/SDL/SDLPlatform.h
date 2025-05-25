@@ -12,7 +12,7 @@ class SDLPlatform : public IPlatform, public IInputManager
 {
 	uint64_t mCurrentTime = 0;
 
-	std::unique_ptr<PEngine>		 mEngine;
+	std::shared_ptr<PEngine>	 mEngine;
 	std::unique_ptr<SDLRenderer> mRenderer;
 
 	SDL_Window*	  mSDLWindow = nullptr;
@@ -27,10 +27,11 @@ public:
 	void OnDraw() override;
 
 	/* Properties */
-	bool		 IsRunning() override { return mEngine->IsRunning(); }
+	bool		 IsRunning() override;
 	PlatformType GetPlatformType() override { return PlatformType::SDL; }
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;
 	void OnKeyUp(uint32_t ScanCode) override;
+	void OnMiddleMouseScroll(float Delta) override;
 };

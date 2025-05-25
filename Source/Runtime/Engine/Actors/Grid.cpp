@@ -1,8 +1,7 @@
-#include "World.h"
+#include "Grid.h"
 
+#include "Engine/Engine.h"
 #include "Engine/InputManager.h"
-
-/* Grid */
 
 PGrid::PGrid(const uint32_t InX, const uint32_t InY, const uint32_t InCellSize)
 	: mSizeX(InX), mSizeY(InY), mCellSize(InCellSize), mOffsetX(0), mOffsetY(0)
@@ -11,6 +10,7 @@ PGrid::PGrid(const uint32_t InX, const uint32_t InY, const uint32_t InCellSize)
 	{
 		InputManager->KeyDown.AddRaw(this, &PGrid::OnKeyDown);
 		InputManager->KeyUp.AddRaw(this, &PGrid::OnKeyUp);
+		InputManager->MouseScroll.AddRaw(this, &PGrid::OnMouseScroll);
 	}
 }
 
@@ -37,6 +37,8 @@ void PGrid::Tick(float DeltaTime)
 
 void PGrid::Draw(IRenderer* Renderer)
 {
+	Renderer->SetDrawColor(255, 255, 255, 255);
+
 	const auto HalfScreenWidth = Renderer->GetScreenWidth() / 2;
 	const auto HalfScreenHeight = Renderer->GetScreenHeight() / 2;
 
@@ -107,7 +109,4 @@ void PGrid::OnKeyUp(uint32_t ScanCode)
 			break;
 	}
 }
-
-/* World */
-
-PWorld::PWorld() { mGrid = std::make_unique<PGrid>(25, 25, 16); }
+void PGrid::OnMouseScroll(float Value) { mCellSize += Value; }
