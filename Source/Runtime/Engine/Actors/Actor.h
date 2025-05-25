@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object.h"
+#include "../Object.h"
 #include "Renderer/IDrawable.h"
 
 class PActor : public PObject, public IDrawable

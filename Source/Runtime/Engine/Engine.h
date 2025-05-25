@@ -1,16 +1,22 @@
 #pragma once
 
-#include "Actors/World.h"
+#include "World.h"
 
 class PEngine
 {
-	bool					bIsRunning = false;
-	std::unique_ptr<PWorld> mWorld;
+	/* State */
+	bool bIsRunning = false;
+
+	/* Actors/Objects */
+	std::shared_ptr<PWorld> mWorld;
 
 public:
 	PEngine();
+	~PEngine() = default;
 	void	Stop();
-	void	Tick(float DeltaTime);
+	void	Tick(float DeltaTime) const;
 	bool	IsRunning() const { return bIsRunning; }
 	PWorld* GetWorld() const { return mWorld.get(); }
 };
+
+static PEngine* gEngine;
