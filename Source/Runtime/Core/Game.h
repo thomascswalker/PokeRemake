@@ -1,0 +1,17 @@
+#pragma once
+
+#include "Engine/World.h"
+
+class PGame : public PObject
+{
+protected:
+	/* Actors/Objects */
+	std::shared_ptr<PWorld> mWorld;
+
+public:
+	PGame();
+	~PGame() override {}
+
+	void	Tick(float DeltaTime) override;
+	PWorld* GetWorld() const { return mWorld.get(); }
+};

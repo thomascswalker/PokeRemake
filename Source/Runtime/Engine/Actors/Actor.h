@@ -9,5 +9,6 @@ public:
 	PActor() = default;
 	~PActor() override = default;
 
+	void Tick(float DeltaTime) override {}
 	void Draw(IRenderer* Renderer) override = 0;
 };

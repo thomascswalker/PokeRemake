@@ -2,28 +2,22 @@ project(PokeRemakeRuntime)
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-        Platform/Generic/IPlatform.cpp
-        Renderer/Generic/IRenderer.cpp
-        Platform/SDL/SDLPlatform.cpp
+        Core/Delegate.cpp
+        Core/Game.cpp
+        Core/Logging.h
+        Core/Rect.cpp
+        Engine/Actors/Actor.cpp
+        Engine/Actors/Character.cpp
+        Engine/Actors/Grid.cpp
         Engine/Engine.cpp
         Engine/InputManager.cpp
-        Core/Delegate.cpp
-        Core/Logging.h
-        Engine/World.cpp
-        Engine/World.h
-        Engine/Actors/Actor.cpp
-        Engine/Actors/Actor.h
-        Renderer/IDrawable.h
-        Renderer/SDL/SDLRenderer.h
-        Renderer/SDL/SDLRenderer.cpp
         Engine/Object.cpp
-        Engine/Object.h
-        Engine/Actors/Grid.cpp
-        Engine/Actors/Grid.h
-        Engine/Actors/Character.cpp
-        Engine/Actors/Character.h
-        Core/Rect.cpp
-        Core/Rect.h
+        Engine/World.cpp
+        Platform/Generic/IPlatform.cpp
+        Platform/SDL/SDLPlatform.cpp
+        Renderer/Generic/IRenderer.cpp
+        Renderer/IDrawable.h
+        Renderer/SDL/SDLRenderer.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

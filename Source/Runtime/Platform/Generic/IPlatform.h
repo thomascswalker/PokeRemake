@@ -20,4 +20,17 @@ public:
 
 	virtual bool		 IsRunning() = 0;
 	virtual PlatformType GetPlatformType() = 0;
+	virtual PEngine*	 GetEngine() = 0;
 };
+
+#define CONSTRUCT_AND_START_GAME(PlatformType, GameType)    \
+	const auto Platform = std::make_unique<PlatformType>(); \
+	const auto Game = std::make_unique<GameType>();         \
+	if (Platform->OnStart(argc, argv))                      \
+	{                                                       \
+		Platform->GetEngine()->SetGame(Game.get());         \
+		while (Platform->IsRunning())                       \
+		{                                                   \
+			Platform->OnLoop();                             \
+		}                                                   \
+	}

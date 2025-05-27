@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Game.h"
 #include "World.h"
 
 class PEngine
@@ -8,15 +9,15 @@ class PEngine
 	bool bIsRunning = false;
 
 	/* Actors/Objects */
-	std::shared_ptr<PWorld> mWorld;
+	PGame* mGame;
 
 public:
 	PEngine();
 	~PEngine() = default;
-	void	Stop();
-	void	Tick(float DeltaTime) const;
-	bool	IsRunning() const { return bIsRunning; }
-	PWorld* GetWorld() const { return mWorld.get(); }
-};
+	void Stop();
+	void Tick(float DeltaTime) const;
+	bool IsRunning() const { return bIsRunning; }
 
-static PEngine* gEngine;
+	void   SetGame(PGame* Game) { mGame = Game; }
+	PGame* GetGame() const { return mGame; }
+};
