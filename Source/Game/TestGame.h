@@ -6,11 +6,7 @@
 class TestGame : public PGame
 {
 public:
-	TestGame()
-	{
-		mWorld->ConstructActor<PGrid>();
-		mWorld->ConstructActor<PCharacter>();
-	}
+	TestGame();
 	~TestGame() override {}
 	void Tick(float DeltaTime) override {}
 };
