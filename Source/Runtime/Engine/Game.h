@@ -12,6 +12,8 @@ public:
 	PGame();
 	~PGame() override {}
 
+	void	Start() override;
+	void	End() override {}
 	void	Tick(float DeltaTime) override;
 	PWorld* GetWorld() const { return mWorld.get(); }
 };

@@ -19,6 +19,7 @@ set(SOURCES
         Renderer/SDL/SDLRenderer.cpp
         Core/Vector.h
         Core/Matrix.h
+        Engine/CameraView.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

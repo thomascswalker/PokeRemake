@@ -7,7 +7,7 @@ DECLARE_MULTICAST_DELEGATE(DKeyDown, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DKeyUp, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DMiddleMouseScroll, float);
 
-enum PKey
+enum EKey
 {
 	KB_A = 0x04,
 	KB_B,

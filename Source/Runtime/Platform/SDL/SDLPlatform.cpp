@@ -23,7 +23,7 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	}
 
 	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 0,
-			&mSDLWindow, &mSDLRenderer))
+									 &mSDLWindow, &mSDLRenderer))
 	{
 		Debug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
@@ -127,7 +127,7 @@ void SDLPlatform::OnDraw()
 	// Draw all renderables in the world
 	if (const PGame* Game = mEngine->GetGame())
 	{
-		if (PWorld* World = Game->GetWorld())
+		if (const PWorld* World = Game->GetWorld())
 		{
 			for (IDrawable* Drawable : World->GetDrawables())
 			{
@@ -149,9 +149,24 @@ void SDLPlatform::OnDraw()
 	SDL_RenderPresent(mSDLRenderer);
 }
 
-bool SDLPlatform::IsRunning() { return mEngine->IsRunning(); }
+bool SDLPlatform::IsRunning()
+{
+	return mEngine->IsRunning();
+}
 
-PEngine* SDLPlatform::GetEngine() { return mEngine.get(); }
-void	 SDLPlatform::OnKeyDown(uint32_t ScanCode) { KeyDown.Broadcast(ScanCode); }
-void	 SDLPlatform::OnKeyUp(uint32_t ScanCode) { KeyUp.Broadcast(ScanCode); }
-void	 SDLPlatform::OnMiddleMouseScroll(float Delta) { MouseScroll.Broadcast(Delta); }
+PEngine* SDLPlatform::GetEngine()
+{
+	return mEngine.get();
+}
+void SDLPlatform::OnKeyDown(uint32_t ScanCode)
+{
+	KeyDown.Broadcast(ScanCode);
+}
+void SDLPlatform::OnKeyUp(uint32_t ScanCode)
+{
+	KeyUp.Broadcast(ScanCode);
+}
+void SDLPlatform::OnMiddleMouseScroll(float Delta)
+{
+	MouseScroll.Broadcast(Delta);
+}

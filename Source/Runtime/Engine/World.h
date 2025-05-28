@@ -18,10 +18,11 @@ public:
 	void Tick(float DeltaTime) override;
 
 	template <class T, class = std::enable_if_t<std::is_base_of_v<PActor, T>>, typename... ArgsType>
-	void ConstructActor(ArgsType... Args)
+	T* ConstructActor(ArgsType... Args)
 	{
-		auto Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
+		return Actor.get();
 	}
 
 	std::vector<PActor*> GetActors() const
