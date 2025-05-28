@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Core/Game.h"
-#include "Engine/Actors/Character.h"
+#include "../Runtime/Engine/Game.h"
 
 class TestGame : public PGame
 {
