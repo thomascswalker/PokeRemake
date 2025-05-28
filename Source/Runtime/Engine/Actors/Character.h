@@ -16,7 +16,7 @@ public:
 	void Tick(float DeltaTime) override;
 	void Start() override;
 	void End() override {}
-	void Draw(IRenderer* Renderer) override;
+	void Draw(PRenderer* Renderer) override;
 	void OnKeyDown(uint32_t KeyCode);
 	void OnKeyUp(uint32_t KeyCode);
 };

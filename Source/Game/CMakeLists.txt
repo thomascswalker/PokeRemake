@@ -1,7 +1,12 @@
 project(PokeRemakeGame)
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(../Runtime)
+include_directories(
+        ${PROJECT_SOURCE_DIR}
+        ../Runtime
+        ../../ThirdParty
+        ../../ThirdParty/SDL/include
+)
 
 set(SOURCES
         TestGame.cpp

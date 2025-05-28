@@ -27,7 +27,7 @@ PEngine* GetEngine()
 	return PApplication::GetInstance()->GetEngine();
 }
 
-IRenderer* GetRenderer()
+PRenderer* GetRenderer()
 {
 	return PApplication::GetInstance()->GetRenderer();
 }
@@ -80,7 +80,7 @@ bool PApplication::Initialize()
 
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();
-	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
+	mRenderer = std::make_unique<PRenderer>(mSDLRenderer);
 
 	Info("SDLPlatform constructed");
 	return true;
@@ -185,7 +185,8 @@ PEngine* PApplication::GetEngine() const
 {
 	return mEngine.get();
 }
-IRenderer* PApplication::GetRenderer() const
+
+PRenderer* PApplication::GetRenderer() const
 {
 	return mRenderer.get();
 }

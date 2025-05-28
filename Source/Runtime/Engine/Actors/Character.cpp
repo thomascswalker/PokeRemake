@@ -38,7 +38,7 @@ void PCharacter::Start()
 	}
 }
 
-void PCharacter::Draw(IRenderer* Renderer)
+void PCharacter::Draw(PRenderer* Renderer)
 {
 	// TODO: Implement global coordinate system for rendering
 

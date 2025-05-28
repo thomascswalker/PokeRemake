@@ -1,9 +1,9 @@
 #pragma once
 
+#include "../Renderer/Renderer.h"
 #include "Engine/Engine.h"
 #include "Engine/Game.h"
 #include "Engine/InputManager.h"
-#include "Renderer/SDL/SDLRenderer.h"
 #include "SDL3/SDL.h"
 
 #include <memory>
@@ -14,8 +14,8 @@ class PApplication : public IInputManager
 
 	uint64_t mCurrentTime = 0;
 
-	std::shared_ptr<PEngine>	 mEngine;
-	std::unique_ptr<SDLRenderer> mRenderer;
+	std::shared_ptr<PEngine>   mEngine;
+	std::unique_ptr<PRenderer> mRenderer;
 
 	SDL_Window*	  mSDLWindow = nullptr;
 	SDL_Renderer* mSDLRenderer = nullptr;
@@ -53,7 +53,7 @@ public:
 
 	bool	   IsRunning() const;
 	PEngine*   GetEngine() const;
-	IRenderer* GetRenderer() const;
+	PRenderer* GetRenderer() const;
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;
