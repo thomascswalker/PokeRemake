@@ -56,7 +56,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 	Info("Constructing SDLPlatform");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
 
-	if (!SDL_Init(SDL_INIT_VIDEO))
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
 	{
 		Debug("Couldn't initialize SDL: {}", SDL_GetError());
 		return false;
@@ -72,14 +72,22 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 	SDL_SetWindowResizable(mSDLWindow, true);
 	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
 	{
-		mRHI = new OpenGLRHI();
+		Debug("Constructing OpenGL Render Hardware Interface.");
+		mRHI = std::make_unique<OpenGLRHI>();
 	}
 	else
 	{
 		Error("No RHI available for the current window flags: {}", WindowFlags);
 		return false;
 	}
-	mRenderer = std::make_unique<PRenderer>(mSDLRenderer, mRHI);
+
+	if (!mRHI->Initialize(mSDLWindow))
+	{
+		Error("Failed to initialize RHI");
+		return false;
+	}
+
+	mRenderer = std::make_unique<PRenderer>(mSDLRenderer, mRHI.get());
 
 	Debug("Displaying window");
 	SDL_ShowWindow(mSDLWindow);
@@ -172,8 +180,10 @@ bool PApplication::OnEvent(void* Event)
 
 void PApplication::OnDraw() const
 {
-	SDL_SetRenderDrawColor(mSDLRenderer, 38, 38, 38, 255);
-	SDL_RenderClear(mSDLRenderer);
+	SDL_Renderer* SDLRenderer = mSDLRenderer;
+
+	SDL_SetRenderDrawColor(SDLRenderer, 38, 38, 38, 255);
+	SDL_RenderClear(SDLRenderer);
 
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
@@ -184,7 +194,7 @@ void PApplication::OnDraw() const
 		}
 	}
 
-	SDL_RenderPresent(mSDLRenderer);
+	SDL_RenderPresent(SDLRenderer);
 }
 
 bool PApplication::IsRunning() const

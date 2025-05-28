@@ -27,6 +27,7 @@ set(SOURCES
         Renderer/IRHI.h
         Application/ArgParser.h
         Renderer/OpenGL/OpenGLRHI.h
+        Renderer/OpenGL/OpenGLRHI.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
