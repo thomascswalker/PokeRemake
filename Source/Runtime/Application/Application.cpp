@@ -6,6 +6,7 @@
 #include "Core/Logging.h"
 
 #include "Engine/Actors/Character.h"
+#include "Renderer/OpenGL/OpenGLRHI.h"
 
 #define WINDOW_DEFAULT_HEIGHT 432
 #define WINDOW_DEFAULT_WIDTH 480
@@ -61,6 +62,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 		return false;
 	}
 
+	Debug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
 									 WindowFlags, &mSDLWindow, &mSDLRenderer))
 	{
@@ -68,6 +70,16 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 		return false;
 	}
 	SDL_SetWindowResizable(mSDLWindow, true);
+	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
+	{
+		mRHI = new OpenGLRHI();
+	}
+	else
+	{
+		Error("No RHI available for the current window flags: {}", WindowFlags);
+		return false;
+	}
+	mRenderer = std::make_unique<PRenderer>(mSDLRenderer, mRHI);
 
 	Debug("Displaying window");
 	SDL_ShowWindow(mSDLWindow);
@@ -80,7 +92,6 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();
-	mRenderer = std::make_unique<PRenderer>(mSDLRenderer);
 
 	Info("SDLPlatform constructed");
 	return true;

@@ -3,7 +3,7 @@
 #include "SDL3/SDL.h"
 
 #include "Core/Rect.h"
-#include "RHI/IRHI.h"
+#include "IRHI.h"
 
 class PRenderer
 {
@@ -15,7 +15,9 @@ class PRenderer
 	float Renderer = 10.0f;
 
 public:
-	explicit PRenderer(SDL_Renderer* Renderer) : mRenderer(Renderer), mRHI(nullptr) {}
+	explicit PRenderer(SDL_Renderer* InRenderer, IRHI* InRHI) : mRenderer(InRenderer), mRHI(InRHI)
+	{
+	}
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
