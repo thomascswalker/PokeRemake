@@ -15,6 +15,7 @@ public:
 
 	void Start() override {}
 	void End() override {}
+
 	void Tick(float DeltaTime) override {}
 	void Draw(IRenderer* Renderer) override = 0;
 

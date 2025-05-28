@@ -8,7 +8,7 @@ class PEngine
 	bool bIsRunning = false;
 
 	/* Actors/Objects */
-	PGame* mGame;
+	std::unique_ptr<PGame> mGame;
 
 public:
 	PEngine();
@@ -17,6 +17,12 @@ public:
 	void Tick(float DeltaTime) const;
 	bool IsRunning() const { return bIsRunning; }
 
-	void   SetGame(PGame* Game) { mGame = Game; }
-	PGame* GetGame() const { return mGame; }
+	template <typename GameType>
+	void StartGame()
+	{
+		mGame = std::make_unique<GameType>();
+	}
+	PGame* GetGame() const { return mGame.get(); }
 };
+
+PEngine* GetEngine();

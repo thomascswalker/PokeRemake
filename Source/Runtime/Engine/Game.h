@@ -17,3 +17,5 @@ public:
 	void	Tick(float DeltaTime) override;
 	PWorld* GetWorld() const { return mWorld.get(); }
 };
+
+PGame* GetGame();

@@ -2,8 +2,13 @@
 
 #include "Engine/Actors/Character.h"
 
-TestGame::TestGame()
+void TestGame::PreStart()
 {
-	mWorld->ConstructActor<PGrid>();
-	mWorld->ConstructActor<PCharacter>();
+	PGame::PreStart();
+
+	if (const auto W = GetWorld())
+	{
+		W->ConstructActor<PGrid>();
+		W->ConstructActor<PCharacter>();
+	}
 }

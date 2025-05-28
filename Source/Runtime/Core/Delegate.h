@@ -1,3 +1,4 @@
+// Thank you to simco50
 // https://github.com/simco50/CppDelegates/tree/master
 
 #pragma once
@@ -242,8 +243,8 @@ public:
 	{
 	}
 
-	SPDelegate(
-		std::weak_ptr<T> pObject, DelegateFunction pFunction, const std::tuple<Args2...>& payload)
+	SPDelegate(std::weak_ptr<T> pObject, DelegateFunction pFunction,
+			   const std::tuple<Args2...>& payload)
 		: m_pObject(pObject), m_pFunction(pFunction), m_Payload(payload)
 	{
 	}
@@ -274,8 +275,8 @@ private:
 		else
 		{
 			std::shared_ptr<T> pPinned = m_pObject.lock();
-			return (pPinned.get()->*m_pFunction)(
-				std::forward<Args>(args)..., std::get<Is>(m_Payload)...);
+			return (pPinned.get()->*m_pFunction)(std::forward<Args>(args)...,
+												 std::get<Is>(m_Payload)...);
 		}
 	}
 
@@ -340,7 +341,8 @@ public:
 	// Constructor
 	constexpr InlineAllocator() noexcept : m_Size(0)
 	{
-		DELEGATE_STATIC_ASSERT(MaxStackSize > sizeof(void*),
+		DELEGATE_STATIC_ASSERT(
+			MaxStackSize > sizeof(void*),
 			"MaxStackSize is smaller or equal to the size of a pointer. This will make the use of an InlineAllocator pointless. Please increase the MaxStackSize.");
 	}
 
@@ -575,8 +577,8 @@ public:
 
 	// Create delegate using member function
 	template <typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateRaw(
-		T* pObj, NonConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static Delegate CreateRaw(T* pObj, NonConstMemberFunction<T, Args2...> pFunction,
+										 Args2... args)
 	{
 		Delegate handler;
 		handler.Bind<RawDelegate<false, T, RetVal(Args...), Args2...>>(
@@ -585,12 +587,12 @@ public:
 	}
 
 	template <typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateRaw(
-		T* pObj, ConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static Delegate CreateRaw(T* pObj, ConstMemberFunction<T, Args2...> pFunction,
+										 Args2... args)
 	{
 		Delegate handler;
-		handler.Bind<RawDelegate<true, T, RetVal(Args...), Args2...>>(
-			pObj, pFunction, std::forward<Args2>(args)...);
+		handler.Bind<RawDelegate<true, T, RetVal(Args...), Args2...>>(pObj, pFunction,
+																	  std::forward<Args2>(args)...);
 		return handler;
 	}
 
@@ -599,29 +601,30 @@ public:
 	NO_DISCARD static Delegate CreateStatic(RetVal (*pFunction)(Args..., Args2...), Args2... args)
 	{
 		Delegate handler;
-		handler.Bind<StaticDelegate<RetVal(Args...), Args2...>>(
-			pFunction, std::forward<Args2>(args)...);
+		handler.Bind<StaticDelegate<RetVal(Args...), Args2...>>(pFunction,
+																std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	// Create delegate using std::shared_ptr
 	template <typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>& pObject,
-		NonConstMemberFunction<T, Args2...>						  pFunction, Args2... args)
+	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>&			pObject,
+										NonConstMemberFunction<T, Args2...> pFunction,
+										Args2... args)
 	{
 		Delegate handler;
-		handler.Bind<SPDelegate<false, T, RetVal(Args...), Args2...>>(
-			pObject, pFunction, std::forward<Args2>(args)...);
+		handler.Bind<SPDelegate<false, T, RetVal(Args...), Args2...>>(pObject, pFunction,
+																	  std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	template <typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>& pObject,
-		ConstMemberFunction<T, Args2...>						  pFunction, Args2... args)
+	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>&		 pObject,
+										ConstMemberFunction<T, Args2...> pFunction, Args2... args)
 	{
 		Delegate handler;
-		handler.Bind<SPDelegate<true, T, RetVal(Args...), Args2...>>(
-			pObject, pFunction, std::forward<Args2>(args)...);
+		handler.Bind<SPDelegate<true, T, RetVal(Args...), Args2...>>(pObject, pFunction,
+																	 std::forward<Args2>(args)...);
 		return handler;
 	}
 
@@ -640,8 +643,8 @@ public:
 	template <typename T, typename... Args2>
 	void BindRaw(T* pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
 	{
-		DELEGATE_STATIC_ASSERT(
-			!std::is_const<T>::value, "Cannot bind a non-const function on a const object");
+		DELEGATE_STATIC_ASSERT(!std::is_const<T>::value,
+							   "Cannot bind a non-const function on a const object");
 		*this = CreateRaw<T, Args2...>(pObject, pFunction, std::forward<Args2>(args)...);
 	}
 
@@ -662,23 +665,23 @@ public:
 	template <typename LambdaType, typename... Args2>
 	void BindLambda(LambdaType&& lambda, Args2&&... args)
 	{
-		*this = CreateLambda<LambdaType, Args2...>(
-			std::forward<LambdaType>(lambda), std::forward<Args2>(args)...);
+		*this = CreateLambda<LambdaType, Args2...>(std::forward<LambdaType>(lambda),
+												   std::forward<Args2>(args)...);
 	}
 
 	// Bind a member function with a shared_ptr object
 	template <typename T, typename... Args2>
-	void BindSP(
-		std::shared_ptr<T> pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
+	void BindSP(std::shared_ptr<T> pObject, NonConstMemberFunction<T, Args2...> pFunction,
+				Args2&&... args)
 	{
-		DELEGATE_STATIC_ASSERT(
-			!std::is_const<T>::value, "Cannot bind a non-const function on a const object");
+		DELEGATE_STATIC_ASSERT(!std::is_const<T>::value,
+							   "Cannot bind a non-const function on a const object");
 		*this = CreateSP<T, Args2...>(pObject, pFunction, std::forward<Args2>(args)...);
 	}
 
 	template <typename T, typename... Args2>
-	void BindSP(
-		std::shared_ptr<T> pObject, ConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
+	void BindSP(std::shared_ptr<T> pObject, ConstMemberFunction<T, Args2...> pFunction,
+				Args2&&... args)
 	{
 		*this = CreateSP<T, Args2...>(pObject, pFunction, std::forward<Args2>(args)...);
 	}
@@ -797,8 +800,8 @@ public:
 
 	// Bind a member function
 	template <typename T, typename... Args2>
-	DelegateHandle AddRaw(
-		T* pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
+	DelegateHandle AddRaw(T* pObject, NonConstMemberFunction<T, Args2...> pFunction,
+						  Args2&&... args)
 	{
 		return Add(DelegateT::CreateRaw(pObject, pFunction, std::forward<Args2>(args)...));
 	}
@@ -820,21 +823,21 @@ public:
 	template <typename LambdaType, typename... Args2>
 	DelegateHandle AddLambda(LambdaType&& lambda, Args2&&... args)
 	{
-		return Add(DelegateT::CreateLambda(
-			std::forward<LambdaType>(lambda), std::forward<Args2>(args)...));
+		return Add(DelegateT::CreateLambda(std::forward<LambdaType>(lambda),
+										   std::forward<Args2>(args)...));
 	}
 
 	// Bind a member function with a shared_ptr object
 	template <typename T, typename... Args2>
-	DelegateHandle AddSP(
-		std::shared_ptr<T> pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
+	DelegateHandle AddSP(std::shared_ptr<T> pObject, NonConstMemberFunction<T, Args2...> pFunction,
+						 Args2&&... args)
 	{
 		return Add(DelegateT::CreateSP(pObject, pFunction, std::forward<Args2>(args)...));
 	}
 
 	template <typename T, typename... Args2>
-	DelegateHandle AddSP(
-		std::shared_ptr<T> pObject, ConstMemberFunction<T, Args2...> pFunction, Args2&&... args)
+	DelegateHandle AddSP(std::shared_ptr<T> pObject, ConstMemberFunction<T, Args2...> pFunction,
+						 Args2&&... args)
 	{
 		return Add(DelegateT::CreateSP(pObject, pFunction, std::forward<Args2>(args)...));
 	}

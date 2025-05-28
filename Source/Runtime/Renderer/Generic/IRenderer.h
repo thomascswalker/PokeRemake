@@ -20,3 +20,5 @@ public:
 	virtual void  SetZoomFactor(float ZoomFactor) = 0;
 	virtual float GetZoomFactor() const = 0;
 };
+
+IRenderer* GetRenderer();
