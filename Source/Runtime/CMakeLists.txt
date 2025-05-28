@@ -5,7 +5,6 @@ set(SOURCES
         Core/Delegate.cpp
         Engine/Game.cpp
         Core/Logging.h
-        Core/Rect.cpp
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
         Engine/Actors/Grid.cpp
