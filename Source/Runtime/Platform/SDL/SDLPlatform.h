@@ -29,7 +29,7 @@ public:
 	/* Properties */
 	bool		 IsRunning() override;
 	PlatformType GetPlatformType() override { return PlatformType::SDL; }
-	PEngine* GetEngine() override;
+	PEngine*	 GetEngine() override;
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;

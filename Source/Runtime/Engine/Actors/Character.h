@@ -3,6 +3,7 @@
 #include "Actor.h"
 
 #include <bitset>
+#include <memory>
 
 class PCharacter : public PActor
 {
@@ -11,6 +12,7 @@ class PCharacter : public PActor
 public:
 	PCharacter() = default;
 	~PCharacter() override = default;
+
 	void Tick(float DeltaTime) override;
 	void Start() override;
 	void End() override {}

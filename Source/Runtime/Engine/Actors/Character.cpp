@@ -26,6 +26,7 @@ void PCharacter::Tick(float DeltaTime)
 
 void PCharacter::Start()
 {
+	// Bind input
 	if (const auto Input = GetInputManager())
 	{
 		Info("Adding key down handler for character");
@@ -36,6 +37,7 @@ void PCharacter::Start()
 		Error("Input manager is not initialized, cannot add key down handler for character");
 	}
 }
+
 void PCharacter::Draw(IRenderer* Renderer)
 {
 	// TODO: Implement global coordinate system for rendering

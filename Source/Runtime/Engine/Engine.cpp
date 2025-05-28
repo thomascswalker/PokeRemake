@@ -1,7 +1,5 @@
 #include "Engine.h"
 
-#include "Core/Logging.h"
-
 PEngine::PEngine() : bIsRunning(true), mGame(nullptr) {}
 
 void PEngine::Stop() { bIsRunning = false; }
