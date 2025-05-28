@@ -14,11 +14,14 @@ class PApplication : public IInputManager
 
 	uint64_t mCurrentTime = 0;
 
-	std::shared_ptr<PEngine>   mEngine;
-	std::unique_ptr<PRenderer> mRenderer;
+	std::shared_ptr<PEngine> mEngine;
 
-	SDL_Window*	  mSDLWindow = nullptr;
-	SDL_Renderer* mSDLRenderer = nullptr;
+	/* Rendering */
+
+	std::unique_ptr<PRenderer> mRenderer;
+	SDL_Window*				   mSDLWindow = nullptr;
+	SDL_Renderer*			   mSDLRenderer = nullptr;
+	IRHI*					   mRHI = nullptr;
 
 protected:
 	PApplication() = default;
@@ -26,7 +29,7 @@ protected:
 public:
 	static PApplication* GetInstance();
 
-	bool Initialize();
+	bool Initialize(SDL_WindowFlags WindowFlags);
 	void Uninitialize() const;
 
 	template <typename GameType>

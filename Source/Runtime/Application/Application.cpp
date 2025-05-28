@@ -50,7 +50,7 @@ PWorld* GetWorld()
 	return nullptr;
 }
 
-bool PApplication::Initialize()
+bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 {
 	Info("Constructing SDLPlatform");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
@@ -61,8 +61,8 @@ bool PApplication::Initialize()
 		return false;
 	}
 
-	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 0,
-									 &mSDLWindow, &mSDLRenderer))
+	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
+									 WindowFlags, &mSDLWindow, &mSDLRenderer))
 	{
 		Debug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;

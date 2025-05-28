@@ -24,6 +24,8 @@ set(SOURCES
         Engine/World.cpp
         Renderer/IDrawable.h
         Renderer/Renderer.cpp
+        Renderer/RHI/IRHI.h
+        Application/ArgParser.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

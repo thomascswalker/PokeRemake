@@ -1,23 +1,24 @@
 #include "Renderer.h"
 
-void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 {
 	SDL_SetRenderDrawColor(mRenderer, R, G, B, A);
 }
 
-void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2)
+void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 {
 	SDL_RenderLine(mRenderer, X1, Y1, X2, Y2);
 }
 
-void PRenderer::DrawRect(FRect& Rect)
+void PRenderer::DrawRect(const FRect& Rect) const
 {
 	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
 	SDL_RenderRect(mRenderer, &SRect);
 }
-void PRenderer::DrawFillRect(FRect& Rect)
+
+void PRenderer::DrawFillRect(const FRect& Rect) const
 {
-	SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
+	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
 	SDL_RenderFillRect(mRenderer, &SRect);
 }
 
