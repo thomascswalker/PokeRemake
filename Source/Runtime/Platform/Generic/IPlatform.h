@@ -29,6 +29,7 @@ public:
 	if (Platform->OnStart(argc, argv))                      \
 	{                                                       \
 		Platform->GetEngine()->SetGame(Game.get());         \
+		Game->Start();                                      \
 		while (Platform->IsRunning())                       \
 		{                                                   \
 			Platform->OnLoop();                             \

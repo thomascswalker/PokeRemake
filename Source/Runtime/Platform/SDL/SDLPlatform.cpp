@@ -127,7 +127,7 @@ void SDLPlatform::OnDraw()
 	// Draw all renderables in the world
 	if (const PGame* Game = mEngine->GetGame())
 	{
-		if (PWorld* World = Game->GetWorld())
+		if (const PWorld* World = Game->GetWorld())
 		{
 			for (IDrawable* Drawable : World->GetDrawables())
 			{

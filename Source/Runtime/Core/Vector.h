@@ -45,8 +45,21 @@ public:
 	// Arithmetic
 	TVector2 operator+(const TVector2& Other) const { return { X + Other.X, Y + Other.Y }; }
 	TVector2 operator-(const TVector2& Other) const { return { X - Other.X, Y - Other.Y }; }
-	TVector2 operator*(T Scalar) const { return { X * Scalar, Y * Scalar }; }
-	TVector2 operator/(T Scalar) const { return { X / Scalar, Y / Scalar }; }
+	TVector2 operator*(const TVector2& Other) const { return { X * Other.X, Y * Other.Y }; }
+	TVector2 operator/(const TVector2& Other) const { return { X / Other.X, Y / Other.Y }; }
+	TVector2 operator+=(const TVector2& Other) { return *this + Other; }
+	TVector2 operator-=(const TVector2& Other) { return *this - Other; }
+	TVector2 operator*=(const TVector2& Other) { return *this * Other; }
+	TVector2 operator/=(const TVector2& Other) { return *this / Other; }
+
+	TVector2 operator+(const T Scalar) const { return { X + Scalar, Y + Scalar }; }
+	TVector2 operator-(const T Scalar) const { return { X - Scalar, Y - Scalar }; }
+	TVector2 operator*(const T Scalar) const { return { X * Scalar, Y * Scalar }; }
+	TVector2 operator/(const T Scalar) const { return { X / Scalar, Y / Scalar }; }
+	TVector2 operator+=(const T Scalar) { return *this + Scalar; }
+	TVector2 operator-=(const T Scalar) { return *this - Scalar; }
+	TVector2 operator*=(const T Scalar) { return *this * Scalar; }
+	TVector2 operator/=(const T Scalar) { return *this / Scalar; }
 };
 
 template <typename T>
@@ -80,14 +93,33 @@ public:
 
 	TVector3 operator+(const TVector3& Other) const
 	{
-		return TVector3(X + Other.X, Y + Other.Y, Z + Other.Z);
+		return { X + Other.X, Y + Other.Y, Z + Other.Z };
 	}
 	TVector3 operator-(const TVector3& Other) const
 	{
-		return TVector3(X - Other.X, Y - Other.Y, Z - Other.Z);
+		return { X - Other.X, Y - Other.Y, Z - Other.Z };
 	}
-	TVector3 operator*(T Scalar) const { return { X * Scalar, Y * Scalar, Z * Scalar }; }
-	TVector3 operator/(T Scalar) const { return { X / Scalar, Y / Scalar, Z / Scalar }; }
+	TVector3 operator*(const TVector3& Other) const
+	{
+		return { X * Other.X, Y * Other.Y, Z * Other.Z };
+	}
+	TVector3 operator/(const TVector3& Other) const
+	{
+		return { X / Other.X, Y / Other.Y, Z / Other.Z };
+	}
+	TVector3 operator+=(const TVector3& Other) { return *this + Other; }
+	TVector3 operator-=(const TVector3& Other) { return *this - Other; }
+	TVector3 operator*=(const TVector3& Other) { return *this * Other; }
+	TVector3 operator/=(const TVector3& Other) { return *this / Other; }
+
+	TVector3 operator+(const T Scalar) const { return { X + Scalar, Y + Scalar, Z + Scalar }; }
+	TVector3 operator-(const T Scalar) const { return { X - Scalar, Y - Scalar, Z - Scalar }; }
+	TVector3 operator*(const T Scalar) const { return { X * Scalar, Y * Scalar, Z * Scalar }; }
+	TVector3 operator/(const T Scalar) const { return { X / Scalar, Y / Scalar, Z / Scalar }; }
+	TVector3 operator+=(const T Scalar) { return *this + Scalar; }
+	TVector3 operator-=(const T Scalar) { return *this - Scalar; }
+	TVector3 operator*=(const T Scalar) { return *this * Scalar; }
+	TVector3 operator/=(const T Scalar) { return *this / Scalar; }
 };
 
 template <typename T>
@@ -119,18 +151,43 @@ public:
 
 	TVector4 operator+(const TVector4& Other) const
 	{
-		return { X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W };
+		return TVector4(X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W);
 	}
 	TVector4 operator-(const TVector4& Other) const
 	{
-		return { X - Other.X, Y - Other.Y, Z - Other.Z, W - Other.W };
+		return TVector4(X - Other.X, Y - Other.Y, Z - Other.Z, W - Other.W);
 	}
-	TVector4 operator*(T Scalar) const
+	TVector4 operator*(const TVector4& Other) const
+	{
+		return { X * Other.X, Y * Other.Y, Z * Other.Z, W * Other.W };
+	}
+	TVector4 operator/(const TVector4& Other) const
+	{
+		return { X / Other.X, Y / Other.Y, Z / Other.Z, W / Other.W };
+	}
+	TVector4 operator+=(const TVector4& Other) { return *this + Other; }
+	TVector4 operator-=(const TVector4& Other) { return *this - Other; }
+	TVector4 operator*=(const TVector4& Other) { return *this * Other; }
+	TVector4 operator/=(const TVector4& Other) { return *this / Other; }
+
+	TVector4 operator+(const T Scalar) const
+	{
+		return { X + Scalar, Y + Scalar, Z + Scalar, W + Scalar };
+	}
+	TVector4 operator-(const T Scalar) const
+	{
+		return { X - Scalar, Y - Scalar, Z - Scalar, W - Scalar };
+	}
+	TVector4 operator*(const T Scalar) const
 	{
 		return { X * Scalar, Y * Scalar, Z * Scalar, W * Scalar };
 	}
-	TVector4 operator/(T Scalar) const
+	TVector4 operator/(const T Scalar) const
 	{
 		return { X / Scalar, Y / Scalar, Z / Scalar, W / Scalar };
 	}
+	TVector4 operator+=(const T Scalar) { return *this + Scalar; }
+	TVector4 operator-=(const T Scalar) { return *this - Scalar; }
+	TVector4 operator*=(const T Scalar) { return *this * Scalar; }
+	TVector4 operator/=(const T Scalar) { return *this / Scalar; }
 };
