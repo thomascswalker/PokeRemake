@@ -12,8 +12,7 @@ set(SOURCES
         Engine/InputManager.cpp
         Engine/Object.cpp
         Engine/World.cpp
-        Platform/Generic/IPlatform.cpp
-        Platform/SDL/SDLPlatform.cpp
+        Application/Application.cpp
         Renderer/Generic/IRenderer.cpp
         Renderer/IDrawable.h
         Renderer/SDL/SDLRenderer.cpp

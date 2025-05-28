@@ -2,8 +2,8 @@
 
 #include <SDL3/SDL.h>
 
+#include "Application.h"
 #include "Core/Logging.h"
-#include "SDLPlatform.h"
 
 #include "Engine/Actors/Character.h"
 
@@ -11,7 +11,46 @@
 #define WINDOW_DEFAULT_WIDTH 480
 #define WINDOW_TITLE "PokeRemake"
 
-bool SDLPlatform::OnStart(int argc, char** argv)
+PApplication* PApplication::sInstance = nullptr;
+
+PApplication* PApplication::GetInstance()
+{
+	if (!sInstance)
+	{
+		sInstance = new PApplication();
+	}
+	return sInstance;
+}
+
+PEngine* GetEngine()
+{
+	return PApplication::GetInstance()->GetEngine();
+}
+
+IRenderer* GetRenderer()
+{
+	return PApplication::GetInstance()->GetRenderer();
+}
+
+PGame* GetGame()
+{
+	if (const auto Engine = PApplication::GetInstance()->GetEngine())
+	{
+		return Engine->GetGame();
+	}
+	return nullptr;
+}
+
+PWorld* GetWorld()
+{
+	if (const auto Game = GetGame())
+	{
+		return Game->GetWorld();
+	}
+	return nullptr;
+}
+
+bool PApplication::Initialize()
 {
 	Info("Constructing SDLPlatform");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
@@ -47,7 +86,7 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 	return true;
 }
 
-void SDLPlatform::OnStop()
+void PApplication::Uninitialize() const
 {
 	Debug("Destroying SDL Renderer");
 	SDL_DestroyRenderer(mSDLRenderer);
@@ -59,7 +98,7 @@ void SDLPlatform::OnStop()
 	mEngine->Stop();
 }
 
-void SDLPlatform::OnLoop()
+void PApplication::Loop()
 {
 	// Handle events
 	SDL_Event Event;
@@ -82,7 +121,7 @@ void SDLPlatform::OnLoop()
 	OnDraw();
 }
 
-bool SDLPlatform::OnEvent(void* Event)
+bool PApplication::OnEvent(void* Event)
 {
 	const auto* SDLEvent = static_cast<SDL_Event*>(Event);
 	if (!SDLEvent)
@@ -94,7 +133,7 @@ bool SDLPlatform::OnEvent(void* Event)
 	{
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 			{
-				OnStop();
+				Uninitialize();
 				return false;
 			}
 		case SDL_EVENT_KEY_DOWN:
@@ -119,54 +158,47 @@ bool SDLPlatform::OnEvent(void* Event)
 
 	return true;
 }
-void SDLPlatform::OnDraw()
+
+void PApplication::OnDraw() const
 {
 	SDL_SetRenderDrawColor(mSDLRenderer, 38, 38, 38, 255);
 	SDL_RenderClear(mSDLRenderer);
 
 	// Draw all renderables in the world
-	if (const PGame* Game = mEngine->GetGame())
+	if (const PWorld* World = GetWorld())
 	{
-		if (const PWorld* World = Game->GetWorld())
+		for (IDrawable* Drawable : World->GetDrawables())
 		{
-			for (IDrawable* Drawable : World->GetDrawables())
-			{
-				Drawable->Draw(mRenderer.get());
-			}
+			Drawable->Draw(mRenderer.get());
 		}
-		else
-		{
-			Warning("Game World is not valid.");
-			return;
-		}
-	}
-	else
-	{
-		Warning("Game Instance is not valid.");
-		return;
 	}
 
 	SDL_RenderPresent(mSDLRenderer);
 }
 
-bool SDLPlatform::IsRunning()
+bool PApplication::IsRunning() const
 {
 	return mEngine->IsRunning();
 }
 
-PEngine* SDLPlatform::GetEngine()
+PEngine* PApplication::GetEngine() const
 {
 	return mEngine.get();
 }
-void SDLPlatform::OnKeyDown(uint32_t ScanCode)
+IRenderer* PApplication::GetRenderer() const
+{
+	return mRenderer.get();
+}
+
+void PApplication::OnKeyDown(uint32_t ScanCode)
 {
 	KeyDown.Broadcast(ScanCode);
 }
-void SDLPlatform::OnKeyUp(uint32_t ScanCode)
+void PApplication::OnKeyUp(uint32_t ScanCode)
 {
 	KeyUp.Broadcast(ScanCode);
 }
-void SDLPlatform::OnMiddleMouseScroll(float Delta)
+void PApplication::OnMiddleMouseScroll(float Delta)
 {
 	MouseScroll.Broadcast(Delta);
 }

@@ -47,3 +47,5 @@ public:
 		return Drawables;
 	}
 };
+
+PWorld* GetWorld();
