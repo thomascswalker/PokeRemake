@@ -7,6 +7,8 @@ add_subdirectory(Source/Runtime)
 
 add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
 target_link_libraries(
+        ${PROJECT_NAME} PUBLIC PokeRemakeGame)
+target_link_libraries(
         ${PROJECT_NAME} PUBLIC PokeRemakeRuntime
 )
 

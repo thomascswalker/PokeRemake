@@ -41,11 +41,7 @@ bool SDLPlatform::OnStart(int argc, char** argv)
 
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();
-	gEngine = mEngine.get();
 	mRenderer = std::make_unique<SDLRenderer>(mSDLRenderer);
-
-	gEngine->GetWorld()->ConstructActor<PGrid>();
-	gEngine->GetWorld()->ConstructActor<PCharacter>();
 
 	Info("SDLPlatform constructed");
 	return true;
@@ -61,7 +57,6 @@ void SDLPlatform::OnStop()
 
 	Debug("Stopping Engine");
 	mEngine->Stop();
-	gEngine = nullptr;
 }
 
 void SDLPlatform::OnLoop()
@@ -130,9 +125,25 @@ void SDLPlatform::OnDraw()
 	SDL_RenderClear(mSDLRenderer);
 
 	// Draw all renderables in the world
-	for (IDrawable* Drawable : mEngine->GetWorld()->GetDrawables())
+	if (const PGame* Game = mEngine->GetGame())
 	{
-		Drawable->Draw(mRenderer.get());
+		if (PWorld* World = Game->GetWorld())
+		{
+			for (IDrawable* Drawable : World->GetDrawables())
+			{
+				Drawable->Draw(mRenderer.get());
+			}
+		}
+		else
+		{
+			Warning("Game World is not valid.");
+			return;
+		}
+	}
+	else
+	{
+		Warning("Game Instance is not valid.");
+		return;
 	}
 
 	SDL_RenderPresent(mSDLRenderer);
@@ -140,6 +151,7 @@ void SDLPlatform::OnDraw()
 
 bool SDLPlatform::IsRunning() { return mEngine->IsRunning(); }
 
-void SDLPlatform::OnKeyDown(uint32_t ScanCode) { KeyDown.Broadcast(ScanCode); }
-void SDLPlatform::OnKeyUp(uint32_t ScanCode) { KeyUp.Broadcast(ScanCode); }
-void SDLPlatform::OnMiddleMouseScroll(float Delta) { MouseScroll.Broadcast(Delta); }
+PEngine* SDLPlatform::GetEngine() { return mEngine.get(); }
+void	 SDLPlatform::OnKeyDown(uint32_t ScanCode) { KeyDown.Broadcast(ScanCode); }
+void	 SDLPlatform::OnKeyUp(uint32_t ScanCode) { KeyUp.Broadcast(ScanCode); }
+void	 SDLPlatform::OnMiddleMouseScroll(float Delta) { MouseScroll.Broadcast(Delta); }

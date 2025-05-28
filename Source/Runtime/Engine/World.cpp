@@ -2,4 +2,10 @@
 
 #include "Engine/InputManager.h"
 
-PWorld::PWorld() {}
+void PWorld::Tick(float DeltaTime)
+{
+	for (const auto Actor : GetActors())
+	{
+		Actor->Tick(DeltaTime);
+	}
+}

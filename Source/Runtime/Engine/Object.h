@@ -4,6 +4,7 @@
 class PObject
 {
 public:
+	PObject() = default;
 	virtual ~PObject() = default;
-	virtual void Tick(float DeltaTime) {}
+	virtual void Tick(float DeltaTime) = 0;
 };

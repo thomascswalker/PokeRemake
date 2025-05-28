@@ -12,8 +12,10 @@ class PWorld : public PObject
 	std::vector<std::shared_ptr<PActor>> mActors;
 
 public:
-	PWorld();
-	~PWorld() = default;
+	PWorld() {}
+	~PWorld() override = default;
+
+	void Tick(float DeltaTime) override;
 
 	template <class T, class = std::enable_if_t<std::is_base_of_v<PActor, T>>, typename... ArgsType>
 	void ConstructActor(ArgsType... Args)
