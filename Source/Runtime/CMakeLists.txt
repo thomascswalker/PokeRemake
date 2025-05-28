@@ -3,9 +3,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
         Core/Delegate.cpp
-        Core/Game.cpp
+        Engine/Game.cpp
         Core/Logging.h
-        Core/Rect.cpp
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
         Engine/Actors/Grid.cpp
@@ -18,6 +17,8 @@ set(SOURCES
         Renderer/Generic/IRenderer.cpp
         Renderer/IDrawable.h
         Renderer/SDL/SDLRenderer.cpp
+        Core/Vector.h
+        Core/Matrix.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

@@ -1,9 +1,7 @@
-#include "Core/Game.h"
-#include "TestGame.h"
-
 #include <memory>
 
 #include "Platform/SDL/SDLPlatform.h"
+#include "TestGame.h"
 
 int main(int argc, char** argv)
 {
