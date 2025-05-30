@@ -17,7 +17,7 @@ public:
 	void End() override {}
 
 	void Tick(float DeltaTime) override {}
-	void Draw(IRenderer* Renderer) override = 0;
+	void Draw(PRenderer* Renderer) override = 0;
 
 	FVector3 GetPosition() const { return mPosition; }
 	void	 SetPosition(const FVector3& Position) { mPosition = Position; }

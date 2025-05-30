@@ -3,10 +3,22 @@
 #include "Engine/Engine.h"
 #include "Engine/Game.h"
 #include "Engine/InputManager.h"
-#include "Renderer/SDL/SDLRenderer.h"
+#include "Renderer/Renderer.h"
 #include "SDL3/SDL.h"
 
 #include <memory>
+
+// Used by SDL_Window unique pointer
+struct SDLWindowDestroyer
+{
+	void operator()(SDL_Window* Window) const { SDL_DestroyWindow(Window); }
+};
+
+// Used by SDL_Window unique pointer
+struct SDLRendererDestroyer
+{
+	void operator()(SDL_Renderer* Renderer) const { SDL_DestroyRenderer(Renderer); }
+};
 
 class PApplication : public IInputManager
 {
@@ -14,11 +26,14 @@ class PApplication : public IInputManager
 
 	uint64_t mCurrentTime = 0;
 
-	std::shared_ptr<PEngine>	 mEngine;
-	std::unique_ptr<SDLRenderer> mRenderer;
+	std::shared_ptr<PEngine> mEngine;
 
-	SDL_Window*	  mSDLWindow = nullptr;
-	SDL_Renderer* mSDLRenderer = nullptr;
+	/* Rendering */
+
+	std::unique_ptr<PRenderer> mRenderer;
+	SDL_Window*				   mSDLWindow;
+	SDL_Renderer*			   mSDLRenderer;
+	std::unique_ptr<IRHI>	   mRHI;
 
 protected:
 	PApplication() = default;
@@ -26,7 +41,7 @@ protected:
 public:
 	static PApplication* GetInstance();
 
-	bool Initialize();
+	bool Initialize(SDL_WindowFlags WindowFlags);
 	void Uninitialize() const;
 
 	template <typename GameType>
@@ -53,7 +68,7 @@ public:
 
 	bool	   IsRunning() const;
 	PEngine*   GetEngine() const;
-	IRenderer* GetRenderer() const;
+	PRenderer* GetRenderer() const;
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;

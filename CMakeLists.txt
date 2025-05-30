@@ -1,9 +1,18 @@
 cmake_minimum_required(VERSION 3.31)
+
 project(PokeRemake)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(Source/Game)
 add_subdirectory(Source/Runtime)
+
+
+# Third Party Libraries
+
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
+
+# Glad
+include_directories(ThirdParty)
 
 add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
 target_link_libraries(
@@ -17,11 +26,15 @@ target_link_libraries(
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 
-# Third Party Libraries
-
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
+# SDL3
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+
+# OpenGL
+find_package(OpenGL REQUIRED)
+if (OpenGL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+endif ()
 
 # Windows specific
 if (WIN32)
@@ -34,4 +47,5 @@ if (WIN32)
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
             VERBATIM
     )
+
 endif ()

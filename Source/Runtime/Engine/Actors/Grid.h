@@ -17,7 +17,7 @@ public:
 
 	void Tick(float DeltaTime) override;
 
-	void Draw(IRenderer* Renderer) override;
+	void Draw(PRenderer* Renderer) override;
 	void OnKeyDown(uint32_t ScanCode);
 	void OnKeyUp(uint32_t ScanCode);
 	void AddOffsetX(float Value) { mOffsetX += Value; }

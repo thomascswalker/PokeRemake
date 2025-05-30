@@ -29,16 +29,16 @@ void PCharacter::Start()
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
-		Info("Adding key down handler for character");
+		LogInfo("Adding key down handler for character");
 		Input->KeyDown.AddRaw(this, &PCharacter::OnKeyDown);
 	}
 	else
 	{
-		Error("Input manager is not initialized, cannot add key down handler for character");
+		LogError("Input manager is not initialized, cannot add key down handler for character");
 	}
 }
 
-void PCharacter::Draw(IRenderer* Renderer)
+void PCharacter::Draw(PRenderer* Renderer)
 {
 	// TODO: Implement global coordinate system for rendering
 
