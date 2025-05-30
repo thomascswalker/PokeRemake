@@ -51,7 +51,7 @@ PWorld* GetWorld()
 	return nullptr;
 }
 
-bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
+bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
 {
 	LogInfo("Constructing Application");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
@@ -62,28 +62,28 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 		return false;
 	}
 
-	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
-	{
-		LogDebug("Setting OpenGL attributes");
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	}
+	// Create the SDL Context wrapper
+	mContext = std::make_unique<SDLContext>();
+	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
-									 WindowFlags, &mSDLWindow, &mSDLRenderer))
+									 WindowFlags, &mContext->Window, &mContext->Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
 	}
-	SDL_SetWindowResizable(mSDLWindow, true);
+	SDL_SetWindowResizable(mContext->Window, true);
 
-	mRenderer = std::make_unique<PRenderer>(mSDLRenderer);
+	mRenderer = std::make_unique<PRenderer>(mContext.get());
+	if (!mRenderer->Initialize())
+	{
+		LogError("Failed to initialize renderer.");
+		return false;
+	}
 
 	LogDebug("Displaying window");
-	SDL_ShowWindow(mSDLWindow);
+	SDL_ShowWindow(mContext->Window);
 
 	// Store initial time
 	mCurrentTime = SDL_GetTicks();
@@ -100,11 +100,13 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 
 void PApplication::Uninitialize() const
 {
+	mRenderer->Uninitialize();
+
 	LogDebug("Destroying SDL Renderer");
-	SDL_DestroyRenderer(mSDLRenderer);
+	SDL_DestroyRenderer(mContext->Renderer);
 
 	LogDebug("Destroying SDL Window");
-	SDL_DestroyWindow(mSDLWindow);
+	SDL_DestroyWindow(mContext->Window);
 
 	LogDebug("Stopping Engine");
 	mEngine->Stop();
@@ -177,7 +179,7 @@ bool PApplication::OnEvent(void* Event)
 void PApplication::OnDraw() const
 {
 	mRenderer->Render();
-	SDL_GL_SwapWindow(mSDLWindow);
+	SDL_GL_SwapWindow(mContext->Window);
 }
 
 bool PApplication::IsRunning() const
@@ -193,6 +195,11 @@ PEngine* PApplication::GetEngine() const
 PRenderer* PApplication::GetRenderer() const
 {
 	return mRenderer.get();
+}
+
+SDLContext* PApplication::GetContext() const
+{
+	return mContext.get();
 }
 
 void PApplication::OnKeyDown(uint32_t ScanCode)

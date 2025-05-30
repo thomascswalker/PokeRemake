@@ -30,10 +30,8 @@ class PApplication : public IInputManager
 
 	/* Rendering */
 
-	std::unique_ptr<PRenderer> mRenderer;
-	SDL_Window*				   mSDLWindow;
-	SDL_Renderer*			   mSDLRenderer;
-	std::unique_ptr<IRHI>	   mRHI;
+	std::unique_ptr<PRenderer>	mRenderer;
+	std::unique_ptr<SDLContext> mContext;
 
 protected:
 	PApplication() = default;
@@ -41,7 +39,7 @@ protected:
 public:
 	static PApplication* GetInstance();
 
-	bool Initialize(SDL_WindowFlags WindowFlags);
+	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode);
 	void Uninitialize() const;
 
 	template <typename GameType>
@@ -66,9 +64,10 @@ public:
 
 	/* Properties */
 
-	bool	   IsRunning() const;
-	PEngine*   GetEngine() const;
-	PRenderer* GetRenderer() const;
+	bool		IsRunning() const;
+	PEngine*	GetEngine() const;
+	PRenderer*	GetRenderer() const;
+	SDLContext* GetContext() const;
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;

@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	const auto Args = ArgParser::Parse(argc, argv);
 	const auto App = PApplication::GetInstance();
 
-	if (App->Initialize(Args.WindowFlags))
+	if (App->Initialize(Args.WindowFlags, Args.GPUMode))
 	{
 		App->Start<TestGame>();
 		while (App->IsRunning())

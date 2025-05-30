@@ -1,14 +1,18 @@
 #pragma once
+#include "Context.h"
 #include "Core/Logging.h"
 
 #include <string>
 #include <vector>
+
+#define DEFAULT_GPU_MODE "NULL"
 
 namespace ArgParser
 {
 	struct TArguments
 	{
 		SDL_WindowFlags WindowFlags;
+		std::string		GPUMode;
 	};
 
 	inline TArguments Parse(int argc, char** argv)
@@ -33,32 +37,14 @@ namespace ArgParser
 		}
 
 		TArguments Args{};
+		Args.GPUMode = DEFAULT_GPU_MODE;
 
 		for (const auto& [Key, Value] : RawArgs)
 		{
 			LogDebug("Parsing argument: {}={}", Key, Value);
 			if (Key == "r")
 			{
-				if (Value == "OpenGL")
-				{
-					LogDebug("RHI set to OpenGL");
-					Args.WindowFlags = SDL_WINDOW_OPENGL;
-				}
-				else if (Value == "Vulkan")
-				{
-					LogDebug("RHI set to Vulkan");
-					Args.WindowFlags = SDL_WINDOW_VULKAN;
-				}
-				else if (Value == "Metal")
-				{
-					LogDebug("RHI set to Metal");
-					Args.WindowFlags = SDL_WINDOW_METAL;
-				}
-				else
-				{
-					LogDebug("RHI set to Unknown");
-					Args.WindowFlags = 0;
-				}
+				Args.GPUMode = Value;
 			}
 		}
 

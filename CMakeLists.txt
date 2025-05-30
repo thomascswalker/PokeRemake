@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 
+message("CMAKE Version: ${CMAKE_VERSION}")
+
 project(PokeRemake)
 set(CMAKE_CXX_STANDARD 20)
 
@@ -30,15 +32,15 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-if (OpenGL_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
-endif ()
+# Vulkan
+find_package(Vulkan REQUIRED)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE Vulkan::Vulkan)
+
 
 # Windows specific
 if (WIN32)
-    # Add a post-build command to copy the SDL DLL to the output directory
+    # Copy output SDL .dll
     add_custom_command(
             TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND "${CMAKE_COMMAND}"
@@ -48,4 +50,16 @@ if (WIN32)
             VERBATIM
     )
 
+    # D3D12
+    list(APPEND CMAKE_PREFIX_PATH "C:/Windows/System32")
+    target_link_libraries(${PROJECT_NAME} PRIVATE d3d12.lib)
 endif ()
+
+# Shaders
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -E copy_directory
+        "${CMAKE_SOURCE_DIR}/Resources/Shaders"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+)
