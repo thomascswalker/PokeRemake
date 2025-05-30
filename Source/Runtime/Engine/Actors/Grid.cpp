@@ -44,7 +44,7 @@ void PGrid::Draw(const PRenderer* Renderer) const
 
 	// Compute the origin (center of the screen - half of a cell size in order to
 	// center the grid).
-	auto	   ZoomFactor = Renderer->GetZoomFactor();
+	auto	   ZoomFactor = 1.0f;
 	const auto OriginX = ScreenWidth / 2.0f - ZoomFactor / 2.0f;
 	const auto OriginY = ScreenHeight / 2.0f - ZoomFactor / 2.0f;
 

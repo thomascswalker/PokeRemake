@@ -6,6 +6,9 @@
 #include "Engine/World.h"
 #include "Shader.h"
 
+#define VIEWPORT_COLOR_RGB 38, 38, 38, 255
+#define VIEWPORT_COLOR_FLOAT 0.1f, 0.1f, 0.1f, 1.0f
+
 bool PRenderer::Initialize()
 {
 	return mContext->IsGPU() ? Initialize3D() // Initialize SDL_GPU based on the cmd arg '-r'
@@ -39,37 +42,42 @@ bool PRenderer::Initialize3D()
 		return false;
 	}
 	// Load shaders
-	std::vector<SDL_GPUShader*> Shaders;
-	if (!LoadShaders(mContext->Device, &Shaders))
+	if (!LoadShaders(mContext->Device, &mShaders))
 	{
 		LogError("Failed to compile shaders.");
 		return false;
 	}
-	LogDebug("Loaded {} shaders.", Shaders.size());
+	LogDebug("Loaded {} shaders.", mShaders.size());
 
-	const SDL_GPUTextureFormat TextureFormat =
-		SDL_GetGPUSwapchainTextureFormat(mContext->Device, mContext->Window);
-	SDL_GPUColorTargetDescription TextureFormats[] = { { .format = TextureFormat } };
-	SDL_GPUGraphicsPipelineCreateInfo PipelineInfo = {
-		.vertex_shader = Shaders[1],
-		.fragment_shader = Shaders[0],
-		.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
-		.target_info = {
-			.color_target_descriptions = TextureFormats,
-			.num_color_targets = 1,
-		},
+	// Create pipelines
+
+	SDL_GPUColorTargetDescription TextureFormats[] = {
+		{
+			.format = SDL_GetGPUSwapchainTextureFormat(mContext->Device, mContext->Window),
+		 }
 	};
+	const SDL_GPUGraphicsPipelineTargetInfo TargetInfo = {
+		.color_target_descriptions = TextureFormats,
+		.num_color_targets = 1,
+	};
+	mGeometryPipeline = CreatePipeline(		// Filled geometry
+		SDL_GPU_PRIMITIVETYPE_TRIANGLELIST, // Primitive Type
+		SDL_GPU_FILLMODE_FILL,				// Fill Mode
+		TargetInfo);
+	mLinePipeline = CreatePipeline(		// Lines
+		SDL_GPU_PRIMITIVETYPE_LINELIST, // Primitive Type
+		SDL_GPU_FILLMODE_LINE,			// Fill Mode
+		TargetInfo);
 
-	PipelineInfo.rasterizer_state.fill_mode = SDL_GPU_FILLMODE_FILL;
-	mPipeline = SDL_CreateGPUGraphicsPipeline(mContext->Device, &PipelineInfo);
-	ReleaseShaders(mContext->Device, &Shaders);
-	if (!mPipeline)
+	// Release shaders once they've been loaded into the pipelines
+	ReleaseShaders(mContext->Device, &mShaders);
+
+	if (!mGeometryPipeline || !mLinePipeline)
 	{
-		LogError("Failed to create GPU GraphicsPipeline: {}", SDL_GetError());
+		LogError("Failed to create GPU Pipelines: {}", SDL_GetError());
 		return false;
 	}
 
-	// Release shaders once they've been loaded into the pipeline
 	return true;
 }
 
@@ -106,18 +114,20 @@ void PRenderer::Render3D() const
 		LogError("SwapchainTexture is null.");
 		return;
 	}
+
 	const SDL_GPUColorTargetInfo ColorTargetInfo = {
 		.texture = SwapchainTexture,
-		.clear_color = { 0.1f, 0.1f, 0.1f, 1.0f },
+		.clear_color = { VIEWPORT_COLOR_FLOAT },
 		.load_op = SDL_GPU_LOADOP_CLEAR,
 		.store_op = SDL_GPU_STOREOP_STORE,
 	};
 
 	const auto RenderPass = SDL_BeginGPURenderPass(CommandBuffer, &ColorTargetInfo, 1, nullptr);
-	SDL_BindGPUGraphicsPipeline(RenderPass, mPipeline);
+	SDL_BindGPUGraphicsPipeline(RenderPass, mGeometryPipeline);
 
-	const auto			  Width = static_cast<float>(GetScreenWidth());
-	const auto			  Height = static_cast<float>(GetScreenHeight());
+	const auto Width = static_cast<float>(GetScreenWidth());
+	const auto Height = static_cast<float>(GetScreenHeight());
+
 	const SDL_GPUViewport Viewport = {
 		0,		// Left
 		0,		// Top
@@ -133,9 +143,25 @@ void PRenderer::Render3D() const
 
 	SDL_SubmitGPUCommandBuffer(CommandBuffer);
 }
+
+SDL_GPUGraphicsPipeline*
+PRenderer::CreatePipeline(SDL_GPUPrimitiveType PrimitiveType, SDL_GPUFillMode FillMode,
+						  const SDL_GPUGraphicsPipelineTargetInfo& TargetInfo) const
+{
+
+	SDL_GPUGraphicsPipelineCreateInfo PipelineInfo = {
+		.vertex_shader = mShaders[1],
+		.fragment_shader = mShaders[0],
+		.primitive_type = PrimitiveType,
+		.target_info = TargetInfo,
+	};
+	PipelineInfo.rasterizer_state.fill_mode = FillMode;
+	return SDL_CreateGPUGraphicsPipeline(mContext->Device, &PipelineInfo);
+}
+
 void PRenderer::Render2D() const
 {
-	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
+	SDL_SetRenderDrawColor(mContext->Renderer, VIEWPORT_COLOR_RGB);
 	SDL_RenderClear(mContext->Renderer);
 
 	// Draw all renderables in the world

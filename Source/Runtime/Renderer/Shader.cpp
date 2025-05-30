@@ -41,6 +41,7 @@ bool LoadShaders(SDL_GPUDevice* Device, std::vector<SDL_GPUShader*>* OutShaders)
 	}
 	return true;
 }
+
 void ReleaseShaders(SDL_GPUDevice* Device, const std::vector<SDL_GPUShader*>* Shaders)
 {
 	for (SDL_GPUShader* Shader : *Shaders)

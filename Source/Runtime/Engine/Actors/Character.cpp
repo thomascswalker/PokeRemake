@@ -49,7 +49,7 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	HalfWidth += mPosition.X;
 	HalfHeight += mPosition.Y;
 
-	const auto ZoomFactor = Renderer->GetZoomFactor();
+	const auto ZoomFactor = 1.0f;
 	const auto X0 = HalfWidth - ZoomFactor;
 	const auto Y0 = HalfHeight - ZoomFactor;
 	const auto X1 = HalfWidth + ZoomFactor;
