@@ -15,6 +15,9 @@ public:
 	explicit PRenderer(SDLContext* InContext) : mContext(InContext) {}
 
 	bool Initialize() const;
+	void Uninitialize() const;
+
+	void Render();
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
@@ -27,6 +30,4 @@ public:
 
 	void  SetZoomFactor(float ZoomFactor) { mZoomFactor = ZoomFactor; }
 	float GetZoomFactor() const { return mZoomFactor; }
-
-	void Render();
 };

@@ -13,9 +13,9 @@ public:
 	PCharacter() = default;
 	~PCharacter() override = default;
 
-	void Tick(float DeltaTime) override;
 	void Start() override;
 	void End() override {}
+	void Tick(float DeltaTime) override;
 	void Draw(PRenderer* Renderer) override;
 	void OnKeyDown(uint32_t KeyCode);
 	void OnKeyUp(uint32_t KeyCode);

@@ -39,7 +39,7 @@ protected:
 public:
 	static PApplication* GetInstance();
 
-	bool Initialize(SDL_WindowFlags WindowFlags);
+	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode);
 	void Uninitialize() const;
 
 	template <typename GameType>

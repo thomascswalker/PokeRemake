@@ -51,7 +51,7 @@ PWorld* GetWorld()
 	return nullptr;
 }
 
-bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
+bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
 {
 	LogInfo("Constructing Application");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
@@ -64,15 +64,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 
 	// Create the SDL Context wrapper
 	mContext = std::make_unique<SDLContext>();
-
-	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
-	{
-		LogDebug("Setting OpenGL attributes");
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	}
+	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
@@ -108,6 +100,8 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 
 void PApplication::Uninitialize() const
 {
+	mRenderer->Uninitialize();
+
 	LogDebug("Destroying SDL Renderer");
 	SDL_DestroyRenderer(mContext->Renderer);
 

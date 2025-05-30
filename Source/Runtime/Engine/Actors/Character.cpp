@@ -3,6 +3,19 @@
 #include "Core/Logging.h"
 #include "Engine/InputManager.h"
 
+void PCharacter::Start()
+{
+	// Bind input
+	if (const auto Input = GetInputManager())
+	{
+		Input->KeyDown.AddRaw(this, &PCharacter::OnKeyDown);
+	}
+	else
+	{
+		LogError("Input manager is not initialized, cannot add key down handler for character");
+	}
+}
+
 void PCharacter::Tick(float DeltaTime)
 {
 	const float Speed = 0.1f * DeltaTime;
@@ -21,20 +34,6 @@ void PCharacter::Tick(float DeltaTime)
 	if (mKeysDown[3]) // Up
 	{
 		mPosition.Y -= Speed * DeltaTime;
-	}
-}
-
-void PCharacter::Start()
-{
-	// Bind input
-	if (const auto Input = GetInputManager())
-	{
-		LogInfo("Adding key down handler for character");
-		Input->KeyDown.AddRaw(this, &PCharacter::OnKeyDown);
-	}
-	else
-	{
-		LogError("Input manager is not initialized, cannot add key down handler for character");
 	}
 }
 
