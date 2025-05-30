@@ -64,9 +64,10 @@ public:
 
 	/* Properties */
 
-	bool	   IsRunning() const;
-	PEngine*   GetEngine() const;
-	PRenderer* GetRenderer() const;
+	bool		IsRunning() const;
+	PEngine*	GetEngine() const;
+	PRenderer*	GetRenderer() const;
+	SDLContext* GetContext() const;
 
 	/* Input */
 	void OnKeyDown(uint32_t ScanCode) override;

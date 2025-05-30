@@ -35,7 +35,7 @@ void PGrid::Tick(float DeltaTime)
 	}
 }
 
-void PGrid::Draw(PRenderer* Renderer)
+void PGrid::Draw(const PRenderer* Renderer) const
 {
 	Renderer->SetDrawColor(100, 100, 100, 255);
 

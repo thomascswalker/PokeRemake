@@ -6,18 +6,22 @@
 
 class PRenderer
 {
-	// The SDL Renderer used for drawing
-	SDLContext* mContext;
+	SDLContext*				 mContext;
+	SDL_GPUGraphicsPipeline* mPipeline;
 
 	float mZoomFactor = 10.0f;
 
 public:
-	explicit PRenderer(SDLContext* InContext) : mContext(InContext) {}
+	explicit PRenderer(SDLContext* InContext) : mContext(InContext), mPipeline(nullptr) {}
 
-	bool Initialize() const;
+	bool Initialize();
+	bool Initialize3D();
+	bool Initialize2D();
 	void Uninitialize() const;
 
-	void Render();
+	void Render() const;
+	void Render3D() const;
+	void Render2D() const;
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;

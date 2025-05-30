@@ -8,6 +8,11 @@ struct SDLContext
 {
 	SDL_Window*	   Window;
 	SDL_Renderer*  Renderer;
-	std::string	   GPUMode;
 	SDL_GPUDevice* Device;
+	std::string	   GPUMode;
+
+	bool IsGPU() const
+	{
+		return GPUMode == "direct3d12" || GPUMode == "vulkan" || GPUMode == "metal";
+	}
 };

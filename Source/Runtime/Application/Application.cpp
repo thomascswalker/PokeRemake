@@ -197,6 +197,11 @@ PRenderer* PApplication::GetRenderer() const
 	return mRenderer.get();
 }
 
+SDLContext* PApplication::GetContext() const
+{
+	return mContext.get();
+}
+
 void PApplication::OnKeyDown(uint32_t ScanCode)
 {
 	KeyDown.Broadcast(ScanCode);

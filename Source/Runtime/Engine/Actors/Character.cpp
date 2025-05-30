@@ -37,7 +37,7 @@ void PCharacter::Tick(float DeltaTime)
 	}
 }
 
-void PCharacter::Draw(PRenderer* Renderer)
+void PCharacter::Draw(const PRenderer* Renderer) const
 {
 	// TODO: Implement global coordinate system for rendering
 

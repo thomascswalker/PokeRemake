@@ -27,6 +27,8 @@ set(SOURCES
         Renderer/IRHI.h
         Application/ArgParser.h
         Application/Context.h
+        Renderer/Shader.h
+        Renderer/Shader.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
