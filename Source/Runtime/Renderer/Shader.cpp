@@ -58,6 +58,11 @@ bool CompileShaderFile(const std::string& FileName, SDL_GPUDevice* Device)
 	{
 		case SDL_GPU_SHADERFORMAT_SPIRV:
 			{
+				if (std::filesystem::exists(FileName + ".spv"))
+				{
+					LogDebug("Shader {} already exists.", FileName.c_str());
+					return true;
+				}
 				const std::string Cmd =
 					std::format(COMPILE_SHADER_CMD, AbsString.c_str(), FileName.c_str());
 				system(Cmd.c_str());

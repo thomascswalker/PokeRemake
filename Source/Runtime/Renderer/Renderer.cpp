@@ -8,7 +8,8 @@
 
 bool PRenderer::Initialize()
 {
-	return mContext->IsGPU() ? Initialize3D() : Initialize2D();
+	return mContext->IsGPU() ? Initialize3D() // Initialize SDL_GPU based on the cmd arg '-r'
+							 : true; // Always true (2D is already initialized in SDLContext)
 }
 bool PRenderer::Initialize3D()
 {
@@ -69,11 +70,6 @@ bool PRenderer::Initialize3D()
 	}
 
 	// Release shaders once they've been loaded into the pipeline
-	return true;
-}
-
-bool PRenderer::Initialize2D()
-{
 	return true;
 }
 
