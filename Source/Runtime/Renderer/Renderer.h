@@ -9,16 +9,11 @@ class PRenderer
 {
 	// The SDL Renderer used for drawing
 	SDL_Renderer* mRenderer;
-	// The RHI (OpenGL, DX, Vulkan, etc.) interface
-	IRHI* mRHI;
 
 	float Renderer = 10.0f;
 
 public:
-	explicit PRenderer(SDL_Renderer* InRenderer, IRHI* InRHI) : mRenderer(InRenderer), mRHI(InRHI)
-	{
-	}
-
+	explicit PRenderer(SDL_Renderer* InRenderer) : mRenderer(InRenderer) {}
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
 	void DrawRect(const FRect& Rect) const;
@@ -30,4 +25,6 @@ public:
 
 	void  SetZoomFactor(float ZoomFactor) { Renderer = ZoomFactor; }
 	float GetZoomFactor() const { return Renderer; }
+
+	void Render();
 };

@@ -36,27 +36,27 @@ namespace ArgParser
 
 		for (const auto& [Key, Value] : RawArgs)
 		{
-			Debug("Parsing argument: {}={}", Key, Value);
+			LogDebug("Parsing argument: {}={}", Key, Value);
 			if (Key == "r")
 			{
 				if (Value == "OpenGL")
 				{
-					Debug("RHI set to OpenGL");
+					LogDebug("RHI set to OpenGL");
 					Args.WindowFlags = SDL_WINDOW_OPENGL;
 				}
 				else if (Value == "Vulkan")
 				{
-					Debug("RHI set to Vulkan");
+					LogDebug("RHI set to Vulkan");
 					Args.WindowFlags = SDL_WINDOW_VULKAN;
 				}
 				else if (Value == "Metal")
 				{
-					Debug("RHI set to Metal");
+					LogDebug("RHI set to Metal");
 					Args.WindowFlags = SDL_WINDOW_METAL;
 				}
 				else
 				{
-					Debug("RHI set to Unknown");
+					LogDebug("RHI set to Unknown");
 					Args.WindowFlags = 0;
 				}
 			}

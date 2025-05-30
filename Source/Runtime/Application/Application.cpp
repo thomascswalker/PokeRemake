@@ -6,7 +6,7 @@
 #include "Core/Logging.h"
 
 #include "Engine/Actors/Character.h"
-#include "Renderer/OpenGL/OpenGLRHI.h"
+#include "SDL3/SDL_opengl.h"
 
 #define WINDOW_DEFAULT_HEIGHT 432
 #define WINDOW_DEFAULT_WIDTH 480
@@ -53,43 +53,36 @@ PWorld* GetWorld()
 
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 {
-	Info("Constructing SDLPlatform");
+	LogInfo("Constructing Application");
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
 	{
-		Debug("Couldn't initialize SDL: {}", SDL_GetError());
+		LogDebug("Couldn't initialize SDL: {}", SDL_GetError());
 		return false;
 	}
 
-	Debug("Creating new SDL Window with flags: {:x}", WindowFlags);
+	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
+	{
+		LogDebug("Setting OpenGL attributes");
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	}
+
+	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
 									 WindowFlags, &mSDLWindow, &mSDLRenderer))
 	{
-		Debug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
+		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
 	}
 	SDL_SetWindowResizable(mSDLWindow, true);
-	if ((WindowFlags & SDL_WINDOW_OPENGL) != 0)
-	{
-		Debug("Constructing OpenGL Render Hardware Interface.");
-		mRHI = std::make_unique<OpenGLRHI>();
-	}
-	else
-	{
-		Error("No RHI available for the current window flags: {}", WindowFlags);
-		return false;
-	}
 
-	if (!mRHI->Initialize(mSDLWindow))
-	{
-		Error("Failed to initialize RHI");
-		return false;
-	}
+	mRenderer = std::make_unique<PRenderer>(mSDLRenderer);
 
-	mRenderer = std::make_unique<PRenderer>(mSDLRenderer, mRHI.get());
-
-	Debug("Displaying window");
+	LogDebug("Displaying window");
 	SDL_ShowWindow(mSDLWindow);
 
 	// Store initial time
@@ -101,20 +94,23 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags)
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();
 
-	Info("SDLPlatform constructed");
+	LogInfo("Application constructed");
 	return true;
 }
 
 void PApplication::Uninitialize() const
 {
-	Debug("Destroying SDL Renderer");
+	LogDebug("Destroying SDL Renderer");
 	SDL_DestroyRenderer(mSDLRenderer);
 
-	Debug("Destroying SDL Window");
+	LogDebug("Destroying SDL Window");
 	SDL_DestroyWindow(mSDLWindow);
 
-	Debug("Stopping Engine");
+	LogDebug("Stopping Engine");
 	mEngine->Stop();
+
+	LogDebug("Cleaning up all SDL subsystems");
+	SDL_Quit();
 }
 
 void PApplication::Loop()
@@ -180,21 +176,8 @@ bool PApplication::OnEvent(void* Event)
 
 void PApplication::OnDraw() const
 {
-	SDL_Renderer* SDLRenderer = mSDLRenderer;
-
-	SDL_SetRenderDrawColor(SDLRenderer, 38, 38, 38, 255);
-	SDL_RenderClear(SDLRenderer);
-
-	// Draw all renderables in the world
-	if (const PWorld* World = GetWorld())
-	{
-		for (IDrawable* Drawable : World->GetDrawables())
-		{
-			Drawable->Draw(mRenderer.get());
-		}
-	}
-
-	SDL_RenderPresent(SDLRenderer);
+	mRenderer->Render();
+	SDL_GL_SwapWindow(mSDLWindow);
 }
 
 bool PApplication::IsRunning() const

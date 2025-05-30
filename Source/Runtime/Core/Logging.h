@@ -16,8 +16,8 @@ enum class LogLevel
 };
 
 template <typename... Types>
-constexpr static void Log(
-	std::format_string<Types...> Fmt, std::string File, LogLevel Level, Types&&... Args)
+constexpr static void Log(std::format_string<Types...> Fmt, std::string File, LogLevel Level,
+						  Types&&... Args)
 {
 	std::string LevelPrefix;
 	std::string ColorPrefix;
@@ -53,12 +53,12 @@ constexpr static void Log(
 			  << std::format(Fmt, std::forward<Types>(Args)...) << ColorSuffix << std::endl;
 }
 
-#define DEFINE_LOG_LEVEL(Level)                                              \
-	template <typename... Types>                                             \
-	constexpr static void Log##Level(                                        \
-		std::format_string<Types...> Fmt, std::string File, Types&&... Args) \
-	{                                                                        \
-		Log(Fmt, File, LogLevel::Level, std::forward<Types>(Args)...);       \
+#define DEFINE_LOG_LEVEL(Level)                                                          \
+	template <typename... Types>                                                         \
+	constexpr static void Log##Level(std::format_string<Types...> Fmt, std::string File, \
+									 Types&&... Args)                                    \
+	{                                                                                    \
+		Log(Fmt, File, LogLevel::Level, std::forward<Types>(Args)...);                   \
 	}
 
 DEFINE_LOG_LEVEL(Debug)
@@ -66,7 +66,7 @@ DEFINE_LOG_LEVEL(Info)
 DEFINE_LOG_LEVEL(Warning)
 DEFINE_LOG_LEVEL(Error)
 
-#define Debug(x, ...) LogDebug(x, __FILE__, ##__VA_ARGS__)
-#define Info(x, ...) LogInfo(x, __FILE__, ##__VA_ARGS__)
-#define Warning(x, ...) LogWarning(x, __FILE__, ##__VA_ARGS__)
-#define Error(x, ...) LogError(x, __FILE__, ##__VA_ARGS__)
+#define LogDebug(x, ...) LogDebug(x, __FILE__, ##__VA_ARGS__)
+#define LogInfo(x, ...) LogInfo(x, __FILE__, ##__VA_ARGS__)
+#define LogWarning(x, ...) LogWarning(x, __FILE__, ##__VA_ARGS__)
+#define LogError(x, ...) LogError(x, __FILE__, ##__VA_ARGS__)
