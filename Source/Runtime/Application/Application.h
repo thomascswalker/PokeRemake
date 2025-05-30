@@ -30,10 +30,8 @@ class PApplication : public IInputManager
 
 	/* Rendering */
 
-	std::unique_ptr<PRenderer> mRenderer;
-	SDL_Window*				   mSDLWindow;
-	SDL_Renderer*			   mSDLRenderer;
-	std::unique_ptr<IRHI>	   mRHI;
+	std::unique_ptr<PRenderer>	mRenderer;
+	std::unique_ptr<SDLContext> mContext;
 
 protected:
 	PApplication() = default;
