@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 
-TEST(VectorTests, Vector2)
+TEST(VectorTestSuite, Vector2)
 {
 	FVector2 VecA(1.0f, 2.0f);
 	FVector2 VecB(3.0f, 4.0f);
@@ -21,7 +21,7 @@ TEST(VectorTests, Vector2)
 	EXPECT_TRUE(VecA != FVector2(1.0f, 3.0f));
 }
 
-TEST(VectorTests, Vector3)
+TEST(VectorTestSuite, Vector3)
 {
 	FVector3 VecA(1.0f, 2.0f, 3.0f);
 	FVector3 VecB(4.0f, 5.0f, 6.0f);
@@ -39,10 +39,12 @@ TEST(VectorTests, Vector3)
 	EXPECT_TRUE(VecA == FVector3(1.0f, 2.0f, 3.0f));
 	EXPECT_TRUE(VecA != FVector3(1.0f, 2.0f, 4.0f));
 
-	std::cout << "test" << std::endl;
+	EXPECT_EQ(VecA.Cross(VecB), FVector3(-3.0f, 6.0f, -3.0f));
+	EXPECT_EQ(VecA.Dot(VecB), 32.0f);
+	EXPECT_EQ(VecA.Length(), std::sqrt(14.0f));
 }
 
-TEST(VectorTests, Vector4)
+TEST(VectorTestSuite, Vector4)
 {
 	FVector4 VecA(1.0f, 2.0f, 3.0f, 4.0f);
 	FVector4 VecB(5.0f, 6.0f, 7.0f, 8.0f);

@@ -12,9 +12,7 @@ add_subdirectory(Source/Runtime)
 # Third Party Libraries
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
-
-# Glad
-include_directories(ThirdParty)
+include_directories(ThirdParty ThirdParty/glm ThirdParty/SDL/include)
 
 add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
 target_link_libraries(
@@ -31,6 +29,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 # SDL3
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+
+# GLM
+add_subdirectory(ThirdParty/glm EXCLUDE_FROM_ALL)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
 # Vulkan
 find_package(Vulkan REQUIRED)
