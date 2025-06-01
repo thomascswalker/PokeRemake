@@ -12,9 +12,7 @@ add_subdirectory(Source/Runtime)
 # Third Party Libraries
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
-
-# Glad
-include_directories(ThirdParty)
+include_directories(ThirdParty ThirdParty/glm ThirdParty/SDL/include)
 
 add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
 target_link_libraries(
@@ -31,6 +29,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 # SDL3
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+
+# GLM
+add_subdirectory(ThirdParty/glm EXCLUDE_FROM_ALL)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
 # Vulkan
 find_package(Vulkan REQUIRED)
@@ -56,10 +58,22 @@ if (WIN32)
 endif ()
 
 # Shaders
-
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND}
         -E copy_directory
         "${CMAKE_SOURCE_DIR}/Resources/Shaders"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
+
+# Tests
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        # Specify the commit you depend on and update it regularly.
+        URL https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest)
+add_subdirectory(Google_tests)
