@@ -2,6 +2,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <format>
+#include <iostream>
 
 template <typename T>
 class TVector2;
@@ -59,6 +61,8 @@ public:
 	// Length
 	T Length() const { return std::sqrt(X * X + Y * Y); }
 
+	std::string ToString() const { return std::format("[{}, {}]", X, Y); }
+
 	// Operators
 	T& operator[](int32_t Index) { return XY[Index]; }
 	T  operator[](int32_t Index) const { return XY[Index]; }
@@ -80,6 +84,12 @@ public:
 	TVector2 operator-=(const T Scalar) { return *this - Scalar; }
 	TVector2 operator*=(const T Scalar) { return *this * Scalar; }
 	TVector2 operator/=(const T Scalar) { return *this / Scalar; }
+
+	friend std::ostream& operator<<(std::ostream& Stream, const TVector2& V)
+	{
+		Stream << "[" << V.X << ", " << V.Y << "]";
+		return Stream;
+	}
 };
 
 template <typename T>
@@ -131,6 +141,8 @@ public:
 	T& operator[](int32_t Index) { return XYZ[Index]; }
 	T  operator[](int32_t Index) const { return XYZ[Index]; }
 
+	std::string ToString() const { return std::format("[{}, {}, {}]", X, Y, Z); }
+
 	TVector3 operator+(const TVector3& Other) const
 	{
 		return { X + Other.X, Y + Other.Y, Z + Other.Z };
@@ -160,6 +172,12 @@ public:
 	TVector3 operator-=(const T Scalar) { return *this - Scalar; }
 	TVector3 operator*=(const T Scalar) { return *this * Scalar; }
 	TVector3 operator/=(const T Scalar) { return *this / Scalar; }
+
+	friend std::ostream& operator<<(std::ostream& Stream, const TVector3& V)
+	{
+		Stream << "[" << V.X << ", " << V.Y << ", " << V.Z << "]";
+		return Stream;
+	}
 };
 
 template <typename T>
@@ -209,6 +227,8 @@ public:
 	T& operator[](int32_t Index) { return XYZW[Index]; }
 	T  operator[](int32_t Index) const { return XYZW[Index]; }
 
+	std::string ToString() const { return std::format("[{}, {}, {}, {}]", X, Y, Z, W); }
+
 	TVector4 operator+(const TVector4& Other) const
 	{
 		return TVector4(X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W);
@@ -250,4 +270,10 @@ public:
 	TVector4 operator-=(const T Scalar) { return *this - Scalar; }
 	TVector4 operator*=(const T Scalar) { return *this * Scalar; }
 	TVector4 operator/=(const T Scalar) { return *this / Scalar; }
+
+	friend std::ostream& operator<<(std::ostream& Stream, const TVector4& V)
+	{
+		Stream << "[" << V.X << ", " << V.Y << ", " << V.Z << ", " << V.W << "]";
+		return Stream;
+	}
 };

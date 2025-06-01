@@ -50,6 +50,12 @@ public:
 		return Result;
 	}
 
+	std::string ToString() const
+	{
+		return std::format("[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]",
+						   M[0].ToString(), M[1].ToString(), M[2].ToString(), M[3].ToString());
+	}
+
 	/* Operators */
 
 	bool operator==(const TMatrix& Other) const
@@ -101,6 +107,23 @@ public:
 			}
 		}
 		return Result;
+	}
+
+	TVector4<T> operator*(const TVector4<T>& Vec) const
+	{
+		return TVector4<T>(M[0].X * Vec.X + M[0].Y * Vec.Y + M[0].Z * Vec.Z + M[0].W * Vec.W,
+						   M[1].X * Vec.X + M[1].Y * Vec.Y + M[1].Z * Vec.Z + M[1].W * Vec.W,
+						   M[2].X * Vec.X + M[2].Y * Vec.Y + M[2].Z * Vec.Z + M[2].W * Vec.W,
+						   M[3].X * Vec.X + M[3].Y * Vec.Y + M[3].Z * Vec.Z + M[3].W * Vec.W);
+	}
+
+	friend std::ostream& operator<<(std::ostream& Stream, const TMatrix& Matrix)
+	{
+		for (int32_t Row = 0; Row < 4; ++Row)
+		{
+			Stream << Matrix.M[Row] << std::endl;
+		}
+		return Stream;
 	}
 };
 

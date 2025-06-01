@@ -1,3 +1,4 @@
+#include "Core/Logging.h"
 #include "Core/Vector.h"
 
 #include "gtest/gtest.h"
