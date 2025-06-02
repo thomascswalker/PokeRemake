@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Actor.h"
+#include "Engine/Components/CameraComponent.h"
 
-#include <bitset>
 #include <memory>
 
 class PCharacter : public PActor
 {
-	std::bitset<4> mKeysDown; // Right, Left, Down, Up
+protected:
+	std::vector<FVector2> mVertices;
+	std::vector<int32_t>  mIndices;
 
 public:
 	PCharacter() = default;
@@ -17,6 +19,4 @@ public:
 	void End() override {}
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override;
-	void OnKeyDown(uint32_t KeyCode);
-	void OnKeyUp(uint32_t KeyCode);
 };

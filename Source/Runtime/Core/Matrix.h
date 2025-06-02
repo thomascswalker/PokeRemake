@@ -52,8 +52,8 @@ public:
 
 	std::string ToString() const
 	{
-		return std::format("[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]",
-						   M[0].ToString(), M[1].ToString(), M[2].ToString(), M[3].ToString());
+		return std::format("{}\n{}\n{}\n{}", M[0].ToString().c_str(), M[1].ToString().c_str(),
+						   M[2].ToString().c_str(), M[3].ToString().c_str());
 	}
 
 	/* Operators */

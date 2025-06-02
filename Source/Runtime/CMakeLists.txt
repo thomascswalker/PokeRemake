@@ -30,6 +30,13 @@ set(SOURCES
         Application/Context.h
         Renderer/Shader.h
         Renderer/Shader.cpp
+        Engine/Components/CameraComponent.h
+        Engine/Components/Component.h
+        Engine/Components/Component.cpp
+        Engine/Components/CameraComponent.cpp
+        Engine/Actors/Dummy.h
+        Engine/Actors/PlayerCharacter.cpp
+        Engine/Actors/PlayerCharacter.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

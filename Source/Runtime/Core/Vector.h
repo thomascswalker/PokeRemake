@@ -227,7 +227,10 @@ public:
 	T& operator[](int32_t Index) { return XYZW[Index]; }
 	T  operator[](int32_t Index) const { return XYZW[Index]; }
 
-	std::string ToString() const { return std::format("[{}, {}, {}, {}]", X, Y, Z, W); }
+	std::string ToString() const
+	{
+		return std::format("[{:.3f}, {:.3f}, {:.3f}, {:.3f}]", X, Y, Z, W);
+	}
 
 	TVector4 operator+(const TVector4& Other) const
 	{

@@ -3,6 +3,7 @@
 #include "Renderer.h"
 
 #include "Core/Logging.h"
+#include "Engine/Game.h"
 #include "Engine/World.h"
 #include "Shader.h"
 
@@ -78,13 +79,13 @@ void PRenderer::Uninitialize() const
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
-void PRenderer::Render() const
+void PRenderer::Render()
 {
 	mContext->IsGPU() ? Render3D() : Render2D();
 }
 
 // Main render function
-void PRenderer::Render3D() const
+void PRenderer::Render3D()
 {
 	const auto CommandBuffer = SDL_AcquireGPUCommandBuffer(mContext->Device);
 	if (CommandBuffer == nullptr)
@@ -116,15 +117,15 @@ void PRenderer::Render3D() const
 	const auto RenderPass = SDL_BeginGPURenderPass(CommandBuffer, &ColorTargetInfo, 1, nullptr);
 	SDL_BindGPUGraphicsPipeline(RenderPass, mPipeline);
 
-	const auto			  Width = static_cast<float>(GetScreenWidth());
-	const auto			  Height = static_cast<float>(GetScreenHeight());
+	const auto			  Width = GetScreenWidth();
+	const auto			  Height = GetScreenHeight();
 	const SDL_GPUViewport Viewport = {
 		0,		// Left
 		0,		// Top
 		Width,	// Right
 		Height, // Bottom
 		0.1f,	// Min depth
-		1.0f,	// Max depth
+		1.0f,	// Max depthw
 	};
 	SDL_SetGPUViewport(RenderPass, &Viewport);
 
@@ -133,10 +134,40 @@ void PRenderer::Render3D() const
 
 	SDL_SubmitGPUCommandBuffer(CommandBuffer);
 }
-void PRenderer::Render2D() const
+
+void PRenderer::Render2D()
 {
 	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
 	SDL_RenderClear(mContext->Renderer);
+
+	auto View = GetActiveCameraView();
+	if (!View)
+	{
+		return;
+	}
+
+	auto	ViewMatrix = View->GetViewMatrix();
+	FMatrix ProjMatrix;
+	switch (View->GetViewMode())
+	{
+		case VM_Orthographic:
+			{
+				ProjMatrix = MakeOrthographicMatrix(0.0f, GetScreenWidth(), 0.0f, GetScreenHeight(),
+													0.0f, 1.0f);
+				break;
+			}
+		case VM_Perspective:
+			{
+				ProjMatrix = MakePerspectiveMatrix(
+					View->GetFOV(), GetScreenWidth() / GetScreenHeight(), 0.1f, 100.0f);
+				break;
+			}
+		default:
+			LogError("Unsupported view mode.");
+			return;
+	}
+
+	mMVP = ViewMatrix * ProjMatrix;
 
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
@@ -172,16 +203,79 @@ void PRenderer::DrawFillRect(const FRect& Rect) const
 	SDL_RenderFillRect(mContext->Renderer, &SRect);
 }
 
-int32_t PRenderer::GetScreenWidth() const
+void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
+							const std::vector<int32_t>&	 Indexes) const
+{
+	float R, G, B, A;
+	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
+	std::vector<SDL_Vertex> SDLVertices;
+	for (size_t i = 0; i < Vertices.size(); ++i)
+	{
+		SDL_Vertex V;
+		V.position.x = Vertices[i].X;
+		V.position.y = Vertices[i].Y;
+		V.color = { R, G, B, A };
+		SDLVertices.emplace_back(V);
+	}
+	SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertices.data(),
+					   static_cast<int>(SDLVertices.size()), Indexes.data(),
+					   static_cast<int>(Indexes.size()));
+}
+
+void PRenderer::DrawMesh(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes,
+						 const FVector2& Position) const
+{
+	auto  ViewPosition = GetActiveCameraView()->GetPosition();
+	auto  ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto  ScreenSize = GetScreenSize();
+	float R, G, B, A;
+	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
+
+	for (int i = 0; i < Vertices.size(); i += 3)
+	{
+		// World position
+		auto V0 = Vertices[Indexes[i]] + Position - ViewPosition2D;
+		auto V1 = Vertices[Indexes[i + 1]] + Position - ViewPosition2D;
+		auto V2 = Vertices[Indexes[i + 2]] + Position - ViewPosition2D;
+
+		// Camera position
+		V0 = (V0 + ScreenSize) * 0.5f;
+		V1 = (V1 + ScreenSize) * 0.5f;
+		V2 = (V2 + ScreenSize) * 0.5f;
+
+		const SDL_Vertex SDLVertexes[] = {
+			{ V0.X, V0.Y, R, G, B },
+			{ V1.X, V1.Y, R, G, B },
+			{ V2.X, V2.Y, R, G, B },
+		};
+		SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertexes, 3, Indexes.data(), 3);
+	}
+}
+
+float PRenderer::GetScreenWidth() const
 {
 	int32_t Width, Height;
 	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
 	return Width;
 }
 
-int32_t PRenderer::GetScreenHeight() const
+float PRenderer::GetScreenHeight() const
 {
 	int32_t Width, Height;
 	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
 	return Height;
+}
+
+FVector2 PRenderer::GetScreenSize() const
+{
+	int32_t Width, Height;
+	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	return { static_cast<float>(Width), static_cast<float>(Height) };
+}
+
+FRect PRenderer::GetViewport() const
+{
+	int32_t Width, Height;
+	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	return { 0, 0, static_cast<float>(Width), static_cast<float>(Height) };
 }

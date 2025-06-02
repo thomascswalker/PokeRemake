@@ -5,11 +5,16 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Grid.h"
+#include "Components/CameraComponent.h"
+#include "Components/Component.h"
+
+#define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
 
 class PWorld : public PObject
 {
-	std::unique_ptr<PGrid>				 mGrid;
-	std::vector<std::shared_ptr<PActor>> mActors;
+	std::unique_ptr<PGrid>					 mGrid;
+	std::vector<std::shared_ptr<PActor>>	 mActors;
+	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
 	PWorld() {}
@@ -17,8 +22,8 @@ public:
 
 	void Tick(float DeltaTime) override;
 
-	template <class T, class = std::enable_if_t<std::is_base_of_v<PActor, T>>, typename... ArgsType>
-	T* ConstructActor(ArgsType... Args)
+	template <ENABLE_IF(PActor), typename... ArgsType>
+	T* ConstructActor(ArgsType&&... Args)
 	{
 		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
@@ -45,6 +50,26 @@ public:
 			}
 		}
 		return Drawables;
+	}
+
+	template <typename T, typename... ArgsType>
+	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
+	{
+		auto Component = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		static_assert(std::is_base_of_v<PComponent, T>, "T must be derived from PComponent");
+		Component->SetOwner(Owner);
+		mComponents.push_back(Component);
+		return Component.get();
+	}
+
+	std::vector<PComponent*> GetComponents() const
+	{
+		std::vector<PComponent*> Components;
+		for (const auto& Component : mComponents)
+		{
+			Components.push_back(Component.get());
+		}
+		return Components;
 	}
 };
 
