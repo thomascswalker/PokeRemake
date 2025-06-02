@@ -7,7 +7,7 @@
 class PActor : public PObject, public IDrawable
 {
 protected:
-	FVector3 mPosition;
+	FVector2 mPosition;
 
 public:
 	PActor() = default;
@@ -19,9 +19,9 @@ public:
 	void Tick(float DeltaTime) override {}
 	void Draw(const PRenderer* Renderer) const override = 0;
 
-	FVector3 GetPosition() const { return mPosition; }
-	void	 SetPosition(const FVector3& Position) { mPosition = Position; }
-	void	 AddPosition(const FVector3& Position) { mPosition += Position; }
+	FVector2 GetPosition() const { return mPosition; }
+	void	 SetPosition(const FVector2& Position) { mPosition = Position; }
+	void	 AddPosition(const FVector2& Position) { mPosition += Position; }
 
 	template <typename T, typename... ArgsType>
 	T* AddComponent(ArgsType&&... Args)

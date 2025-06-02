@@ -1,6 +1,7 @@
 #include "TestGame.h"
 
 #include "Engine/Actors/PlayerCharacter.h"
+#include "Engine/Texture.h"
 
 void TestGame::PreStart()
 {
@@ -11,4 +12,6 @@ void TestGame::PreStart()
 		W->ConstructActor<PCharacter>();
 		W->ConstructActor<PPlayerCharacter>();
 	}
+
+	PTextureManager::Load("Ash.png");
 }

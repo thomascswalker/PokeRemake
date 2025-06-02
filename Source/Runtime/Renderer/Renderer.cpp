@@ -4,14 +4,25 @@
 
 #include "Core/Logging.h"
 #include "Engine/Game.h"
+#include "Engine/Texture.h"
 #include "Engine/World.h"
+#include "SDL3/SDL_surface.h"
 #include "Shader.h"
 
 bool PRenderer::Initialize()
 {
-	return mContext->IsGPU() ? Initialize3D() // Initialize SDL_GPU based on the cmd arg '-r'
-							 : true; // Always true (2D is already initialized in SDLContext)
+	if (mContext->IsGPU())
+	{
+		Initialize3D();
+	}
+	return true; // Always true (2D is already initialized in SDLContext)
 }
+
+void PRenderer::PostInitialize()
+{
+	PTextureManager::LoadSDL(mContext->Renderer);
+}
+
 bool PRenderer::Initialize3D()
 {
 	const auto FormatFlags =
@@ -76,6 +87,7 @@ bool PRenderer::Initialize3D()
 
 void PRenderer::Uninitialize() const
 {
+	PTextureManager::UnloadSDL();
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
@@ -186,6 +198,11 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, A);
 }
 
+void PRenderer::DrawPoint(const FVector2& V) const
+{
+	SDL_RenderPoint(mContext->Renderer, V.X, V.Y);
+}
+
 void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 {
 	SDL_RenderLine(mContext->Renderer, X1, Y1, X2, Y2);
@@ -221,35 +238,72 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
 }
-
-void PRenderer::DrawMesh(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes,
-						 const FVector2& Position) const
+void PRenderer::DrawPointAt(const FVector2& Position) const
 {
-	auto  ViewPosition = GetActiveCameraView()->GetPosition();
-	auto  ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto  ScreenSize = GetScreenSize();
-	float R, G, B, A;
-	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
+	auto ScreenSize = GetScreenSize();
 
-	for (int i = 0; i < Vertices.size(); i += 3)
+	// Camera position
+	Offset = (Offset + ScreenSize) * 0.5f;
+	SDL_RenderPoint(mContext->Renderer, Offset.X, Offset.Y);
+}
+
+void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const
+{
+	if (!Texture)
 	{
-		// World position
-		auto V0 = Vertices[Indexes[i]] + Position - ViewPosition2D;
-		auto V1 = Vertices[Indexes[i + 1]] + Position - ViewPosition2D;
-		auto V2 = Vertices[Indexes[i + 2]] + Position - ViewPosition2D;
-
-		// Camera position
-		V0 = (V0 + ScreenSize) * 0.5f;
-		V1 = (V1 + ScreenSize) * 0.5f;
-		V2 = (V2 + ScreenSize) * 0.5f;
-
-		const SDL_Vertex SDLVertexes[] = {
-			{ V0.X, V0.Y, R, G, B },
-			{ V1.X, V1.Y, R, G, B },
-			{ V2.X, V2.Y, R, G, B },
-		};
-		SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertexes, 3, Indexes.data(), 3);
+		return;
 	}
+	SDL_Texture* Tex = Texture->GetSDLTexture();
+
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
+	auto ScreenSize = GetScreenSize();
+
+	auto Min = Rect.Min() + Offset;
+	auto Max = Rect.Max() + Offset;
+
+	// Camera position
+	Min = (Min + ScreenSize) * 0.5f;
+	Max = (Max + ScreenSize) * 0.5f;
+
+	SDL_FRect Source = { 0, 0, 16, 16 };
+	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
+}
+void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
+							 int32_t Index) const
+{
+	if (!Texture)
+	{
+		return;
+	}
+	SDL_Texture* Tex = Texture->GetSDLTexture();
+
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
+	auto ScreenSize = GetScreenSize();
+
+	auto Min = Rect.Min() + Offset;
+	auto Max = Rect.Max() + Offset;
+
+	// Camera position
+	Min = (Min + ScreenSize) * 0.5f;
+	Max = (Max + ScreenSize) * 0.5f;
+
+	float	  SourceOffset = Index * 16; // Assuming each sprite is 16x16 pixels
+	SDL_FRect Source = { SourceOffset, 0, 16, 16 };
+	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+
+	SDL_SetRenderDrawColor(mContext->Renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 
 float PRenderer::GetScreenWidth() const

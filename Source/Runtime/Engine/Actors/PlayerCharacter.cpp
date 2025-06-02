@@ -1,5 +1,7 @@
 #include "PlayerCharacter.h"
 
+#include "Core/Constants.h"
+#include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 
@@ -7,13 +9,6 @@
 
 void PPlayerCharacter::Start()
 {
-	const float Size = 32.0f;
-	mVertices.push_back({ -Size, -Size });
-	mVertices.push_back({ Size, -Size });
-	mVertices.push_back({ Size, Size });
-	mVertices.push_back({ -Size, Size });
-	mIndices = { 0, 1, 2, 0, 2, 3 };
-
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
@@ -26,28 +21,31 @@ void PPlayerCharacter::Start()
 
 void PPlayerCharacter::Tick(float DeltaTime)
 {
-	const float Speed = PLAYER_SPEED * 0.1f * DeltaTime;
-	if (mInputState[0]) // Right
+	if (!IsMoving() && mInputState.any())
 	{
-		mPosition.X += Speed * DeltaTime;
+		const float Distance = TILE_SIZE;
+		FVector2	Target;
+		if (mInputState[0]) // Right
+		{
+			Target = { Distance, 0 };
+		}
+		else if (mInputState[1]) // Left
+		{
+			Target = { -Distance, 0 };
+		}
+		else if (mInputState[2]) // Down
+		{
+			Target = { 0, Distance };
+		}
+		else if (mInputState[3]) // Up
+		{
+			Target = { 0, -Distance };
+		}
+		SetRelativeTargetPosition(Target);
+		UpdateMovementDirection(Target);
 	}
-	if (mInputState[1]) // Left
-	{
-		mPosition.X -= Speed * DeltaTime;
-	}
-	if (mInputState[2]) // Down
-	{
-		mPosition.Y += Speed * DeltaTime;
-	}
-	if (mInputState[3]) // Up
-	{
-		mPosition.Y -= Speed * DeltaTime;
-	}
-}
-void PPlayerCharacter::Draw(const PRenderer* Renderer) const
-{
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	Renderer->DrawMesh(mVertices, mIndices, { mPosition.X, mPosition.Y });
+
+	PCharacter::Tick(DeltaTime);
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
@@ -73,6 +71,11 @@ void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 		default:
 			break;
 	}
+
+	if (mInputState.any())
+	{
+		bInputAllowed = false; // Disable further input until the character stops moving
+	}
 }
 
 void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
@@ -97,5 +100,9 @@ void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
 			break;
 		default:
 			break;
+	}
+	if (mInputState.none())
+	{
+		bInputAllowed = true; // Enable input again when no keys are pressed
 	}
 }

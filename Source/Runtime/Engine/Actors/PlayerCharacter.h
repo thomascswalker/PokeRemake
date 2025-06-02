@@ -1,5 +1,7 @@
 #pragma once
 #include "Character.h"
+#include "Engine/Components/CameraComponent.h"
+
 #include <bitset>
 
 class PPlayerCharacter : public PCharacter
@@ -13,7 +15,6 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
-	void Draw(const PRenderer* Renderer) const override;
 
 	PCameraComponent* GetCameraComponent() const { return mCameraComponent; }
 };

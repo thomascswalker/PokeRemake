@@ -87,6 +87,9 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	}
 	SDL_SetWindowResizable(mContext->Window, true);
 
+	// Construct the game engine
+	mEngine = std::make_unique<PEngine>();
+
 	mRenderer = std::make_unique<PRenderer>(mContext.get());
 	if (!mRenderer->Initialize())
 	{
@@ -102,9 +105,6 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 
 	// Setup input
 	SetInputManager(this);
-
-	// Construct the game engine
-	mEngine = std::make_unique<PEngine>();
 
 	LogInfo("Application constructed");
 	return true;

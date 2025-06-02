@@ -16,5 +16,5 @@ public:
 	PActor*	 GetOwner() const { return mOwner; }
 	void	 SetOwner(PActor* Owner) { mOwner = Owner; }
 	void	 Tick(float DeltaTime) override {}
-	FVector3 GetPosition() const;
+	FVector2 GetPosition() const;
 };

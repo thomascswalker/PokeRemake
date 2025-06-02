@@ -1,24 +1,95 @@
 #include "Character.h"
 
+#include "Core/Constants.h"
+#include "Core/Logging.h"
 #include "Engine/World.h"
+
+PCharacter::PCharacter()
+{
+	mBounds = FRect(0, 0, TILE_SIZE, TILE_SIZE);
+}
 
 void PCharacter::Start()
 {
-	const float Size = 32.0f;
-	mVertices.push_back({ -Size, -Size });
-	mVertices.push_back({ Size, -Size });
-	mVertices.push_back({ Size, Size });
-	mVertices.push_back({ -Size, Size });
-	mIndices = { 0, 1, 2, 0, 2, 3 };
+	bInputAllowed = true;
 }
 
 void PCharacter::Tick(float DeltaTime)
 {
-	PActor::Tick(DeltaTime);
+	if (IsMoving())
+	{
+		if (mPosition.CloseEnough(mTargetPosition))
+		{
+			mVelocity = FVector2(0, 0);	 // Stop moving when at target position
+			mPosition = mTargetPosition; // Snap to target position
+		}
+		else
+		{
+			switch (mMovementDirection)
+			{
+				case MD_Right:
+					mPosition.X += PLAYER_SPEED;
+					break;
+				case MD_Left:
+					mPosition.X -= PLAYER_SPEED;
+					break;
+				case MD_Down:
+					mPosition.Y += PLAYER_SPEED;
+					break;
+				case MD_Up:
+					mPosition.Y -= PLAYER_SPEED;
+					break;
+				default:
+					break; // No movement direction set
+			}
+		}
+	}
 }
 
 void PCharacter::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(0, 200, 50, 255);
-	Renderer->DrawMesh(mVertices, mIndices, { mPosition.X, mPosition.Y });
+	int Index = 0;
+	switch (mMovementDirection)
+	{
+		case MD_Right:
+			Index = 9; // Walk right
+			break;
+		case MD_Left:
+			Index = 7; // Walk left
+			break;
+		case MD_Down:
+			Index = 0; // Walk down
+			break;
+		case MD_Up:
+			Index = 3; // Walk up
+			break;
+		default:
+			Index = 0; // Default to walk down if no direction is set
+			break;
+	}
+
+	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
+						   { mPosition.X - HALF_TILE_SIZE, mPosition.Y - HALF_TILE_SIZE }, Index);
+
+	Renderer->SetDrawColor(0, 255, 0, 255); // Green color for target position
+	Renderer->DrawPointAt(mTargetPosition);
+}
+void PCharacter::UpdateMovementDirection(const FVector2& Direction)
+{
+	if (Direction.X > 0)
+	{
+		mMovementDirection = MD_Right;
+	}
+	else if (Direction.X < 0)
+	{
+		mMovementDirection = MD_Left;
+	}
+	else if (Direction.Y > 0)
+	{
+		mMovementDirection = MD_Down;
+	}
+	else if (Direction.Y < 0)
+	{
+		mMovementDirection = MD_Up;
+	}
 }

@@ -28,15 +28,15 @@ set(SOURCES
         Renderer/IRHI.h
         Application/ArgParser.h
         Application/Context.h
-        Renderer/Shader.h
         Renderer/Shader.cpp
-        Engine/Components/CameraComponent.h
-        Engine/Components/Component.h
         Engine/Components/Component.cpp
         Engine/Components/CameraComponent.cpp
         Engine/Actors/Dummy.h
         Engine/Actors/PlayerCharacter.cpp
-        Engine/Actors/PlayerCharacter.h
+        Engine/Texture.cpp
+        Core/Files.h
+        Engine/Mesh.h
+        Core/Constants.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

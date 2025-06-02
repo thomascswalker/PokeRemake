@@ -52,6 +52,8 @@ public:
 			{
 				Game->PreStart();
 				Game->Start();
+
+				mRenderer->PostInitialize();
 			}
 		}
 	}

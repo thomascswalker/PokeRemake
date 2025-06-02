@@ -28,6 +28,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 
 # SDL3
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
+#add_subdirectory(ThirdParty/SDL_image EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 
 # GLM
@@ -51,13 +52,20 @@ if (WIN32)
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
             VERBATIM
     )
-
+    #    add_custom_command(
+    #            TARGET ${PROJECT_NAME} POST_BUILD
+    #            COMMAND "${CMAKE_COMMAND}"
+    #            -E copy_if_different
+    #            "$<TARGET_FILE:SDL3_image::SDL3_image>"
+    #            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    #            VERBATIM
+    #    )
     # D3D12
     list(APPEND CMAKE_PREFIX_PATH "C:/Windows/System32")
     target_link_libraries(${PROJECT_NAME} PRIVATE d3d12.lib)
 endif ()
 
-# Shaders
+# Copy shaders to the output directory
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND}
         -E copy_directory

@@ -41,10 +41,6 @@ public:
 	TVector2& operator=(TVector2&& Other) noexcept = default;
 	~TVector2() = default;
 
-	// Equality
-	bool operator==(const TVector2& Other) const { return X == Other.X && Y == Other.Y; }
-	bool operator!=(const TVector2& Other) const { return !(*this == Other); }
-
 	TVector2 GetNormalized() const
 	{
 		T Length = this->Length();
@@ -59,7 +55,18 @@ public:
 	T Dot(const TVector2& Other) const { return X * Other.X + Y * Other.Y; }
 
 	// Length
-	T Length() const { return std::sqrt(X * X + Y * Y); }
+	T	 Length() const { return std::sqrt(X * X + Y * Y); }
+	void Normalize()
+	{
+		auto L = Length();
+		X /= L;
+		Y /= L;
+	}
+
+	bool CloseEnough(const TVector2& Other, float Tolerance = 0.01f) const
+	{
+		return std::abs(X - Other.X) < Tolerance && std::abs(Y - Other.Y) < Tolerance;
+	}
 
 	std::string ToString() const { return std::format("[{}, {}]", X, Y); }
 
@@ -84,6 +91,11 @@ public:
 	TVector2 operator-=(const T Scalar) { return *this - Scalar; }
 	TVector2 operator*=(const T Scalar) { return *this * Scalar; }
 	TVector2 operator/=(const T Scalar) { return *this / Scalar; }
+
+	bool operator==(const TVector2& Other) const { return X == Other.X && Y == Other.Y; }
+	bool operator!=(const TVector2& Other) const { return !(*this == Other); }
+	bool operator<(const TVector2& Other) const { return Other.X > X || Other.Y > Y; }
+	bool operator>(const TVector2& Other) const { return Other.X < X || Other.Y < Y; }
 
 	friend std::ostream& operator<<(std::ostream& Stream, const TVector2& V)
 	{
