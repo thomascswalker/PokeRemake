@@ -1,6 +1,6 @@
 #include "TestGame.h"
 
-#include "Engine/Actors/Character.h"
+#include "Engine/Actors/PlayerCharacter.h"
 
 void TestGame::PreStart()
 {
@@ -8,7 +8,7 @@ void TestGame::PreStart()
 
 	if (const auto W = GetWorld())
 	{
-		W->ConstructActor<PGrid>();
 		W->ConstructActor<PCharacter>();
+		W->ConstructActor<PPlayerCharacter>();
 	}
 }

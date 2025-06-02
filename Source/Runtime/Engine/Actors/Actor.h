@@ -22,4 +22,11 @@ public:
 	FVector3 GetPosition() const { return mPosition; }
 	void	 SetPosition(const FVector3& Position) { mPosition = Position; }
 	void	 AddPosition(const FVector3& Position) { mPosition += Position; }
+
+	template <typename T, typename... ArgsType>
+	T* AddComponent(ArgsType&&... Args)
+	{
+		T* Component = new T(this, Args...);
+		return Component;
+	}
 };

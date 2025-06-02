@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/Delegate.h>
+#include <map>
 #include <stdint.h>
 
 DECLARE_MULTICAST_DELEGATE(DKeyDown, uint32_t);

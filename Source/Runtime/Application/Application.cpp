@@ -51,6 +51,18 @@ PWorld* GetWorld()
 	return nullptr;
 }
 
+PCameraView* GetActiveCameraView()
+{
+	if (const auto Game = GetGame())
+	{
+		if (const auto Camera = Game->GetActiveCameraView())
+		{
+			return Camera;
+		}
+	}
+	return nullptr;
+}
+
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
 {
 	LogInfo("Constructing Application");

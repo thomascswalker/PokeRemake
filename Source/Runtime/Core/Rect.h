@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Vector.h"
+
 template <typename T>
 class TRect
 {
@@ -13,6 +15,8 @@ public:
 
 	TRect() = default;
 	TRect(T inX, T inY, T inW, T inH) : X(inX), Y(inY), W(inW), H(inH) {}
+
+	TVector4<T> ToVector4() const { return TVector4<T>(X, Y, W, H); }
 };
 
 using FRect = TRect<float>;
