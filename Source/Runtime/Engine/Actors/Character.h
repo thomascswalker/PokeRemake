@@ -1,18 +1,15 @@
 #pragma once
 
 #include "Actor.h"
-#include "Engine/Components/CameraComponent.h"
-#include "Engine/Mesh.h"
-
-#include <memory>
 
 class PCharacter : public PActor
 {
 protected:
-	FRect mBounds;
+	FRect	 mBounds;
+	FVector2 mVelocity;
 
 public:
-	PCharacter() = default;
+	PCharacter();
 	~PCharacter() override = default;
 
 	void Start() override;

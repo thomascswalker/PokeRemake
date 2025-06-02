@@ -234,29 +234,21 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(Indexes.size()));
 }
 
-void PRenderer::DrawTextureRect(const FRect& Rect, const FVector2& Position) const
+void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const
 {
-	SDL_Texture* Tex = nullptr;
-	if (PTexture* T = PTextureManager::Get("Ash.png"))
+	if (!Texture)
 	{
-		Tex = T->GetSDLTexture();
-		if (!Tex)
-		{
-			LogError("Failed to get texture.");
-			return;
-		}
+		return;
 	}
+	SDL_Texture* Tex = Texture->GetSDLTexture();
 
 	auto ViewPosition = GetActiveCameraView()->GetPosition();
 	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
 	auto ScreenSize = GetScreenSize();
 
-	auto Min = Rect.Min();
-	auto Max = Rect.Max();
-
-	// World position
-	Min += Position - ViewPosition2D;
-	Max += Position - ViewPosition2D;
+	auto Min = Rect.Min() + Offset;
+	auto Max = Rect.Max() + Offset;
 
 	// Camera position
 	Min = (Min + ScreenSize) * 0.5f;
@@ -265,6 +257,36 @@ void PRenderer::DrawTextureRect(const FRect& Rect, const FVector2& Position) con
 	SDL_FRect Source = { 0, 0, 16, 16 };
 	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
+}
+void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
+							 int32_t Index) const
+{
+	if (!Texture)
+	{
+		return;
+	}
+	SDL_Texture* Tex = Texture->GetSDLTexture();
+
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
+	auto ScreenSize = GetScreenSize();
+
+	auto Min = Rect.Min() + Offset;
+	auto Max = Rect.Max() + Offset;
+
+	// Camera position
+	Min = (Min + ScreenSize) * 0.5f;
+	Max = (Max + ScreenSize) * 0.5f;
+
+	float	  SourceOffset = Index * 16; // Assuming each sprite is 16x16 pixels
+	SDL_FRect Source = { SourceOffset, 0, 16, 16 };
+	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+
+	SDL_SetRenderDrawColor(mContext->Renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 

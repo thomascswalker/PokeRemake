@@ -36,7 +36,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	PTexture Tex;
 	Tex.mFileName = AbsFileName;
 	auto Data = stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
-	auto DataSize = Tex.mWidth * Tex.mHeight * Tex.mChannels * sizeof(int32_t);
+	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(int32_t);
 	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
 	std::memcpy(Tex.mData, Data, DataSize);
 	stbi_image_free(Data);
@@ -68,8 +68,7 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 		SDL_DestroySurface(Surface);
 		if (!Texture)
 		{
-			LogError("Failed to load texture {} into SDL: {}", V->GetFileName().c_str(),
-					 SDL_GetError());
+			LogError("Failed to create SDL texture: {}", SDL_GetError());
 			return;
 		}
 		V->mSDLTexture = Texture;

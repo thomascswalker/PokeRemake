@@ -4,6 +4,7 @@
 #include "Core/Matrix.h"
 #include "Core/Rect.h"
 #include "Engine/Mesh.h"
+#include "Engine/Texture.h"
 
 #include <vector>
 
@@ -31,9 +32,11 @@ public:
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
 	void DrawRect(const FRect& Rect) const;
 	void DrawFillRect(const FRect& Rect) const;
-
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
-	void DrawTextureRect(const FRect& Rect, const FVector2& Position) const;
+
+	void DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const;
+	void DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
+					  int32_t Index) const;
 
 	SDL_Window* GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
 

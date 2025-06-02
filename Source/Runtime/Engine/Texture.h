@@ -7,6 +7,8 @@
 
 #include "SDL3/SDL.h"
 
+#define TEXTURE_ASH "Ash.png"
+
 class PTexture
 {
 	uint32_t	mID;

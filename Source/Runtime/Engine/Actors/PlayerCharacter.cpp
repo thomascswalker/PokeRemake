@@ -7,8 +7,6 @@
 
 void PPlayerCharacter::Start()
 {
-	const float Size = 32.0f;
-	mBounds = FRect(0, 0, Size, Size);
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
@@ -24,25 +22,28 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	const float Speed = PLAYER_SPEED * 0.1f * DeltaTime;
 	if (mInputState[0]) // Right
 	{
+		mVelocity = { 1, 0 };
 		mPosition.X += Speed * DeltaTime;
 	}
-	if (mInputState[1]) // Left
+	else if (mInputState[1]) // Left
 	{
+		mVelocity = { -1, 0 };
 		mPosition.X -= Speed * DeltaTime;
 	}
-	if (mInputState[2]) // Down
+	else if (mInputState[2]) // Down
 	{
+		mVelocity = { 0, 1 };
 		mPosition.Y += Speed * DeltaTime;
 	}
-	if (mInputState[3]) // Up
+	else if (mInputState[3]) // Up
 	{
+		mVelocity = { 0, -1 };
 		mPosition.Y -= Speed * DeltaTime;
 	}
-}
-void PPlayerCharacter::Draw(const PRenderer* Renderer) const
-{
-	Renderer->SetDrawColor(0, 0, 0, 255);
-	Renderer->DrawTextureRect(mBounds, { mPosition.X, mPosition.Y });
+	else
+	{
+		mVelocity = { 0, 0 };
+	}
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
