@@ -29,11 +29,13 @@ public:
 	void Render2D();
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
+	void DrawPoint(const FVector2& V) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
 	void DrawRect(const FRect& Rect) const;
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
 
+	void DrawPointAt(const FVector2& Position) const;
 	void DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const;
 	void DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
 					  int32_t Index) const;

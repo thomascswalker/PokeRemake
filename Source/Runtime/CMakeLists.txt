@@ -36,6 +36,7 @@ set(SOURCES
         Engine/Texture.cpp
         Core/Files.h
         Engine/Mesh.h
+        Core/Constants.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

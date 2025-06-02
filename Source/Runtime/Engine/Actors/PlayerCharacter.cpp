@@ -1,5 +1,7 @@
 #include "PlayerCharacter.h"
 
+#include "Core/Constants.h"
+#include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 
@@ -19,31 +21,31 @@ void PPlayerCharacter::Start()
 
 void PPlayerCharacter::Tick(float DeltaTime)
 {
-	const float Speed = PLAYER_SPEED * 0.1f * DeltaTime;
-	if (mInputState[0]) // Right
+	if (!IsMoving() && mInputState.any())
 	{
-		mVelocity = { 1, 0 };
-		mPosition.X += Speed * DeltaTime;
+		const float Distance = TILE_SIZE;
+		FVector2	Target;
+		if (mInputState[0]) // Right
+		{
+			Target = { Distance, 0 };
+		}
+		else if (mInputState[1]) // Left
+		{
+			Target = { -Distance, 0 };
+		}
+		else if (mInputState[2]) // Down
+		{
+			Target = { 0, Distance };
+		}
+		else if (mInputState[3]) // Up
+		{
+			Target = { 0, -Distance };
+		}
+		SetRelativeTargetPosition(Target);
+		UpdateMovementDirection(Target);
 	}
-	else if (mInputState[1]) // Left
-	{
-		mVelocity = { -1, 0 };
-		mPosition.X -= Speed * DeltaTime;
-	}
-	else if (mInputState[2]) // Down
-	{
-		mVelocity = { 0, 1 };
-		mPosition.Y += Speed * DeltaTime;
-	}
-	else if (mInputState[3]) // Up
-	{
-		mVelocity = { 0, -1 };
-		mPosition.Y -= Speed * DeltaTime;
-	}
-	else
-	{
-		mVelocity = { 0, 0 };
-	}
+
+	PCharacter::Tick(DeltaTime);
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
@@ -69,6 +71,11 @@ void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 		default:
 			break;
 	}
+
+	if (mInputState.any())
+	{
+		bInputAllowed = false; // Disable further input until the character stops moving
+	}
 }
 
 void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
@@ -93,5 +100,9 @@ void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
 			break;
 		default:
 			break;
+	}
+	if (mInputState.none())
+	{
+		bInputAllowed = true; // Enable input again when no keys are pressed
 	}
 }

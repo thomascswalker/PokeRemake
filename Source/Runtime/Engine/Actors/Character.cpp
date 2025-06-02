@@ -1,39 +1,95 @@
 #include "Character.h"
 
+#include "Core/Constants.h"
+#include "Core/Logging.h"
 #include "Engine/World.h"
 
 PCharacter::PCharacter()
 {
-	const float Size = 64.0f;
-	mBounds = FRect(0, 0, Size, Size);
+	mBounds = FRect(0, 0, TILE_SIZE, TILE_SIZE);
 }
 
-void PCharacter::Start() {}
+void PCharacter::Start()
+{
+	bInputAllowed = true;
+}
 
 void PCharacter::Tick(float DeltaTime)
 {
-	PActor::Tick(DeltaTime);
+	if (IsMoving())
+	{
+		if (mPosition.CloseEnough(mTargetPosition))
+		{
+			mVelocity = FVector2(0, 0);	 // Stop moving when at target position
+			mPosition = mTargetPosition; // Snap to target position
+		}
+		else
+		{
+			switch (mMovementDirection)
+			{
+				case MD_Right:
+					mPosition.X += PLAYER_SPEED;
+					break;
+				case MD_Left:
+					mPosition.X -= PLAYER_SPEED;
+					break;
+				case MD_Down:
+					mPosition.Y += PLAYER_SPEED;
+					break;
+				case MD_Up:
+					mPosition.Y -= PLAYER_SPEED;
+					break;
+				default:
+					break; // No movement direction set
+			}
+		}
+	}
 }
 
 void PCharacter::Draw(const PRenderer* Renderer) const
 {
 	int Index = 0;
-	if (mVelocity.X > 0)
+	switch (mMovementDirection)
 	{
-		Index = 9; // Walk right
+		case MD_Right:
+			Index = 9; // Walk right
+			break;
+		case MD_Left:
+			Index = 7; // Walk left
+			break;
+		case MD_Down:
+			Index = 0; // Walk down
+			break;
+		case MD_Up:
+			Index = 3; // Walk up
+			break;
+		default:
+			Index = 0; // Default to walk down if no direction is set
+			break;
 	}
-	else if (mVelocity.X < 0)
+
+	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
+						   { mPosition.X - HALF_TILE_SIZE, mPosition.Y - HALF_TILE_SIZE }, Index);
+
+	Renderer->SetDrawColor(0, 255, 0, 255); // Green color for target position
+	Renderer->DrawPointAt(mTargetPosition);
+}
+void PCharacter::UpdateMovementDirection(const FVector2& Direction)
+{
+	if (Direction.X > 0)
 	{
-		Index = 7; // Walk left
+		mMovementDirection = MD_Right;
 	}
-	else if (mVelocity.Y > 0)
+	else if (Direction.X < 0)
 	{
-		Index = 0; // Walk down
+		mMovementDirection = MD_Left;
 	}
-	else if (mVelocity.Y < 0)
+	else if (Direction.Y > 0)
 	{
-		Index = 3; // Walk up
+		mMovementDirection = MD_Down;
 	}
-	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds, { mPosition.X, mPosition.Y },
-						   Index);
+	else if (Direction.Y < 0)
+	{
+		mMovementDirection = MD_Up;
+	}
 }

@@ -2,12 +2,12 @@
 
 #include "Core/Logging.h"
 
-FVector3 PComponent::GetPosition() const
+FVector2 PComponent::GetPosition() const
 {
 	if (mOwner)
 	{
 		return mOwner->GetPosition();
 	}
 	LogDebug("Parent is invalid");
-	return FVector3(0, 0, 0);
+	return FVector2(0, 0);
 }

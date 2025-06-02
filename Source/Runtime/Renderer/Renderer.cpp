@@ -198,6 +198,11 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, A);
 }
 
+void PRenderer::DrawPoint(const FVector2& V) const
+{
+	SDL_RenderPoint(mContext->Renderer, V.X, V.Y);
+}
+
 void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 {
 	SDL_RenderLine(mContext->Renderer, X1, Y1, X2, Y2);
@@ -232,6 +237,17 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 	SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertices.data(),
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
+}
+void PRenderer::DrawPointAt(const FVector2& Position) const
+{
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto Offset = Position - ViewPosition2D;
+	auto ScreenSize = GetScreenSize();
+
+	// Camera position
+	Offset = (Offset + ScreenSize) * 0.5f;
+	SDL_RenderPoint(mContext->Renderer, Offset.X, Offset.Y);
 }
 
 void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const
