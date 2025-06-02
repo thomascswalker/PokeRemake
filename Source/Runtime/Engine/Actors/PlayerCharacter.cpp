@@ -8,12 +8,7 @@
 void PPlayerCharacter::Start()
 {
 	const float Size = 32.0f;
-	mVertices.push_back({ -Size, -Size });
-	mVertices.push_back({ Size, -Size });
-	mVertices.push_back({ Size, Size });
-	mVertices.push_back({ -Size, Size });
-	mIndices = { 0, 1, 2, 0, 2, 3 };
-
+	mBounds = FRect(0, 0, Size, Size);
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
@@ -46,8 +41,8 @@ void PPlayerCharacter::Tick(float DeltaTime)
 }
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	Renderer->DrawMesh(mVertices, mIndices, { mPosition.X, mPosition.Y });
+	Renderer->SetDrawColor(0, 0, 0, 255);
+	Renderer->DrawTextureRect(mBounds, { mPosition.X, mPosition.Y });
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)

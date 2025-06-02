@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Runtime/Engine/Game.h"
+#include "Engine/Game.h"
 
 class TestGame : public PGame
 {

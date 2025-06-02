@@ -4,14 +4,25 @@
 
 #include "Core/Logging.h"
 #include "Engine/Game.h"
+#include "Engine/Texture.h"
 #include "Engine/World.h"
+#include "SDL3/SDL_surface.h"
 #include "Shader.h"
 
 bool PRenderer::Initialize()
 {
-	return mContext->IsGPU() ? Initialize3D() // Initialize SDL_GPU based on the cmd arg '-r'
-							 : true; // Always true (2D is already initialized in SDLContext)
+	if (mContext->IsGPU())
+	{
+		Initialize3D();
+	}
+	return true; // Always true (2D is already initialized in SDLContext)
 }
+
+void PRenderer::PostInitialize()
+{
+	PTextureManager::LoadSDL(mContext->Renderer);
+}
+
 bool PRenderer::Initialize3D()
 {
 	const auto FormatFlags =
@@ -76,6 +87,7 @@ bool PRenderer::Initialize3D()
 
 void PRenderer::Uninitialize() const
 {
+	PTextureManager::UnloadSDL();
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
@@ -222,34 +234,38 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(Indexes.size()));
 }
 
-void PRenderer::DrawMesh(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes,
-						 const FVector2& Position) const
+void PRenderer::DrawTextureRect(const FRect& Rect, const FVector2& Position) const
 {
-	auto  ViewPosition = GetActiveCameraView()->GetPosition();
-	auto  ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto  ScreenSize = GetScreenSize();
-	float R, G, B, A;
-	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
-
-	for (int i = 0; i < Vertices.size(); i += 3)
+	SDL_Texture* Tex = nullptr;
+	if (PTexture* T = PTextureManager::Get("Ash.png"))
 	{
-		// World position
-		auto V0 = Vertices[Indexes[i]] + Position - ViewPosition2D;
-		auto V1 = Vertices[Indexes[i + 1]] + Position - ViewPosition2D;
-		auto V2 = Vertices[Indexes[i + 2]] + Position - ViewPosition2D;
-
-		// Camera position
-		V0 = (V0 + ScreenSize) * 0.5f;
-		V1 = (V1 + ScreenSize) * 0.5f;
-		V2 = (V2 + ScreenSize) * 0.5f;
-
-		const SDL_Vertex SDLVertexes[] = {
-			{ V0.X, V0.Y, R, G, B },
-			{ V1.X, V1.Y, R, G, B },
-			{ V2.X, V2.Y, R, G, B },
-		};
-		SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertexes, 3, Indexes.data(), 3);
+		Tex = T->GetSDLTexture();
+		if (!Tex)
+		{
+			LogError("Failed to get texture.");
+			return;
+		}
 	}
+
+	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	auto ScreenSize = GetScreenSize();
+
+	auto Min = Rect.Min();
+	auto Max = Rect.Max();
+
+	// World position
+	Min += Position - ViewPosition2D;
+	Max += Position - ViewPosition2D;
+
+	// Camera position
+	Min = (Min + ScreenSize) * 0.5f;
+	Max = (Max + ScreenSize) * 0.5f;
+
+	SDL_FRect Source = { 0, 0, 16, 16 };
+	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 
 float PRenderer::GetScreenWidth() const

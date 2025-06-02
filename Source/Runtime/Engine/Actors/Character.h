@@ -2,14 +2,14 @@
 
 #include "Actor.h"
 #include "Engine/Components/CameraComponent.h"
+#include "Engine/Mesh.h"
 
 #include <memory>
 
 class PCharacter : public PActor
 {
 protected:
-	std::vector<FVector2> mVertices;
-	std::vector<int32_t>  mIndices;
+	FRect mBounds;
 
 public:
 	PCharacter() = default;

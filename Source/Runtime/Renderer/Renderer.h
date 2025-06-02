@@ -2,8 +2,8 @@
 
 #include "Application/Context.h"
 #include "Core/Matrix.h"
-
 #include "Core/Rect.h"
+#include "Engine/Mesh.h"
 
 #include <vector>
 
@@ -19,6 +19,7 @@ public:
 	explicit PRenderer(SDLContext* InContext) : mContext(InContext), mPipeline(nullptr) {}
 
 	bool Initialize();
+	void PostInitialize();
 	bool Initialize3D();
 	void Uninitialize() const;
 
@@ -32,8 +33,7 @@ public:
 	void DrawFillRect(const FRect& Rect) const;
 
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
-	void DrawMesh(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes,
-				  const FVector2& Position) const;
+	void DrawTextureRect(const FRect& Rect, const FVector2& Position) const;
 
 	SDL_Window* GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
 
