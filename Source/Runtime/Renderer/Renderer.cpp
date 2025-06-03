@@ -148,52 +148,34 @@ void PRenderer::Render3D()
 	SDL_SubmitGPUCommandBuffer(CommandBuffer);
 }
 
-void PRenderer::Render2D()
+void PRenderer::Render2D() const
 {
 	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
 	SDL_RenderClear(mContext->Renderer);
-	//
-	// auto View = GetActiveCameraView();
-	// if (!View)
-	// {
-	// 	return;
-	// }
-	//
-	// auto	ViewMatrix = View->GetViewMatrix();
-	// FMatrix ProjMatrix;
-	// switch (View->GetViewMode())
-	// {
-	// 	case VM_Orthographic:
-	// 		{
-	// 			ProjMatrix = MakeOrthographicMatrix(0.0f, GetScreenWidth(), 0.0f, GetScreenHeight(),
-	// 												0.0f, 1.0f);
-	// 			break;
-	// 		}
-	// 	case VM_Perspective:
-	// 		{
-	// 			ProjMatrix = MakePerspectiveMatrix(
-	// 				View->GetFOV(), GetScreenWidth() / GetScreenHeight(), 0.1f, 100.0f);
-	// 			break;
-	// 		}
-	// 	default:
-	// 		LogError("Unsupported view mode.");
-	// 		return;
-	// }
-	//
-	// mMVP = ViewMatrix * ProjMatrix;
 
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
 	{
-		for (IDrawable* Drawable : World->GetDrawables())
+		for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
+		{
+			Drawable->Draw(this);
+		}
+		for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
 		{
 			Drawable->Draw(this);
 		}
 	}
 
-	DrawGrid();
-
 	SDL_RenderPresent(mContext->Renderer);
+}
+
+FVector2 PRenderer::WorldToScreen(const FVector2& Position) const
+{
+	const auto ScreenSize = GetScreenSize();
+	const auto ViewPosition = GetActiveCameraView()->GetPosition();
+	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	const auto Offset = Position - ViewPosition2D;
+	return (Offset + ScreenSize) * 0.5f;
 }
 
 void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
@@ -273,14 +255,27 @@ void PRenderer::DrawGrid() const
 
 void PRenderer::DrawPointAt(const FVector2& Position) const
 {
-	auto ViewPosition = GetActiveCameraView()->GetPosition();
-	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto Offset = Position - ViewPosition2D;
-	auto ScreenSize = GetScreenSize();
+	auto ScreenPosition = WorldToScreen(Position);
+	SDL_RenderPoint(mContext->Renderer, ScreenPosition.X, ScreenPosition.Y);
+}
 
-	// Camera position
-	Offset = (Offset + ScreenSize) * 0.5f;
-	SDL_RenderPoint(mContext->Renderer, Offset.X, Offset.Y);
+void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
+{
+	auto ScreenStart = WorldToScreen(Start);
+	auto ScreenEnd = WorldToScreen(End);
+	SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+}
+
+void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position) const
+{
+	auto ScreenPosition = WorldToScreen(Position);
+	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
+}
+
+void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const
+{
+	auto ScreenPosition = WorldToScreen(Position);
+	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
 void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const
@@ -291,22 +286,13 @@ void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVecto
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ViewPosition = GetActiveCameraView()->GetPosition();
-	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto Offset = Position - ViewPosition2D;
-	auto ScreenSize = GetScreenSize();
-
-	auto Min = Rect.Min() + Offset;
-	auto Max = Rect.Max() + Offset;
-
-	// Camera position
-	Min = (Min + ScreenSize) * 0.5f;
-	Max = (Max + ScreenSize) * 0.5f;
+	auto ScreenPosition = WorldToScreen(Position);
+	auto Min = Rect.Min() + ScreenPosition;
+	auto Max = Rect.Max() + ScreenPosition;
 
 	SDL_FRect Source = { 0, 0, 16, 16 };
 	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
-	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
@@ -334,7 +320,6 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
 	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
-	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND_PREMULTIPLIED);
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 

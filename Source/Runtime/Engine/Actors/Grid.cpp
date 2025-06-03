@@ -4,118 +4,35 @@
 #include "Engine/InputManager.h"
 
 #include <cmath>
+constexpr int32_t GridSize = 40; // Example grid size
 
-PGrid::PGrid() : mOffsetX(0), mOffsetY(0)
+void PGrid::Start()
 {
-	if (IInputManager* InputManager = GetInputManager())
+	// Instantiate each tile in the grid
+	for (int Row = 0; Row < GridSize; ++Row)
 	{
-		InputManager->KeyDown.AddRaw(this, &PGrid::OnKeyDown);
-		InputManager->KeyUp.AddRaw(this, &PGrid::OnKeyUp);
+		for (int Col = 0; Col < GridSize; ++Col)
+		{
+			mTiles.emplace_back(Col, Row);
+		}
 	}
-}
 
-void PGrid::Tick(float DeltaTime)
-{
-	const float Speed = 0.25f * DeltaTime;
-	if (mKeysDown[0]) // Right
-	{
-		AddOffsetX(-Speed);
-	}
-	if (mKeysDown[1]) // Left
-	{
-		AddOffsetX(Speed);
-	}
-	if (mKeysDown[2]) // Down
-	{
-		AddOffsetY(-Speed);
-	}
-	if (mKeysDown[3]) // Up
-	{
-		AddOffsetY(Speed);
-	}
+	mPosition.X = -(GridSize * TILE_SIZE * 0.5f);
+	mPosition.Y = mPosition.X - HALF_TILE_SIZE;
 }
 
 void PGrid::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(100, 100, 100, 255);
-
-	const float ScreenWidth = Renderer->GetScreenWidth();
-	const float ScreenHeight = Renderer->GetScreenHeight();
-
-	// Compute the origin (center of the screen - half of a cell size in order to
-	// center the grid).
-	auto	   ZoomFactor = Renderer->GetZoomFactor();
-	const auto OriginX = ScreenWidth / 2.0f - ZoomFactor / 2.0f;
-	const auto OriginY = ScreenHeight / 2.0f - ZoomFactor / 2.0f;
-
-	// Compute the number of steps to draw based on the screen size and zoom factor. Only do this
-	// for the width, in turn forcing the grid cells to be square.
-	const float Steps = ScreenWidth / ZoomFactor;
-
-	// Compute the render offset given the world offset and zoom factor.
-	// This gives the perception of an infinite grid.
-	const float OffsetX = std::fmod(mOffsetX, ZoomFactor);
-	const float OffsetY = std::fmod(mOffsetY, ZoomFactor);
-
-	float X0, X1, Y0, Y1;
-
-	// Draw vertical lines
-	for (int32_t Index = -Steps; Index <= Steps; Index++)
+	for (const auto& Tile : mTiles)
 	{
-		X0 = OffsetX + OriginX - Index * ZoomFactor;
-		X1 = X0;
-		Y0 = 0;
-		Y1 = ScreenHeight;
-		Renderer->DrawLine(X0, Y0, X1, Y1);
-	}
+		FRect	 Rect = { 0, 0, TILE_SIZE, TILE_SIZE };
+		FVector2 Position = { Tile.X * TILE_SIZE, Tile.Y * TILE_SIZE };
 
-	// Draw horizontal lines
-	for (int32_t Index = -Steps; Index <= Steps; Index++)
-	{
-		X0 = 0;
-		X1 = ScreenWidth;
-		Y0 = OffsetY + OriginY - Index * ZoomFactor;
-		Y1 = Y0;
-		Renderer->DrawLine(X0, Y0, X1, Y1);
-	}
-}
-void PGrid::OnKeyDown(uint32_t ScanCode)
-{
-	switch (ScanCode)
-	{
-		case KB_Right: // Right
-			mKeysDown[0] = true;
-			break;
-		case KB_Left: // Left
-			mKeysDown[1] = true;
-			break;
-		case KB_Down: // Down
-			mKeysDown[2] = true;
-			break;
-		case KB_Up: // Up
-			mKeysDown[3] = true;
-			break;
-		default:
-			break;
-	}
-}
-void PGrid::OnKeyUp(uint32_t ScanCode)
-{
-	switch (ScanCode)
-	{
-		case KB_Right: // Right
-			mKeysDown[0] = false;
-			break;
-		case KB_Left: // Left
-			mKeysDown[1] = false;
-			break;
-		case KB_Down: // Down
-			mKeysDown[2] = false;
-			break;
-		case KB_Up: // Up
-			mKeysDown[3] = false;
-			break;
-		default:
-			break;
+		auto Red = (static_cast<float>(Tile.X) / static_cast<float>(GridSize)) * 255.0f;
+		auto Green = (static_cast<float>(Tile.Y) / static_cast<float>(GridSize)) * 255.0f;
+		auto Blue = 128; // Fixed blue value for simplicity
+
+		Renderer->SetDrawColor(Red, Green, Blue, 255);
+		Renderer->DrawFillRectAt(Rect, Position + mPosition);
 	}
 }

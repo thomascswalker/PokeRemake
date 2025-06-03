@@ -89,8 +89,6 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 
 	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
 						   mPosition - FVector2(TILE_SIZE, HALF_TILE_SIZE), Index);
-	Renderer->SetDrawColor(0, 255, 0, 255); // Green color for target position
-	Renderer->DrawPointAt(mTargetPosition);
 }
 void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 {

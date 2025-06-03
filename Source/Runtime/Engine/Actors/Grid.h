@@ -1,25 +1,21 @@
 #pragma once
 
-#include <bitset>
-
 #include "Actor.h"
+
+struct PTile
+{
+	int32_t X;
+	int32_t Y;
+
+	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY) {}
+};
 
 class PGrid : public PActor
 {
-	float mOffsetX;
-	float mOffsetY;
-
-	std::bitset<4> mKeysDown; // Right, Left, Down, Up
+	std::vector<PTile> mTiles;
 
 public:
-	PGrid();
 	~PGrid() override = default;
-
-	void Tick(float DeltaTime) override;
-
+	void Start() override;
 	void Draw(const PRenderer* Renderer) const override;
-	void OnKeyDown(uint32_t ScanCode);
-	void OnKeyUp(uint32_t ScanCode);
-	void AddOffsetX(float Value) { mOffsetX += Value; }
-	void AddOffsetY(float Value) { mOffsetY += Value; }
 };

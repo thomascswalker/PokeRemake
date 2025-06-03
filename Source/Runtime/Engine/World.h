@@ -39,14 +39,18 @@ public:
 		}
 		return Actors;
 	}
-	std::vector<IDrawable*> GetDrawables() const
+
+	std::vector<IDrawable*> GetDrawables(EDrawPriority Priority) const
 	{
 		std::vector<IDrawable*> Drawables;
 		for (const auto& Actor : mActors)
 		{
 			if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
 			{
-				Drawables.push_back(Drawable);
+				if (Drawable->GetPriority() == Priority)
+				{
+					Drawables.push_back(Drawable);
+				}
 			}
 		}
 		return Drawables;
