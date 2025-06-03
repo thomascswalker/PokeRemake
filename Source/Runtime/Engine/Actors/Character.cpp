@@ -18,7 +18,26 @@ void PCharacter::Tick(float DeltaTime)
 {
 	if (IsMoving())
 	{
-		if (mPosition.CloseEnough(mTargetPosition))
+		bool bCloseEnough = false;
+		switch (mMovementDirection)
+		{
+			case MD_Right:
+				bCloseEnough = mPosition.X >= mTargetPosition.X;
+				break;
+			case MD_Left:
+				bCloseEnough = mPosition.X <= mTargetPosition.X;
+				break;
+			case MD_Down:
+				bCloseEnough = mPosition.Y >= mTargetPosition.Y;
+				break;
+			case MD_Up:
+				bCloseEnough = mPosition.Y <= mTargetPosition.Y;
+				break;
+			default:
+				break;
+		}
+
+		if (bCloseEnough)
 		{
 			mVelocity = FVector2(0, 0);	 // Stop moving when at target position
 			mPosition = mTargetPosition; // Snap to target position
@@ -28,16 +47,16 @@ void PCharacter::Tick(float DeltaTime)
 			switch (mMovementDirection)
 			{
 				case MD_Right:
-					mPosition.X += PLAYER_SPEED;
+					mPosition.X += PLAYER_SPEED * DeltaTime;
 					break;
 				case MD_Left:
-					mPosition.X -= PLAYER_SPEED;
+					mPosition.X -= PLAYER_SPEED * DeltaTime;
 					break;
 				case MD_Down:
-					mPosition.Y += PLAYER_SPEED;
+					mPosition.Y += PLAYER_SPEED * DeltaTime;
 					break;
 				case MD_Up:
-					mPosition.Y -= PLAYER_SPEED;
+					mPosition.Y -= PLAYER_SPEED * DeltaTime;
 					break;
 				default:
 					break; // No movement direction set
@@ -69,8 +88,7 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	}
 
 	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
-						   { mPosition.X - HALF_TILE_SIZE, mPosition.Y - HALF_TILE_SIZE }, Index);
-
+						   mPosition - FVector2(TILE_SIZE, HALF_TILE_SIZE), Index);
 	Renderer->SetDrawColor(0, 255, 0, 255); // Green color for target position
 	Renderer->DrawPointAt(mTargetPosition);
 }

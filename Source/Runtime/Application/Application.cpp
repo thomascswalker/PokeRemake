@@ -3,14 +3,12 @@
 #include <SDL3/SDL.h>
 
 #include "Application.h"
+
+#include "Core/Constants.h"
 #include "Core/Logging.h"
 
 #include "Engine/Actors/Character.h"
 #include "SDL3/SDL_opengl.h"
-
-#define WINDOW_DEFAULT_HEIGHT 432
-#define WINDOW_DEFAULT_WIDTH 480
-#define WINDOW_TITLE "PokeRemake"
 
 PApplication* PApplication::sInstance = nullptr;
 
