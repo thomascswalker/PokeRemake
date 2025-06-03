@@ -23,23 +23,22 @@ void PPlayerCharacter::Tick(float DeltaTime)
 {
 	if (!IsMoving() && mInputState.any())
 	{
-		const float Distance = TILE_SIZE;
-		FVector2	Target;
+		FVector2 Target;
 		if (mInputState[0]) // Right
 		{
-			Target = { Distance, 0 };
+			Target = { TILE_SIZE, 0 };
 		}
 		else if (mInputState[1]) // Left
 		{
-			Target = { -Distance, 0 };
+			Target = { -TILE_SIZE, 0 };
 		}
 		else if (mInputState[2]) // Down
 		{
-			Target = { 0, Distance };
+			Target = { 0, TILE_SIZE };
 		}
 		else if (mInputState[3]) // Up
 		{
-			Target = { 0, -Distance };
+			Target = { 0, -TILE_SIZE };
 		}
 		SetRelativeTargetPosition(Target);
 		UpdateMovementDirection(Target);

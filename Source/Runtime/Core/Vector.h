@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Constants.h"
+
 #include <cmath>
 #include <cstdint>
 #include <format>
@@ -63,7 +65,7 @@ public:
 		Y /= L;
 	}
 
-	bool CloseEnough(const TVector2& Other, float Tolerance = 0.01f) const
+	bool CloseEnough(const TVector2& Other, float Tolerance = EPSILON) const
 	{
 		return std::abs(X - Other.X) < Tolerance && std::abs(Y - Other.Y) < Tolerance;
 	}

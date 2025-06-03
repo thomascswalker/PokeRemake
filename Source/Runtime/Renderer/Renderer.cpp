@@ -7,6 +7,7 @@
 #include "Engine/Texture.h"
 #include "Engine/World.h"
 #include "SDL3/SDL_surface.h"
+#include "SDL3/SDL_test_common.h"
 #include "Shader.h"
 
 bool PRenderer::Initialize()
@@ -151,35 +152,35 @@ void PRenderer::Render2D()
 {
 	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
 	SDL_RenderClear(mContext->Renderer);
-
-	auto View = GetActiveCameraView();
-	if (!View)
-	{
-		return;
-	}
-
-	auto	ViewMatrix = View->GetViewMatrix();
-	FMatrix ProjMatrix;
-	switch (View->GetViewMode())
-	{
-		case VM_Orthographic:
-			{
-				ProjMatrix = MakeOrthographicMatrix(0.0f, GetScreenWidth(), 0.0f, GetScreenHeight(),
-													0.0f, 1.0f);
-				break;
-			}
-		case VM_Perspective:
-			{
-				ProjMatrix = MakePerspectiveMatrix(
-					View->GetFOV(), GetScreenWidth() / GetScreenHeight(), 0.1f, 100.0f);
-				break;
-			}
-		default:
-			LogError("Unsupported view mode.");
-			return;
-	}
-
-	mMVP = ViewMatrix * ProjMatrix;
+	//
+	// auto View = GetActiveCameraView();
+	// if (!View)
+	// {
+	// 	return;
+	// }
+	//
+	// auto	ViewMatrix = View->GetViewMatrix();
+	// FMatrix ProjMatrix;
+	// switch (View->GetViewMode())
+	// {
+	// 	case VM_Orthographic:
+	// 		{
+	// 			ProjMatrix = MakeOrthographicMatrix(0.0f, GetScreenWidth(), 0.0f, GetScreenHeight(),
+	// 												0.0f, 1.0f);
+	// 			break;
+	// 		}
+	// 	case VM_Perspective:
+	// 		{
+	// 			ProjMatrix = MakePerspectiveMatrix(
+	// 				View->GetFOV(), GetScreenWidth() / GetScreenHeight(), 0.1f, 100.0f);
+	// 			break;
+	// 		}
+	// 	default:
+	// 		LogError("Unsupported view mode.");
+	// 		return;
+	// }
+	//
+	// mMVP = ViewMatrix * ProjMatrix;
 
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
@@ -189,6 +190,8 @@ void PRenderer::Render2D()
 			Drawable->Draw(this);
 		}
 	}
+
+	DrawGrid();
 
 	SDL_RenderPresent(mContext->Renderer);
 }
@@ -238,6 +241,36 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
 }
+void PRenderer::DrawGrid() const
+{
+	SetDrawColor(100, 100, 100, 255);
+
+	const float ScreenWidth = GetScreenWidth();
+	const float ScreenHeight = GetScreenHeight();
+
+	float X0, X1, Y0, Y1;
+
+	// Draw vertical lines
+	for (int32_t Index = 0; Index <= TILE_COLUMNS; Index++)
+	{
+		X0 = Index * HALF_TILE_SIZE;
+		X1 = X0;
+		Y0 = 0;
+		Y1 = ScreenHeight;
+		DrawLine(X0, Y0, X1, Y1);
+	}
+
+	// Draw horizontal lines
+	for (int32_t Index = 0; Index <= TILE_COLUMNS; Index++)
+	{
+		X0 = 0;
+		X1 = ScreenWidth;
+		Y0 = Index * HALF_TILE_SIZE;
+		Y1 = Y0;
+		DrawLine(X0, Y0, X1, Y1);
+	}
+}
+
 void PRenderer::DrawPointAt(const FVector2& Position) const
 {
 	auto ViewPosition = GetActiveCameraView()->GetPosition();
@@ -297,12 +330,11 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	Min = (Min + ScreenSize) * 0.5f;
 	Max = (Max + ScreenSize) * 0.5f;
 
-	float	  SourceOffset = Index * 16; // Assuming each sprite is 16x16 pixels
-	SDL_FRect Source = { SourceOffset, 0, 16, 16 };
+	float	  SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
+	SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
 	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
-	SDL_SetRenderDrawColor(mContext->Renderer, 255, 255, 255, 255);
-	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND_PREMULTIPLIED);
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
 

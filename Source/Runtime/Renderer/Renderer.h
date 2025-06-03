@@ -34,6 +34,7 @@ public:
 	void DrawRect(const FRect& Rect) const;
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
+	void DrawGrid() const;
 
 	void DrawPointAt(const FVector2& Position) const;
 	void DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const;
