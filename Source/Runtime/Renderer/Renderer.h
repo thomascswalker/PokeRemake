@@ -12,7 +12,6 @@ class PRenderer
 	SDLContext*				 mContext;
 	SDL_GPUGraphicsPipeline* mPipeline;
 
-	float	mZoomFactor = 10.0f;
 	FMatrix mMVP;
 
 public:
@@ -53,7 +52,4 @@ public:
 	float	 GetScreenHeight() const;
 	FVector2 GetScreenSize() const;
 	FRect	 GetViewport() const;
-
-	void  SetZoomFactor(float ZoomFactor) { mZoomFactor = ZoomFactor; }
-	float GetZoomFactor() const { return mZoomFactor; }
 };

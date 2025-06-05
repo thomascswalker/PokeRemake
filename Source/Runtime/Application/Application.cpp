@@ -163,7 +163,6 @@ bool PApplication::OnEvent(void* Event)
 		case SDL_EVENT_MOUSE_WHEEL:
 			{
 				OnMiddleMouseScroll(SDLEvent->wheel.y);
-				mRenderer->SetZoomFactor(mRenderer->GetZoomFactor() + SDLEvent->wheel.y);
 				break;
 			}
 		default:
