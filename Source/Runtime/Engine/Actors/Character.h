@@ -30,7 +30,7 @@ public:
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override;
 
-	void SetRelativeTargetPosition(const FVector2& Target) { mTargetPosition = Target + mPosition; }
+	void SetRelativeTargetPosition(const FVector2& Target);
 	bool AtTargetPosition() const { return mPosition == mTargetPosition; }
 	bool IsMoving() const { return mTargetPosition != mPosition; }
 	void UpdateMovementDirection(const FVector2& Direction);

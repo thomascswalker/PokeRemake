@@ -27,7 +27,14 @@ public:
 	void SetViewMode(EViewMode InViewMode) { mViewMode = InViewMode; }
 
 	void	 SetPosition(const FVector2& Position) { mPosition = Position; }
-	FVector2 GetPosition() const { return mPosition; }
+	FVector2 GetPosition() const
+	{
+#ifdef OFFSET_CAMERA
+		return mPosition + FVector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+#else
+		return mPosition;
+#endif
+	}
 
 	FMatrix GetViewMatrix() const
 	{

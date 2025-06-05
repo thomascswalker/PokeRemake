@@ -166,6 +166,8 @@ void PRenderer::Render2D() const
 		}
 	}
 
+	SetDrawColor(0, 128, 255, 255);
+	DrawPointAt({ 0, 0 }, 4);
 	SDL_RenderPresent(mContext->Renderer);
 }
 
@@ -175,17 +177,34 @@ FVector2 PRenderer::WorldToScreen(const FVector2& Position) const
 	const auto ViewPosition = GetActiveCameraView()->GetPosition();
 	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 	const auto Offset = Position - ViewPosition2D;
+
 	return (Offset + ScreenSize) * 0.5f;
 }
 
 void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 {
 	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, A);
+	if (A < 255) // Is there transparency?
+	{
+		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
+	}
+	else
+	{
+		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
+	}
 }
 
-void PRenderer::DrawPoint(const FVector2& V) const
+void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 {
-	SDL_RenderPoint(mContext->Renderer, V.X, V.Y);
+	if (Thickness > 0.0f)
+	{
+		SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness, Thickness };
+		SDL_RenderFillRect(mContext->Renderer, &R);
+	}
+	else
+	{
+		SDL_RenderPoint(mContext->Renderer, V.X, V.Y);
+	}
 }
 
 void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
@@ -253,10 +272,10 @@ void PRenderer::DrawGrid() const
 	}
 }
 
-void PRenderer::DrawPointAt(const FVector2& Position) const
+void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
 {
 	auto ScreenPosition = WorldToScreen(Position);
-	SDL_RenderPoint(mContext->Renderer, ScreenPosition.X, ScreenPosition.Y);
+	DrawPoint(ScreenPosition, Thickness);
 }
 
 void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const

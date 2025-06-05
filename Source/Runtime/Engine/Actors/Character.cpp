@@ -39,6 +39,7 @@ void PCharacter::Tick(float DeltaTime)
 			break;
 	}
 
+	// End movement
 	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
 	{
 		mVelocity = FVector2(0, 0);	 // Stop moving when at target position
@@ -53,21 +54,22 @@ void PCharacter::Tick(float DeltaTime)
 			LogDebug("Tile is null");
 		}
 	}
+	// Keep moving towards the target position
 	else
 	{
 		switch (mMovementDirection)
 		{
 			case MD_Right:
-				mPosition.X += PLAYER_SPEED * DeltaTime;
+				mPosition.X += DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Left:
-				mPosition.X -= PLAYER_SPEED * DeltaTime;
+				mPosition.X -= DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Down:
-				mPosition.Y += PLAYER_SPEED * DeltaTime;
+				mPosition.Y += DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Up:
-				mPosition.Y -= PLAYER_SPEED * DeltaTime;
+				mPosition.Y -= DEFAULT_SPEED * DeltaTime;
 				break;
 			default:
 				break; // No movement direction set
@@ -97,8 +99,16 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 			break;
 	}
 
-	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
-						   mPosition - FVector2(TILE_SIZE, HALF_TILE_SIZE), Index);
+	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds, mPosition, Index);
+}
+void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
+{
+	auto TempTargetPosition = Target + mPosition;
+	if (!GetGrid()->GetTileAtPosition(TempTargetPosition))
+	{
+		return;
+	}
+	mTargetPosition = Target + mPosition;
 }
 void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 {

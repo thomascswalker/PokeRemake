@@ -8,6 +8,23 @@
 
 constexpr int32_t GridSize = 40; // Example grid size
 
+void PTile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
+{
+	const FRect	   Rect = { 0, 0, TILE_SIZE, TILE_SIZE };
+	const FVector2 Position = GetPosition();
+
+	// Rainbow gradient along X/Y axes
+	const auto Red = static_cast<float>(X) / static_cast<float>(GridSize) * 255.0f;
+	const auto Green = static_cast<float>(Y) / static_cast<float>(GridSize) * 255.0f;
+	const auto Blue = 128;
+
+	Renderer->SetDrawColor(Red, Green, Blue, 255);
+	Renderer->DrawRectAt(Rect, Position + Offset);
+
+	Renderer->SetDrawColor(255, 255, 0, 255);
+	Renderer->DrawPointAt(Position, 2.0f); // Draw a point at the tile's position
+}
+
 void PGrid::Start()
 {
 	// Instantiate each tile in the grid
@@ -18,9 +35,6 @@ void PGrid::Start()
 			mTiles.emplace_back(Col, Row);
 		}
 	}
-
-	mPosition.X = -(GridSize * TILE_SIZE * 0.5f);
-	mPosition.Y = mPosition.X - HALF_TILE_SIZE;
 
 	// Bind input
 	if (const auto Input = GetInputManager())
@@ -39,26 +53,22 @@ void PGrid::Draw(const PRenderer* Renderer) const
 	{
 		for (const auto& Tile : mTiles)
 		{
-			FRect	 Rect = { 0, 0, TILE_SIZE, TILE_SIZE };
-			FVector2 Position = { Tile.X * TILE_SIZE, Tile.Y * TILE_SIZE };
-
-			auto Red = (static_cast<float>(Tile.X) / static_cast<float>(GridSize)) * 255.0f;
-			auto Green = (static_cast<float>(Tile.Y) / static_cast<float>(GridSize)) * 255.0f;
-			auto Blue = 128; // Fixed blue value for simplicity
-
-			Renderer->SetDrawColor(Red, Green, Blue, 255);
-			Renderer->DrawRectAt(Rect, Position + mPosition);
+			Tile.Draw(Renderer, mPosition);
 		}
 	}
 }
+
 PTile* PGrid::GetTileAtPosition(const FVector2& Position)
 {
 	for (auto& Tile : mTiles)
 	{
-		FVector2 TilePosition = Tile.GetPosition();
-		if (Position.X >= TilePosition.X && Position.X < TilePosition.X + TILE_SIZE
-			&& Position.Y >= TilePosition.Y && Position.Y < TilePosition.Y + TILE_SIZE)
+		const FVector2 TilePosition = Tile.GetPosition();
+		if (Position.X >= TilePosition.X					 // Min X
+			&& Position.X < TilePosition.X + HALF_TILE_SIZE	 // Max X
+			&& Position.Y >= TilePosition.Y					 // Min Y
+			&& Position.Y < TilePosition.Y + HALF_TILE_SIZE) // Max Y
 		{
+			// Return a pointer to the tile
 			return &Tile;
 		}
 	}

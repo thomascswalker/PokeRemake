@@ -21,6 +21,7 @@ void PPlayerCharacter::Start()
 
 void PPlayerCharacter::Tick(float DeltaTime)
 {
+	// Start movement
 	if (!IsMoving() && mInputState.any())
 	{
 		FVector2 Target;
@@ -48,11 +49,18 @@ void PPlayerCharacter::Tick(float DeltaTime)
 }
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
+	// Draw current tile under the character
+	if (const auto& Tile = GetCurrentTile())
+	{
+		Renderer->SetDrawColor(255, 0, 0, 50);
+		Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
+	}
+
 	PCharacter::Draw(Renderer);
 
-	FRect R = { 0, 0, 8, 8 };
+	// Draw player character position
 	Renderer->SetDrawColor(0, 255, 0, 255);
-	Renderer->DrawFillRectAt(R, mPosition);
+	Renderer->DrawPointAt(mPosition, 2.0f);
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)

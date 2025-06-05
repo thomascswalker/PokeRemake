@@ -10,6 +10,7 @@ struct PTile
 	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY) {}
 
 	FVector2 GetPosition() const { return FVector2(X * TILE_SIZE, Y * TILE_SIZE); }
+	void	 Draw(const PRenderer* Renderer, const FVector2& Offset) const;
 };
 
 class PGrid : public PActor
