@@ -25,4 +25,4 @@ public:
 	PGame* GetGame() const { return mGame.get(); }
 };
 
-PEngine* GetEngine();
+DECLARE_STATIC_GLOBAL_GETTER(Engine)

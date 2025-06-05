@@ -166,15 +166,18 @@ void PRenderer::Render2D() const
 		}
 	}
 
-	SetDrawColor(0, 128, 255, 255);
-	DrawPointAt({ 0, 0 }, 4);
+	if (GetSettings()->bDebugDraw)
+	{
+		SetDrawColor(0, 128, 255, 255);
+		DrawPointAt({ 0, 0 }, 4);
+	}
 	SDL_RenderPresent(mContext->Renderer);
 }
 
 FVector2 PRenderer::WorldToScreen(const FVector2& Position) const
 {
 	const auto ScreenSize = GetScreenSize();
-	const auto ViewPosition = GetActiveCameraView()->GetPosition();
+	const auto ViewPosition = GetCameraView()->GetPosition();
 	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 	const auto Offset = Position - ViewPosition2D;
 
@@ -323,7 +326,7 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ViewPosition = GetActiveCameraView()->GetPosition();
+	auto ViewPosition = GetCameraView()->GetPosition();
 	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 	auto Offset = Position - ViewPosition2D;
 	auto ScreenSize = GetScreenSize();

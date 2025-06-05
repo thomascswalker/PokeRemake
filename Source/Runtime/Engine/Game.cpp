@@ -7,6 +7,8 @@
 PGame::PGame()
 {
 	mWorld = std::make_shared<PWorld>();
+	mSettings = std::make_shared<PSettings>();
+	mSettings->Initialize();
 }
 
 void PGame::Start()

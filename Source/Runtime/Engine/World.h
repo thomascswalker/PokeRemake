@@ -80,4 +80,4 @@ public:
 	PGrid* GetGrid() const { return mGrid; }
 };
 
-PWorld* GetWorld();
+DECLARE_STATIC_GLOBAL_GETTER(World)

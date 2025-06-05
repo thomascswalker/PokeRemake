@@ -21,57 +21,32 @@ PApplication* PApplication::GetInstance()
 	return sInstance;
 }
 
-PEngine* GetEngine()
+static PApplication* GetApplication()
 {
-	return PApplication::GetInstance()->GetEngine();
+	return PApplication::GetInstance();
 }
 
-PRenderer* GetRenderer()
-{
-	return PApplication::GetInstance()->GetRenderer();
-}
-
-PGame* GetGame()
-{
-	if (const auto Engine = PApplication::GetInstance()->GetEngine())
-	{
-		return Engine->GetGame();
+#define DEFINE_STATIC_GLOBAL_AND_GETTER(ClassName, ParentClass)  \
+	P##ClassName* g##ClassName = nullptr;                        \
+	P##ClassName* Get##ClassName()                               \
+	{                                                            \
+		if (!g##ClassName)                                       \
+		{                                                        \
+			g##ClassName = Get##ParentClass()->Get##ClassName(); \
+		}                                                        \
+		return g##ClassName;                                     \
 	}
-	return nullptr;
-}
 
-PWorld* GetWorld()
-{
-	if (const auto Game = GetGame())
-	{
-		return Game->GetWorld();
-	}
-	return nullptr;
-}
-
-PCameraView* GetActiveCameraView()
-{
-	if (const auto Game = GetGame())
-	{
-		if (const auto Camera = Game->GetActiveCameraView())
-		{
-			return Camera;
-		}
-	}
-	return nullptr;
-}
-
-PGrid* GetGrid()
-{
-	if (const auto World = GetWorld())
-	{
-		if (const auto Grid = World->GetGrid())
-		{
-			return Grid;
-		}
-	}
-	return nullptr;
-}
+// Each definition requires the corresponding declaration in the header file
+// using DECLARE_STATIC_GLOBAL_GETTER in Context.h
+// Example.h => PExample* GetExample();
+DEFINE_STATIC_GLOBAL_AND_GETTER(Engine, Application);
+DEFINE_STATIC_GLOBAL_AND_GETTER(Renderer, Application);
+DEFINE_STATIC_GLOBAL_AND_GETTER(Game, Engine);
+DEFINE_STATIC_GLOBAL_AND_GETTER(World, Game);
+DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
+DEFINE_STATIC_GLOBAL_AND_GETTER(Grid, World);
+DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
 {
@@ -188,7 +163,6 @@ bool PApplication::OnEvent(void* Event)
 		case SDL_EVENT_MOUSE_WHEEL:
 			{
 				OnMiddleMouseScroll(SDLEvent->wheel.y);
-				mRenderer->SetZoomFactor(mRenderer->GetZoomFactor() + SDLEvent->wheel.y);
 				break;
 			}
 		default:
