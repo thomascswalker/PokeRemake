@@ -16,51 +16,61 @@ void PCharacter::Start()
 
 void PCharacter::Tick(float DeltaTime)
 {
-	if (IsMoving())
+	if (!IsMoving())
 	{
-		bool bCloseEnough = false;
-		switch (mMovementDirection)
-		{
-			case MD_Right:
-				bCloseEnough = mPosition.X >= mTargetPosition.X;
-				break;
-			case MD_Left:
-				bCloseEnough = mPosition.X <= mTargetPosition.X;
-				break;
-			case MD_Down:
-				bCloseEnough = mPosition.Y >= mTargetPosition.Y;
-				break;
-			case MD_Up:
-				bCloseEnough = mPosition.Y <= mTargetPosition.Y;
-				break;
-			default:
-				break;
-		}
+		return;
+	}
+	bool bCloseEnough = false;
+	switch (mMovementDirection)
+	{
+		case MD_Right:
+			bCloseEnough = mPosition.X >= mTargetPosition.X;
+			break;
+		case MD_Left:
+			bCloseEnough = mPosition.X <= mTargetPosition.X;
+			break;
+		case MD_Down:
+			bCloseEnough = mPosition.Y >= mTargetPosition.Y;
+			break;
+		case MD_Up:
+			bCloseEnough = mPosition.Y <= mTargetPosition.Y;
+			break;
+		default:
+			break;
+	}
 
-		if (bCloseEnough)
+	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
+	{
+		mVelocity = FVector2(0, 0);	 // Stop moving when at target position
+		mPosition = mTargetPosition; // Snap to target position
+
+		if (const auto CurrentTile = GetCurrentTile())
 		{
-			mVelocity = FVector2(0, 0);	 // Stop moving when at target position
-			mPosition = mTargetPosition; // Snap to target position
+			LogDebug("Tile [{}, {}]", CurrentTile->X, CurrentTile->Y);
 		}
 		else
 		{
-			switch (mMovementDirection)
-			{
-				case MD_Right:
-					mPosition.X += PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Left:
-					mPosition.X -= PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Down:
-					mPosition.Y += PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Up:
-					mPosition.Y -= PLAYER_SPEED * DeltaTime;
-					break;
-				default:
-					break; // No movement direction set
-			}
+			LogDebug("Tile is null");
+		}
+	}
+	else
+	{
+		switch (mMovementDirection)
+		{
+			case MD_Right:
+				mPosition.X += PLAYER_SPEED * DeltaTime;
+				break;
+			case MD_Left:
+				mPosition.X -= PLAYER_SPEED * DeltaTime;
+				break;
+			case MD_Down:
+				mPosition.Y += PLAYER_SPEED * DeltaTime;
+				break;
+			case MD_Up:
+				mPosition.Y -= PLAYER_SPEED * DeltaTime;
+				break;
+			default:
+				break; // No movement direction set
 		}
 	}
 }
@@ -108,4 +118,9 @@ void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 	{
 		mMovementDirection = MD_Up;
 	}
+}
+
+PTile* PCharacter::GetCurrentTile() const
+{
+	return GetGrid()->GetTileAtPosition(mPosition);
 }

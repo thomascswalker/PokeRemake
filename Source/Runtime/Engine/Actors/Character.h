@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "Grid.h"
 
 enum EMovementDirection
 {
@@ -33,4 +34,6 @@ public:
 	bool AtTargetPosition() const { return mPosition == mTargetPosition; }
 	bool IsMoving() const { return mTargetPosition != mPosition; }
 	void UpdateMovementDirection(const FVector2& Direction);
+
+	PTile* GetCurrentTile() const;
 };

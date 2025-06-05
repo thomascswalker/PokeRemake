@@ -51,6 +51,19 @@ void PGrid::Draw(const PRenderer* Renderer) const
 		}
 	}
 }
+PTile* PGrid::GetTileAtPosition(const FVector2& Position)
+{
+	for (auto& Tile : mTiles)
+	{
+		FVector2 TilePosition = Tile.GetPosition();
+		if (Position.X >= TilePosition.X && Position.X < TilePosition.X + TILE_SIZE
+			&& Position.Y >= TilePosition.Y && Position.Y < TilePosition.Y + TILE_SIZE)
+		{
+			return &Tile;
+		}
+	}
+	return nullptr; // No tile found at the given position
+}
 
 void PGrid::OnKeyUp(uint32_t KeyCode)
 {

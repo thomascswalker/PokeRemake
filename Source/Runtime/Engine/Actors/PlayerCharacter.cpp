@@ -46,6 +46,14 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 	PCharacter::Tick(DeltaTime);
 }
+void PPlayerCharacter::Draw(const PRenderer* Renderer) const
+{
+	PCharacter::Draw(Renderer);
+
+	FRect R = { 0, 0, 8, 8 };
+	Renderer->SetDrawColor(0, 255, 0, 255);
+	Renderer->DrawFillRectAt(R, mPosition);
+}
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 {

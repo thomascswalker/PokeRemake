@@ -8,6 +8,8 @@ struct PTile
 	int32_t Y;
 
 	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY) {}
+
+	FVector2 GetPosition() const { return FVector2(X * TILE_SIZE, Y * TILE_SIZE); }
 };
 
 class PGrid : public PActor
@@ -21,8 +23,9 @@ public:
 	void Start() override;
 	void Draw(const PRenderer* Renderer) const override;
 
-	bool GetDebugDraw() const { return bDebugDraw; }
-	void SetDebugDraw(bool State) { bDebugDraw = State; }
+	bool   GetDebugDraw() const { return bDebugDraw; }
+	void   SetDebugDraw(bool State) { bDebugDraw = State; }
+	PTile* GetTileAtPosition(const FVector2& Position);
 };
 
 PGrid* GetGrid();
