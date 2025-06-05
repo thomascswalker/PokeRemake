@@ -57,8 +57,8 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 {
 	for (const auto& [K, V] : GetTextures())
 	{
-		auto Surface = SDL_CreateSurfaceFrom(V->GetWidth(), V->GetHeight(),
-											 SDL_PIXELFORMAT_RGBA8888, V->GetData(), V->GetPitch());
+		auto Surface = SDL_CreateSurfaceFrom(V->GetWidth(), V->GetHeight(), SDL_PIXELFORMAT_RGBA32,
+											 V->GetData(), V->GetPitch());
 		if (!Surface)
 		{
 			LogError("Unable to create SDL surface: {}", SDL_GetError());
@@ -76,6 +76,7 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 }
 void PTextureManager::UnloadSDL()
 {
+	LogDebug("Destroying all SDL textures");
 	for (const auto& [K, V] : GetTextures())
 	{
 		SDL_DestroyTexture(V->GetSDLTexture());
