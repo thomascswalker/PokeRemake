@@ -19,7 +19,7 @@ public:
 	explicit PRenderer(SDLContext* InContext) : mContext(InContext), mPipeline(nullptr) {}
 
 	bool Initialize();
-	void PostInitialize();
+	void PostInitialize() const;
 	bool Initialize3D();
 	void Uninitialize() const;
 

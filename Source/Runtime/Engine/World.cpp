@@ -7,6 +7,15 @@ void PWorld::Start()
 {
 	LogDebug("Starting world");
 	mGrid = this->ConstructActor<PGrid>();
+
+	for (const auto& Actor : GetActors())
+	{
+		Actor->Start();
+	}
+	for (const auto& Component : GetComponents())
+	{
+		Component->Start();
+	}
 }
 
 void PWorld::Tick(float DeltaTime)

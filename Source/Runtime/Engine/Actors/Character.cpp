@@ -4,14 +4,10 @@
 #include "Core/Logging.h"
 #include "Engine/World.h"
 
-PCharacter::PCharacter()
-{
-	mBounds = FRect(0, 0, TILE_SIZE, TILE_SIZE);
-}
-
 void PCharacter::Start()
 {
 	bInputAllowed = true;
+	mTargetPosition = mPosition; // To prevent immediate movement on start
 }
 
 void PCharacter::Tick(float DeltaTime)
@@ -42,17 +38,7 @@ void PCharacter::Tick(float DeltaTime)
 	// End movement
 	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
 	{
-		mVelocity = FVector2(0, 0);	 // Stop moving when at target position
 		mPosition = mTargetPosition; // Snap to target position
-
-		if (const auto CurrentTile = GetCurrentTile())
-		{
-			LogDebug("Tile [{}, {}]", CurrentTile->X, CurrentTile->Y);
-		}
-		else
-		{
-			LogDebug("Tile is null");
-		}
 	}
 	// Keep moving towards the target position
 	else
@@ -99,8 +85,19 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 			break;
 	}
 
-	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds, mPosition, Index);
+	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), GetLocalBounds(), mPosition, Index);
 }
+
+FRect PCharacter::GetLocalBounds() const
+{
+	return { 0, 0, TILE_SIZE, TILE_SIZE };
+}
+
+FRect PCharacter::GetWorldBounds() const
+{
+	return { mPosition.X, mPosition.Y, TILE_SIZE, TILE_SIZE };
+}
+
 void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
 {
 	auto TempTargetPosition = Target + mPosition;

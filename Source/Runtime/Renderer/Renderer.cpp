@@ -19,7 +19,7 @@ bool PRenderer::Initialize()
 	return true; // Always true (2D is already initialized in SDLContext)
 }
 
-void PRenderer::PostInitialize()
+void PRenderer::PostInitialize() const
 {
 	PTextureManager::LoadSDL(mContext->Renderer);
 }

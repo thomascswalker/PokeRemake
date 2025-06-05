@@ -55,12 +55,14 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		Renderer->SetDrawColor(255, 0, 0, 50);
 		Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
 	}
+	// Draw target tile
+	if (const auto& Tile = GetGrid()->GetTileAtPosition(mTargetPosition))
+	{
+		Renderer->SetDrawColor(0, 255, 0, 50);
+		Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
+	}
 
 	PCharacter::Draw(Renderer);
-
-	// Draw player character position
-	Renderer->SetDrawColor(0, 255, 0, 255);
-	Renderer->DrawPointAt(mPosition, 2.0f);
 }
 
 void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
