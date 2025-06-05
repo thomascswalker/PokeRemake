@@ -12,14 +12,15 @@
 
 class PWorld : public PObject
 {
-	std::unique_ptr<PGrid>					 mGrid;
+	PGrid*									 mGrid;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() {}
+	PWorld() : mGrid(nullptr) {}
 	~PWorld() override = default;
 
+	void Start() override;
 	void Tick(float DeltaTime) override;
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
@@ -75,6 +76,8 @@ public:
 		}
 		return Components;
 	}
+
+	PGrid* GetGrid() const { return mGrid; }
 };
 
 PWorld* GetWorld();

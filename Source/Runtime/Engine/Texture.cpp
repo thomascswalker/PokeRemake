@@ -36,7 +36,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	PTexture Tex;
 	Tex.mFileName = AbsFileName;
 	auto Data = stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
-	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(int32_t);
+	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
 	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
 	std::memcpy(Tex.mData, Data, DataSize);
 	stbi_image_free(Data);

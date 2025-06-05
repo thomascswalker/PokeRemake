@@ -1,6 +1,13 @@
 #include "World.h"
 
+#include "Core/Logging.h"
 #include "Engine/InputManager.h"
+
+void PWorld::Start()
+{
+	LogDebug("Starting world");
+	mGrid = this->ConstructActor<PGrid>();
+}
 
 void PWorld::Tick(float DeltaTime)
 {

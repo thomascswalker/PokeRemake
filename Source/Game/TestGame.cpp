@@ -11,7 +11,6 @@ void TestGame::PreStart()
 	{
 		W->ConstructActor<PCharacter>();
 		W->ConstructActor<PPlayerCharacter>();
-		W->ConstructActor<PGrid>();
 	}
 
 	PTextureManager::Load("Ash.png");

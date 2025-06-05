@@ -11,6 +11,7 @@ PGame::PGame()
 
 void PGame::Start()
 {
+	mWorld->Start();
 	for (const auto& Actor : mWorld->GetActors())
 	{
 		Actor->Start();
