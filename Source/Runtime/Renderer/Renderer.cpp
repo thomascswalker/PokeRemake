@@ -16,6 +16,10 @@ bool PRenderer::Initialize()
 	{
 		Initialize3D();
 	}
+	else
+	{
+		SDL_SetHint("SDL_RENDER_SCALE_QUALITY", "1"); // Linear
+	}
 	return true; // Always true (2D is already initialized in SDLContext)
 }
 
@@ -312,7 +316,7 @@ void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVecto
 	auto Min = Rect.Min() + ScreenPosition;
 	auto Max = Rect.Max() + ScreenPosition;
 
-	SDL_FRect Source = { 0, 0, 16, 16 };
+	SDL_FRect Source = { 0, 0, (float)Texture->GetWidth(), (float)Texture->GetHeight() };
 	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);

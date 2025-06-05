@@ -3,7 +3,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "SDL3/SDL.h"
 
