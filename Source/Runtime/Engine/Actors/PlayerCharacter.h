@@ -16,6 +16,7 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+	void Draw(const PRenderer* Renderer) const override;
 
 	PCameraComponent* GetCameraComponent() const { return mCameraComponent; }
 };

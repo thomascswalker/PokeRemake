@@ -36,7 +36,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	PTexture Tex;
 	Tex.mFileName = AbsFileName;
 	auto Data = stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
-	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(int32_t);
+	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
 	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
 	std::memcpy(Tex.mData, Data, DataSize);
 	stbi_image_free(Data);
@@ -57,8 +57,8 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 {
 	for (const auto& [K, V] : GetTextures())
 	{
-		auto Surface = SDL_CreateSurfaceFrom(V->GetWidth(), V->GetHeight(),
-											 SDL_PIXELFORMAT_RGBA8888, V->GetData(), V->GetPitch());
+		auto Surface = SDL_CreateSurfaceFrom(V->GetWidth(), V->GetHeight(), SDL_PIXELFORMAT_RGBA32,
+											 V->GetData(), V->GetPitch());
 		if (!Surface)
 		{
 			LogError("Unable to create SDL surface: {}", SDL_GetError());
@@ -76,6 +76,7 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 }
 void PTextureManager::UnloadSDL()
 {
+	LogDebug("Destroying all SDL textures");
 	for (const auto& [K, V] : GetTextures())
 	{
 		SDL_DestroyTexture(V->GetSDLTexture());

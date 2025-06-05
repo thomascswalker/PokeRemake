@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "Grid.h"
 
 enum EMovementDirection
 {
@@ -13,15 +14,12 @@ enum EMovementDirection
 class PCharacter : public PActor
 {
 protected:
-	FRect mBounds;
-
-	FVector2		   mVelocity;
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection = MD_Down;
 	bool			   bInputAllowed = false;
 
 public:
-	PCharacter();
+	PCharacter() = default;
 	~PCharacter() override = default;
 
 	void Start() override;
@@ -29,8 +27,13 @@ public:
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override;
 
-	void SetRelativeTargetPosition(const FVector2& Target) { mTargetPosition = Target + mPosition; }
+	FRect GetLocalBounds() const override;
+	FRect GetWorldBounds() const override;
+
+	void SetRelativeTargetPosition(const FVector2& Target);
 	bool AtTargetPosition() const { return mPosition == mTargetPosition; }
 	bool IsMoving() const { return mTargetPosition != mPosition; }
 	void UpdateMovementDirection(const FVector2& Direction);
+
+	PTile* GetCurrentTile() const;
 };

@@ -11,16 +11,10 @@ PGame::PGame()
 
 void PGame::Start()
 {
-	for (const auto& Actor : mWorld->GetActors())
-	{
-		Actor->Start();
-	}
-	for (const auto& Component : mWorld->GetComponents())
-	{
-		Component->Start();
-	}
+	mWorld->Start();
 	FindActiveCamera();
 }
+
 void PGame::Tick(float DeltaTime)
 {
 	mWorld->Tick(DeltaTime);

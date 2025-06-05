@@ -4,63 +4,61 @@
 #include "Core/Logging.h"
 #include "Engine/World.h"
 
-PCharacter::PCharacter()
-{
-	mBounds = FRect(0, 0, TILE_SIZE, TILE_SIZE);
-}
-
 void PCharacter::Start()
 {
 	bInputAllowed = true;
+	mTargetPosition = mPosition; // To prevent immediate movement on start
 }
 
 void PCharacter::Tick(float DeltaTime)
 {
-	if (IsMoving())
+	if (!IsMoving())
 	{
-		bool bCloseEnough = false;
+		return;
+	}
+	bool bCloseEnough = false;
+	switch (mMovementDirection)
+	{
+		case MD_Right:
+			bCloseEnough = mPosition.X >= mTargetPosition.X;
+			break;
+		case MD_Left:
+			bCloseEnough = mPosition.X <= mTargetPosition.X;
+			break;
+		case MD_Down:
+			bCloseEnough = mPosition.Y >= mTargetPosition.Y;
+			break;
+		case MD_Up:
+			bCloseEnough = mPosition.Y <= mTargetPosition.Y;
+			break;
+		default:
+			break;
+	}
+
+	// End movement
+	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
+	{
+		mPosition = mTargetPosition; // Snap to target position
+	}
+	// Keep moving towards the target position
+	else
+	{
 		switch (mMovementDirection)
 		{
 			case MD_Right:
-				bCloseEnough = mPosition.X >= mTargetPosition.X;
+				mPosition.X += DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Left:
-				bCloseEnough = mPosition.X <= mTargetPosition.X;
+				mPosition.X -= DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Down:
-				bCloseEnough = mPosition.Y >= mTargetPosition.Y;
+				mPosition.Y += DEFAULT_SPEED * DeltaTime;
 				break;
 			case MD_Up:
-				bCloseEnough = mPosition.Y <= mTargetPosition.Y;
+				mPosition.Y -= DEFAULT_SPEED * DeltaTime;
 				break;
 			default:
-				break;
-		}
-
-		if (bCloseEnough)
-		{
-			mVelocity = FVector2(0, 0);	 // Stop moving when at target position
-			mPosition = mTargetPosition; // Snap to target position
-		}
-		else
-		{
-			switch (mMovementDirection)
-			{
-				case MD_Right:
-					mPosition.X += PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Left:
-					mPosition.X -= PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Down:
-					mPosition.Y += PLAYER_SPEED * DeltaTime;
-					break;
-				case MD_Up:
-					mPosition.Y -= PLAYER_SPEED * DeltaTime;
-					break;
-				default:
-					break; // No movement direction set
-			}
+				break; // No movement direction set
 		}
 	}
 }
@@ -87,10 +85,27 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 			break;
 	}
 
-	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), mBounds,
-						   mPosition - FVector2(TILE_SIZE, HALF_TILE_SIZE), Index);
-	Renderer->SetDrawColor(0, 255, 0, 255); // Green color for target position
-	Renderer->DrawPointAt(mTargetPosition);
+	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), GetLocalBounds(), mPosition, Index);
+}
+
+FRect PCharacter::GetLocalBounds() const
+{
+	return { 0, 0, TILE_SIZE, TILE_SIZE };
+}
+
+FRect PCharacter::GetWorldBounds() const
+{
+	return { mPosition.X, mPosition.Y, TILE_SIZE, TILE_SIZE };
+}
+
+void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
+{
+	auto TempTargetPosition = Target + mPosition;
+	if (!GetGrid()->GetTileAtPosition(TempTargetPosition))
+	{
+		return;
+	}
+	mTargetPosition = Target + mPosition;
 }
 void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 {
@@ -110,4 +125,9 @@ void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 	{
 		mMovementDirection = MD_Up;
 	}
+}
+
+PTile* PCharacter::GetCurrentTile() const
+{
+	return GetGrid()->GetTileAtPosition(mPosition);
 }

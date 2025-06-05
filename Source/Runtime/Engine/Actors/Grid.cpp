@@ -1,119 +1,86 @@
+// ReSharper disable CppDFAUnreachableCode
+
 #include "Grid.h"
 
+#include "Core/Logging.h"
 #include "Engine/Engine.h"
 #include "Engine/InputManager.h"
 
-#include <cmath>
+constexpr int32_t GridSize = 40; // Example grid size
 
-PGrid::PGrid() : mOffsetX(0), mOffsetY(0)
+void PTile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 {
-	if (IInputManager* InputManager = GetInputManager())
-	{
-		InputManager->KeyDown.AddRaw(this, &PGrid::OnKeyDown);
-		InputManager->KeyUp.AddRaw(this, &PGrid::OnKeyUp);
-	}
+	const FRect	   Rect = { 0, 0, TILE_SIZE, TILE_SIZE };
+	const FVector2 Position = GetPosition();
+
+	// Rainbow gradient along X/Y axes
+	const auto Red = static_cast<float>(X) / static_cast<float>(GridSize) * 255.0f;
+	const auto Green = static_cast<float>(Y) / static_cast<float>(GridSize) * 255.0f;
+	const auto Blue = 128;
+
+	Renderer->SetDrawColor(Red, Green, Blue, 255);
+	Renderer->DrawRectAt(Rect, Position + Offset);
+
+	Renderer->SetDrawColor(255, 255, 0, 255);
+	Renderer->DrawPointAt(Position, 2.0f); // Draw a point at the tile's position
 }
 
-void PGrid::Tick(float DeltaTime)
+void PGrid::Start()
 {
-	const float Speed = 0.25f * DeltaTime;
-	if (mKeysDown[0]) // Right
+	// Instantiate each tile in the grid
+	for (int Row = 0; Row < GridSize; ++Row)
 	{
-		AddOffsetX(-Speed);
+		for (int Col = 0; Col < GridSize; ++Col)
+		{
+			mTiles.emplace_back(Col, Row);
+		}
 	}
-	if (mKeysDown[1]) // Left
+
+	// Bind input
+	if (const auto Input = GetInputManager())
 	{
-		AddOffsetX(Speed);
+		Input->KeyUp.AddRaw(this, &PGrid::OnKeyUp);
 	}
-	if (mKeysDown[2]) // Down
+	else
 	{
-		AddOffsetY(-Speed);
-	}
-	if (mKeysDown[3]) // Up
-	{
-		AddOffsetY(Speed);
+		LogError("Unable to bind input for PGrid.");
 	}
 }
 
 void PGrid::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(100, 100, 100, 255);
-
-	const float ScreenWidth = Renderer->GetScreenWidth();
-	const float ScreenHeight = Renderer->GetScreenHeight();
-
-	// Compute the origin (center of the screen - half of a cell size in order to
-	// center the grid).
-	auto	   ZoomFactor = Renderer->GetZoomFactor();
-	const auto OriginX = ScreenWidth / 2.0f - ZoomFactor / 2.0f;
-	const auto OriginY = ScreenHeight / 2.0f - ZoomFactor / 2.0f;
-
-	// Compute the number of steps to draw based on the screen size and zoom factor. Only do this
-	// for the width, in turn forcing the grid cells to be square.
-	const float Steps = ScreenWidth / ZoomFactor;
-
-	// Compute the render offset given the world offset and zoom factor.
-	// This gives the perception of an infinite grid.
-	const float OffsetX = std::fmod(mOffsetX, ZoomFactor);
-	const float OffsetY = std::fmod(mOffsetY, ZoomFactor);
-
-	float X0, X1, Y0, Y1;
-
-	// Draw vertical lines
-	for (int32_t Index = -Steps; Index <= Steps; Index++)
+	if (bDebugDraw)
 	{
-		X0 = OffsetX + OriginX - Index * ZoomFactor;
-		X1 = X0;
-		Y0 = 0;
-		Y1 = ScreenHeight;
-		Renderer->DrawLine(X0, Y0, X1, Y1);
-	}
-
-	// Draw horizontal lines
-	for (int32_t Index = -Steps; Index <= Steps; Index++)
-	{
-		X0 = 0;
-		X1 = ScreenWidth;
-		Y0 = OffsetY + OriginY - Index * ZoomFactor;
-		Y1 = Y0;
-		Renderer->DrawLine(X0, Y0, X1, Y1);
+		for (const auto& Tile : mTiles)
+		{
+			Tile.Draw(Renderer, mPosition);
+		}
 	}
 }
-void PGrid::OnKeyDown(uint32_t ScanCode)
+
+PTile* PGrid::GetTileAtPosition(const FVector2& Position)
 {
-	switch (ScanCode)
+	for (auto& Tile : mTiles)
 	{
-		case KB_Right: // Right
-			mKeysDown[0] = true;
-			break;
-		case KB_Left: // Left
-			mKeysDown[1] = true;
-			break;
-		case KB_Down: // Down
-			mKeysDown[2] = true;
-			break;
-		case KB_Up: // Up
-			mKeysDown[3] = true;
-			break;
-		default:
-			break;
+		const FVector2 TilePosition = Tile.GetPosition();
+		if (Position.X >= TilePosition.X					 // Min X
+			&& Position.X < TilePosition.X + HALF_TILE_SIZE	 // Max X
+			&& Position.Y >= TilePosition.Y					 // Min Y
+			&& Position.Y < TilePosition.Y + HALF_TILE_SIZE) // Max Y
+		{
+			// Return a pointer to the tile
+			return &Tile;
+		}
 	}
+	return nullptr; // No tile found at the given position
 }
-void PGrid::OnKeyUp(uint32_t ScanCode)
+
+void PGrid::OnKeyUp(uint32_t KeyCode)
 {
-	switch (ScanCode)
+	switch (KeyCode)
 	{
-		case KB_Right: // Right
-			mKeysDown[0] = false;
-			break;
-		case KB_Left: // Left
-			mKeysDown[1] = false;
-			break;
-		case KB_Down: // Down
-			mKeysDown[2] = false;
-			break;
-		case KB_Up: // Up
-			mKeysDown[3] = false;
+		case KB_G:
+			bDebugDraw = !bDebugDraw;
 			break;
 		default:
 			break;

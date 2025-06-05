@@ -61,6 +61,18 @@ PCameraView* GetActiveCameraView()
 	return nullptr;
 }
 
+PGrid* GetGrid()
+{
+	if (const auto World = GetWorld())
+	{
+		if (const auto Grid = World->GetGrid())
+		{
+			return Grid;
+		}
+	}
+	return nullptr;
+}
+
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
 {
 	LogInfo("Constructing Application");
@@ -216,10 +228,12 @@ void PApplication::OnKeyDown(uint32_t ScanCode)
 {
 	KeyDown.Broadcast(ScanCode);
 }
+
 void PApplication::OnKeyUp(uint32_t ScanCode)
 {
 	KeyUp.Broadcast(ScanCode);
 }
+
 void PApplication::OnMiddleMouseScroll(float Delta)
 {
 	MouseScroll.Broadcast(Delta);

@@ -12,14 +12,15 @@
 
 class PWorld : public PObject
 {
-	std::unique_ptr<PGrid>					 mGrid;
+	PGrid*									 mGrid;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() {}
+	PWorld() : mGrid(nullptr) {}
 	~PWorld() override = default;
 
+	void Start() override;
 	void Tick(float DeltaTime) override;
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
@@ -39,14 +40,18 @@ public:
 		}
 		return Actors;
 	}
-	std::vector<IDrawable*> GetDrawables() const
+
+	std::vector<IDrawable*> GetDrawables(EDrawPriority Priority) const
 	{
 		std::vector<IDrawable*> Drawables;
 		for (const auto& Actor : mActors)
 		{
 			if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
 			{
-				Drawables.push_back(Drawable);
+				if (Drawable->GetPriority() == Priority)
+				{
+					Drawables.push_back(Drawable);
+				}
 			}
 		}
 		return Drawables;
@@ -71,6 +76,8 @@ public:
 		}
 		return Components;
 	}
+
+	PGrid* GetGrid() const { return mGrid; }
 };
 
 PWorld* GetWorld();
