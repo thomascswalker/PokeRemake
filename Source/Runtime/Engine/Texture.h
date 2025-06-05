@@ -8,6 +8,7 @@
 #include "SDL3/SDL.h"
 
 #define TEXTURE_ASH "Ash.png"
+#define TEXTURE_GARY "Gary.png"
 
 class PTexture
 {

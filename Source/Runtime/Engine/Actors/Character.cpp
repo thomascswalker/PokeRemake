@@ -8,6 +8,8 @@ void PCharacter::Start()
 {
 	bInputAllowed = true;
 	mTargetPosition = mPosition; // To prevent immediate movement on start
+
+	mTexture = PTextureManager::Get(TEXTURE_GARY);
 }
 
 void PCharacter::Tick(float DeltaTime)
@@ -85,7 +87,7 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 			break;
 	}
 
-	Renderer->DrawSpriteAt(PTextureManager::Get(TEXTURE_ASH), GetLocalBounds(), mPosition, Index);
+	Renderer->DrawSpriteAt(mTexture, GetLocalBounds(), mPosition, Index);
 }
 
 FRect PCharacter::GetLocalBounds() const
@@ -100,8 +102,14 @@ FRect PCharacter::GetWorldBounds() const
 
 void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
 {
-	auto TempTargetPosition = Target + mPosition;
-	if (!GetGrid()->GetTileAtPosition(TempTargetPosition))
+	const auto TempTargetPosition = Target + mPosition;
+	const auto Tile = GetGrid()->GetTileAtPosition(TempTargetPosition);
+	if (!Tile)
+	{
+		return;
+	}
+	const auto Actor = Tile->GetActor();
+	if (Actor && Actor->IsBlocking())
 	{
 		return;
 	}

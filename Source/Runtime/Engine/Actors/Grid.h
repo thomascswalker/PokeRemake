@@ -11,6 +11,7 @@ struct PTile
 
 	FVector2 GetPosition() const { return FVector2(X * TILE_SIZE, Y * TILE_SIZE); }
 	void	 Draw(const PRenderer* Renderer, const FVector2& Offset) const;
+	PActor*	 GetActor() const;
 };
 
 class PGrid : public PActor

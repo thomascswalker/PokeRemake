@@ -17,6 +17,8 @@ void PPlayerCharacter::Start()
 	}
 
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
+
+	mTexture = PTextureManager::Get(TEXTURE_ASH);
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
@@ -47,6 +49,7 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 	PCharacter::Tick(DeltaTime);
 }
+
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
 	// Draw current tile under the character

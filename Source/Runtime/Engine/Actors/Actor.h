@@ -7,8 +7,10 @@
 class PActor : public PObject, public IDrawable
 {
 protected:
-	FVector2 mPosition;
-	FVector2 mSize;
+	FVector2  mPosition;
+	FVector2  mSize;
+	PTexture* mTexture = nullptr;
+	bool	  bBlocking = true;
 
 public:
 	PActor() = default;
@@ -57,6 +59,7 @@ public:
 	void	 AddPosition(const FVector2& Position) { mPosition += Position; }
 
 	void MoveToTile(int32_t X, int32_t Y);
+	bool IsBlocking() const { return bBlocking; }
 
 	template <typename T, typename... ArgsType>
 	T* AddComponent(ArgsType&&... Args)
