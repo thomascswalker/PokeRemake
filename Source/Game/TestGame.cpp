@@ -17,6 +17,7 @@ void TestGame::PreStart()
 
 	LogDebug("PreStart: Loading textures.");
 	PTextureManager::Load("Ash.png");
+	PTextureManager::Load("Gary.png");
 }
 
 void TestGame::Start()
