@@ -6,7 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/InputManager.h"
 
-constexpr int32_t GridSize = 40; // Example grid size
+constexpr int32_t GridSize = 20; // Example grid size
 
 void PTile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 {
@@ -19,7 +19,7 @@ void PTile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 	const auto Blue = 128;
 
 	Renderer->SetDrawColor(Red, Green, Blue, 255);
-	Renderer->DrawRectAt(Rect, Position + Offset);
+	Renderer->DrawFillRectAt(Rect, Position + Offset);
 
 	Renderer->SetDrawColor(255, 255, 0, 255);
 	Renderer->DrawPointAt(Position, 2.0f); // Draw a point at the tile's position
@@ -39,6 +39,8 @@ PActor* PTile::GetActor() const
 
 void PGrid::Start()
 {
+	mPriority = DP_BACKGROUND;
+
 	// Instantiate each tile in the grid
 	for (int Row = 0; Row < GridSize; ++Row)
 	{
@@ -59,6 +61,7 @@ void PGrid::Start()
 	}
 
 	bBlocking = false;
+	mTexture = PTextureManager::Load("PalletTown.png");
 }
 
 void PGrid::Draw(const PRenderer* Renderer) const
@@ -70,6 +73,13 @@ void PGrid::Draw(const PRenderer* Renderer) const
 			Tile.Draw(Renderer, mPosition);
 		}
 	}
+
+	Renderer->DrawTextureAt(mTexture, GetLocalBounds(), { 0, 0 });
+}
+
+FRect PGrid::GetLocalBounds() const
+{
+	return { 0, 0, GridSize * HALF_TILE_SIZE, GridSize * HALF_TILE_SIZE };
 }
 
 PTile* PGrid::GetTileAtPosition(const FVector2& Position)

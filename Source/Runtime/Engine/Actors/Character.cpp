@@ -8,6 +8,7 @@ void PCharacter::Start()
 {
 	bInputAllowed = true;
 	mTargetPosition = mPosition; // To prevent immediate movement on start
+	mPriority = DP_FOREGROUND;
 
 	mTexture = PTextureManager::Get(TEXTURE_GARY);
 }
@@ -41,27 +42,37 @@ void PCharacter::Tick(float DeltaTime)
 	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
 	{
 		mPosition = mTargetPosition; // Snap to target position
+		mDistanceTraveled = 0.0f;	 // Reset distance traveled
+		mAnimationCycle = false;	 // Reset animation cycle
 	}
 	// Keep moving towards the target position
 	else
 	{
+		float Distance = DEFAULT_SPEED * DeltaTime;
 		switch (mMovementDirection)
 		{
 			case MD_Right:
-				mPosition.X += DEFAULT_SPEED * DeltaTime;
+				mPosition.X += Distance;
 				break;
 			case MD_Left:
-				mPosition.X -= DEFAULT_SPEED * DeltaTime;
+				mPosition.X -= Distance;
 				break;
 			case MD_Down:
-				mPosition.Y += DEFAULT_SPEED * DeltaTime;
+				mPosition.Y += Distance;
 				break;
 			case MD_Up:
-				mPosition.Y -= DEFAULT_SPEED * DeltaTime;
+				mPosition.Y -= Distance;
 				break;
 			default:
 				break; // No movement direction set
 		}
+		mDistanceTraveled += Distance;
+	}
+
+	// Update the animation cycle
+	if (mDistanceTraveled > HALF_TILE_SIZE && !mAnimationCycle)
+	{
+		mAnimationCycle = true;
 	}
 }
 
@@ -71,16 +82,44 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	switch (mMovementDirection)
 	{
 		case MD_Right:
-			Index = 9; // Walk right
+			if (IsMoving())
+			{
+				Index = mAnimationCycle ? SI_WalkRight : SI_IdleRight;
+			}
+			else
+			{
+				Index = SI_IdleRight;
+			}
 			break;
 		case MD_Left:
-			Index = 7; // Walk left
+			if (IsMoving())
+			{
+				Index = mAnimationCycle ? SI_WalkLeft : SI_IdleLeft;
+			}
+			else
+			{
+				Index = SI_IdleLeft;
+			}
 			break;
 		case MD_Down:
-			Index = 0; // Walk down
+			if (IsMoving())
+			{
+				Index = mAnimationCycle ? SI_WalkDownA : SI_WalkDownB;
+			}
+			else
+			{
+				Index = SI_IdleDown;
+			}
 			break;
 		case MD_Up:
-			Index = 3; // Walk up
+			if (IsMoving())
+			{
+				Index = mAnimationCycle ? SI_WalkUpA : SI_WalkUpB;
+			}
+			else
+			{
+				Index = SI_IdleUp;
+			}
 			break;
 		default:
 			Index = 0; // Default to walk down if no direction is set

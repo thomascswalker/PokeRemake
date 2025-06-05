@@ -10,6 +10,7 @@
 
 void PPlayerCharacter::Start()
 {
+	PCharacter::Start();
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
@@ -18,7 +19,6 @@ void PPlayerCharacter::Start()
 	}
 
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
-
 	mTexture = PTextureManager::Get(TEXTURE_ASH);
 }
 

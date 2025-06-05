@@ -11,12 +11,29 @@ enum EMovementDirection
 	MD_Down
 };
 
+enum ESpriteIndex
+{
+	SI_WalkDownA,
+	SI_IdleDown,
+	SI_WalkDownB,
+	SI_WalkUpA,
+	SI_IdleUp,
+	SI_WalkUpB,
+	SI_IdleLeft,
+	SI_WalkLeft,
+	SI_IdleRight,
+	SI_WalkRight
+};
+
 class PCharacter : public PActor
 {
 protected:
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection = MD_Down;
 	bool			   bInputAllowed = false;
+
+	bool  mAnimationCycle = false;
+	float mDistanceTraveled = 0.0f;
 
 public:
 	PCharacter() = default;
