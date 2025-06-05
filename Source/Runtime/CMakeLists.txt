@@ -37,6 +37,8 @@ set(SOURCES
         Core/Files.h
         Engine/Mesh.h
         Core/Constants.h
+        Core/Settings.h
+        Core/Settings.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

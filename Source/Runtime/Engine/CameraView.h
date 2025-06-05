@@ -46,4 +46,4 @@ public:
 	}
 };
 
-PCameraView* GetActiveCameraView();
+DECLARE_STATIC_GLOBAL_GETTER(CameraView)

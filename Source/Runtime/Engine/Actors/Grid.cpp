@@ -63,7 +63,7 @@ void PGrid::Start()
 
 void PGrid::Draw(const PRenderer* Renderer) const
 {
-	if (bDebugDraw)
+	if (GetSettings()->bDebugDraw)
 	{
 		for (const auto& Tile : mTiles)
 		{

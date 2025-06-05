@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Components/CameraComponent.h"
+#include "Core/Settings.h"
 #include "World.h"
 
 class PGame : public PObject
 {
 protected:
 	/* Actors/Objects */
-	std::shared_ptr<PWorld> mWorld;
+	std::shared_ptr<PWorld>	   mWorld;
+	std::shared_ptr<PSettings> mSettings;
 
 	PCameraView* mActiveCameraView = nullptr;
 
@@ -21,7 +23,8 @@ public:
 	PWorld* GetWorld() const { return mWorld.get(); }
 
 	void		 FindActiveCamera();
-	PCameraView* GetActiveCameraView() const { return mActiveCameraView; }
+	PCameraView* GetCameraView() const { return mActiveCameraView; }
+	PSettings*	 GetSettings() const { return mSettings.get(); }
 };
 
-PGame* GetGame();
+DECLARE_STATIC_GLOBAL_GETTER(Game)

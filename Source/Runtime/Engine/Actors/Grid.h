@@ -30,4 +30,4 @@ public:
 	PTile* GetTileAtPosition(const FVector2& Position);
 };
 
-PGrid* GetGrid();
+DECLARE_STATIC_GLOBAL_GETTER(Grid)
