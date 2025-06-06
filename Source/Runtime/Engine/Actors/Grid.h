@@ -4,8 +4,10 @@
 
 struct PTile
 {
-	int32_t X;
-	int32_t Y;
+	int32_t	  X;
+	int32_t	  Y;
+	bool	  bWalkable = false;
+	PTexture* Texture = nullptr;
 
 	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY) {}
 

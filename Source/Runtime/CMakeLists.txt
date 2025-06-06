@@ -39,6 +39,7 @@ set(SOURCES
         Core/Constants.h
         Core/Settings.h
         Core/Settings.cpp
+        Engine/Chunk.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

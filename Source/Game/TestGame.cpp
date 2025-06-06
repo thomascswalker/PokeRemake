@@ -11,8 +11,8 @@ void TestGame::PreStart()
 	LogDebug("PreStart: Constructing actors.");
 	if (const auto W = GetWorld())
 	{
-		W->ConstructActor<PCharacter>()->MoveToTile(10, 10);
-		W->ConstructActor<PPlayerCharacter>()->MoveToTile(12, 10);
+		W->ConstructActor<PCharacter>()->MoveToTile(10, 6);
+		W->ConstructActor<PPlayerCharacter>()->MoveToTile(8, 8);
 	}
 
 	LogDebug("PreStart: Loading textures.");
