@@ -126,7 +126,7 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 			break;
 	}
 
-	Renderer->DrawSpriteAt(mTexture, GetLocalBounds(), mPosition, Index);
+	Renderer->DrawSpriteAt(mTexture, GetLocalBounds(), GetDrawPosition(), Index);
 }
 
 FRect PCharacter::GetLocalBounds() const
@@ -144,6 +144,10 @@ void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
 	const auto TempTargetPosition = Target + mPosition;
 	const auto Tile = GetGrid()->GetTileAtPosition(TempTargetPosition);
 	if (!Tile)
+	{
+		return;
+	}
+	if (!Tile->bWalkable)
 	{
 		return;
 	}

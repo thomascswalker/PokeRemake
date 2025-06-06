@@ -48,8 +48,9 @@ public:
 	void Start() override {}
 	void End() override {}
 
-	void Tick(float DeltaTime) override {}
-	void Draw(const PRenderer* Renderer) const override = 0;
+	void	 Tick(float DeltaTime) override {}
+	void	 Draw(const PRenderer* Renderer) const override = 0;
+	FVector2 GetDrawPosition() const { return mPosition - FVector2(0, 25); }
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }

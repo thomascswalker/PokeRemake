@@ -6,23 +6,54 @@
 #include "Engine/Engine.h"
 #include "Engine/InputManager.h"
 
-constexpr int32_t GridSize = 20; // Example grid size
+constexpr int32_t GridWidth = 20; // Example grid size
+constexpr int32_t GridHeight = 18;
+static int		  PaletteTownTileData[18][20] = {
+	   { 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 },
+	   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	   { 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+};
 
 void PTile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 {
-	const FRect	   Rect = { 0, 0, TILE_SIZE, TILE_SIZE };
+	const FRect	   Source = { float(X * 16), float(Y * 16), 16,
+							  16 }; // Assuming each tile is 16x16 pixels
+	const FRect	   Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
 	const FVector2 Position = GetPosition();
 
-	// Rainbow gradient along X/Y axes
-	const auto Red = static_cast<float>(X) / static_cast<float>(GridSize) * 255.0f;
-	const auto Green = static_cast<float>(Y) / static_cast<float>(GridSize) * 255.0f;
-	const auto Blue = 128;
+	Renderer->DrawTextureAt(Texture, Source, Dest, Position);
 
-	Renderer->SetDrawColor(Red, Green, Blue, 255);
-	Renderer->DrawFillRectAt(Rect, Position + Offset);
-
-	Renderer->SetDrawColor(255, 255, 0, 255);
-	Renderer->DrawPointAt(Position, 2.0f); // Draw a point at the tile's position
+	// Debug drawing
+	if (GetSettings()->bDebugDraw)
+	{
+		if (bWalkable)
+		{
+			Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
+			Renderer->DrawRectAt(Dest, Position + Offset);
+		}
+		else
+		{
+			Renderer->SetDrawColor(255, 0, 0, 128); // Red for non-walkable tiles
+			Renderer->DrawFillRectAt(Dest, Position + Offset);
+		}
+		Renderer->SetDrawColor(255, 255, 0, 255);
+		Renderer->DrawPointAt(Position, 2.0f); // Draw a point at the tile's position
+	}
 }
 
 PActor* PTile::GetActor() const
@@ -41,12 +72,17 @@ void PGrid::Start()
 {
 	mPriority = DP_BACKGROUND;
 
+	bBlocking = false;
+	mTexture = PTextureManager::Load("PalletTown.png");
+
 	// Instantiate each tile in the grid
-	for (int Row = 0; Row < GridSize; ++Row)
+	for (int Row = 0; Row < GridHeight; ++Row)
 	{
-		for (int Col = 0; Col < GridSize; ++Col)
+		for (int Col = 0; Col < GridWidth; ++Col)
 		{
-			mTiles.emplace_back(Col, Row);
+			auto Tile = &mTiles.emplace_back(Col, Row);
+			Tile->bWalkable = !PaletteTownTileData[Row][Col];
+			Tile->Texture = mTexture;
 		}
 	}
 
@@ -59,27 +95,19 @@ void PGrid::Start()
 	{
 		LogError("Unable to bind input for PGrid.");
 	}
-
-	bBlocking = false;
-	mTexture = PTextureManager::Load("PalletTown.png");
 }
 
 void PGrid::Draw(const PRenderer* Renderer) const
 {
-	if (GetSettings()->bDebugDraw)
+	for (const auto& Tile : mTiles)
 	{
-		for (const auto& Tile : mTiles)
-		{
-			Tile.Draw(Renderer, mPosition);
-		}
+		Tile.Draw(Renderer, mPosition);
 	}
-
-	Renderer->DrawTextureAt(mTexture, GetLocalBounds(), { 0, 0 });
 }
 
 FRect PGrid::GetLocalBounds() const
 {
-	return { 0, 0, GridSize * HALF_TILE_SIZE, GridSize * HALF_TILE_SIZE };
+	return { 0, 0, GridWidth * HALF_TILE_SIZE, GridHeight * HALF_TILE_SIZE };
 }
 
 PTile* PGrid::GetTileAtPosition(const FVector2& Position)

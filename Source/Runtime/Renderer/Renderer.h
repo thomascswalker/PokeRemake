@@ -42,7 +42,8 @@ public:
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;
 	void DrawRectAt(const FRect& Rect, const FVector2& Position) const;
 	void DrawFillRectAt(const FRect& Rect, const FVector2& Position) const;
-	void DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const;
+	void DrawTextureAt(PTexture* Texture, const FRect& Source, const FRect& Dest,
+					   const FVector2& Position) const;
 	void DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
 					  int32_t Index) const;
 

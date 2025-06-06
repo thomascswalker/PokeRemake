@@ -304,7 +304,8 @@ void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) cons
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
-void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVector2& Position) const
+void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Source, const FRect& Dest,
+							  const FVector2& Position) const
 {
 	if (!Texture)
 	{
@@ -313,13 +314,13 @@ void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Rect, const FVecto
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
 	auto ScreenPosition = WorldToScreen(Position);
-	auto Min = Rect.Min() + ScreenPosition;
-	auto Max = Rect.Max() + ScreenPosition;
+	auto Min = Dest.Min() + ScreenPosition;
+	auto Max = Dest.Max() + ScreenPosition;
 
-	SDL_FRect Source = { 0, 0, (float)Texture->GetWidth(), (float)Texture->GetHeight() };
-	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
+	SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
-	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
 void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
 							 int32_t Index) const
