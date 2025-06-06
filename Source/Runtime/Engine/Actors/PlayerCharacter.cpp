@@ -19,7 +19,7 @@ void PPlayerCharacter::Start()
 	}
 
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
-	mTexture = PTextureManager::Get(TEXTURE_ASH);
+	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
@@ -27,25 +27,22 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	// Start movement
 	if (!IsMoving() && mInputState.any())
 	{
-		FVector2 Target;
 		if (mInputState[0]) // Right
 		{
-			Target = { TILE_SIZE, 0 };
+			Move(MD_Right);
 		}
 		else if (mInputState[1]) // Left
 		{
-			Target = { -TILE_SIZE, 0 };
+			Move(MD_Left);
 		}
 		else if (mInputState[2]) // Down
 		{
-			Target = { 0, TILE_SIZE };
+			Move(MD_Down);
 		}
 		else if (mInputState[3]) // Up
 		{
-			Target = { 0, -TILE_SIZE };
+			Move(MD_Up);
 		}
-		SetRelativeTargetPosition(Target);
-		UpdateMovementDirection(Target);
 	}
 
 	PCharacter::Tick(DeltaTime);

@@ -2,15 +2,17 @@
 
 #include "Core/Vector.h"
 #include "Engine/Object.h"
+#include "Engine/Sprite.h"
 #include "Renderer/IDrawable.h"
 
 class PActor : public PObject, public IDrawable
 {
 protected:
-	FVector2  mPosition;
-	FVector2  mSize;
-	PTexture* mTexture = nullptr;
-	bool	  bBlocking = true;
+	FVector2 mPosition;
+	FVector2 mSize;
+
+	PSprite mSprite{};
+	bool	bBlocking = true;
 
 public:
 	PActor() = default;
@@ -50,7 +52,7 @@ public:
 
 	void	 Tick(float DeltaTime) override {}
 	void	 Draw(const PRenderer* Renderer) const override = 0;
-	FVector2 GetDrawPosition() const { return mPosition - FVector2(0, 25); }
+	FVector2 GetDrawPosition() const;
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }

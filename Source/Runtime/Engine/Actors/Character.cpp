@@ -10,15 +10,46 @@ void PCharacter::Start()
 	mTargetPosition = mPosition; // To prevent immediate movement on start
 	mPriority = DP_FOREGROUND;
 
-	mTexture = PTextureManager::Get(TEXTURE_GARY);
+	mSprite = PSprite();
+	mSprite.SetTexture(PTextureManager::Get(TEXTURE_GARY));
+	mSprite.AddAnimation("WalkRight", { SI_WalkRight, SI_IdleRight });
+	mSprite.AddAnimation("WalkLeft", { SI_WalkLeft, SI_IdleLeft });
+	mSprite.AddAnimation("WalkUp", { SI_WalkUpA, SI_WalkUpB });
+	mSprite.AddAnimation("WalkDown", { SI_WalkDownA, SI_WalkDownB });
+	mSprite.AddAnimation("IdleRight", { SI_IdleRight });
+	mSprite.AddAnimation("IdleLeft", { SI_IdleLeft });
+	mSprite.AddAnimation("IdleUp", { SI_IdleUp });
+	mSprite.AddAnimation("IdleDown", { SI_IdleDown });
 }
 
 void PCharacter::Tick(float DeltaTime)
 {
+	mSprite.Tick(DeltaTime);
+
+	// If we're not moving, just exit
 	if (!IsMoving())
 	{
+		switch (mMovementDirection)
+		{
+			case MD_Right:
+				mSprite.SetCurrentAnimation("IdleRight");
+				break;
+			case MD_Left:
+				mSprite.SetCurrentAnimation("IdleLeft");
+				break;
+			case MD_Down:
+				mSprite.SetCurrentAnimation("IdleDown");
+				break;
+			case MD_Up:
+				mSprite.SetCurrentAnimation("IdleUp");
+				break;
+			default:
+				break; // No movement direction set
+		}
 		return;
 	}
+
+	// Are we close enough to snap to the target position?
 	bool bCloseEnough = false;
 	switch (mMovementDirection)
 	{
@@ -48,7 +79,11 @@ void PCharacter::Tick(float DeltaTime)
 	// Keep moving towards the target position
 	else
 	{
-		float Distance = DEFAULT_SPEED * DeltaTime;
+		// Kind of arbitrarily divide the distance traveled by 2 to
+		// make the character move at a reasonable speed.
+		const float Distance = DEFAULT_CHAR_SPEED * DeltaTime * 0.5f;
+
+		// Add distance traveled in the corresponding direction to the current position
 		switch (mMovementDirection)
 		{
 			case MD_Right:
@@ -68,65 +103,12 @@ void PCharacter::Tick(float DeltaTime)
 		}
 		mDistanceTraveled += Distance;
 	}
-
-	// Update the animation cycle
-	if (mDistanceTraveled > HALF_TILE_SIZE && !mAnimationCycle)
-	{
-		mAnimationCycle = true;
-	}
 }
 
 void PCharacter::Draw(const PRenderer* Renderer) const
 {
-	int Index = 0;
-	switch (mMovementDirection)
-	{
-		case MD_Right:
-			if (IsMoving())
-			{
-				Index = mAnimationCycle ? SI_WalkRight : SI_IdleRight;
-			}
-			else
-			{
-				Index = SI_IdleRight;
-			}
-			break;
-		case MD_Left:
-			if (IsMoving())
-			{
-				Index = mAnimationCycle ? SI_WalkLeft : SI_IdleLeft;
-			}
-			else
-			{
-				Index = SI_IdleLeft;
-			}
-			break;
-		case MD_Down:
-			if (IsMoving())
-			{
-				Index = mAnimationCycle ? SI_WalkDownA : SI_WalkDownB;
-			}
-			else
-			{
-				Index = SI_IdleDown;
-			}
-			break;
-		case MD_Up:
-			if (IsMoving())
-			{
-				Index = mAnimationCycle ? SI_WalkUpA : SI_WalkUpB;
-			}
-			else
-			{
-				Index = SI_IdleUp;
-			}
-			break;
-		default:
-			Index = 0; // Default to walk down if no direction is set
-			break;
-	}
-
-	Renderer->DrawSpriteAt(mTexture, GetLocalBounds(), GetDrawPosition(), Index);
+	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetLocalBounds(), GetDrawPosition(),
+						   mSprite.GetCurrentAnimation()->GetCurrentIndex());
 }
 
 FRect PCharacter::GetLocalBounds() const
@@ -157,6 +139,42 @@ void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
 		return;
 	}
 	mTargetPosition = Target + mPosition;
+}
+
+void PCharacter::Move(EMovementDirection Direction)
+{
+	FVector2 Target;
+	switch (Direction) // Right
+	{
+		case MD_Right:
+			{
+				Target = { TILE_SIZE, 0 };
+				mSprite.SetCurrentAnimation("WalkRight");
+				break;
+			}
+		case MD_Left:
+			{
+				Target = { -TILE_SIZE, 0 };
+				mSprite.SetCurrentAnimation("WalkLeft");
+				break;
+			}
+		case MD_Down:
+			{
+				Target = { 0, TILE_SIZE };
+				mSprite.SetCurrentAnimation("WalkDown");
+				break;
+			}
+
+		case MD_Up:
+			{
+				Target = { 0, -TILE_SIZE };
+				mSprite.SetCurrentAnimation("WalkUp");
+				break;
+			}
+	}
+
+	SetRelativeTargetPosition(Target);
+	UpdateMovementDirection(Target);
 }
 void PCharacter::UpdateMovementDirection(const FVector2& Direction)
 {
