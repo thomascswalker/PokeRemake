@@ -49,6 +49,7 @@ public:
 
 	void SetRelativeTargetPosition(const FVector2& Target);
 	bool AtTargetPosition() const { return mPosition == mTargetPosition; }
+	void Move(EMovementDirection Direction);
 	bool IsMoving() const { return mTargetPosition != mPosition; }
 	void UpdateMovementDirection(const FVector2& Direction);
 

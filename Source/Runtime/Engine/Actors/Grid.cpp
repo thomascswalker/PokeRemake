@@ -73,7 +73,8 @@ void PGrid::Start()
 	mPriority = DP_BACKGROUND;
 
 	bBlocking = false;
-	mTexture = PTextureManager::Load("PalletTown.png");
+	auto T = PTextureManager::Load("PalletTown.png");
+	mSprite.SetTexture(T);
 
 	// Instantiate each tile in the grid
 	for (int Row = 0; Row < GridHeight; ++Row)
@@ -82,7 +83,7 @@ void PGrid::Start()
 		{
 			auto Tile = &mTiles.emplace_back(Col, Row);
 			Tile->bWalkable = !PaletteTownTileData[Row][Col];
-			Tile->Texture = mTexture;
+			Tile->Texture = T;
 		}
 	}
 

@@ -40,6 +40,7 @@ set(SOURCES
         Core/Settings.h
         Core/Settings.cpp
         Engine/Chunk.h
+        Engine/Sprite.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
