@@ -41,6 +41,8 @@ set(SOURCES
         Core/Settings.cpp
         Engine/Chunk.h
         Engine/Sprite.h
+        Engine/Components/CharacterMovementComponent.h
+        Engine/Components/CharacterMovementComponent.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

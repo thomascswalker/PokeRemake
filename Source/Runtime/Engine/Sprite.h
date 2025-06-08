@@ -44,7 +44,7 @@ public:
 			return;
 		}
 		mAnimationTimer += DeltaTime;
-		if (mAnimationTimer >= mAnimationSpeed)
+		if (mAnimationTimer >= DEFAULT_ANIM_SPEED)
 		{
 			mCurrentAnim->Next();
 			mAnimationTimer = 0.0f; // Reset the timer after updating the animation

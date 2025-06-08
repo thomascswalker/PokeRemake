@@ -1,15 +1,8 @@
 #pragma once
 
 #include "Actor.h"
+#include "Engine/Components/CharacterMovementComponent.h"
 #include "Grid.h"
-
-enum EMovementDirection
-{
-	MD_Left,
-	MD_Right,
-	MD_Up,
-	MD_Down
-};
 
 enum ESpriteIndex
 {
@@ -28,6 +21,8 @@ enum ESpriteIndex
 class PCharacter : public PActor
 {
 protected:
+	PCharacterMovementComponent* mMovementComponent;
+
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection = MD_Down;
 	bool			   bInputAllowed = false;
@@ -47,11 +42,6 @@ public:
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
 
-	void SetRelativeTargetPosition(const FVector2& Target);
-	bool AtTargetPosition() const { return mPosition == mTargetPosition; }
-	void Move(EMovementDirection Direction);
-	bool IsMoving() const { return mTargetPosition != mPosition; }
-	void UpdateMovementDirection(const FVector2& Direction);
-
-	PTile* GetCurrentTile() const;
+	void OnMovementStarted(EMovementDirection Direction);
+	void OnMovementEnded(EMovementDirection Direction);
 };
