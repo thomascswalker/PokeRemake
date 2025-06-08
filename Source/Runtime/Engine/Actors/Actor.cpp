@@ -4,7 +4,7 @@
 
 FVector2 PActor::GetDrawPosition() const
 {
-	return mPosition - FVector2(0, QUARTER_TILE_SIZE);
+	return mPosition - FVector2(0, CHARACTER_OFFSET);
 }
 
 void PActor::MoveToTile(int32_t X, int32_t Y)

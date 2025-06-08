@@ -2,12 +2,11 @@
 
 #include "Core/Constants.h"
 #include "Core/Logging.h"
+#include "Engine/InputManager.h"
 #include "Engine/World.h"
 
 void PCharacter::Start()
 {
-	bInputAllowed = true;
-	mTargetPosition = mPosition; // To prevent immediate movement on start
 	mPriority = DP_FOREGROUND;
 
 	mSprite = PSprite();
@@ -20,95 +19,32 @@ void PCharacter::Start()
 	mSprite.AddAnimation("IdleLeft", { SI_IdleLeft });
 	mSprite.AddAnimation("IdleUp", { SI_IdleUp });
 	mSprite.AddAnimation("IdleDown", { SI_IdleDown });
+
+	// Default to idle down animation
+	mSprite.SetCurrentAnimation("IdleDown");
+
+	mMovementComponent = GetWorld()->ConstructComponent<PCharacterMovementComponent>(this);
+	if (mMovementComponent)
+	{
+		mMovementComponent->MovementStarted.AddRaw(this, &PCharacter::OnMovementStarted);
+		mMovementComponent->MovementEnded.AddRaw(this, &PCharacter::OnMovementEnded);
+		mMovementComponent->MovementDirectionChanged.AddRaw(this, &PCharacter::OnMovementEnded);
+	}
 }
 
 void PCharacter::Tick(float DeltaTime)
 {
 	mSprite.Tick(DeltaTime);
-
-	// If we're not moving, just exit
-	if (!IsMoving())
-	{
-		switch (mMovementDirection)
-		{
-			case MD_Right:
-				mSprite.SetCurrentAnimation("IdleRight");
-				break;
-			case MD_Left:
-				mSprite.SetCurrentAnimation("IdleLeft");
-				break;
-			case MD_Down:
-				mSprite.SetCurrentAnimation("IdleDown");
-				break;
-			case MD_Up:
-				mSprite.SetCurrentAnimation("IdleUp");
-				break;
-			default:
-				break; // No movement direction set
-		}
-		return;
-	}
-
-	// Are we close enough to snap to the target position?
-	bool bCloseEnough = false;
-	switch (mMovementDirection)
-	{
-		case MD_Right:
-			bCloseEnough = mPosition.X >= mTargetPosition.X;
-			break;
-		case MD_Left:
-			bCloseEnough = mPosition.X <= mTargetPosition.X;
-			break;
-		case MD_Down:
-			bCloseEnough = mPosition.Y >= mTargetPosition.Y;
-			break;
-		case MD_Up:
-			bCloseEnough = mPosition.Y <= mTargetPosition.Y;
-			break;
-		default:
-			break;
-	}
-
-	// End movement
-	if (bCloseEnough || mPosition.CloseEnough(mTargetPosition))
-	{
-		mPosition = mTargetPosition; // Snap to target position
-		mDistanceTraveled = 0.0f;	 // Reset distance traveled
-		mAnimationCycle = false;	 // Reset animation cycle
-	}
-	// Keep moving towards the target position
-	else
-	{
-		// Kind of arbitrarily divide the distance traveled by 2 to
-		// make the character move at a reasonable speed.
-		const float Distance = DEFAULT_CHAR_SPEED * DeltaTime * 0.5f;
-
-		// Add distance traveled in the corresponding direction to the current position
-		switch (mMovementDirection)
-		{
-			case MD_Right:
-				mPosition.X += Distance;
-				break;
-			case MD_Left:
-				mPosition.X -= Distance;
-				break;
-			case MD_Down:
-				mPosition.Y += Distance;
-				break;
-			case MD_Up:
-				mPosition.Y -= Distance;
-				break;
-			default:
-				break; // No movement direction set
-		}
-		mDistanceTraveled += Distance;
-	}
 }
 
 void PCharacter::Draw(const PRenderer* Renderer) const
 {
-	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetLocalBounds(), GetDrawPosition(),
-						   mSprite.GetCurrentAnimation()->GetCurrentIndex());
+	int32_t Index = 0;
+	if (auto CurrentAnim = mSprite.GetCurrentAnimation())
+	{
+		Index = CurrentAnim->GetCurrentIndex();
+	}
+	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetLocalBounds(), GetDrawPosition(), Index);
 }
 
 FRect PCharacter::GetLocalBounds() const
@@ -121,82 +57,59 @@ FRect PCharacter::GetWorldBounds() const
 	return { mPosition.X, mPosition.Y, TILE_SIZE, TILE_SIZE };
 }
 
-void PCharacter::SetRelativeTargetPosition(const FVector2& Target)
+void PCharacter::OnMovementStarted(EMovementDirection Direction)
 {
-	const auto TempTargetPosition = Target + mPosition;
-	const auto Tile = GetGrid()->GetTileAtPosition(TempTargetPosition);
-	if (!Tile)
-	{
-		return;
-	}
-	if (!Tile->bWalkable)
-	{
-		return;
-	}
-	const auto Actor = Tile->GetActor();
-	if (Actor && Actor->IsBlocking())
-	{
-		return;
-	}
-	mTargetPosition = Target + mPosition;
-}
-
-void PCharacter::Move(EMovementDirection Direction)
-{
-	FVector2 Target;
-	switch (Direction) // Right
+	switch (Direction)
 	{
 		case MD_Right:
 			{
-				Target = { TILE_SIZE, 0 };
 				mSprite.SetCurrentAnimation("WalkRight");
 				break;
 			}
 		case MD_Left:
 			{
-				Target = { -TILE_SIZE, 0 };
 				mSprite.SetCurrentAnimation("WalkLeft");
+				break;
+			}
+		case MD_Up:
+			{
+				mSprite.SetCurrentAnimation("WalkUp");
 				break;
 			}
 		case MD_Down:
 			{
-				Target = { 0, TILE_SIZE };
 				mSprite.SetCurrentAnimation("WalkDown");
 				break;
 			}
-
-		case MD_Up:
+		default:
+			break;
+	}
+}
+void PCharacter::OnMovementEnded(EMovementDirection Direction)
+{
+	switch (Direction)
+	{
+		case MD_Right:
 			{
-				Target = { 0, -TILE_SIZE };
-				mSprite.SetCurrentAnimation("WalkUp");
+				mSprite.SetCurrentAnimation("IdleRight");
 				break;
 			}
+		case MD_Left:
+			{
+				mSprite.SetCurrentAnimation("IdleLeft");
+				break;
+			}
+		case MD_Up:
+			{
+				mSprite.SetCurrentAnimation("IdleUp");
+				break;
+			}
+		case MD_Down:
+			{
+				mSprite.SetCurrentAnimation("IdleDown");
+				break;
+			}
+		default:
+			break;
 	}
-
-	SetRelativeTargetPosition(Target);
-	UpdateMovementDirection(Target);
-}
-void PCharacter::UpdateMovementDirection(const FVector2& Direction)
-{
-	if (Direction.X > 0)
-	{
-		mMovementDirection = MD_Right;
-	}
-	else if (Direction.X < 0)
-	{
-		mMovementDirection = MD_Left;
-	}
-	else if (Direction.Y > 0)
-	{
-		mMovementDirection = MD_Down;
-	}
-	else if (Direction.Y < 0)
-	{
-		mMovementDirection = MD_Up;
-	}
-}
-
-PTile* PCharacter::GetCurrentTile() const
-{
-	return GetGrid()->GetTileAtPosition(mPosition);
 }

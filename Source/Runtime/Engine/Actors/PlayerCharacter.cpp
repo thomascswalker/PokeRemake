@@ -11,6 +11,7 @@
 void PPlayerCharacter::Start()
 {
 	PCharacter::Start();
+
 	// Bind input
 	if (const auto Input = GetInputManager())
 	{
@@ -21,50 +22,57 @@ void PPlayerCharacter::Start()
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
-
 void PPlayerCharacter::Tick(float DeltaTime)
 {
-	// Start movement
-	if (!IsMoving() && mInputState.any())
+	PCharacter::Tick(DeltaTime);
+	if (!mMovementComponent->IsMoving() && mInputState.any())
 	{
-		if (mInputState[0]) // Right
+		if (mInputState[0])
 		{
-			Move(MD_Right);
+			mMovementComponent->SetTargetLocation({ TILE_SIZE, 0 });
 		}
-		else if (mInputState[1]) // Left
+		else if (mInputState[1])
 		{
-			Move(MD_Left);
+			mMovementComponent->SetTargetLocation({ -TILE_SIZE, 0 });
 		}
-		else if (mInputState[2]) // Down
+		else if (mInputState[2])
 		{
-			Move(MD_Down);
+			mMovementComponent->SetTargetLocation({ 0, TILE_SIZE });
 		}
-		else if (mInputState[3]) // Up
+		else if (mInputState[3])
 		{
-			Move(MD_Up);
+			mMovementComponent->SetTargetLocation({ 0, -TILE_SIZE });
 		}
 	}
-
-	PCharacter::Tick(DeltaTime);
 }
 
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
-	if (GetSettings()->bDebugDraw)
+	if (GetSettings()->bDebugDraw && mMovementComponent)
 	{
 		// Draw current tile under the character
-		if (const auto& Tile = GetCurrentTile())
+		if (const auto& Tile = mMovementComponent->GetCurrentTile())
 		{
 			Renderer->SetDrawColor(255, 0, 0, 50);
 			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
 		}
+
 		// Draw target tile
-		if (const auto& Tile = GetGrid()->GetTileAtPosition(mTargetPosition))
+		if (const auto& Tile =
+				GetGrid()->GetTileAtPosition(mMovementComponent->GetTargetPosition()))
 		{
 			Renderer->SetDrawColor(0, 255, 0, 50);
 			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
 		}
+
+		// Draw target position
+		if (mMovementComponent->IsMoving())
+		{
+			Renderer->SetDrawColor(255, 0, 128, 255);
+			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition(), 4);
+		}
 	}
+
 	PCharacter::Draw(Renderer);
 }
 
@@ -94,7 +102,7 @@ void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 
 	if (mInputState.any())
 	{
-		bInputAllowed = false; // Disable further input until the character stops moving
+		bInputAllowed = false;
 	}
 }
 
@@ -121,8 +129,9 @@ void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
 		default:
 			break;
 	}
-	if (mInputState.none())
+
+	if (mInputState.any())
 	{
-		bInputAllowed = true; // Enable input again when no keys are pressed
+		bInputAllowed = true;
 	}
 }

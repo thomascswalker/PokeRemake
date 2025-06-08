@@ -7,16 +7,16 @@
 
 class PPlayerCharacter : public PCharacter
 {
-	std::bitset<4>	  mInputState;
 	PCameraComponent* mCameraComponent = nullptr;
+	std::bitset<4>	  mInputState; // Left, Right, Down, Up
+	bool			  bInputAllowed = true;
 
 public:
-	void OnKeyDown(uint32_t KeyCode);
-	void OnKeyUp(uint32_t KeyCode);
-
 	void Start() override;
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override;
+	void OnKeyDown(uint32_t KeyCode);
+	void OnKeyUp(uint32_t KeyCode);
 
 	PCameraComponent* GetCameraComponent() const { return mCameraComponent; }
 };
