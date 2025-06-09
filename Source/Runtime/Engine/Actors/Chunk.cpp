@@ -9,7 +9,7 @@ void STile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 {
 	const FRect	   Source = { float(X * 16), float(Y * 16), 16,
 							  16 }; // Assuming each tile is 16x16 pixels
-	const FRect	   Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+	const FRect	   Dest = { Offset.X, Offset.Y, HALF_TILE_SIZE, HALF_TILE_SIZE };
 	const FVector2 Position = GetPosition();
 
 	Renderer->DrawTextureAt(Texture, Source, Dest, Position);
@@ -67,12 +67,14 @@ void PChunk::Start()
 	auto T = PTextureManager::Load(mTextureName);
 	mSprite.SetTexture(T);
 
+	mPosition = FVector2(mGeometry.X * HALF_TILE_SIZE, mGeometry.Y * HALF_TILE_SIZE);
+
 	// Instantiate each tile in the grid
 	for (int X = 0; X < mGeometry.W; X++)
 	{
 		for (int Y = 0; Y < mGeometry.H; Y++)
 		{
-			auto Tile = &mTiles.emplace_back(X, Y);
+			const auto Tile = &mTiles.emplace_back(X, Y);
 			Tile->Type = static_cast<ETileType>(mData[Y][X]); // Access [Row][Column]
 			Tile->Texture = T;
 		}
@@ -89,7 +91,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mGeometry.W * HALF_TILE_SIZE, mGeometry.H * HALF_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mGeometry.W * HALF_TILE_SIZE, mGeometry.H * HALF_TILE_SIZE };
 }
 
 STile* PChunk::GetTileAtPosition(const FVector2& Position)
