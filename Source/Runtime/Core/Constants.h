@@ -17,7 +17,7 @@ constexpr auto	WINDOW_TITLE = "PokeRemake";
 constexpr float WINDOW_DEFAULT_WIDTH = HALF_TILE_SIZE * TILE_ROWS;
 constexpr float WINDOW_DEFAULT_HEIGHT = HALF_TILE_SIZE * TILE_COLUMNS;
 
-constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
+constexpr float GLOBAL_SPEED_MULTIPLIER = 2.0f;
 
 // Visual character offset to add some 'depth'
 constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
@@ -27,4 +27,4 @@ constexpr float DEFAULT_CHAR_SPEED = RENDER_SCALE / 4.0f * GLOBAL_SPEED_MULTIPLI
 
 // How often a sprite animation will move to the next frame (in milliseconds)
 // This is kind of arbitrary for now and is simply based on what looks best visually.
-constexpr float DEFAULT_ANIM_SPEED = (HALF_TILE_SIZE * 0.875f) / DEFAULT_CHAR_SPEED;
+constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE * 1.50f / GLOBAL_SPEED_MULTIPLIER;
