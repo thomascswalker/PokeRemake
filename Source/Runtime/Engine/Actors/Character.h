@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Actor.h"
+#include "Chunk.h"
 #include "Engine/Components/CharacterMovementComponent.h"
-#include "Grid.h"
 
 enum ESpriteIndex
 {

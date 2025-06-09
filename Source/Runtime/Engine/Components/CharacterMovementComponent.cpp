@@ -79,8 +79,8 @@ bool PCharacterMovementComponent::SetTargetLocation(const FVector2& Target)
 	const auto NewPosition = Target + mOwner->GetPosition();
 	mMovementDirection = VectorToDirection(Target);
 	MovementDirectionChanged.Broadcast(mMovementDirection);
-	const auto Tile = GetGrid()->GetTileAtPosition(NewPosition);
-	if (!Tile || !Tile->bWalkable)
+	const auto Tile = GetChunk()->GetTileAtPosition(NewPosition);
+	if (!Tile || !Tile->IsWalkable())
 	{
 		return false;
 	}
@@ -98,7 +98,7 @@ bool PCharacterMovementComponent::SetTargetLocation(const FVector2& Target)
 	return true;
 }
 
-PTile* PCharacterMovementComponent::GetCurrentTile() const
+STile* PCharacterMovementComponent::GetCurrentTile() const
 {
-	return GetGrid()->GetTileAtPosition(mOwner->GetPosition());
+	return GetChunk()->GetTileAtPosition(mOwner->GetPosition());
 }

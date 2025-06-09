@@ -59,7 +59,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 
 		// Draw target tile
 		if (const auto& Tile =
-				GetGrid()->GetTileAtPosition(mMovementComponent->GetTargetPosition()))
+				GetChunk()->GetTileAtPosition(mMovementComponent->GetTargetPosition()))
 		{
 			Renderer->SetDrawColor(0, 255, 0, 50);
 			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());

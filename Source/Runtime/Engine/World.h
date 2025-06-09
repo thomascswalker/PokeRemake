@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Actors/Actor.h"
-#include "Actors/Grid.h"
+#include "Actors/Chunk.h"
 #include "Components/CameraComponent.h"
 #include "Components/Component.h"
 
@@ -12,12 +12,12 @@
 
 class PWorld : public PObject
 {
-	PGrid*									 mGrid;
+	PChunk*									 mChunk;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() : mGrid(nullptr) {}
+	PWorld() : mChunk(nullptr) {}
 	~PWorld() override = default;
 
 	void Start() override;
@@ -77,7 +77,7 @@ public:
 		return Components;
 	}
 
-	PGrid* GetGrid() const { return mGrid; }
+	PChunk* GetChunk() const { return mChunk; }
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

@@ -16,7 +16,7 @@ set(SOURCES
         Core/Vector.h
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
-        Engine/Actors/Grid.cpp
+        Engine/Actors/Chunk.cpp
         Engine/CameraView.h
         Engine/Engine.cpp
         Engine/Game.cpp
@@ -39,7 +39,7 @@ set(SOURCES
         Core/Constants.h
         Core/Settings.h
         Core/Settings.cpp
-        Engine/Chunk.h
+        Engine/Tile.h
         Engine/Sprite.h
         Engine/Components/CharacterMovementComponent.h
         Engine/Components/CharacterMovementComponent.cpp

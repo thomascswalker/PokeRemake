@@ -2,7 +2,7 @@
 
 #include "Component.h"
 #include "Core/Delegate.h"
-#include "Engine/Actors/Grid.h"
+#include "Engine/Actors/Chunk.h"
 
 enum EMovementDirection
 {
@@ -74,6 +74,6 @@ public:
 	void	 Tick(float DeltaTime) override;
 	bool	 IsMoving() const;
 	bool	 SetTargetLocation(const FVector2& Target);
-	PTile*	 GetCurrentTile() const;
+	STile*	 GetCurrentTile() const;
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
 };

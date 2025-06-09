@@ -6,7 +6,7 @@
 void PWorld::Start()
 {
 	LogDebug("Starting world");
-	mGrid = this->ConstructActor<PGrid>();
+	mChunk = this->ConstructActor<PChunk>();
 
 	for (const auto& Actor : GetActors())
 	{

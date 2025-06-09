@@ -19,6 +19,32 @@ public:
 	TVector4<T> ToVector4() const { return TVector4<T>(X, Y, W, H); }
 	TVector2<T> Min() const { return TVector2<T>(X, Y); }
 	TVector2<T> Max() const { return TVector2<T>(X + W, Y + H); }
+	TVector2<T> GetSize() const { return TVector2<T>(W, H); }
+
+	bool Contains(const TVector2<T>& Point) const
+	{
+		return Point.X >= X && Point.X <= X + W && Point.Y >= Y && Point.Y <= Y + H;
+	}
+	bool Contains(const TRect& Other) const
+	{
+		return Other.X >= X && Other.X + Other.W <= X + W && Other.Y >= Y
+			   && Other.Y + Other.H <= Y + H;
+	}
+	bool Intersects(const TRect& Other) const
+	{
+		return !(Other.X > X + W || Other.X + Other.W < X || Other.Y > Y + H
+				 || Other.Y + Other.H < Y);
+	}
+	bool Overlaps(const TRect& Other) const
+	{
+		return !(Other.X >= X + W || Other.X + Other.W <= X || Other.Y >= Y + H
+				 || Other.Y + Other.H <= Y);
+	}
+	bool operator==(const TRect& Other) const
+	{
+		return X == Other.X && Y == Other.Y && W == Other.W && H == Other.H;
+	}
+	bool operator!=(const TRect& Other) const { return !(*this == Other); }
 
 	std::string ToString() const { return std::format("[[{}, {}], [{}, {}]]", X, Y, W, H); }
 };
