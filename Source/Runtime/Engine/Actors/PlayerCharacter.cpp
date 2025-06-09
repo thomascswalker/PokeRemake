@@ -71,7 +71,8 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		if (mMovementComponent->IsMoving())
 		{
 			Renderer->SetDrawColor(255, 0, 128, 255);
-			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition(), 4);
+			auto Offset = FVector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition() + Offset, 4);
 		}
 	}
 

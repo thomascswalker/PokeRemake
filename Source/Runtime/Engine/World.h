@@ -5,7 +5,6 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Chunk.h"
-#include "Components/CameraComponent.h"
 #include "Components/Component.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
@@ -13,7 +12,7 @@
 class PWorld : public PObject
 {
 	// Chunks
-	std::vector<PChunk*> mChunks;
+	std::map<std::string, PChunk*> mChunks;
 
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
