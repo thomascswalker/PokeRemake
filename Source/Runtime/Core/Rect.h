@@ -23,12 +23,12 @@ public:
 
 	bool Contains(const TVector2<T>& Point) const
 	{
-		return Point.X >= X && Point.X <= X + W && Point.Y >= Y && Point.Y <= Y + H;
+		return Point.X >= X && Point.X < X + W && Point.Y >= Y && Point.Y < Y + H;
 	}
 	bool Contains(const TRect& Other) const
 	{
-		return Other.X >= X && Other.X + Other.W <= X + W && Other.Y >= Y
-			   && Other.Y + Other.H <= Y + H;
+		return Other.X >= X && Other.X + Other.W < X + W && Other.Y >= Y
+			   && Other.Y + Other.H < Y + H;
 	}
 	bool Intersects(const TRect& Other) const
 	{

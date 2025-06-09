@@ -39,10 +39,11 @@ set(SOURCES
         Core/Constants.h
         Core/Settings.h
         Core/Settings.cpp
-        Engine/Tile.h
+        Engine/Actors/Tile.h
         Engine/Sprite.h
         Engine/Components/CharacterMovementComponent.h
         Engine/Components/CharacterMovementComponent.cpp
+        Engine/Actors/Tile.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

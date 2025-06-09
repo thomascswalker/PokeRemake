@@ -304,7 +304,7 @@ void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) cons
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
-void PRenderer::DrawTextureAt(PTexture* Texture, const FRect& Source, const FRect& Dest,
+void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
 							  const FVector2& Position) const
 {
 	if (!Texture)

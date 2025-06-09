@@ -61,6 +61,7 @@ class PCharacterMovementComponent : public PComponent
 	EMovementDirection mMovementDirection;
 	FVector2		   mVelocity;
 	float			   mDistanceTraveled = 0.0f;
+	PChunk*			   mCurrentChunk = nullptr;
 
 public:
 	DDestinationReached		  DestinationReached;
@@ -73,7 +74,8 @@ public:
 	void	 Start() override;
 	void	 Tick(float DeltaTime) override;
 	bool	 IsMoving() const;
-	bool	 SetTargetLocation(const FVector2& Target);
-	STile*	 GetCurrentTile() const;
+	bool	 Move(const FVector2& Velocity);
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
+	STile*	 GetCurrentTile() const;
+	STile*	 GetTargetTile() const;
 };

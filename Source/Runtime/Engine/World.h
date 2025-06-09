@@ -13,14 +13,13 @@
 class PWorld : public PObject
 {
 	// Chunks
-	PChunk* mPalletTown;
-	PChunk* mRoute1;
+	std::vector<PChunk*> mChunks;
 
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() : mPalletTown(nullptr), mRoute1(nullptr) {}
+	PWorld() {}
 	~PWorld() override = default;
 
 	void Start() override;
@@ -81,7 +80,7 @@ public:
 		return Components;
 	}
 
-	PChunk* GetChunk() const { return mPalletTown; }
+	PChunk* GetChunkAtPosition(const FVector2& Position) const;
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

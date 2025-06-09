@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Actor.h"
-#include "Engine/Tile.h"
+#include "Tile.h"
 
 using TileArray = std::vector<std::vector<int>>;
 
@@ -21,15 +21,11 @@ class PChunk : public PActor
 	std::string		   mTextureName;
 
 public:
-	PChunk(const SChunkData& Data)
-		: mData(Data.Data), mGeometry(Data.Geometry), mTextureName(Data.TextureName)
-	{
-	}
+	explicit PChunk(const SChunkData& Data);
 	~PChunk() override = default;
 	void   Start() override;
 	void   Draw(const PRenderer* Renderer) const override;
 	FRect  GetLocalBounds() const override;
+	FRect  GetWorldBounds() const override;
 	STile* GetTileAtPosition(const FVector2& Position);
 };
-
-DECLARE_STATIC_GLOBAL_GETTER(Chunk)
