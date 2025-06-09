@@ -45,7 +45,6 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(Renderer, Application);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Game, Engine);
 DEFINE_STATIC_GLOBAL_AND_GETTER(World, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
-DEFINE_STATIC_GLOBAL_AND_GETTER(Grid, World);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)

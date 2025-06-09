@@ -4,24 +4,26 @@
 #include <vector>
 
 #include "Actors/Actor.h"
-#include "Actors/Grid.h"
-#include "Components/CameraComponent.h"
+#include "Actors/Chunk.h"
 #include "Components/Component.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
 
 class PWorld : public PObject
 {
-	PGrid*									 mGrid;
+	// Chunks
+	std::map<std::string, PChunk*> mChunks;
+
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() : mGrid(nullptr) {}
+	PWorld() {}
 	~PWorld() override = default;
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+	void ConstructChunks();
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
@@ -77,7 +79,7 @@ public:
 		return Components;
 	}
 
-	PGrid* GetGrid() const { return mGrid; }
+	PChunk* GetChunkAtPosition(const FVector2& Position) const;
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

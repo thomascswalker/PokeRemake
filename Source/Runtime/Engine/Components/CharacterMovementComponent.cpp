@@ -1,10 +1,14 @@
 #include "CharacterMovementComponent.h"
 
+#include "Core/Logging.h"
+#include "Engine/World.h"
+
 void PCharacterMovementComponent::Start()
 {
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
 	mTargetPosition = mOwner->GetPosition();
+	mCurrentChunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
 }
 
 void PCharacterMovementComponent::Tick(float DeltaTime)
@@ -72,15 +76,29 @@ bool PCharacterMovementComponent::IsMoving() const
 	return mOwner->GetPosition() != mTargetPosition;
 }
 
-bool PCharacterMovementComponent::SetTargetLocation(const FVector2& Target)
+bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
-	// If a movement is requested, but we're already moving or movement is not allowed,
-	// return early.
-	const auto NewPosition = Target + mOwner->GetPosition();
-	mMovementDirection = VectorToDirection(Target);
+	const auto NewPosition = Velocity + mOwner->GetPosition();
+	mMovementDirection = VectorToDirection(Velocity);
 	MovementDirectionChanged.Broadcast(mMovementDirection);
-	const auto Tile = GetGrid()->GetTileAtPosition(NewPosition);
-	if (!Tile || !Tile->bWalkable)
+
+	// If the new position is not within the same chunk as the current chunk we're in,
+	// set the current chunk to the chunk at the new position.
+	if (!mCurrentChunk->GetWorldBounds().Contains(NewPosition))
+	{
+		PChunk* NewChunk = GetWorld()->GetChunkAtPosition(NewPosition);
+
+		// If no chunk is found at the new position, return false.
+		if (!NewChunk)
+		{
+			LogError("No chunk found at position: {}", NewPosition.ToString().c_str());
+			return false; // No chunk at the new position
+		}
+		mCurrentChunk = NewChunk;
+	}
+
+	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
+	if (!Tile || !Tile->IsWalkable())
 	{
 		return false;
 	}
@@ -98,7 +116,21 @@ bool PCharacterMovementComponent::SetTargetLocation(const FVector2& Target)
 	return true;
 }
 
-PTile* PCharacterMovementComponent::GetCurrentTile() const
+STile* PCharacterMovementComponent::GetCurrentTile() const
 {
-	return GetGrid()->GetTileAtPosition(mOwner->GetPosition());
+	if (!mCurrentChunk)
+	{
+		return nullptr;
+	}
+	return mCurrentChunk->GetTileAtPosition(mOwner->GetPosition());
+}
+
+STile* PCharacterMovementComponent::GetTargetTile() const
+{
+	auto Chunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
+	if (!Chunk)
+	{
+		return nullptr;
+	}
+	return Chunk->GetTileAtPosition(mTargetPosition);
 }

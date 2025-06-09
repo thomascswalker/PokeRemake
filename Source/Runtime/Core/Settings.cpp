@@ -14,7 +14,7 @@ void PSettings::OnKeyUp(uint32_t KeyCode)
 {
 	switch (KeyCode)
 	{
-		case KB_G:
+		case KB_F1:
 			bDebugDraw = !bDebugDraw;
 			break;
 		default:

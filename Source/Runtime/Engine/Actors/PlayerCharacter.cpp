@@ -22,6 +22,7 @@ void PPlayerCharacter::Start()
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
+
 void PPlayerCharacter::Tick(float DeltaTime)
 {
 	PCharacter::Tick(DeltaTime);
@@ -29,19 +30,19 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (mInputState[0])
 		{
-			mMovementComponent->SetTargetLocation({ TILE_SIZE, 0 });
+			mMovementComponent->Move({ TILE_SIZE, 0 });
 		}
 		else if (mInputState[1])
 		{
-			mMovementComponent->SetTargetLocation({ -TILE_SIZE, 0 });
+			mMovementComponent->Move({ -TILE_SIZE, 0 });
 		}
 		else if (mInputState[2])
 		{
-			mMovementComponent->SetTargetLocation({ 0, TILE_SIZE });
+			mMovementComponent->Move({ 0, TILE_SIZE });
 		}
 		else if (mInputState[3])
 		{
-			mMovementComponent->SetTargetLocation({ 0, -TILE_SIZE });
+			mMovementComponent->Move({ 0, -TILE_SIZE });
 		}
 	}
 }
@@ -54,22 +55,24 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		if (const auto& Tile = mMovementComponent->GetCurrentTile())
 		{
 			Renderer->SetDrawColor(255, 0, 0, 50);
-			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
+			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
+									 Tile->GetLocalPosition());
 		}
 
 		// Draw target tile
-		if (const auto& Tile =
-				GetGrid()->GetTileAtPosition(mMovementComponent->GetTargetPosition()))
+		if (const auto& Tile = mMovementComponent->GetCurrentTile())
 		{
 			Renderer->SetDrawColor(0, 255, 0, 50);
-			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE }, Tile->GetPosition());
+			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
+									 Tile->GetLocalPosition());
 		}
 
 		// Draw target position
 		if (mMovementComponent->IsMoving())
 		{
 			Renderer->SetDrawColor(255, 0, 128, 255);
-			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition(), 4);
+			auto Offset = FVector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition() + Offset, 4);
 		}
 	}
 
