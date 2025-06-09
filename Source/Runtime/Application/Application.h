@@ -33,13 +33,15 @@ class PApplication : public IInputManager
 	std::unique_ptr<PRenderer>	mRenderer;
 	std::unique_ptr<SDLContext> mContext;
 
+	bool bIsEditor = false;
+
 protected:
 	PApplication() = default;
 
 public:
 	static PApplication* GetInstance();
 
-	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode);
+	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode, bool IsEditor);
 	void Uninitialize() const;
 
 	template <typename GameType>

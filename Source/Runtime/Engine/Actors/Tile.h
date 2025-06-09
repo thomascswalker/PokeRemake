@@ -17,6 +17,19 @@ enum ETileType
 	TT_Portal
 };
 
+struct SPortal
+{
+	std::string DestChunkName;
+	IVector2	DestPosition;
+};
+
+struct STileData
+{
+	int32_t	  X;
+	int32_t	  Y;
+	ETileType Type;
+};
+
 struct STile
 {
 	int32_t	  X;

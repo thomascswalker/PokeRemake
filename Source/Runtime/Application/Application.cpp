@@ -32,6 +32,11 @@ static PApplication* GetApplication()
 	{                                                            \
 		if (!g##ClassName)                                       \
 		{                                                        \
+			auto Parent = Get##ParentClass();                    \
+			if (!Parent)                                         \
+			{                                                    \
+				return nullptr;                                  \
+			}                                                    \
 			g##ClassName = Get##ParentClass()->Get##ClassName(); \
 		}                                                        \
 		return g##ClassName;                                     \
@@ -47,9 +52,19 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(World, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
-bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
+bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode,
+							  bool IsEditor)
 {
-	LogInfo("Constructing Application");
+	bIsEditor = IsEditor;
+	if (bIsEditor)
+	{
+		LogInfo("Constructing Editor Application");
+	}
+	else
+	{
+		LogInfo("Constructing Application");
+	}
+
 	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))

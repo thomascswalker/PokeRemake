@@ -170,11 +170,6 @@ void PRenderer::Render2D() const
 		}
 	}
 
-	if (GetSettings()->bDebugDraw)
-	{
-		SetDrawColor(0, 128, 255, 255);
-		DrawPointAt({ 0, 0 }, 4);
-	}
 	SDL_RenderPresent(mContext->Renderer);
 }
 
