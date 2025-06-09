@@ -2,32 +2,8 @@
 
 #include "Chunk.h"
 
-#include "Core/Logging.h"
 #include "Engine/Engine.h"
 #include "Engine/InputManager.h"
-
-constexpr int32_t GridWidth = 20; // Example grid size
-constexpr int32_t GridHeight = 18;
-static int		  PaletteTownTileData[18][20] = {
-	   { 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 1, 0 },
-	   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 1, 1, 5, 1, 1, 0, 0, 0, 1, 1, 5, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 5, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	   { 1, 1, 0, 0, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-};
 
 void STile::Draw(const PRenderer* Renderer, const FVector2& Offset) const
 {
@@ -88,16 +64,16 @@ void PChunk::Start()
 	mPriority = DP_BACKGROUND;
 
 	bBlocking = false;
-	auto T = PTextureManager::Load("PalletTown.png");
+	auto T = PTextureManager::Load(mTextureName);
 	mSprite.SetTexture(T);
 
 	// Instantiate each tile in the grid
-	for (int Row = 0; Row < GridHeight; ++Row)
+	for (int X = 0; X < mGeometry.W; X++)
 	{
-		for (int Col = 0; Col < GridWidth; ++Col)
+		for (int Y = 0; Y < mGeometry.H; Y++)
 		{
-			auto Tile = &mTiles.emplace_back(Col, Row);
-			Tile->Type = static_cast<ETileType>(PaletteTownTileData[Row][Col]);
+			auto Tile = &mTiles.emplace_back(X, Y);
+			Tile->Type = static_cast<ETileType>(mData[Y][X]); // Access [Row][Column]
 			Tile->Texture = T;
 		}
 	}
@@ -113,7 +89,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, GridWidth * HALF_TILE_SIZE, GridHeight * HALF_TILE_SIZE };
+	return { 0, 0, mGeometry.W * HALF_TILE_SIZE, mGeometry.H * HALF_TILE_SIZE };
 }
 
 STile* PChunk::GetTileAtPosition(const FVector2& Position)

@@ -19,6 +19,7 @@ void TestGame::PreStart()
 	PTextureManager::Load("Ash.png");
 	PTextureManager::Load("Gary.png");
 	PTextureManager::Load("PalletTown.png");
+	PTextureManager::Load("Route1.png");
 }
 
 void TestGame::Start()

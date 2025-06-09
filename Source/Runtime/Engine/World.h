@@ -12,16 +12,20 @@
 
 class PWorld : public PObject
 {
-	PChunk*									 mChunk;
+	// Chunks
+	PChunk* mPalletTown;
+	PChunk* mRoute1;
+
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 public:
-	PWorld() : mChunk(nullptr) {}
+	PWorld() : mPalletTown(nullptr), mRoute1(nullptr) {}
 	~PWorld() override = default;
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+	void ConstructChunks();
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
@@ -77,7 +81,7 @@ public:
 		return Components;
 	}
 
-	PChunk* GetChunk() const { return mChunk; }
+	PChunk* GetChunk() const { return mPalletTown; }
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)
