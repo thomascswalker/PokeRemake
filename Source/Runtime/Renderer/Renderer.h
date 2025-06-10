@@ -26,7 +26,7 @@ public:
 	void Render3D();
 	void Render2D() const;
 
-	FVector2 WorldToScreen(const FVector2& Position) const;
+	bool WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const;
 
 	/* Drawing */
 

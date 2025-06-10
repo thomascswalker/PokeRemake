@@ -5,10 +5,10 @@ message("CMAKE Version: ${CMAKE_VERSION}")
 project(PokeRemake)
 set(CMAKE_CXX_STANDARD 20)
 
-option(EDITOR "EDITOR" OFF)
+option(IN_EDITOR "IN_EDITOR" OFF)
 
 add_subdirectory(Source/Runtime)
-if (EDITOR)
+if (IN_EDITOR)
     add_subdirectory(Source/Editor)
 else ()
     add_subdirectory(Source/Game)
@@ -17,23 +17,29 @@ endif ()
 # Third Party Libraries
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
-include_directories(ThirdParty ThirdParty/glm ThirdParty/SDL/include)
+include_directories(
+        ThirdParty
+        ThirdParty/glm
+        ThirdParty/SDL/include
+)
 
-if (EDITOR)
+# Build the respective executable either for the editor or the game.
+
+if (IN_EDITOR)
+    message(STATUS "Building Editor")
     add_executable(${PROJECT_NAME} Source/Editor/Main.cpp)
-    target_link_libraries(
-            ${PROJECT_NAME} PUBLIC PokeRemakeEditor)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PokeRemakeEditor)
 else ()
-    add_executable(${PROJECT_NAME} Source/Game/Main.cpp
-            Source/Editor/Temp.cpp
-            Source/Editor/Temp.h)
-    target_link_libraries(
-            ${PROJECT_NAME} PUBLIC PokeRemakeGame)
+    message(STATUS "Building Game")
+    add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PokeRemakeGame)
 endif ()
+
 
 target_link_libraries(
         ${PROJECT_NAME} PUBLIC PokeRemakeRuntime
 )
+
 # Set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
@@ -98,3 +104,4 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest)
 add_subdirectory(Google_tests)
+

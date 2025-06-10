@@ -6,8 +6,6 @@
 
 void TestGame::PreStart()
 {
-	PGame::PreStart();
-
 	LogDebug("PreStart: Constructing actors.");
 	if (const auto W = GetWorld())
 	{

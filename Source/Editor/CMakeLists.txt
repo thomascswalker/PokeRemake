@@ -9,6 +9,7 @@ include_directories(
 )
 
 set(SOURCES
-        Temp.cpp
+        EditorGame.cpp
+        EditorView.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})

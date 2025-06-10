@@ -56,16 +56,10 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 							  bool IsEditor)
 {
 	bIsEditor = IsEditor;
-	if (bIsEditor)
-	{
-		LogInfo("Constructing Editor Application");
-	}
-	else
-	{
-		LogInfo("Constructing Application");
-	}
+	LogInfo("Constructing {} Application", bIsEditor ? "Editor" : "Game");
 
-	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
+	const auto WindowTitle = bIsEditor ? WINDOW_TITLE_EDITOR : WINDOW_TITLE;
+	SDL_SetAppMetadata(WindowTitle, "1.0", WindowTitle);
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
 	{
@@ -78,7 +72,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
-	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
+	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
 									 WindowFlags, &mContext->Window, &mContext->Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
@@ -105,7 +99,6 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	// Setup input
 	SetInputManager(this);
 
-	LogInfo("Application constructed");
 	return true;
 }
 
@@ -124,6 +117,8 @@ void PApplication::Uninitialize() const
 
 	LogDebug("Cleaning up all SDL subsystems");
 	SDL_Quit();
+
+	LogDebug("Destroying {} Application", bIsEditor ? "Editor" : "Game");
 }
 
 void PApplication::Loop()

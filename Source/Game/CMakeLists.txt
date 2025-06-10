@@ -11,4 +11,5 @@ include_directories(
 set(SOURCES
         TestGame.cpp
 )
+
 add_library(${PROJECT_NAME} ${SOURCES})

@@ -173,14 +173,20 @@ void PRenderer::Render2D() const
 	SDL_RenderPresent(mContext->Renderer);
 }
 
-FVector2 PRenderer::WorldToScreen(const FVector2& Position) const
+bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const
 {
 	const auto ScreenSize = GetScreenSize();
-	const auto ViewPosition = GetCameraView()->GetPosition();
-	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	const auto Offset = Position - ViewPosition2D;
 
-	return (Offset + ScreenSize) * 0.5f;
+	if (const auto CameraView = GetCameraView())
+	{
+		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+		const auto Offset = Position - ViewPosition2D;
+
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		return true;
+	}
+	return false;
 }
 
 void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
@@ -276,26 +282,32 @@ void PRenderer::DrawGrid() const
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawPoint(ScreenPosition, Thickness);
 }
 
 void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 {
-	auto ScreenStart = WorldToScreen(Start);
-	auto ScreenEnd = WorldToScreen(End);
-	SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+	FVector2 ScreenStart;
+	FVector2 ScreenEnd;
+	if (WorldToScreen(Start, &ScreenStart) && WorldToScreen(End, &ScreenEnd))
+	{
+		SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+	}
 }
 
 void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
 void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
@@ -308,7 +320,8 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	auto Min = Dest.Min() + ScreenPosition;
 	auto Max = Dest.Max() + ScreenPosition;
 
