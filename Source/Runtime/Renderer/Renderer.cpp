@@ -168,6 +168,20 @@ void PRenderer::Render2D() const
 		{
 			Drawable->Draw(this);
 		}
+
+		if (const auto Widget = World->GetRootWidget())
+		{
+			SWidgetEvent Event;
+			Event.MousePosition = GetMousePosition();
+			Event.bMouseDown = GetMouseLeftDown();
+			Widget->ProcessEvents(&Event);
+
+			// Recursively construct the layout of all widgets
+			Widget->LayoutChildren();
+
+			// Recursively draw all widgets
+			Widget->Draw(this);
+		}
 	}
 
 	SDL_RenderPresent(mContext->Renderer);
@@ -384,4 +398,16 @@ FRect PRenderer::GetViewport() const
 	int32_t Width, Height;
 	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
 	return { 0, 0, static_cast<float>(Width), static_cast<float>(Height) };
+}
+
+FVector2 PRenderer::GetMousePosition() const
+{
+	float X, Y;
+	SDL_GetMouseState(&X, &Y);
+	return { X, Y };
+}
+
+bool PRenderer::GetMouseLeftDown() const
+{
+	return SDL_GetMouseState(nullptr, nullptr) == 1;
 }

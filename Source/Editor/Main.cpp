@@ -1,11 +1,3 @@
-#if _EDITOR
-#pragma message("EDITOR is defined")
-#define IS_EDITOR 1
-#else
-#pragma message("EDITOR is NOT defined")
-#define IS_EDITOR 0
-#endif
-
 #include "Application/Application.h"
 #include "Application/ArgParser.h"
 #include "EditorGame.h"

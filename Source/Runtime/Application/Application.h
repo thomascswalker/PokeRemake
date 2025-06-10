@@ -76,4 +76,6 @@ public:
 	void OnKeyDown(uint32_t ScanCode) override;
 	void OnKeyUp(uint32_t ScanCode) override;
 	void OnMiddleMouseScroll(float Delta) override;
+	void OnMouseMotion(float X, float Y) override;
+	void OnMouseClick() override;
 };

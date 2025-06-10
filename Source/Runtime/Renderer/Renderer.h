@@ -53,4 +53,6 @@ public:
 	float	 GetScreenHeight() const;
 	FVector2 GetScreenSize() const;
 	FRect	 GetViewport() const;
+	FVector2 GetMousePosition() const;
+	bool	 GetMouseLeftDown() const;
 };

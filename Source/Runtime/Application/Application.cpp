@@ -174,6 +174,16 @@ bool PApplication::OnEvent(void* Event)
 				OnMiddleMouseScroll(SDLEvent->wheel.y);
 				break;
 			}
+		case SDL_EVENT_MOUSE_MOTION:
+			{
+				OnMouseMotion(SDLEvent->motion.x, SDLEvent->motion.y);
+				break;
+			}
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			{
+				OnMouseClick();
+				break;
+			}
 		default:
 			break;
 	}
@@ -220,4 +230,14 @@ void PApplication::OnKeyUp(uint32_t ScanCode)
 void PApplication::OnMiddleMouseScroll(float Delta)
 {
 	MouseScroll.Broadcast(Delta);
+}
+
+void PApplication::OnMouseMotion(float X, float Y)
+{
+	MouseMotion.Broadcast(X, Y);
+}
+
+void PApplication::OnMouseClick()
+{
+	MouseClick.Broadcast();
 }
