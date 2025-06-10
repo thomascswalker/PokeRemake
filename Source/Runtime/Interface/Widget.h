@@ -69,6 +69,8 @@ public:
 			Renderer->SetDrawColor(WIDGET_MED);
 		}
 		Renderer->DrawFillRect(Rect);
+
+		Renderer->DrawText(mLabel, FVector2(X, Y));
 	}
 
 	void ProcessEvents(SWidgetEvent* Event) override

@@ -3,9 +3,6 @@
 #include "Core/Logging.h"
 #include "EditorView.h"
 
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb/stb_truetype.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 

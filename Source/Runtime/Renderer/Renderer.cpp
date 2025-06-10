@@ -2,6 +2,9 @@
 
 #include "Renderer.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb/stb_truetype.h"
+
 #include "Core/Files.h"
 #include "Core/Logging.h"
 #include "Engine/Game.h"
@@ -11,8 +14,10 @@
 #include "SDL3/SDL_test_common.h"
 #include "Shader.h"
 
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb/stb_truetype.h"
+// All fonts
+std::map<std::string, stbtt_fontinfo> gFontDatabase;
+// Current font
+stbtt_fontinfo* info = nullptr;
 
 bool PRenderer::Initialize()
 {
@@ -26,7 +31,7 @@ bool PRenderer::Initialize()
 	}
 
 	// Load font(s)
-	LoadFont("cmunrm");
+	LoadFont("pokemon");
 
 	return true; // Always true (2D is already initialized in SDLContext)
 }
@@ -123,14 +128,15 @@ void PRenderer::LoadFont(const std::string& Name)
 	fread(FontBuffer, Size, 1, FontFile);
 	fclose(FontFile);
 
-	stbtt_fontinfo mFontInfo;
-	if (!stbtt_InitFont(&mFontInfo, FontBuffer, 0))
+	gFontDatabase[FontFileName] = stbtt_fontinfo();
+	if (!stbtt_InitFont(&gFontDatabase[FontFileName], FontBuffer, 0))
 	{
 		LogError("Failed to initialize font: {}", FontFileName.c_str());
 		free(FontBuffer);
 		return;
 	}
 	LogDebug("Loaded font: {}", FontFileName.c_str());
+	info = &gFontDatabase[FontFileName];
 }
 
 void PRenderer::UnloadFonts() {}
@@ -332,7 +338,87 @@ void PRenderer::DrawGrid() const
 		DrawLine(X0, Y0, X1, Y1);
 	}
 }
-void PRenderer::DrawText(const std::string& Text, const FVector2& Position) {}
+
+void PRenderer::DrawText(const std::string& Text, const FVector2& Position) const
+{
+	int b_w = 256;
+	int b_h = 64;
+	int l_h = 32;
+
+	unsigned char* bitmap = static_cast<unsigned char*>(malloc(b_w * b_h));
+	float		   scale = stbtt_ScaleForPixelHeight(info, l_h);
+	const char*	   word = Text.c_str();
+
+	int x = 0;
+	int ascent, descent, linegap;
+	stbtt_GetFontVMetrics(info, &ascent, &descent, &linegap);
+
+	ascent = roundf(ascent * scale);
+	descent = roundf(descent * scale);
+
+	int i;
+	for (i = 0; i < strlen(word); i++)
+	{
+		/* how wide is this character */
+		int ax;
+		int lsb;
+		stbtt_GetCodepointHMetrics(info, word[i], &ax, &lsb);
+		/* (Note that each Codepoint call has an alternative Glyph version which caches the work
+		 * required to lookup the character word[i].) */
+
+		/* get bounding box for character (may be offset to account for chars that dip above or
+		 * below the line) */
+		int c_x1, c_y1, c_x2, c_y2;
+		stbtt_GetCodepointBitmapBox(info, word[i], scale, scale, &c_x1, &c_y1, &c_x2, &c_y2);
+		int y = ascent + c_y1;
+		int byteOffset = x + roundf(lsb * scale) + (y * b_w);
+		stbtt_MakeCodepointBitmap(info, bitmap + byteOffset, c_x2 - c_x1, c_y2 - c_y1, b_w, scale,
+								  scale, word[i]);
+
+		/* advance x */
+		x += roundf(ax * scale);
+
+		/* add kerning */
+		int kern;
+		kern = stbtt_GetCodepointKernAdvance(info, word[i], word[i + 1]);
+		x += roundf(kern * scale);
+	}
+
+	uint8_t* bitmap2 = static_cast<uint8_t*>(malloc(b_w * b_h * 4));
+	for (int j = 0; j < b_h; j++)
+	{
+		for (int i = 0; i < b_w; i++)
+		{
+			int byteOffset = i + (j * b_w);
+			int pixelValue = bitmap[byteOffset];
+			bitmap2[byteOffset * 4 + 0] = pixelValue; // R
+			bitmap2[byteOffset * 4 + 1] = pixelValue; // G
+			bitmap2[byteOffset * 4 + 2] = pixelValue; // B
+			bitmap2[byteOffset * 4 + 3] = pixelValue; // A
+		}
+	}
+	auto S = SDL_CreateSurfaceFrom(b_w, b_h, SDL_PIXELFORMAT_RGBA8888, bitmap2, b_w * 4);
+	if (!S)
+	{
+		LogError("Failed to create surface from bitmap: {}", SDL_GetError());
+		free(bitmap);
+		return;
+	}
+	SDL_Texture* Texture = SDL_CreateTextureFromSurface(mContext->Renderer, S);
+	if (!Texture)
+	{
+		LogError("Failed to create texture from surface: {}", SDL_GetError());
+		free(bitmap);
+		return;
+	}
+
+	SDL_FRect Source = { 0, 0, static_cast<float>(b_w), static_cast<float>(b_h) };
+	SDL_FRect Dest = { Position.X, Position.Y, static_cast<float>(b_w), static_cast<float>(b_h) };
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
+	SDL_RenderTexture(mContext->Renderer, Texture, &Source, &Dest);
+
+	free(bitmap);
+}
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
 {
