@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 
-inline std::vector<std::string> gResourcePaths = { "Resources\\Shaders", "Resources\\Textures" };
+inline std::vector<std::string> gResourcePaths = { "Resources\\Shaders", "Resources\\Textures",
+												   "Resources\\Fonts", "Resources\\Maps" };
 
 namespace Files
 {

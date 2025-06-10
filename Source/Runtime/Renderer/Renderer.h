@@ -4,7 +4,6 @@
 #include "Core/Matrix.h"
 #include "Core/Rect.h"
 #include "Engine/Texture.h"
-
 #include <vector>
 
 class PRenderer
@@ -22,6 +21,9 @@ public:
 	bool Initialize3D();
 	void Uninitialize() const;
 
+	void LoadFont(const std::string& Name);
+	void UnloadFonts();
+
 	void Render();
 	void Render3D();
 	void Render2D() const;
@@ -37,6 +39,7 @@ public:
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
 	void DrawGrid() const;
+	void DrawText(const std::string& Text, const FVector2& Position);
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;

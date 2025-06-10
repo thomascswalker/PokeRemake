@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 
+#include "Core/Files.h"
 #include "Core/Logging.h"
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
@@ -9,6 +10,9 @@
 #include "SDL3/SDL_surface.h"
 #include "SDL3/SDL_test_common.h"
 #include "Shader.h"
+
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb/stb_truetype.h"
 
 bool PRenderer::Initialize()
 {
@@ -20,6 +24,10 @@ bool PRenderer::Initialize()
 	{
 		SDL_SetHint("SDL_RENDER_SCALE_QUALITY", "1"); // Linear
 	}
+
+	// Load font(s)
+	LoadFont("cmunrm");
+
 	return true; // Always true (2D is already initialized in SDLContext)
 }
 
@@ -95,6 +103,37 @@ void PRenderer::Uninitialize() const
 	PTextureManager::UnloadSDL();
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
+
+void PRenderer::LoadFont(const std::string& Name)
+{
+
+	const auto FontFileName = Files::FindFile(std::format("{}.ttf", Name.c_str()));
+	if (FontFileName.empty())
+	{
+		LogError("Failed to find font file: {}", Name.c_str());
+		return;
+	}
+	FILE* FontFile = fopen(FontFileName.c_str(), "rb");
+	fseek(FontFile, 0, SEEK_END);
+	const int64_t Size = ftell(FontFile);
+	fseek(FontFile, 0, SEEK_SET);
+
+	const auto FontBuffer = static_cast<uint8_t*>(malloc(Size * sizeof(uint8_t)));
+
+	fread(FontBuffer, Size, 1, FontFile);
+	fclose(FontFile);
+
+	stbtt_fontinfo mFontInfo;
+	if (!stbtt_InitFont(&mFontInfo, FontBuffer, 0))
+	{
+		LogError("Failed to initialize font: {}", FontFileName.c_str());
+		free(FontBuffer);
+		return;
+	}
+	LogDebug("Loaded font: {}", FontFileName.c_str());
+}
+
+void PRenderer::UnloadFonts() {}
 
 void PRenderer::Render()
 {
@@ -293,6 +332,7 @@ void PRenderer::DrawGrid() const
 		DrawLine(X0, Y0, X1, Y1);
 	}
 }
+void PRenderer::DrawText(const std::string& Text, const FVector2& Position) {}
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
 {

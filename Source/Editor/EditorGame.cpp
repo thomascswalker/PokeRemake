@@ -3,6 +3,12 @@
 #include "Core/Logging.h"
 #include "EditorView.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb/stb_truetype.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
 static void OnClicked()
 {
 	LogDebug("Click!");
@@ -21,13 +27,27 @@ void PEditorGame::PreStart()
 			LogError("Failed to create Editor View");
 		}
 		EV->SetInternalName("EditorView");
+	}
 
-		auto Button1 = W->ConstructWidget<PButton>("My Button");
+	ConstructInterface();
+}
+
+void PEditorGame::Start()
+{
+	LogDebug("Starting {}", GetInternalName().c_str());
+	PGame::Start();
+}
+
+void PEditorGame::ConstructInterface() const
+{
+	if (const auto W = GetWorld())
+	{
+		auto Button1 = W->ConstructWidget<PButton>("My Button 1");
 		Button1->W = 200;
 		Button1->H = 50;
 		Button1->Clicked.AddStatic(&OnClicked);
 
-		auto Button2 = W->ConstructWidget<PButton>("My Button");
+		auto Button2 = W->ConstructWidget<PButton>("My Button 2");
 		Button2->W = 200;
 		Button2->H = 50;
 		Button2->Clicked.AddStatic(&OnClicked);
@@ -40,10 +60,4 @@ void PEditorGame::PreStart()
 
 		W->SetRootWidget(Layout);
 	}
-}
-
-void PEditorGame::Start()
-{
-	LogDebug("Starting {}", GetInternalName().c_str());
-	PGame::Start();
 }

@@ -7,4 +7,6 @@ class PEditorGame : public PGame
 public:
 	void PreStart() override;
 	void Start() override;
+
+	void ConstructInterface() const;
 };
