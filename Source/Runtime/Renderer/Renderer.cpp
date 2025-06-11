@@ -101,18 +101,18 @@ void PRenderer::Render() const
 			Drawable->Draw(this);
 		}
 
-		if (const auto Widget = World->GetRootWidget())
+		if (const auto Root = World->GetRootWidget())
 		{
 			SWidgetEvent Event;
 			Event.MousePosition = GetMousePosition();
 			Event.bMouseDown = GetMouseLeftDown();
-			Widget->ProcessEvents(&Event);
+			Root->ProcessEvents(&Event);
 
 			// Recursively construct the layout of all widgets
-			Widget->LayoutChildren();
+			Root->LayoutChildren();
 
 			// Recursively draw all widgets
-			Widget->Draw(this);
+			Root->Draw(this);
 		}
 	}
 
@@ -228,15 +228,12 @@ void PRenderer::DrawGrid() const
 	}
 }
 
-void PRenderer::DrawText(const std::string& Text, const FVector2& Position) const
+void PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
 {
-	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
-	float			Width = 0;
-	for (const auto& C : Text)
-	{
-		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
-		Width += Info->xadvance * Aspect;
-	}
+	// Aspect ratio of the pixel height we render at to the pixel height we baked the
+	// font atlas at.
+	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
+	const float Width = GetTextWidth(Text);
 
 	float		X = Position.X - Width / 2.0f;
 	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
@@ -327,6 +324,18 @@ void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const F
 	const SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
+}
+
+float PRenderer::GetTextWidth(const std::string& Text) const
+{
+	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
+	float			Width = 0;
+	for (const auto& C : Text)
+	{
+		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		Width += Info->xadvance * Aspect;
+	}
+	return Width;
 }
 
 float PRenderer::GetScreenWidth() const

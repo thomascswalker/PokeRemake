@@ -3,17 +3,6 @@
 #include "Core/Logging.h"
 #include "EditorView.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-constexpr int BUTTON_WIDTH = 60;
-constexpr int BUTTON_HEIGHT = 20;
-
-static void OnClicked()
-{
-	LogDebug("Click!");
-}
-
 void PEditorGame::PreStart()
 {
 	SetInternalName("EditorGame");
@@ -38,26 +27,46 @@ void PEditorGame::Start()
 	PGame::Start();
 }
 
-void PEditorGame::ConstructInterface() const
+void PEditorGame::ConstructInterface()
 {
 	if (const auto W = GetWorld())
 	{
-		auto Button1 = W->ConstructWidget<PButton>("Edit");
-		Button1->W = BUTTON_WIDTH;
-		Button1->H = BUTTON_HEIGHT;
-		Button1->Clicked.AddStatic(&OnClicked);
+		mNewButton = W->ConstructWidget<PButton>("New");
+		mNewButton->W = BUTTON_WIDTH;
+		mNewButton->H = BUTTON_HEIGHT;
+		mNewButton->SetFontSize(WIDGET_FONT_SIZE);
 
-		auto Button2 = W->ConstructWidget<PButton>("Save");
-		Button2->W = BUTTON_WIDTH;
-		Button2->H = BUTTON_HEIGHT;
-		Button2->Clicked.AddStatic(&OnClicked);
+		mEditButton = W->ConstructWidget<PButton>("Edit");
+		mEditButton->W = BUTTON_WIDTH;
+		mEditButton->H = BUTTON_HEIGHT;
+		mEditButton->SetFontSize(WIDGET_FONT_SIZE);
+		mEditButton->Clicked.AddRaw(this, &PEditorGame::OnEditButtonClicked);
 
-		auto Layout = W->ConstructWidget<PVerticalLayout>();
-		Layout->X = 10;
-		Layout->Y = 10;
-		Layout->AddChild(Button1);
-		Layout->AddChild(Button2);
+		mSaveButton = W->ConstructWidget<PButton>("Save");
+		mSaveButton->W = BUTTON_WIDTH;
+		mSaveButton->H = BUTTON_HEIGHT;
+		mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
 
-		W->SetRootWidget(Layout);
+		mModeText = W->ConstructWidget<PText>("View");
+		mModeText->W = BUTTON_WIDTH;
+		mModeText->H = BUTTON_HEIGHT;
+		mModeText->SetFontSize(WIDGET_FONT_SIZE);
+
+		mCanvas = W->ConstructWidget<PCanvas>();
+		mCanvas->X = 10;
+		mCanvas->Y = 10;
+		mCanvas->AddChild(mNewButton);
+		mCanvas->AddChild(mEditButton);
+		mCanvas->AddChild(mSaveButton);
+		mCanvas->AddChild(mModeText);
+
+		W->SetCanvas(mCanvas);
 	}
+}
+
+void PEditorGame::OnEditButtonClicked()
+{
+	bEditMode = !bEditMode;
+	const auto Text = bEditMode ? "Edit" : "View";
+	mModeText->SetText(Text);
 }
