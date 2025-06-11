@@ -1,5 +1,3 @@
-// https://github.com/TheSpydog/SDL_gpu_examples/tree/main
-
 #include "Renderer.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
@@ -10,42 +8,14 @@
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
 #include "Engine/World.h"
-#include "SDL3/SDL_surface.h"
-#include "SDL3/SDL_test_common.h"
-#include "Shader.h"
 
-std::string		gDefaultFont = "Roboto-Regular"; // Default font name
-constexpr int	FONT_ATLAS_SIZE = 1024;
-constexpr int	FONT_CHAR_COUNT = 96;			// ASCII 32..126
-constexpr int	FONT_CHAR_START = 32;			// ASCII 32 is the first printable character
-constexpr float FONT_ATLAS_BAKE_SCALE = 120.0f; // Font size in pixels
-constexpr float FONT_RENDER_SCALE = 16.0f;		// Scale for rendering text
-
-struct PFont
-{
-	stbtt_fontinfo	Info;
-	uint8_t*		Atlas;
-	stbtt_bakedchar CharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
-	SDL_Texture*	Texture;
-};
-
+std::string	 gDefaultFont = "Roboto-Regular"; // Default font name
 static PFont gCurrentFont;
 
-bool PRenderer::Initialize()
+bool PRenderer::Initialize() const
 {
-	if (mContext->IsGPU())
-	{
-		Initialize3D();
-	}
-	else
-	{
-		SDL_SetHint("SDL_RENDER_SCALE_QUALITY", "1"); // Linear
-	}
-
-	// Load font(s)
 	LoadFont(gDefaultFont);
-
-	return true; // Always true (2D is already initialized in SDLContext)
+	return true;
 }
 
 void PRenderer::PostInitialize() const
@@ -53,72 +23,9 @@ void PRenderer::PostInitialize() const
 	PTextureManager::LoadSDL(mContext->Renderer);
 }
 
-bool PRenderer::Initialize3D()
-{
-	const auto FormatFlags =
-		SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL;
-
-	LogInfo("Creating {} GPU Device", mContext->GPUMode.c_str());
-	mContext->Device = SDL_CreateGPUDevice(FormatFlags, true, mContext->GPUMode.c_str());
-	if (!mContext->Device)
-	{
-		LogError("Failed to create GPU Device: {}", SDL_GetError());
-		return false;
-	}
-
-	if (!SDL_ClaimWindowForGPUDevice(mContext->Device, mContext->Window))
-	{
-		LogError("Failed to claim window for GPU Device: {}", SDL_GetError());
-		return false;
-	}
-
-	LogInfo("Created GPU device.");
-
-	// Compile shaders
-	if (!CompileShaders(mContext->Device))
-	{
-		LogError("Failed to compile shaders.");
-		return false;
-	}
-	// Load shaders
-	std::vector<SDL_GPUShader*> Shaders;
-	if (!LoadShaders(mContext->Device, &Shaders))
-	{
-		LogError("Failed to compile shaders.");
-		return false;
-	}
-	LogDebug("Loaded {} shaders.", Shaders.size());
-
-	const SDL_GPUTextureFormat TextureFormat =
-		SDL_GetGPUSwapchainTextureFormat(mContext->Device, mContext->Window);
-	SDL_GPUColorTargetDescription TextureFormats[] = { { .format = TextureFormat } };
-	SDL_GPUGraphicsPipelineCreateInfo PipelineInfo = {
-		.vertex_shader = Shaders[1],
-		.fragment_shader = Shaders[0],
-		.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
-		.target_info = {
-			.color_target_descriptions = TextureFormats,
-			.num_color_targets = 1,
-		},
-	};
-
-	PipelineInfo.rasterizer_state.fill_mode = SDL_GPU_FILLMODE_FILL;
-	mPipeline = SDL_CreateGPUGraphicsPipeline(mContext->Device, &PipelineInfo);
-	ReleaseShaders(mContext->Device, &Shaders);
-	if (!mPipeline)
-	{
-		LogError("Failed to create GPU GraphicsPipeline: {}", SDL_GetError());
-		return false;
-	}
-
-	// Release shaders once they've been loaded into the pipeline
-	return true;
-}
-
 void PRenderer::Uninitialize() const
 {
 	PTextureManager::UnloadSDL();
-	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
 void PRenderer::LoadFont(const std::string& Name) const
@@ -148,91 +55,36 @@ void PRenderer::LoadFont(const std::string& Name) const
 	}
 	LogDebug("Loaded font: {}", FontFileName.c_str());
 
-	auto TempAtlas =
-		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t)));
-	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, TempAtlas, FONT_ATLAS_SIZE,
+	const size_t TempSize = FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t);
+	const auto	 Bitmap = static_cast<uint8_t*>(malloc(TempSize));
+	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, Bitmap, FONT_ATLAS_SIZE,
 						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
 						 gCurrentFont.CharacterData);
-	gCurrentFont.Atlas =
-		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint32_t)));
 
+	gCurrentFont.Bitmap = static_cast<uint8_t*>(malloc(TempSize * 4));
+
+	// Expand the baked font atlas to RGBA format
 	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
 	{
-		gCurrentFont.Atlas[i * 4] = TempAtlas[i];
-		gCurrentFont.Atlas[i * 4 + 1] = TempAtlas[i];
-		gCurrentFont.Atlas[i * 4 + 2] = TempAtlas[i];
-		gCurrentFont.Atlas[i * 4 + 3] = TempAtlas[i];
+		gCurrentFont.Bitmap[i * 4] = Bitmap[i];
+		gCurrentFont.Bitmap[i * 4 + 1] = Bitmap[i];
+		gCurrentFont.Bitmap[i * 4 + 2] = Bitmap[i];
+		gCurrentFont.Bitmap[i * 4 + 3] = Bitmap[i];
 	}
 
-	free(TempAtlas);
+	free(Bitmap);
 	free(FontBuffer);
 	gCurrentFont.Texture =
 		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
 						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
-	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Atlas,
+	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
 					  FONT_ATLAS_SIZE * sizeof(uint32_t));
 }
 
 void PRenderer::UnloadFonts() {}
 
-void PRenderer::Render()
-{
-	mContext->IsGPU() ? Render3D() : Render2D();
-}
-
-// Main render function
-void PRenderer::Render3D()
-{
-	const auto CommandBuffer = SDL_AcquireGPUCommandBuffer(mContext->Device);
-	if (CommandBuffer == nullptr)
-	{
-		LogError("AcquireGPUCommandBuffer: {}", SDL_GetError());
-		return;
-	}
-
-	SDL_GPUTexture* SwapchainTexture;
-	if (!SDL_WaitAndAcquireGPUSwapchainTexture(CommandBuffer, mContext->Window, &SwapchainTexture,
-											   nullptr, nullptr))
-	{
-		LogError("WaitAndAcquireGPUSwapchainTexture: {}", SDL_GetError());
-		return;
-	}
-
-	if (!SwapchainTexture)
-	{
-		LogError("SwapchainTexture is null.");
-		return;
-	}
-	const SDL_GPUColorTargetInfo ColorTargetInfo = {
-		.texture = SwapchainTexture,
-		.clear_color = { 0.1f, 0.1f, 0.1f, 1.0f },
-		.load_op = SDL_GPU_LOADOP_CLEAR,
-		.store_op = SDL_GPU_STOREOP_STORE,
-	};
-
-	const auto RenderPass = SDL_BeginGPURenderPass(CommandBuffer, &ColorTargetInfo, 1, nullptr);
-	SDL_BindGPUGraphicsPipeline(RenderPass, mPipeline);
-
-	const auto			  Width = GetScreenWidth();
-	const auto			  Height = GetScreenHeight();
-	const SDL_GPUViewport Viewport = {
-		0,		// Left
-		0,		// Top
-		Width,	// Right
-		Height, // Bottom
-		0.1f,	// Min depth
-		1.0f,	// Max depthw
-	};
-	SDL_SetGPUViewport(RenderPass, &Viewport);
-
-	SDL_DrawGPUPrimitives(RenderPass, 3, 1, 0, 0);
-	SDL_EndGPURenderPass(RenderPass);
-
-	SDL_SubmitGPUCommandBuffer(CommandBuffer);
-}
-
-void PRenderer::Render2D() const
+void PRenderer::Render() const
 {
 	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
 	SDL_RenderClear(mContext->Renderer);
@@ -300,7 +152,7 @@ void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 {
 	if (Thickness > 0.0f)
 	{
-		const SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness,
+		const SDL_FRect R = { V.X - Thickness / 2.0f, V.Y - Thickness / 2.0f, Thickness,
 							  Thickness };
 		SDL_RenderFillRect(mContext->Renderer, &R);
 	}
@@ -382,17 +234,17 @@ void PRenderer::DrawText(const std::string& Text, const FVector2& Position) cons
 	float			Width = 0;
 	for (const auto& C : Text)
 	{
-		auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
 		Width += Info->xadvance * Aspect;
 	}
 
-	float X = Position.X - (Width / 2.0f);
-	float Y = Position.Y + (FONT_RENDER_SCALE / 4.0f);
+	float		X = Position.X - Width / 2.0f;
+	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
 		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
-		SDL_FRect  Dest(X + (Info->xoff * Aspect), Y + (Info->yoff * Aspect),
+		SDL_FRect  Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
 						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
 		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
@@ -449,7 +301,7 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
-void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
+void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
 							 int32_t Index) const
 {
 	if (!Texture)

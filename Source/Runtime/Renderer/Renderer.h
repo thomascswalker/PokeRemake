@@ -4,30 +4,33 @@
 #include "Core/Matrix.h"
 #include "Core/Rect.h"
 #include "Engine/Texture.h"
+#include "stb/stb_truetype.h"
 #include <vector>
+
+struct PFont
+{
+	stbtt_fontinfo	Info;
+	uint8_t*		Bitmap;
+	stbtt_bakedchar CharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
+	SDL_Texture*	Texture;
+};
 
 class PRenderer
 {
-	SDLContext*				 mContext;
-	SDL_GPUGraphicsPipeline* mPipeline;
-
-	FMatrix mMVP;
+	SDLContext* mContext;
+	FMatrix		mMVP;
 
 public:
-	explicit PRenderer(SDLContext* InContext) : mContext(InContext), mPipeline(nullptr) {}
+	explicit PRenderer(SDLContext* InContext) : mContext(InContext) {}
 
-	bool Initialize();
+	bool Initialize() const;
 	void PostInitialize() const;
-	bool Initialize3D();
 	void Uninitialize() const;
 
 	void LoadFont(const std::string& Name) const;
 	void UnloadFonts();
 
-	void Render();
-	void Render3D();
-	void Render2D() const;
-
+	void Render() const;
 	bool WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const;
 
 	/* Drawing */
@@ -47,7 +50,7 @@ public:
 	void DrawFillRectAt(const FRect& Rect, const FVector2& Position) const;
 	void DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
 					   const FVector2& Position) const;
-	void DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector2& Position,
+	void DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
 					  int32_t Index) const;
 
 	SDL_Window* GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
