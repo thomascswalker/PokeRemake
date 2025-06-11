@@ -2,22 +2,6 @@
 
 #include "Core/Logging.h"
 #include "EditorView.h"
-#include "Interface/Button.h"
-#include "Interface/Canvas.h"
-#include "Interface/Spinner.h"
-
-constexpr int BUTTON_WIDTH = 60;
-constexpr int BUTTON_HEIGHT = 20;
-
-static void OnClicked()
-{
-	LogDebug("Click!");
-}
-
-static void ValueChanged(float Value)
-{
-	LogDebug("Value changed to {}", Value);
-}
 
 void PEditorGame::PreStart()
 {
@@ -43,32 +27,42 @@ void PEditorGame::Start()
 	PGame::Start();
 }
 
-void PEditorGame::ConstructInterface() const
+void PEditorGame::ConstructInterface()
 {
 	if (const auto W = GetWorld())
 	{
-		auto Button1 = W->ConstructWidget<PButton>("Edit");
-		Button1->W = BUTTON_WIDTH;
-		Button1->H = BUTTON_HEIGHT;
-		Button1->Clicked.AddStatic(&OnClicked);
+		mNewButton = W->ConstructWidget<PButton>("New");
+		mNewButton->W = BUTTON_WIDTH;
+		mNewButton->H = BUTTON_HEIGHT;
 
-		auto Button2 = W->ConstructWidget<PButton>("Save");
-		Button2->W = BUTTON_WIDTH;
-		Button2->H = BUTTON_HEIGHT;
-		Button2->Clicked.AddStatic(&OnClicked);
+		mEditButton = W->ConstructWidget<PButton>("Edit");
+		mEditButton->W = BUTTON_WIDTH;
+		mEditButton->H = BUTTON_HEIGHT;
+		mEditButton->Clicked.AddRaw(this, &PEditorGame::OnEditButtonClicked);
 
-		auto Spinner = W->ConstructWidget<PSpinner>();
-		Spinner->W = BUTTON_WIDTH;
-		Spinner->H = BUTTON_HEIGHT;
-		Spinner->ValueChanged.AddStatic(&ValueChanged);
+		mSaveButton = W->ConstructWidget<PButton>("Save");
+		mSaveButton->W = BUTTON_WIDTH;
+		mSaveButton->H = BUTTON_HEIGHT;
 
-		auto Canvas = W->ConstructWidget<PCanvas>();
-		Canvas->X = 10;
-		Canvas->Y = 10;
-		Canvas->AddChild(Button1);
-		Canvas->AddChild(Button2);
-		Canvas->AddChild(Spinner);
+		mModeText = W->ConstructWidget<PText>("View", 20);
+		mModeText->W = BUTTON_WIDTH;
+		mModeText->H = BUTTON_HEIGHT;
 
-		W->SetCanvas(Canvas);
+		mCanvas = W->ConstructWidget<PCanvas>();
+		mCanvas->X = 10;
+		mCanvas->Y = 10;
+		mCanvas->AddChild(mNewButton);
+		mCanvas->AddChild(mEditButton);
+		mCanvas->AddChild(mSaveButton);
+		mCanvas->AddChild(mModeText);
+
+		W->SetCanvas(mCanvas);
 	}
+}
+
+void PEditorGame::OnEditButtonClicked()
+{
+	bEditMode = !bEditMode;
+	const auto Text = bEditMode ? "Edit" : "View";
+	mModeText->SetText(Text);
 }

@@ -5,7 +5,7 @@
 class PCanvas : public PWidget
 {
 public:
-	PCanvas() = default;
+	PCanvas() { GENERATE_INTERNAL_NAME(Canvas); }
 	void LayoutChildren() const override { LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING); }
 
 	void Draw(const PRenderer* Renderer) const override
@@ -18,6 +18,7 @@ public:
 
 	void ProcessEvents(SWidgetEvent* Event) override
 	{
+		mSender = this;
 		for (const auto& Child : mChildren)
 		{
 			if (Event->bConsumed)

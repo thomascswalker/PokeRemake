@@ -40,6 +40,8 @@ protected:
 public:
 	explicit PSpinner() : mUpButton("^"), mDownButton("v")
 	{
+		GENERATE_INTERNAL_NAME(Spinner);
+
 		mUpButton.W = WIDGET_HEIGHT;
 		mUpButton.H = WIDGET_HEIGHT / 2.0f;
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
@@ -84,6 +86,7 @@ public:
 
 	void ProcessEvents(SWidgetEvent* Event) override
 	{
+		mSender = this;
 		for (const auto& Child : mChildren)
 		{
 			Child->ProcessEvents(Event);

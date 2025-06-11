@@ -13,7 +13,7 @@ class PButton : public PWidget
 public:
 	DButtonClicked Clicked;
 
-	PButton(const std::string& Label) : mLabel(Label) {}
+	explicit PButton(const std::string& Label) : mLabel(Label) { GENERATE_INTERNAL_NAME(Button); }
 
 	void Draw(const PRenderer* Renderer) const override
 	{
@@ -35,11 +35,13 @@ public:
 		Renderer->SetDrawColor(WIDGET_DARK);
 		Renderer->DrawRect(Rect);
 
-		Renderer->DrawText(mLabel, FVector2(X + W / 2.0f, Y + H / 2.0f), 14);
+		Renderer->DrawText(mLabel, FVector2(X + W / 2.0f, Y + H / 2.0f), 20);
 	}
 
 	void ProcessEvents(SWidgetEvent* Event) override
 	{
+		mSender = this;
+
 		// Are we inside the button?
 		if (GetGeometry().Contains(Event->MousePosition))
 		{

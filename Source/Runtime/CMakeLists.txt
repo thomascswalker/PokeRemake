@@ -50,6 +50,7 @@ set(SOURCES
         Interface/Canvas.h
         Interface/Widget.cpp
         Interface/Layout.h
+        Interface/Text.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

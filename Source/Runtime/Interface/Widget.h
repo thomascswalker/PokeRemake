@@ -13,6 +13,10 @@
 #define WIDGET_HEIGHT 20
 #define WIDGET_SPACING 5
 
+#define GENERATE_INTERNAL_NAME(Class) \
+	static int Count = 0;             \
+	mInternalName = std::format(#Class "{}", Count++);
+
 struct SWidgetEvent
 {
 	bool	 bConsumed = false; // Event was consumed by a widget
@@ -23,7 +27,11 @@ struct SWidgetEvent
 class PWidget : public PObject
 {
 protected:
-	PWidget*			  mParent = nullptr;
+	// Static pointer to the widget that sent the event.
+	static PWidget* mSender;
+	// Pointer to the parent of this widget.
+	PWidget* mParent = nullptr;
+	// List of child widgets.
 	std::vector<PWidget*> mChildren;
 
 public:
@@ -66,4 +74,7 @@ public:
 	}
 	virtual std::vector<PWidget*> GetChildren() const { return mChildren; }
 	virtual void				  LayoutChildren() const {}
+
+	// Returns a pointer to the widget that sent the event.
+	static PWidget* GetSender() { return mSender; }
 };
