@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+constexpr int BUTTON_WIDTH = 60;
+constexpr int BUTTON_HEIGHT = 20;
+
 static void OnClicked()
 {
 	LogDebug("Click!");
@@ -39,14 +42,14 @@ void PEditorGame::ConstructInterface() const
 {
 	if (const auto W = GetWorld())
 	{
-		auto Button1 = W->ConstructWidget<PButton>("My Button 1");
-		Button1->W = 200;
-		Button1->H = 50;
+		auto Button1 = W->ConstructWidget<PButton>("Edit");
+		Button1->W = BUTTON_WIDTH;
+		Button1->H = BUTTON_HEIGHT;
 		Button1->Clicked.AddStatic(&OnClicked);
 
-		auto Button2 = W->ConstructWidget<PButton>("My Button 2");
-		Button2->W = 200;
-		Button2->H = 50;
+		auto Button2 = W->ConstructWidget<PButton>("Save");
+		Button2->W = BUTTON_WIDTH;
+		Button2->H = BUTTON_HEIGHT;
 		Button2->Clicked.AddStatic(&OnClicked);
 
 		auto Layout = W->ConstructWidget<PVerticalLayout>();

@@ -25,7 +25,7 @@ PTexture::~PTexture() {}
 PTexture* PTextureManager::Load(const std::string& FileName)
 {
 	LogDebug("Finding texture: {}", FileName.c_str());
-	auto AbsFileName = Files::FindFile(FileName);
+	const auto AbsFileName = Files::FindFile(FileName);
 	if (AbsFileName.empty())
 	{
 		LogError("File not found: {}", FileName.c_str());
@@ -35,8 +35,9 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 
 	PTexture Tex;
 	Tex.mFileName = AbsFileName;
-	auto Data = stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
-	auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
+	const auto Data =
+		stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
+	const auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
 	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
 	std::memcpy(Tex.mData, Data, DataSize);
 	stbi_image_free(Data);
@@ -57,21 +58,20 @@ void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
 {
 	for (const auto& [K, V] : GetTextures())
 	{
-		auto Surface = SDL_CreateSurfaceFrom(V->GetWidth(), V->GetHeight(), SDL_PIXELFORMAT_RGBA32,
-											 V->GetData(), V->GetPitch());
-		if (!Surface)
-		{
-			LogError("Unable to create SDL surface: {}", SDL_GetError());
-			return;
-		}
-		auto Texture = SDL_CreateTextureFromSurface(Renderer, Surface);
-		SDL_DestroySurface(Surface);
+		const auto Width = V->GetWidth();
+		const auto Height = V->GetHeight();
+		const auto Texture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
+											   SDL_TEXTUREACCESS_STATIC, Width, Height);
 		if (!Texture)
 		{
-			LogError("Failed to create SDL texture: {}", SDL_GetError());
-			return;
+			LogError("Unable to create texture: {}", SDL_GetError());
+			continue;
 		}
-		V->mSDLTexture = Texture;
+		SDL_Rect Source(0, 0, Width, Height);
+		if (SDL_UpdateTexture(Texture, &Source, V->GetData(), V->GetPitch()))
+		{
+			V->mSDLTexture = Texture;
+		}
 	}
 }
 void PTextureManager::UnloadSDL()

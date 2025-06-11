@@ -44,14 +44,7 @@ public:
 	explicit PButton(const std::string& Label) : mLabel(Label) {}
 	FRect GetGeometry() const { return FRect{ X, Y, W, H }; }
 
-	void OnMouseClick() { Clicked.Broadcast(); }
-	void Start() override
-	{
-		if (const auto Input = GetInputManager())
-		{
-			Input->MouseClick.AddRaw(this, &PButton::OnMouseClick);
-		}
-	}
+	void Start() override {}
 
 	void Draw(const PRenderer* Renderer) const override
 	{
@@ -70,7 +63,10 @@ public:
 		}
 		Renderer->DrawFillRect(Rect);
 
-		Renderer->DrawText(mLabel, FVector2(X, Y));
+		Renderer->SetDrawColor(WIDGET_DARK);
+		Renderer->DrawRect(Rect);
+
+		Renderer->DrawText(mLabel, FVector2(X + W / 2.0f, Y + H / 2.0f));
 	}
 
 	void ProcessEvents(SWidgetEvent* Event) override

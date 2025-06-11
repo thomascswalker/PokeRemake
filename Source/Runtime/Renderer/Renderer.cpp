@@ -17,7 +17,16 @@
 // All fonts
 std::map<std::string, stbtt_fontinfo> gFontDatabase;
 // Current font
-stbtt_fontinfo* info = nullptr;
+std::string		gDefaultFont = "Roboto-Regular"; // Default font name
+constexpr int	FONT_ATLAS_SIZE = 512;
+constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126
+constexpr int	FONT_CHAR_START = 32;		   // ASCII 32 is the first printable character
+constexpr float FONT_ATLAS_BAKE_SCALE = 72.0f; // Font size in pixels
+constexpr float FONT_RENDER_SCALE = 16.0f;	   // Scale for rendering text
+stbtt_fontinfo* gCurrentFont = nullptr;
+uint8_t*		Atlas = nullptr;
+stbtt_bakedchar gCurrentCharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
+SDL_Texture*	gCurrentFontTexture = nullptr;
 
 bool PRenderer::Initialize()
 {
@@ -31,7 +40,7 @@ bool PRenderer::Initialize()
 	}
 
 	// Load font(s)
-	LoadFont("pokemon");
+	LoadFont(gDefaultFont);
 
 	return true; // Always true (2D is already initialized in SDLContext)
 }
@@ -109,9 +118,8 @@ void PRenderer::Uninitialize() const
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
-void PRenderer::LoadFont(const std::string& Name)
+void PRenderer::LoadFont(const std::string& Name) const
 {
-
 	const auto FontFileName = Files::FindFile(std::format("{}.ttf", Name.c_str()));
 	if (FontFileName.empty())
 	{
@@ -136,7 +144,29 @@ void PRenderer::LoadFont(const std::string& Name)
 		return;
 	}
 	LogDebug("Loaded font: {}", FontFileName.c_str());
-	info = &gFontDatabase[FontFileName];
+	gCurrentFont = &gFontDatabase[FontFileName];
+
+	auto TempAtlas =
+		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t)));
+	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, TempAtlas, FONT_ATLAS_SIZE,
+						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT, gCurrentCharacterData);
+	Atlas = static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint32_t)));
+
+	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
+	{
+		Atlas[i * 4] = TempAtlas[i];
+		Atlas[i * 4 + 1] = TempAtlas[i];
+		Atlas[i * 4 + 2] = TempAtlas[i];
+		Atlas[i * 4 + 3] = TempAtlas[i];
+	}
+
+	free(TempAtlas);
+	free(FontBuffer);
+	gCurrentFontTexture =
+		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	SDL_UpdateTexture(gCurrentFontTexture, &Rect, Atlas, FONT_ATLAS_SIZE * sizeof(uint32_t));
 }
 
 void PRenderer::UnloadFonts() {}
@@ -265,7 +295,8 @@ void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 {
 	if (Thickness > 0.0f)
 	{
-		SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness, Thickness };
+		const SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness,
+							  Thickness };
 		SDL_RenderFillRect(mContext->Renderer, &R);
 	}
 	else
@@ -309,6 +340,7 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
 }
+
 void PRenderer::DrawGrid() const
 {
 	SetDrawColor(100, 100, 100, 255);
@@ -341,83 +373,25 @@ void PRenderer::DrawGrid() const
 
 void PRenderer::DrawText(const std::string& Text, const FVector2& Position) const
 {
-	int b_w = 256;
-	int b_h = 64;
-	int l_h = 32;
-
-	unsigned char* bitmap = static_cast<unsigned char*>(malloc(b_w * b_h));
-	float		   scale = stbtt_ScaleForPixelHeight(info, l_h);
-	const char*	   word = Text.c_str();
-
-	int x = 0;
-	int ascent, descent, linegap;
-	stbtt_GetFontVMetrics(info, &ascent, &descent, &linegap);
-
-	ascent = roundf(ascent * scale);
-	descent = roundf(descent * scale);
-
-	int i;
-	for (i = 0; i < strlen(word); i++)
+	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
+	float			Width = 0;
+	for (const auto& C : Text)
 	{
-		/* how wide is this character */
-		int ax;
-		int lsb;
-		stbtt_GetCodepointHMetrics(info, word[i], &ax, &lsb);
-		/* (Note that each Codepoint call has an alternative Glyph version which caches the work
-		 * required to lookup the character word[i].) */
-
-		/* get bounding box for character (may be offset to account for chars that dip above or
-		 * below the line) */
-		int c_x1, c_y1, c_x2, c_y2;
-		stbtt_GetCodepointBitmapBox(info, word[i], scale, scale, &c_x1, &c_y1, &c_x2, &c_y2);
-		int y = ascent + c_y1;
-		int byteOffset = x + roundf(lsb * scale) + (y * b_w);
-		stbtt_MakeCodepointBitmap(info, bitmap + byteOffset, c_x2 - c_x1, c_y2 - c_y1, b_w, scale,
-								  scale, word[i]);
-
-		/* advance x */
-		x += roundf(ax * scale);
-
-		/* add kerning */
-		int kern;
-		kern = stbtt_GetCodepointKernAdvance(info, word[i], word[i + 1]);
-		x += roundf(kern * scale);
+		auto Info = &gCurrentCharacterData[C - FONT_CHAR_START];
+		Width += Info->xadvance * Aspect;
 	}
 
-	uint8_t* bitmap2 = static_cast<uint8_t*>(malloc(b_w * b_h * 4));
-	for (int j = 0; j < b_h; j++)
+	float X = Position.X - (Width / 2.0f);
+	float Y = Position.Y + (FONT_RENDER_SCALE / 4.0f);
+	for (const auto& C : Text)
 	{
-		for (int i = 0; i < b_w; i++)
-		{
-			int byteOffset = i + (j * b_w);
-			int pixelValue = bitmap[byteOffset];
-			bitmap2[byteOffset * 4 + 0] = pixelValue; // R
-			bitmap2[byteOffset * 4 + 1] = pixelValue; // G
-			bitmap2[byteOffset * 4 + 2] = pixelValue; // B
-			bitmap2[byteOffset * 4 + 3] = pixelValue; // A
-		}
+		const auto Info = &gCurrentCharacterData[C - FONT_CHAR_START];
+		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
+		SDL_FRect  Dest(X + (Info->xoff * Aspect), Y + (Info->yoff * Aspect),
+						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
+		SDL_RenderTexture(mContext->Renderer, gCurrentFontTexture, &Source, &Dest);
+		X += Info->xadvance * Aspect;
 	}
-	auto S = SDL_CreateSurfaceFrom(b_w, b_h, SDL_PIXELFORMAT_RGBA8888, bitmap2, b_w * 4);
-	if (!S)
-	{
-		LogError("Failed to create surface from bitmap: {}", SDL_GetError());
-		free(bitmap);
-		return;
-	}
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(mContext->Renderer, S);
-	if (!Texture)
-	{
-		LogError("Failed to create texture from surface: {}", SDL_GetError());
-		free(bitmap);
-		return;
-	}
-
-	SDL_FRect Source = { 0, 0, static_cast<float>(b_w), static_cast<float>(b_h) };
-	SDL_FRect Dest = { Position.X, Position.Y, static_cast<float>(b_w), static_cast<float>(b_h) };
-	SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
-	SDL_RenderTexture(mContext->Renderer, Texture, &Source, &Dest);
-
-	free(bitmap);
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
@@ -462,11 +436,11 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
-	auto Min = Dest.Min() + ScreenPosition;
-	auto Max = Dest.Max() + ScreenPosition;
+	const auto Min = Dest.Min() + ScreenPosition;
+	const auto Max = Dest.Max() + ScreenPosition;
 
-	SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
-	SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	const SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
+	const SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
@@ -479,10 +453,10 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ViewPosition = GetCameraView()->GetPosition();
-	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto Offset = Position - ViewPosition2D;
-	auto ScreenSize = GetScreenSize();
+	const auto ViewPosition = GetCameraView()->GetPosition();
+	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	const auto Offset = Position - ViewPosition2D;
+	const auto ScreenSize = GetScreenSize();
 
 	auto Min = Rect.Min() + Offset;
 	auto Max = Rect.Max() + Offset;
@@ -491,9 +465,9 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	Min = (Min + ScreenSize) * 0.5f;
 	Max = (Max + ScreenSize) * 0.5f;
 
-	float	  SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
-	SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
-	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	const float		SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
+	const SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
+	const SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }

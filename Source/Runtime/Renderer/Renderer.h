@@ -21,7 +21,7 @@ public:
 	bool Initialize3D();
 	void Uninitialize() const;
 
-	void LoadFont(const std::string& Name);
+	void LoadFont(const std::string& Name) const;
 	void UnloadFonts();
 
 	void Render();
