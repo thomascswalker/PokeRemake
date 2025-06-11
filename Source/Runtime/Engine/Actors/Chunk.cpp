@@ -3,6 +3,7 @@
 #include "Chunk.h"
 
 #include "Engine/InputManager.h"
+#include "Engine/World.h"
 
 PChunk::PChunk(const SChunkData& Data)
 	: mData(Data.Data), mGeometry(Data.Geometry), mTextureName(Data.TextureName)
@@ -21,12 +22,14 @@ void PChunk::Start()
 		mSprite.SetTexture(T);
 	}
 
+	auto W = GetWorld();
+
 	// Instantiate each tile in the grid
 	for (int X = 0; X < mGeometry.W; X++)
 	{
 		for (int Y = 0; Y < mGeometry.H; Y++)
 		{
-			const auto Tile = &mTiles.emplace_back(X, Y);
+			const auto Tile = W->ConstructActor<PTile>(X, Y);
 			Tile->Chunk = this;
 			Tile->Type = static_cast<ETileType>(mData[Y][X]); // Access [Row][Column]
 			Tile->Texture = T;
@@ -52,7 +55,7 @@ FRect PChunk::GetWorldBounds() const
 	return { mPosition.X, mPosition.Y, mGeometry.W * TILE_SIZE, mGeometry.H * TILE_SIZE };
 }
 
-STile* PChunk::GetTileAtPosition(const FVector2& Position)
+PTile* PChunk::GetTileAtPosition(const FVector2& Position)
 {
 	for (auto& Tile : mTiles)
 	{

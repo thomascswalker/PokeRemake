@@ -16,7 +16,7 @@ class PChunk : public PActor
 {
 	TileArray mData;
 
-	std::vector<STile> mTiles;
+	std::vector<PTile> mTiles;
 	IRect			   mGeometry;
 	std::string		   mTextureName;
 
@@ -27,5 +27,5 @@ public:
 	void   Draw(const PRenderer* Renderer) const override;
 	FRect  GetLocalBounds() const override;
 	FRect  GetWorldBounds() const override;
-	STile* GetTileAtPosition(const FVector2& Position);
+	PTile* GetTileAtPosition(const FVector2& Position);
 };

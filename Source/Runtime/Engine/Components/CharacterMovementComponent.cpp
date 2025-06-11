@@ -116,7 +116,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	return true;
 }
 
-STile* PCharacterMovementComponent::GetCurrentTile() const
+PTile* PCharacterMovementComponent::GetCurrentTile() const
 {
 	if (!mCurrentChunk)
 	{
@@ -125,7 +125,7 @@ STile* PCharacterMovementComponent::GetCurrentTile() const
 	return mCurrentChunk->GetTileAtPosition(mOwner->GetPosition());
 }
 
-STile* PCharacterMovementComponent::GetTargetTile() const
+PTile* PCharacterMovementComponent::GetTargetTile() const
 {
 	auto Chunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
 	if (!Chunk)

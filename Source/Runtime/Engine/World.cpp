@@ -88,10 +88,12 @@ void PWorld::Start()
 	ConstructChunks(); // Only construct chunks for Game builds
 #endif
 
+	LogDebug("Starting {} actors.", GetActors().size());
 	for (const auto& Actor : GetActors())
 	{
 		Actor->Start();
 	}
+	LogDebug("Starting {} components.", GetComponents().size());
 	for (const auto& Component : GetComponents())
 	{
 		Component->Start();

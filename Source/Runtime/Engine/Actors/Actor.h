@@ -10,9 +10,8 @@ class PActor : public PObject, public IDrawable
 protected:
 	FVector2 mPosition;
 	FVector2 mSize;
-
-	PSprite mSprite{};
-	bool	bBlocking = true;
+	PSprite	 mSprite{};
+	bool	 bBlocking = true;
 
 public:
 	PActor() = default;
@@ -56,10 +55,15 @@ public:
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }
+	virtual bool  IsMouseOver() const { return false; }
 
 	FVector2 GetPosition() const { return mPosition; }
 	void	 SetPosition(const FVector2& Position) { mPosition = Position; }
-	void	 AddPosition(const FVector2& Position) { mPosition += Position; }
+	void	 AddPosition(const FVector2& Position)
+	{
+		mPosition.X += Position.X;
+		mPosition.Y += Position.Y;
+	}
 
 	void MoveToTile(int32_t X, int32_t Y);
 	bool IsBlocking() const { return bBlocking; }

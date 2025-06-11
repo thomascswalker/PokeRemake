@@ -1,5 +1,6 @@
 #include "EditorView.h"
 
+#include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 
@@ -9,31 +10,96 @@ void PEditorView::Start()
 
 	if (const auto W = GetWorld())
 	{
-		W->ConstructComponent<PCameraComponent>(this);
+		LogDebug("Constructing camera component for PEditorView");
+		mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
+		if (!mCameraComponent)
+		{
+			LogError("Failed to create camera component for PEditorView");
+		}
+		else
+		{
+			LogDebug("Created camera component for PEditorView");
+		}
 	}
 
 	if (auto Input = GetInputManager())
 	{
 		Input->KeyDown.AddRaw(this, &PEditorView::OnKeyDown);
+		Input->KeyUp.AddRaw(this, &PEditorView::OnKeyUp);
+		LogDebug("Bound input events for PEditorView");
 	}
+	else
+	{
+		LogError("PEditorView::Start: InputManager is null");
+	}
+
+	SetInternalName("EditorCamera");
+}
+
+void PEditorView::Tick(float DeltaTime)
+{
+	FVector2	Destination;
+	const float CameraSpeed = 1.0f * DeltaTime;
+
+	if (mInputState[0]) // W
+	{
+		Destination = FVector2(0, -CameraSpeed);
+	}
+	if (mInputState[1]) // S
+	{
+		Destination = FVector2(0, CameraSpeed);
+	}
+	if (mInputState[2]) // A
+	{
+		Destination = FVector2(-CameraSpeed, 0);
+	}
+	if (mInputState[3]) // D
+	{
+		Destination = FVector2(CameraSpeed, 0);
+	}
+
+	AddPosition(Destination);
 }
 
 void PEditorView::OnKeyDown(const uint32_t KeyCode)
 {
-	const auto CameraSpeed = 50.0f;
 	switch (KeyCode)
 	{
 		case KB_W:
-			mPosition += { CameraSpeed, 0 };
+			mInputState[0] = true;
+			// Destination = { 0, -CameraSpeed };
 			break;
 		case KB_S:
-			mPosition += { -CameraSpeed, 0 };
+			mInputState[1] = true;
+			// Destination = { 0, CameraSpeed };
 			break;
 		case KB_A:
-			mPosition += { 0, -CameraSpeed };
+			mInputState[2] = true;
+			// Destination = { -CameraSpeed, 0 };
 			break;
 		case KB_D:
-			mPosition += { 0, CameraSpeed };
+			mInputState[3] = true;
+			// Destination = { CameraSpeed, 0 };
+			break;
+		default:
+			break;
+	}
+}
+void PEditorView::OnKeyUp(uint32_t KeyCode)
+{
+	switch (KeyCode)
+	{
+		case KB_W:
+			mInputState[0] = false;
+			break;
+		case KB_S:
+			mInputState[1] = false;
+			break;
+		case KB_A:
+			mInputState[2] = false;
+			break;
+		case KB_D:
+			mInputState[3] = false;
 			break;
 		default:
 			break;

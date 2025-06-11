@@ -24,7 +24,10 @@ public:
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
+	void Tick(float DeltaTime) override;
 	void ConstructInterface();
 
 	void OnEditButtonClicked();
+
+	void AddChunk();
 };

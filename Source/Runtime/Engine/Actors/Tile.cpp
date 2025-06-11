@@ -3,18 +3,19 @@
 #include "../World.h"
 #include "Chunk.h"
 #include "Core/Settings.h"
+#include "Engine/Engine.h"
 
-FVector2 STile::GetLocalPosition() const
+FVector2 PTile::GetLocalPosition() const
 {
 	return FVector2(X * TILE_SIZE, Y * TILE_SIZE);
 }
 
-FVector2 STile::GetWorldPosition() const
+FVector2 PTile::GetWorldPosition() const
 {
 	return GetLocalPosition() + Chunk->GetPosition();
 }
 
-void STile::Draw(const PRenderer* Renderer) const
+void PTile::Draw(const PRenderer* Renderer) const
 {
 	// Source rectangle to extract the tile from the texture
 	// Assuming each tile is 16x16 pixels
@@ -58,9 +59,28 @@ void STile::Draw(const PRenderer* Renderer) const
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
 	Renderer->DrawRectAt(Dest, WorldPosition);
+
+#if _EDITOR
+	if (IsMouseOver())
+	{
+		Renderer->SetDrawColor(255, 255, 50, 255);
+		Renderer->DrawRectAt(Dest, WorldPosition);
+	}
+#endif
 }
 
-PActor* STile::GetActor() const
+void PTile::Tick(float DeltaTime)
+{
+#if _EDITOR
+	auto R = GetRenderer();
+	if (IsMouseOver() && R->GetMouseLeftDown())
+	{
+		TileClicked.Broadcast(this);
+	}
+#endif
+}
+
+PActor* PTile::GetActor() const
 {
 	for (const auto& Actor : GetWorld()->GetActors())
 	{
@@ -72,12 +92,12 @@ PActor* STile::GetActor() const
 	return nullptr;
 }
 
-bool STile::IsWalkable() const
+bool PTile::IsWalkable() const
 {
 	return Type != TT_Obstacle && Type != TT_Water;
 }
 
-bool STile::Contains(const FVector2& Position) const
+bool PTile::Contains(const FVector2& Position) const
 {
 	auto TilePosition = GetWorldPosition();
 	return Position.X >= TilePosition.X						// Min X
@@ -85,3 +105,16 @@ bool STile::Contains(const FVector2& Position) const
 		   && Position.Y >= TilePosition.Y					// Min Y
 		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
 }
+
+#if _EDITOR
+bool PTile::IsMouseOver() const
+{
+	auto	   R = GetRenderer();
+	const auto MousePosition = R->GetMousePosition();
+	FVector2   ScreenPosition;
+	R->WorldToScreen(GetWorldPosition(), &ScreenPosition);
+
+	FRect ScreenRect = { ScreenPosition.X, ScreenPosition.Y, HALF_TILE_SIZE, HALF_TILE_SIZE };
+	return ScreenRect.Contains(MousePosition);
+}
+#endif
