@@ -11,6 +11,7 @@
 
 struct SWidgetEvent
 {
+	bool	 bConsumed = false; // Event was consumed by a widget
 	bool	 bMouseDown;
 	FVector2 MousePosition;
 };
@@ -83,6 +84,7 @@ public:
 			else if (!Event->bMouseDown && bDown)
 			{
 				bDown = false;
+				Event->bConsumed = true;
 				Clicked.Broadcast(); // Notify listeners
 			}
 		}
@@ -127,6 +129,10 @@ public:
 	{
 		for (const auto& Child : mChildren)
 		{
+			if (Event->bConsumed)
+			{
+				return;
+			}
 			Child->ProcessEvents(Event);
 		}
 	}

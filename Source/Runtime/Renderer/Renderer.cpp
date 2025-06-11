@@ -14,19 +14,22 @@
 #include "SDL3/SDL_test_common.h"
 #include "Shader.h"
 
-// All fonts
-std::map<std::string, stbtt_fontinfo> gFontDatabase;
-// Current font
 std::string		gDefaultFont = "Roboto-Regular"; // Default font name
-constexpr int	FONT_ATLAS_SIZE = 512;
-constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126
-constexpr int	FONT_CHAR_START = 32;		   // ASCII 32 is the first printable character
-constexpr float FONT_ATLAS_BAKE_SCALE = 72.0f; // Font size in pixels
-constexpr float FONT_RENDER_SCALE = 16.0f;	   // Scale for rendering text
-stbtt_fontinfo* gCurrentFont = nullptr;
-uint8_t*		Atlas = nullptr;
-stbtt_bakedchar gCurrentCharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
-SDL_Texture*	gCurrentFontTexture = nullptr;
+constexpr int	FONT_ATLAS_SIZE = 1024;
+constexpr int	FONT_CHAR_COUNT = 96;			// ASCII 32..126
+constexpr int	FONT_CHAR_START = 32;			// ASCII 32 is the first printable character
+constexpr float FONT_ATLAS_BAKE_SCALE = 120.0f; // Font size in pixels
+constexpr float FONT_RENDER_SCALE = 16.0f;		// Scale for rendering text
+
+struct PFont
+{
+	stbtt_fontinfo	Info;
+	uint8_t*		Atlas;
+	stbtt_bakedchar CharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
+	SDL_Texture*	Texture;
+};
+
+static PFont gCurrentFont;
 
 bool PRenderer::Initialize()
 {
@@ -136,37 +139,39 @@ void PRenderer::LoadFont(const std::string& Name) const
 	fread(FontBuffer, Size, 1, FontFile);
 	fclose(FontFile);
 
-	gFontDatabase[FontFileName] = stbtt_fontinfo();
-	if (!stbtt_InitFont(&gFontDatabase[FontFileName], FontBuffer, 0))
+	gCurrentFont.Info = stbtt_fontinfo();
+	if (!stbtt_InitFont(&gCurrentFont.Info, FontBuffer, 0))
 	{
 		LogError("Failed to initialize font: {}", FontFileName.c_str());
 		free(FontBuffer);
 		return;
 	}
 	LogDebug("Loaded font: {}", FontFileName.c_str());
-	gCurrentFont = &gFontDatabase[FontFileName];
 
 	auto TempAtlas =
 		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t)));
 	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, TempAtlas, FONT_ATLAS_SIZE,
-						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT, gCurrentCharacterData);
-	Atlas = static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint32_t)));
+						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
+						 gCurrentFont.CharacterData);
+	gCurrentFont.Atlas =
+		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint32_t)));
 
 	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
 	{
-		Atlas[i * 4] = TempAtlas[i];
-		Atlas[i * 4 + 1] = TempAtlas[i];
-		Atlas[i * 4 + 2] = TempAtlas[i];
-		Atlas[i * 4 + 3] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 1] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 2] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 3] = TempAtlas[i];
 	}
 
 	free(TempAtlas);
 	free(FontBuffer);
-	gCurrentFontTexture =
+	gCurrentFont.Texture =
 		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
 						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
-	SDL_UpdateTexture(gCurrentFontTexture, &Rect, Atlas, FONT_ATLAS_SIZE * sizeof(uint32_t));
+	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Atlas,
+					  FONT_ATLAS_SIZE * sizeof(uint32_t));
 }
 
 void PRenderer::UnloadFonts() {}
@@ -377,7 +382,7 @@ void PRenderer::DrawText(const std::string& Text, const FVector2& Position) cons
 	float			Width = 0;
 	for (const auto& C : Text)
 	{
-		auto Info = &gCurrentCharacterData[C - FONT_CHAR_START];
+		auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
 		Width += Info->xadvance * Aspect;
 	}
 
@@ -385,11 +390,11 @@ void PRenderer::DrawText(const std::string& Text, const FVector2& Position) cons
 	float Y = Position.Y + (FONT_RENDER_SCALE / 4.0f);
 	for (const auto& C : Text)
 	{
-		const auto Info = &gCurrentCharacterData[C - FONT_CHAR_START];
+		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
 		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
 		SDL_FRect  Dest(X + (Info->xoff * Aspect), Y + (Info->yoff * Aspect),
 						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
-		SDL_RenderTexture(mContext->Renderer, gCurrentFontTexture, &Source, &Dest);
+		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
 	}
 }
