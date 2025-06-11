@@ -6,6 +6,7 @@
 #include "Actors/Actor.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
+#include "Interface/Canvas.h"
 #include "Interface/Widget.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
@@ -19,7 +20,7 @@ class PWorld : public PObject
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	PWidget*							  mRootWidget;
+	PCanvas*							  mCanvas;
 
 public:
 	PWorld() = default;
@@ -101,8 +102,8 @@ public:
 		return Widgets;
 	}
 
-	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
-	PWidget* GetRootWidget() const { return mRootWidget; }
+	void	 SetCanvas(PCanvas* Widget) { mCanvas = Widget; }
+	PCanvas* GetRootWidget() const { return mCanvas; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
 };

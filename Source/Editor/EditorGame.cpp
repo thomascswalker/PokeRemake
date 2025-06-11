@@ -2,9 +2,9 @@
 
 #include "Core/Logging.h"
 #include "EditorView.h"
-
-#include <stdio.h>
-#include <stdlib.h>
+#include "Interface/Button.h"
+#include "Interface/Canvas.h"
+#include "Interface/Spinner.h"
 
 constexpr int BUTTON_WIDTH = 60;
 constexpr int BUTTON_HEIGHT = 20;
@@ -12,6 +12,11 @@ constexpr int BUTTON_HEIGHT = 20;
 static void OnClicked()
 {
 	LogDebug("Click!");
+}
+
+static void ValueChanged(float Value)
+{
+	LogDebug("Value changed to {}", Value);
 }
 
 void PEditorGame::PreStart()
@@ -52,12 +57,18 @@ void PEditorGame::ConstructInterface() const
 		Button2->H = BUTTON_HEIGHT;
 		Button2->Clicked.AddStatic(&OnClicked);
 
-		auto Layout = W->ConstructWidget<PVerticalLayout>();
-		Layout->X = 10;
-		Layout->Y = 10;
-		Layout->AddChild(Button1);
-		Layout->AddChild(Button2);
+		auto Spinner = W->ConstructWidget<PSpinner>();
+		Spinner->W = BUTTON_WIDTH;
+		Spinner->H = BUTTON_HEIGHT;
+		Spinner->ValueChanged.AddStatic(&ValueChanged);
 
-		W->SetRootWidget(Layout);
+		auto Canvas = W->ConstructWidget<PCanvas>();
+		Canvas->X = 10;
+		Canvas->Y = 10;
+		Canvas->AddChild(Button1);
+		Canvas->AddChild(Button2);
+		Canvas->AddChild(Spinner);
+
+		W->SetCanvas(Canvas);
 	}
 }

@@ -45,6 +45,11 @@ set(SOURCES
         Engine/Components/CharacterMovementComponent.cpp
         Engine/Actors/Tile.cpp
         Interface/Widget.h
+        Interface/Button.h
+        Interface/Spinner.h
+        Interface/Canvas.h
+        Interface/Widget.cpp
+        Interface/Layout.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
