@@ -6,6 +6,7 @@
 #include "Actors/Actor.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
+#include "Interface/Widget.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
 
@@ -17,8 +18,11 @@ class PWorld : public PObject
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
+	std::vector<std::shared_ptr<PWidget>> mWidgets;
+	PWidget*							  mRootWidget;
+
 public:
-	PWorld() {}
+	PWorld() = default;
 	~PWorld() override = default;
 
 	void Start() override;
@@ -78,6 +82,27 @@ public:
 		}
 		return Components;
 	}
+
+	template <ENABLE_IF(PWidget), typename... ArgsType>
+	T* ConstructWidget(ArgsType&&... Args)
+	{
+		std::shared_ptr<T> Widget = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		mWidgets.push_back(Widget);
+		return Widget.get();
+	}
+
+	std::vector<PWidget*> GetWidgets() const
+	{
+		std::vector<PWidget*> Widgets;
+		for (const auto& Widget : mWidgets)
+		{
+			Widgets.push_back(Widget.get());
+		}
+		return Widgets;
+	}
+
+	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
+	PWidget* GetRootWidget() const { return mRootWidget; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
 };

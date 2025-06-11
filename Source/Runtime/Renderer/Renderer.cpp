@@ -2,6 +2,10 @@
 
 #include "Renderer.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb/stb_truetype.h"
+
+#include "Core/Files.h"
 #include "Core/Logging.h"
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
@@ -9,6 +13,23 @@
 #include "SDL3/SDL_surface.h"
 #include "SDL3/SDL_test_common.h"
 #include "Shader.h"
+
+std::string		gDefaultFont = "Roboto-Regular"; // Default font name
+constexpr int	FONT_ATLAS_SIZE = 1024;
+constexpr int	FONT_CHAR_COUNT = 96;			// ASCII 32..126
+constexpr int	FONT_CHAR_START = 32;			// ASCII 32 is the first printable character
+constexpr float FONT_ATLAS_BAKE_SCALE = 120.0f; // Font size in pixels
+constexpr float FONT_RENDER_SCALE = 16.0f;		// Scale for rendering text
+
+struct PFont
+{
+	stbtt_fontinfo	Info;
+	uint8_t*		Atlas;
+	stbtt_bakedchar CharacterData[FONT_CHAR_COUNT]; // ASCII 32..126
+	SDL_Texture*	Texture;
+};
+
+static PFont gCurrentFont;
 
 bool PRenderer::Initialize()
 {
@@ -20,6 +41,10 @@ bool PRenderer::Initialize()
 	{
 		SDL_SetHint("SDL_RENDER_SCALE_QUALITY", "1"); // Linear
 	}
+
+	// Load font(s)
+	LoadFont(gDefaultFont);
+
 	return true; // Always true (2D is already initialized in SDLContext)
 }
 
@@ -96,6 +121,61 @@ void PRenderer::Uninitialize() const
 	SDL_ReleaseWindowFromGPUDevice(mContext->Device, mContext->Window);
 }
 
+void PRenderer::LoadFont(const std::string& Name) const
+{
+	const auto FontFileName = Files::FindFile(std::format("{}.ttf", Name.c_str()));
+	if (FontFileName.empty())
+	{
+		LogError("Failed to find font file: {}", Name.c_str());
+		return;
+	}
+	FILE* FontFile = fopen(FontFileName.c_str(), "rb");
+	fseek(FontFile, 0, SEEK_END);
+	const int64_t Size = ftell(FontFile);
+	fseek(FontFile, 0, SEEK_SET);
+
+	const auto FontBuffer = static_cast<uint8_t*>(malloc(Size * sizeof(uint8_t)));
+
+	fread(FontBuffer, Size, 1, FontFile);
+	fclose(FontFile);
+
+	gCurrentFont.Info = stbtt_fontinfo();
+	if (!stbtt_InitFont(&gCurrentFont.Info, FontBuffer, 0))
+	{
+		LogError("Failed to initialize font: {}", FontFileName.c_str());
+		free(FontBuffer);
+		return;
+	}
+	LogDebug("Loaded font: {}", FontFileName.c_str());
+
+	auto TempAtlas =
+		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t)));
+	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, TempAtlas, FONT_ATLAS_SIZE,
+						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
+						 gCurrentFont.CharacterData);
+	gCurrentFont.Atlas =
+		static_cast<uint8_t*>(malloc(FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint32_t)));
+
+	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
+	{
+		gCurrentFont.Atlas[i * 4] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 1] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 2] = TempAtlas[i];
+		gCurrentFont.Atlas[i * 4 + 3] = TempAtlas[i];
+	}
+
+	free(TempAtlas);
+	free(FontBuffer);
+	gCurrentFont.Texture =
+		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Atlas,
+					  FONT_ATLAS_SIZE * sizeof(uint32_t));
+}
+
+void PRenderer::UnloadFonts() {}
+
 void PRenderer::Render()
 {
 	mContext->IsGPU() ? Render3D() : Render2D();
@@ -168,24 +248,39 @@ void PRenderer::Render2D() const
 		{
 			Drawable->Draw(this);
 		}
+
+		if (const auto Widget = World->GetRootWidget())
+		{
+			SWidgetEvent Event;
+			Event.MousePosition = GetMousePosition();
+			Event.bMouseDown = GetMouseLeftDown();
+			Widget->ProcessEvents(&Event);
+
+			// Recursively construct the layout of all widgets
+			Widget->LayoutChildren();
+
+			// Recursively draw all widgets
+			Widget->Draw(this);
+		}
 	}
 
-	if (GetSettings()->bDebugDraw)
-	{
-		SetDrawColor(0, 128, 255, 255);
-		DrawPointAt({ 0, 0 }, 4);
-	}
 	SDL_RenderPresent(mContext->Renderer);
 }
 
-FVector2 PRenderer::WorldToScreen(const FVector2& Position) const
+bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const
 {
 	const auto ScreenSize = GetScreenSize();
-	const auto ViewPosition = GetCameraView()->GetPosition();
-	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	const auto Offset = Position - ViewPosition2D;
 
-	return (Offset + ScreenSize) * 0.5f;
+	if (const auto CameraView = GetCameraView())
+	{
+		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+		const auto Offset = Position - ViewPosition2D;
+
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		return true;
+	}
+	return false;
 }
 
 void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
@@ -205,7 +300,8 @@ void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 {
 	if (Thickness > 0.0f)
 	{
-		SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness, Thickness };
+		const SDL_FRect R = { V.X - (Thickness / 2.0f), V.Y - (Thickness / 2.0f), Thickness,
+							  Thickness };
 		SDL_RenderFillRect(mContext->Renderer, &R);
 	}
 	else
@@ -249,6 +345,7 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
 }
+
 void PRenderer::DrawGrid() const
 {
 	SetDrawColor(100, 100, 100, 255);
@@ -279,28 +376,57 @@ void PRenderer::DrawGrid() const
 	}
 }
 
+void PRenderer::DrawText(const std::string& Text, const FVector2& Position) const
+{
+	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
+	float			Width = 0;
+	for (const auto& C : Text)
+	{
+		auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		Width += Info->xadvance * Aspect;
+	}
+
+	float X = Position.X - (Width / 2.0f);
+	float Y = Position.Y + (FONT_RENDER_SCALE / 4.0f);
+	for (const auto& C : Text)
+	{
+		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
+		SDL_FRect  Dest(X + (Info->xoff * Aspect), Y + (Info->yoff * Aspect),
+						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
+		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+		X += Info->xadvance * Aspect;
+	}
+}
+
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawPoint(ScreenPosition, Thickness);
 }
 
 void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 {
-	auto ScreenStart = WorldToScreen(Start);
-	auto ScreenEnd = WorldToScreen(End);
-	SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+	FVector2 ScreenStart;
+	FVector2 ScreenEnd;
+	if (WorldToScreen(Start, &ScreenStart) && WorldToScreen(End, &ScreenEnd))
+	{
+		SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+	}
 }
 
 void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
 void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const
 {
-	auto ScreenPosition = WorldToScreen(Position);
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
 }
 
@@ -313,12 +439,13 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ScreenPosition = WorldToScreen(Position);
-	auto Min = Dest.Min() + ScreenPosition;
-	auto Max = Dest.Max() + ScreenPosition;
+	FVector2 ScreenPosition;
+	WorldToScreen(Position, &ScreenPosition);
+	const auto Min = Dest.Min() + ScreenPosition;
+	const auto Max = Dest.Max() + ScreenPosition;
 
-	SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
-	SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	const SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
+	const SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
@@ -331,10 +458,10 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	auto ViewPosition = GetCameraView()->GetPosition();
-	auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	auto Offset = Position - ViewPosition2D;
-	auto ScreenSize = GetScreenSize();
+	const auto ViewPosition = GetCameraView()->GetPosition();
+	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+	const auto Offset = Position - ViewPosition2D;
+	const auto ScreenSize = GetScreenSize();
 
 	auto Min = Rect.Min() + Offset;
 	auto Max = Rect.Max() + Offset;
@@ -343,9 +470,9 @@ void PRenderer::DrawSpriteAt(PTexture* Texture, const FRect& Rect, const FVector
 	Min = (Min + ScreenSize) * 0.5f;
 	Max = (Max + ScreenSize) * 0.5f;
 
-	float	  SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
-	SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
-	SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	const float		SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
+	const SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
+	const SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
 }
@@ -376,4 +503,16 @@ FRect PRenderer::GetViewport() const
 	int32_t Width, Height;
 	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
 	return { 0, 0, static_cast<float>(Width), static_cast<float>(Height) };
+}
+
+FVector2 PRenderer::GetMousePosition() const
+{
+	float X, Y;
+	SDL_GetMouseState(&X, &Y);
+	return { X, Y };
+}
+
+bool PRenderer::GetMouseLeftDown() const
+{
+	return SDL_GetMouseState(nullptr, nullptr) == 1;
 }

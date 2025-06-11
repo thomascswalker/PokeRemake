@@ -13,6 +13,7 @@ namespace ArgParser
 	{
 		SDL_WindowFlags WindowFlags;
 		std::string		GPUMode;
+		bool			IsEditor = false;
 	};
 
 	inline TArguments Parse(int argc, char** argv)
@@ -45,6 +46,10 @@ namespace ArgParser
 			if (Key == "r")
 			{
 				Args.GPUMode = Value;
+			}
+			if (Key == "e")
+			{
+				Args.IsEditor = true;
 			}
 		}
 

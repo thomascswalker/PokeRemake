@@ -20,7 +20,14 @@ public:
 	void	Start() override;
 	void	End() override {}
 	void	Tick(float DeltaTime) override;
-	PWorld* GetWorld() const { return mWorld.get(); }
+	PWorld* GetWorld() const
+	{
+		if (!mWorld.get())
+		{
+			return nullptr;
+		}
+		return mWorld.get();
+	}
 
 	void		 FindActiveCamera();
 	PCameraView* GetCameraView() const { return mActiveCameraView; }

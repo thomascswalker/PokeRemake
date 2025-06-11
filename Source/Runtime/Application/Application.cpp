@@ -32,6 +32,11 @@ static PApplication* GetApplication()
 	{                                                            \
 		if (!g##ClassName)                                       \
 		{                                                        \
+			auto Parent = Get##ParentClass();                    \
+			if (!Parent)                                         \
+			{                                                    \
+				return nullptr;                                  \
+			}                                                    \
 			g##ClassName = Get##ParentClass()->Get##ClassName(); \
 		}                                                        \
 		return g##ClassName;                                     \
@@ -47,10 +52,14 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(World, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
-bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode)
+bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode,
+							  bool IsEditor)
 {
-	LogInfo("Constructing Application");
-	SDL_SetAppMetadata(WINDOW_TITLE, "1.0", WINDOW_TITLE);
+	bIsEditor = IsEditor;
+	LogInfo("Constructing {} Application", bIsEditor ? "Editor" : "Game");
+
+	const auto WindowTitle = bIsEditor ? WINDOW_TITLE_EDITOR : WINDOW_TITLE;
+	SDL_SetAppMetadata(WindowTitle, "1.0", WindowTitle);
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
 	{
@@ -63,7 +72,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
-	if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
+	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
 									 WindowFlags, &mContext->Window, &mContext->Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
@@ -90,7 +99,6 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	// Setup input
 	SetInputManager(this);
 
-	LogInfo("Application constructed");
 	return true;
 }
 
@@ -109,6 +117,8 @@ void PApplication::Uninitialize() const
 
 	LogDebug("Cleaning up all SDL subsystems");
 	SDL_Quit();
+
+	LogDebug("Destroying {} Application", bIsEditor ? "Editor" : "Game");
 }
 
 void PApplication::Loop()
@@ -164,6 +174,16 @@ bool PApplication::OnEvent(void* Event)
 				OnMiddleMouseScroll(SDLEvent->wheel.y);
 				break;
 			}
+		case SDL_EVENT_MOUSE_MOTION:
+			{
+				OnMouseMotion(SDLEvent->motion.x, SDLEvent->motion.y);
+				break;
+			}
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			{
+				OnMouseClick();
+				break;
+			}
 		default:
 			break;
 	}
@@ -210,4 +230,14 @@ void PApplication::OnKeyUp(uint32_t ScanCode)
 void PApplication::OnMiddleMouseScroll(float Delta)
 {
 	MouseScroll.Broadcast(Delta);
+}
+
+void PApplication::OnMouseMotion(float X, float Y)
+{
+	MouseMotion.Broadcast(X, Y);
+}
+
+void PApplication::OnMouseClick()
+{
+	MouseClick.Broadcast();
 }

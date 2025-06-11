@@ -14,8 +14,12 @@ PChunk::PChunk(const SChunkData& Data)
 
 void PChunk::Start()
 {
-	auto T = PTextureManager::Load(mTextureName);
-	mSprite.SetTexture(T);
+	PTexture* T = nullptr;
+	if (!mTextureName.empty())
+	{
+		T = PTextureManager::Load(mTextureName);
+		mSprite.SetTexture(T);
+	}
 
 	// Instantiate each tile in the grid
 	for (int X = 0; X < mGeometry.W; X++)

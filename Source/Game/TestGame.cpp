@@ -6,8 +6,6 @@
 
 void TestGame::PreStart()
 {
-	PGame::PreStart();
-
 	LogDebug("PreStart: Constructing actors.");
 	if (const auto W = GetWorld())
 	{
@@ -19,6 +17,7 @@ void TestGame::PreStart()
 	PTextureManager::Load("Ash.png");
 	PTextureManager::Load("Gary.png");
 	PTextureManager::Load("PalletTown.png");
+	PTextureManager::Load("PalletTownInterior.png");
 	PTextureManager::Load("Route1.png");
 }
 

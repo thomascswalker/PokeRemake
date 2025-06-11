@@ -44,7 +44,15 @@ set(SOURCES
         Engine/Components/CharacterMovementComponent.h
         Engine/Components/CharacterMovementComponent.cpp
         Engine/Actors/Tile.cpp
+        Interface/Widget.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
+
+# Copied here because it doesn't propagate from the  main CMakeLists.txt
+if (IN_EDITOR)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC _EDITOR=1)
+else ()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC _EDITOR=0)
+endif ()

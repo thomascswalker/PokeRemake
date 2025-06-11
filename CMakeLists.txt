@@ -5,18 +5,37 @@ message("CMAKE Version: ${CMAKE_VERSION}")
 project(PokeRemake)
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(Source/Game)
-add_subdirectory(Source/Runtime)
+option(IN_EDITOR "IN_EDITOR" OFF)
 
+add_subdirectory(Source/Runtime)
+if (IN_EDITOR)
+    add_subdirectory(Source/Editor)
+else ()
+    add_subdirectory(Source/Game)
+endif ()
 
 # Third Party Libraries
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty")
-include_directories(ThirdParty ThirdParty/glm ThirdParty/SDL/include)
+include_directories(
+        ThirdParty
+        ThirdParty/glm
+        ThirdParty/SDL/include
+)
 
-add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
-target_link_libraries(
-        ${PROJECT_NAME} PUBLIC PokeRemakeGame)
+# Build the respective executable either for the editor or the game.
+
+if (IN_EDITOR)
+    message(STATUS "Building Editor")
+    add_executable(${PROJECT_NAME} Source/Editor/Main.cpp)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PokeRemakeEditor)
+else ()
+    message(STATUS "Building Game")
+    add_executable(${PROJECT_NAME} Source/Game/Main.cpp)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PokeRemakeGame)
+endif ()
+
+
 target_link_libraries(
         ${PROJECT_NAME} PUBLIC PokeRemakeRuntime
 )
@@ -85,3 +104,4 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest)
 add_subdirectory(Google_tests)
+

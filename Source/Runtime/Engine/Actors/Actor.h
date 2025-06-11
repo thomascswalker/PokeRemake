@@ -63,11 +63,4 @@ public:
 
 	void MoveToTile(int32_t X, int32_t Y);
 	bool IsBlocking() const { return bBlocking; }
-
-	template <typename T, typename... ArgsType>
-	T* AddComponent(ArgsType&&... Args)
-	{
-		T* Component = new T(this, Args...);
-		return Component;
-	}
 };

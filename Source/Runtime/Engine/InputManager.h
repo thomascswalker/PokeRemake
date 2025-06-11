@@ -7,6 +7,8 @@
 DECLARE_MULTICAST_DELEGATE(DKeyDown, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DKeyUp, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DMiddleMouseScroll, float);
+DECLARE_MULTICAST_DELEGATE(DMouseMotion, float, float);
+DECLARE_MULTICAST_DELEGATE(DMouseClick);
 
 enum EKey
 {
@@ -71,11 +73,15 @@ public:
 	DKeyDown		   KeyDown;
 	DKeyUp			   KeyUp;
 	DMiddleMouseScroll MouseScroll;
+	DMouseMotion	   MouseMotion;
+	DMouseClick		   MouseClick;
 
 	virtual ~IInputManager() = default;
 	virtual void OnKeyDown(uint32_t KeyCode) = 0;
 	virtual void OnKeyUp(uint32_t KeyCode) = 0;
 	virtual void OnMiddleMouseScroll(float Delta) = 0;
+	virtual void OnMouseMotion(float X, float Y) = 0;
+	virtual void OnMouseClick() = 0;
 };
 
 IInputManager* GetInputManager();

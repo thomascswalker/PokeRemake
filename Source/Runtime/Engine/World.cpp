@@ -82,7 +82,11 @@ static SChunkData gChunkData[] = {
 void PWorld::Start()
 {
 	LogDebug("Starting world");
-	ConstructChunks();
+
+#if _EDITOR
+#else
+	ConstructChunks(); // Only construct chunks for Game builds
+#endif
 
 	for (const auto& Actor : GetActors())
 	{

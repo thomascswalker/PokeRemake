@@ -1,4 +1,4 @@
-project(PokeRemakeGame)
+project(PokeRemakeEditor)
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(
@@ -9,7 +9,7 @@ include_directories(
 )
 
 set(SOURCES
-        TestGame.cpp
+        EditorGame.cpp
+        EditorView.cpp
 )
-
 add_library(${PROJECT_NAME} ${SOURCES})

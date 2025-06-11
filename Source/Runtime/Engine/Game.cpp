@@ -30,7 +30,10 @@ void PGame::FindActiveCamera()
 		if (auto CameraComp = dynamic_cast<PCameraComponent*>(Comp))
 		{
 			mActiveCameraView = CameraComp->GetCameraView();
+			LogDebug("Found active camera");
 			return;
 		}
 	}
+
+	LogError("No camera found");
 }
