@@ -1,4 +1,6 @@
 #pragma once
+#include "Button.h"
+#include "Core/Delegate.h"
 #include "Widget.h"
 
 enum ESpinnerMode

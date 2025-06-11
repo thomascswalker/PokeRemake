@@ -1,19 +1,24 @@
 #pragma once
 
 #include "Core/Delegate.h"
+#include "Text.h"
 #include "Widget.h"
 
 DECLARE_MULTICAST_DELEGATE(DButtonClicked);
 
 class PButton : public PWidget
 {
-	std::string mLabel;
-	bool		bDown = false;
+	PText mText;
+	bool  bDown = false;
 
 public:
 	DButtonClicked Clicked;
 
-	explicit PButton(const std::string& Label) : mLabel(Label) { GENERATE_INTERNAL_NAME(Button); }
+	explicit PButton(const std::string& Label) : mText(Label)
+	{
+		PWidget::AddChild(&mText);
+		GENERATE_INTERNAL_NAME(Button);
+	}
 
 	void Draw(const PRenderer* Renderer) const override
 	{
@@ -35,7 +40,8 @@ public:
 		Renderer->SetDrawColor(WIDGET_DARK);
 		Renderer->DrawRect(Rect);
 
-		Renderer->DrawText(mLabel, FVector2(X + W / 2.0f, Y + H / 2.0f), 20);
+		Renderer->DrawText(mText.GetText(), FVector2(X + W / 2.0f, Y + H / 2.0f),
+						   mText.GetFontSize());
 	}
 
 	void ProcessEvents(SWidgetEvent* Event) override
@@ -64,4 +70,7 @@ public:
 			bDown = false; // Reset button state
 		}
 	}
+
+	float GetFontSize() const { return mText.GetFontSize(); }
+	void  SetFontSize(float Size) { mText.SetFontSize(Size); }
 };

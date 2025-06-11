@@ -34,19 +34,23 @@ void PEditorGame::ConstructInterface()
 		mNewButton = W->ConstructWidget<PButton>("New");
 		mNewButton->W = BUTTON_WIDTH;
 		mNewButton->H = BUTTON_HEIGHT;
+		mNewButton->SetFontSize(WIDGET_FONT_SIZE);
 
 		mEditButton = W->ConstructWidget<PButton>("Edit");
 		mEditButton->W = BUTTON_WIDTH;
 		mEditButton->H = BUTTON_HEIGHT;
+		mEditButton->SetFontSize(WIDGET_FONT_SIZE);
 		mEditButton->Clicked.AddRaw(this, &PEditorGame::OnEditButtonClicked);
 
 		mSaveButton = W->ConstructWidget<PButton>("Save");
 		mSaveButton->W = BUTTON_WIDTH;
 		mSaveButton->H = BUTTON_HEIGHT;
+		mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
 
-		mModeText = W->ConstructWidget<PText>("View", 20);
+		mModeText = W->ConstructWidget<PText>("View");
 		mModeText->W = BUTTON_WIDTH;
 		mModeText->H = BUTTON_HEIGHT;
+		mModeText->SetFontSize(WIDGET_FONT_SIZE);
 
 		mCanvas = W->ConstructWidget<PCanvas>();
 		mCanvas->X = 10;

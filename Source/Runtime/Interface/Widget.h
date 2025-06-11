@@ -12,6 +12,7 @@
 #define WIDGET_WIDTH 50
 #define WIDGET_HEIGHT 20
 #define WIDGET_SPACING 5
+#define WIDGET_FONT_SIZE 16.0f
 
 #define GENERATE_INTERNAL_NAME(Class) \
 	static int Count = 0;             \
