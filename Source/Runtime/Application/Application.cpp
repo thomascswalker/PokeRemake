@@ -7,7 +7,6 @@
 #include "Core/Constants.h"
 #include "Core/Logging.h"
 
-#include "Engine/Actors/Character.h"
 #include "SDL3/SDL_opengl.h"
 
 PApplication* PApplication::sInstance = nullptr;
@@ -101,6 +100,79 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 
 	return true;
 }
+void PApplication::InitializeKeyStates()
+{
+	mKeyStates[SDLK_1] = false;
+	mKeyStates[SDLK_2] = false;
+	mKeyStates[SDLK_3] = false;
+	mKeyStates[SDLK_4] = false;
+	mKeyStates[SDLK_5] = false;
+	mKeyStates[SDLK_6] = false;
+	mKeyStates[SDLK_7] = false;
+	mKeyStates[SDLK_8] = false;
+	mKeyStates[SDLK_9] = false;
+	mKeyStates[SDLK_0] = false;
+	mKeyStates[SDLK_A] = false;
+	mKeyStates[SDLK_B] = false;
+	mKeyStates[SDLK_C] = false;
+	mKeyStates[SDLK_D] = false;
+	mKeyStates[SDLK_E] = false;
+	mKeyStates[SDLK_F] = false;
+	mKeyStates[SDLK_G] = false;
+	mKeyStates[SDLK_H] = false;
+	mKeyStates[SDLK_I] = false;
+	mKeyStates[SDLK_J] = false;
+	mKeyStates[SDLK_K] = false;
+	mKeyStates[SDLK_L] = false;
+	mKeyStates[SDLK_M] = false;
+	mKeyStates[SDLK_N] = false;
+	mKeyStates[SDLK_O] = false;
+	mKeyStates[SDLK_P] = false;
+	mKeyStates[SDLK_Q] = false;
+	mKeyStates[SDLK_R] = false;
+	mKeyStates[SDLK_S] = false;
+	mKeyStates[SDLK_T] = false;
+	mKeyStates[SDLK_U] = false;
+	mKeyStates[SDLK_V] = false;
+	mKeyStates[SDLK_W] = false;
+	mKeyStates[SDLK_X] = false;
+	mKeyStates[SDLK_Y] = false;
+	mKeyStates[SDLK_Z] = false;
+	mKeyStates[SDLK_SPACE] = false;
+	mKeyStates[SDLK_RETURN] = false;
+	mKeyStates[SDLK_ESCAPE] = false;
+	mKeyStates[SDLK_BACKSPACE] = false;
+	mKeyStates[SDLK_TAB] = false;
+	mKeyStates[SDLK_CAPSLOCK] = false;
+	mKeyStates[SDLK_LSHIFT] = false;
+	mKeyStates[SDLK_RSHIFT] = false;
+	mKeyStates[SDLK_LCTRL] = false;
+	mKeyStates[SDLK_RCTRL] = false;
+	mKeyStates[SDLK_LALT] = false;
+	mKeyStates[SDLK_RALT] = false;
+	mKeyStates[SDLK_INSERT] = false;
+	mKeyStates[SDLK_DELETE] = false;
+	mKeyStates[SDLK_HOME] = false;
+	mKeyStates[SDLK_END] = false;
+	mKeyStates[SDLK_PAGEUP] = false;
+	mKeyStates[SDLK_PAGEDOWN] = false;
+	mKeyStates[SDLK_UP] = false;
+	mKeyStates[SDLK_DOWN] = false;
+	mKeyStates[SDLK_LEFT] = false;
+	mKeyStates[SDLK_RIGHT] = false;
+	mKeyStates[SDLK_F1] = false;
+	mKeyStates[SDLK_F2] = false;
+	mKeyStates[SDLK_F3] = false;
+	mKeyStates[SDLK_F4] = false;
+	mKeyStates[SDLK_F5] = false;
+	mKeyStates[SDLK_F6] = false;
+	mKeyStates[SDLK_F7] = false;
+	mKeyStates[SDLK_F8] = false;
+	mKeyStates[SDLK_F9] = false;
+	mKeyStates[SDLK_F10] = false;
+	mKeyStates[SDLK_F11] = false;
+	mKeyStates[SDLK_F12] = false;
+}
 
 void PApplication::Uninitialize() const
 {
@@ -161,27 +233,42 @@ bool PApplication::OnEvent(void* Event)
 			}
 		case SDL_EVENT_KEY_DOWN:
 			{
-				OnKeyDown(SDLEvent->key.scancode);
+				mKeyStates[SDLEvent->key.key] = true;
+				KeyDown.Broadcast(SDLEvent->key.key);
 				break;
 			}
 		case SDL_EVENT_KEY_UP:
 			{
-				OnKeyUp(SDLEvent->key.scancode);
+				mKeyStates[SDLEvent->key.key] = false;
+				KeyUp.Broadcast(SDLEvent->key.key);
 				break;
 			}
 		case SDL_EVENT_MOUSE_WHEEL:
 			{
-				OnMiddleMouseScroll(SDLEvent->wheel.y);
+				MouseScroll.Broadcast(SDLEvent->wheel.y);
 				break;
 			}
 		case SDL_EVENT_MOUSE_MOTION:
 			{
-				OnMouseMotion(SDLEvent->motion.x, SDLEvent->motion.y);
+				MouseMotion.Broadcast(SDLEvent->motion.x, SDLEvent->motion.y);
 				break;
 			}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			{
-				OnMouseClick();
+				switch (SDLEvent->button.button)
+				{
+					case SDL_BUTTON_LEFT:
+						MouseLeftClick.Broadcast();
+						break;
+					case SDL_BUTTON_RIGHT:
+						MouseRightClick.Broadcast();
+						break;
+					case SDL_BUTTON_MIDDLE:
+						MouseMiddleClick.Broadcast();
+						break;
+					default:
+						break;
+				}
 				break;
 			}
 		default:
@@ -217,27 +304,22 @@ SDLContext* PApplication::GetContext() const
 	return mContext.get();
 }
 
-void PApplication::OnKeyDown(uint32_t ScanCode)
+bool PApplication::IsKeyDown(uint32_t KeyCode) const
 {
-	KeyDown.Broadcast(ScanCode);
+	const auto Iter = mKeyStates.find(KeyCode);
+	if (Iter == mKeyStates.end())
+	{
+		return false;
+	}
+	return Iter->second;
 }
 
-void PApplication::OnKeyUp(uint32_t ScanCode)
+bool PApplication::IsKeyUp(uint32_t KeyCode) const
 {
-	KeyUp.Broadcast(ScanCode);
-}
-
-void PApplication::OnMiddleMouseScroll(float Delta)
-{
-	MouseScroll.Broadcast(Delta);
-}
-
-void PApplication::OnMouseMotion(float X, float Y)
-{
-	MouseMotion.Broadcast(X, Y);
-}
-
-void PApplication::OnMouseClick()
-{
-	MouseClick.Broadcast();
+	const auto Iter = mKeyStates.find(KeyCode);
+	if (Iter == mKeyStates.end())
+	{
+		return false;
+	}
+	return !Iter->second;
 }

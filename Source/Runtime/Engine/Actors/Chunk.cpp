@@ -2,7 +2,6 @@
 
 #include "Chunk.h"
 
-#include "Engine/InputManager.h"
 #include "Engine/World.h"
 
 PChunk::PChunk(const SChunkData& Data)
@@ -33,6 +32,7 @@ void PChunk::Start()
 			Tile->Chunk = this;
 			Tile->Type = static_cast<ETileType>(mData[Y][X]); // Access [Row][Column]
 			Tile->Texture = T;
+			mTiles.emplace_back(Tile);
 		}
 	}
 }
@@ -41,7 +41,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 {
 	for (const auto& Tile : mTiles)
 	{
-		Tile.Draw(Renderer);
+		Tile->Draw(Renderer);
 	}
 }
 
@@ -59,10 +59,10 @@ PTile* PChunk::GetTileAtPosition(const FVector2& Position)
 {
 	for (auto& Tile : mTiles)
 	{
-		if (Tile.Contains(Position))
+		if (Tile->Contains(Position))
 		{
 			// Return a pointer to the tile
-			return &Tile;
+			return Tile;
 		}
 	}
 	return nullptr; // No tile found at the given position

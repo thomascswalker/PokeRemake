@@ -78,8 +78,11 @@ bool PCharacterMovementComponent::IsMoving() const
 
 bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
+	// Compute the target position
 	const auto NewPosition = Velocity + mOwner->GetPosition();
+	// Convert velocity to a movement direction
 	mMovementDirection = VectorToDirection(Velocity);
+	// Allow changing direction even if the character doesn't move
 	MovementDirectionChanged.Broadcast(mMovementDirection);
 
 	// If the new position is not within the same chunk as the current chunk we're in,
@@ -97,12 +100,14 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 		mCurrentChunk = NewChunk;
 	}
 
+	// Check if the new position is walkable
 	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
 	if (!Tile || !Tile->IsWalkable())
 	{
 		return false;
 	}
 
+	// Check if the tile contains an actor that blocks movement
 	const auto Actor = Tile->GetActor();
 	if (Actor && Actor->IsBlocking())
 	{

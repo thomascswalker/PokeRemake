@@ -2,10 +2,10 @@
 
 #include "Core/Logging.h"
 #include "EditorView.h"
+#include "Engine/InputManager.h"
 
 void PEditorGame::PreStart()
 {
-
 	GetSettings()->bDebugDraw = true;
 
 	const auto EV = mWorld->ConstructActor<PEditorView>();
@@ -15,6 +15,10 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
+	if (const auto Input = GetInputManager())
+	{
+		Input->MouseRightClick.AddRaw(this, &PEditorGame::DeselectAllTiles);
+	}
 }
 
 void PEditorGame::Start()
@@ -23,15 +27,8 @@ void PEditorGame::Start()
 	FindActiveCamera();
 }
 
-void PEditorGame::Tick(float DeltaTime)
-{
-	PGame::Tick(DeltaTime);
-	auto A = GetRenderer()->GetActorAtUnderMouse();
-}
-
 void PEditorGame::ConstructInterface()
 {
-
 	mNewButton = mWorld->ConstructWidget<PButton>("New");
 	mNewButton->W = BUTTON_WIDTH;
 	mNewButton->H = BUTTON_HEIGHT;
@@ -76,7 +73,10 @@ void PEditorGame::AddChunk()
 {
 	int		   DefaultChunkSize = 10;
 	SChunkData Data = {
-		{ 0, 0, DefaultChunkSize, DefaultChunkSize }
+		{
+			0, 0,
+			DefaultChunkSize, DefaultChunkSize,
+		 },
 	};
 
 	// Fill all tiles with 0
@@ -85,5 +85,56 @@ void PEditorGame::AddChunk()
 		Data.Data.emplace_back(std::vector(Data.Geometry.W, 0));
 	}
 
-	mWorld->SpawnActor<PChunk>(Data);
+	const auto Chunk = mWorld->SpawnActor<PChunk>(Data);
+	if (!Chunk)
+	{
+		LogError("Failed to create chunk");
+		return;
+	}
+	mChunks.emplace_back(Chunk);
+	for (auto& Tile : Chunk->GetTiles())
+	{
+		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
+	}
+}
+
+void PEditorGame::DeselectAllTiles()
+{
+	for (const auto& Chunk : mChunks)
+	{
+		for (const auto& Tile : Chunk->GetTiles())
+		{
+			Tile->SetSelected(false);
+		}
+	}
+}
+
+void PEditorGame::DeselectTile(PActor* Actor)
+{
+	if (const auto Tile = static_cast<PTile*>(Actor))
+	{
+		if (GetInputManager()->IsCtrlDown())
+		{
+			Tile->SetSelected(false);
+		}
+	}
+}
+
+void PEditorGame::SelectTile(PActor* Actor)
+{
+	const auto Tile = static_cast<PTile*>(Actor);
+
+	// Deselect tiles
+	if (GetInputManager()->IsCtrlDown())
+	{
+		Tile->SetSelected(false);
+		return;
+	}
+	// If shift is not pressed, deselect all tiles
+	if (!GetInputManager()->IsShiftDown())
+	{
+		DeselectAllTiles();
+	}
+	// Select the clicked tile. If shift is pressed, add tile to selection
+	Tile->SetSelected(true);
 }

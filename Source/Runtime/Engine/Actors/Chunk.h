@@ -16,16 +16,17 @@ class PChunk : public PActor
 {
 	TileArray mData;
 
-	std::vector<PTile> mTiles;
-	IRect			   mGeometry;
-	std::string		   mTextureName;
+	std::vector<PTile*> mTiles;
+	IRect				mGeometry;
+	std::string			mTextureName;
 
 public:
 	explicit PChunk(const SChunkData& Data);
 	~PChunk() override = default;
-	void   Start() override;
-	void   Draw(const PRenderer* Renderer) const override;
-	FRect  GetLocalBounds() const override;
-	FRect  GetWorldBounds() const override;
-	PTile* GetTileAtPosition(const FVector2& Position);
+	void				Start() override;
+	void				Draw(const PRenderer* Renderer) const override;
+	FRect				GetLocalBounds() const override;
+	FRect				GetWorldBounds() const override;
+	PTile*				GetTileAtPosition(const FVector2& Position);
+	std::vector<PTile*> GetTiles() const { return mTiles; }
 };

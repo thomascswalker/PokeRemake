@@ -20,14 +20,21 @@ class PEditorGame : public PGame
 	PButton* mSaveButton;
 	PText*	 mModeText;
 
+	std::vector<PChunk*> mChunks;
+
 public:
+	// Init
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
-	void Tick(float DeltaTime) override;
 	void ConstructInterface();
 
+	// Interface
 	void OnEditButtonClicked();
 
+	// Scene
 	void AddChunk();
+	void DeselectAllTiles();
+	void DeselectTile(PActor* Actor);
+	void SelectTile(PActor* Actor);
 };

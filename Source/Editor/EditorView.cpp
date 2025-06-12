@@ -65,19 +65,19 @@ void PEditorView::OnKeyDown(const uint32_t KeyCode)
 {
 	switch (KeyCode)
 	{
-		case KB_W:
+		case SDLK_W:
 			mInputState[0] = true;
 			// Destination = { 0, -CameraSpeed };
 			break;
-		case KB_S:
+		case SDLK_S:
 			mInputState[1] = true;
 			// Destination = { 0, CameraSpeed };
 			break;
-		case KB_A:
+		case SDLK_A:
 			mInputState[2] = true;
 			// Destination = { -CameraSpeed, 0 };
 			break;
-		case KB_D:
+		case SDLK_D:
 			mInputState[3] = true;
 			// Destination = { CameraSpeed, 0 };
 			break;
@@ -89,16 +89,16 @@ void PEditorView::OnKeyUp(uint32_t KeyCode)
 {
 	switch (KeyCode)
 	{
-		case KB_W:
+		case SDLK_W:
 			mInputState[0] = false;
 			break;
-		case KB_S:
+		case SDLK_S:
 			mInputState[1] = false;
 			break;
-		case KB_A:
+		case SDLK_A:
 			mInputState[2] = false;
 			break;
-		case KB_D:
+		case SDLK_D:
 			mInputState[3] = false;
 			break;
 		default:

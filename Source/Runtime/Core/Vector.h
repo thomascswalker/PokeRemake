@@ -80,19 +80,51 @@ public:
 	TVector2 operator-(const TVector2& Other) const { return { X - Other.X, Y - Other.Y }; }
 	TVector2 operator*(const TVector2& Other) const { return { X * Other.X, Y * Other.Y }; }
 	TVector2 operator/(const TVector2& Other) const { return { X / Other.X, Y / Other.Y }; }
-	TVector2 operator+=(const TVector2& Other) { return *this + Other; }
-	TVector2 operator-=(const TVector2& Other) { return *this - Other; }
-	TVector2 operator*=(const TVector2& Other) { return *this * Other; }
-	TVector2 operator/=(const TVector2& Other) { return *this / Other; }
+	TVector2 operator+=(const TVector2& Other)
+	{
+		*this = *this + Other;
+		return *this;
+	}
+	TVector2 operator-=(const TVector2& Other)
+	{
+		*this = *this - Other;
+		return *this;
+	}
+	TVector2 operator*=(const TVector2& Other)
+	{
+		*this = *this * Other;
+		return *this;
+	}
+	TVector2 operator/=(const TVector2& Other)
+	{
+		*this = *this / Other;
+		return *this;
+	}
 
 	TVector2 operator+(const T Scalar) const { return { X + Scalar, Y + Scalar }; }
 	TVector2 operator-(const T Scalar) const { return { X - Scalar, Y - Scalar }; }
 	TVector2 operator*(const T Scalar) const { return { X * Scalar, Y * Scalar }; }
 	TVector2 operator/(const T Scalar) const { return { X / Scalar, Y / Scalar }; }
-	TVector2 operator+=(const T Scalar) { return *this + Scalar; }
-	TVector2 operator-=(const T Scalar) { return *this - Scalar; }
-	TVector2 operator*=(const T Scalar) { return *this * Scalar; }
-	TVector2 operator/=(const T Scalar) { return *this / Scalar; }
+	TVector2 operator+=(const T Scalar)
+	{
+		*this = *this + Scalar;
+		return *this;
+	}
+	TVector2 operator-=(const T Scalar)
+	{
+		*this = *this - Scalar;
+		return *this;
+	}
+	TVector2 operator*=(const T Scalar)
+	{
+		*this = *this * Scalar;
+		return *this;
+	}
+	TVector2 operator/=(const T Scalar)
+	{
+		*this = *this / Scalar;
+		return *this;
+	}
 
 	bool operator==(const TVector2& Other) const { return X == Other.X && Y == Other.Y; }
 	bool operator!=(const TVector2& Other) const { return !(*this == Other); }

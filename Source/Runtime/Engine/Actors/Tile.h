@@ -31,36 +31,42 @@ struct STileData
 	ETileType Type;
 };
 
-class PTile;
-
-#if _EDITOR
-DECLARE_MULTICAST_DELEGATE(DTileClicked, PTile*);
-#endif
-
 class PTile : public PActor
 {
 public:
+#if _EDITOR
+	bool bSelected = false;
+#endif
+
 	int32_t	  X;
 	int32_t	  Y;
 	ETileType Type = TT_Normal;
 	PTexture* Texture = nullptr;
 	PChunk*	  Chunk = nullptr;
-#if _EDITOR
-	DTileClicked TileClicked;
-#endif
-	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY) {}
 
+	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY)
+	{
+		bBlocking = false;
+		mPosition.X = inX * TILE_SIZE;
+		mPosition.Y = inY * TILE_SIZE;
+	}
+	PTile(const STileData& Data) : X(Data.X), Y(Data.Y), Type(Data.Type)
+	{
+		bBlocking = false;
+		mPosition.X = Data.X * TILE_SIZE;
+		mPosition.Y = Data.Y * TILE_SIZE;
+	}
+
+	FVector2 GetPosition() const override;
 	FVector2 GetLocalPosition() const;
 	FVector2 GetWorldPosition() const;
 	void	 Draw(const PRenderer* Renderer) const override;
-	void	 Tick(float DeltaTime) override;
 	PActor*	 GetActor() const;
 	bool	 IsWalkable() const;
+	bool	 Contains(const FVector2& Position) const;
 
-	bool Contains(const FVector2& Position) const;
-
-	// Editor-only functions
 #if _EDITOR
-	bool IsMouseOver() const override;
+	void SetSelected(bool State) { bSelected = State; }
+	bool GetSelected() { return bSelected; }
 #endif
 };

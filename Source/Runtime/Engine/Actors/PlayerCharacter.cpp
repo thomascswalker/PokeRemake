@@ -83,20 +83,20 @@ void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 {
 	switch (KeyCode)
 	{
-		case KB_Right: // Right
-		case KB_D:
+		case SDLK_RIGHT: // Right
+		case SDLK_D:
 			mInputState[0] = true;
 			break;
-		case KB_Left: // Left
-		case KB_A:
+		case SDLK_LEFT: // Left
+		case SDLK_A:
 			mInputState[1] = true;
 			break;
-		case KB_Down: // Down
-		case KB_S:
+		case SDLK_DOWN: // Down
+		case SDLK_S:
 			mInputState[2] = true;
 			break;
-		case KB_Up: // Up
-		case KB_W:
+		case SDLK_UP: // Up
+		case SDLK_W:
 			mInputState[3] = true;
 			break;
 		default:
@@ -113,20 +113,20 @@ void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
 {
 	switch (KeyCode)
 	{
-		case KB_Right: // Right
-		case KB_D:
+		case SDLK_RIGHT: // Right
+		case SDLK_D:
 			mInputState[0] = false;
 			break;
-		case KB_Left: // Left
-		case KB_A:
+		case SDLK_LEFT: // Left
+		case SDLK_A:
 			mInputState[1] = false;
 			break;
-		case KB_Down: // Down
-		case KB_S:
+		case SDLK_DOWN: // Down
+		case SDLK_S:
 			mInputState[2] = false;
 			break;
-		case KB_Up: // Up
-		case KB_W:
+		case SDLK_UP: // Up
+		case SDLK_W:
 			mInputState[3] = false;
 			break;
 		default:
