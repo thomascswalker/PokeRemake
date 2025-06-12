@@ -35,6 +35,5 @@ public:
 	// Scene
 	void AddChunk();
 	void DeselectAllTiles();
-	void DeselectTile(PActor* Actor);
 	void SelectTile(PActor* Actor);
 };

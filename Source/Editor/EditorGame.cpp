@@ -85,6 +85,7 @@ void PEditorGame::AddChunk()
 		Data.Data.emplace_back(std::vector(Data.Geometry.W, 0));
 	}
 
+	// Create the chunk
 	const auto Chunk = mWorld->SpawnActor<PChunk>(Data);
 	if (!Chunk)
 	{
@@ -92,7 +93,9 @@ void PEditorGame::AddChunk()
 		return;
 	}
 	mChunks.emplace_back(Chunk);
-	for (auto& Tile : Chunk->GetTiles())
+
+	// Bind all tile clicks to SelectTile
+	for (const auto& Tile : Chunk->GetTiles())
 	{
 		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
 	}
@@ -109,17 +112,6 @@ void PEditorGame::DeselectAllTiles()
 	}
 }
 
-void PEditorGame::DeselectTile(PActor* Actor)
-{
-	if (const auto Tile = static_cast<PTile*>(Actor))
-	{
-		if (GetInputManager()->IsCtrlDown())
-		{
-			Tile->SetSelected(false);
-		}
-	}
-}
-
 void PEditorGame::SelectTile(PActor* Actor)
 {
 	const auto Tile = static_cast<PTile*>(Actor);
@@ -130,11 +122,13 @@ void PEditorGame::SelectTile(PActor* Actor)
 		Tile->SetSelected(false);
 		return;
 	}
+
 	// If shift is not pressed, deselect all tiles
 	if (!GetInputManager()->IsShiftDown())
 	{
 		DeselectAllTiles();
 	}
+
 	// Select the clicked tile. If shift is pressed, add tile to selection
 	Tile->SetSelected(true);
 }

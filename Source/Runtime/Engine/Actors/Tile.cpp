@@ -83,7 +83,6 @@ void PTile::Draw(const PRenderer* Renderer) const
 		Renderer->SetDrawColor(255, 150, 0, 255);
 		Renderer->DrawRectAt(Dest, WorldPosition);
 	}
-
 #endif
 }
 
