@@ -7,6 +7,8 @@
 #include "stb/stb_truetype.h"
 #include <vector>
 
+class PActor;
+
 struct PFont
 {
 	stbtt_fontinfo	Info;
@@ -63,4 +65,7 @@ public:
 	FRect	 GetViewport() const;
 	FVector2 GetMousePosition() const;
 	bool	 GetMouseLeftDown() const;
+	PActor*	 GetActorAtUnderMouse() const;
 };
+
+DECLARE_STATIC_GLOBAL_GETTER(Renderer)

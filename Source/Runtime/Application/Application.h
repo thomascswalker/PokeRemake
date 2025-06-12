@@ -33,6 +33,12 @@ class PApplication : public IInputManager
 	std::unique_ptr<PRenderer>	mRenderer;
 	std::unique_ptr<SDLContext> mContext;
 
+	/* Keyboard */
+
+	std::map<uint32_t, bool> mKeyStates;
+
+	/* Editor */
+
 	bool bIsEditor = false;
 
 protected:
@@ -42,6 +48,7 @@ public:
 	static PApplication* GetInstance();
 
 	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode, bool IsEditor);
+	void InitializeKeyStates();
 	void Uninitialize() const;
 
 	template <typename GameType>
@@ -60,6 +67,7 @@ public:
 	}
 
 	void Loop();
+
 	/* Events */
 
 	bool OnEvent(void* Event);
@@ -72,10 +80,6 @@ public:
 	PRenderer*	GetRenderer() const;
 	SDLContext* GetContext() const;
 
-	/* Input */
-	void OnKeyDown(uint32_t ScanCode) override;
-	void OnKeyUp(uint32_t ScanCode) override;
-	void OnMiddleMouseScroll(float Delta) override;
-	void OnMouseMotion(float X, float Y) override;
-	void OnMouseClick() override;
+	bool IsKeyDown(uint32_t KeyCode) const override;
+	bool IsKeyUp(uint32_t KeyCode) const override;
 };

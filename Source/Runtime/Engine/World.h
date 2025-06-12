@@ -38,6 +38,15 @@ public:
 		return Actor.get();
 	}
 
+	template <ENABLE_IF(PActor), typename... ArgsType>
+	T* SpawnActor(ArgsType&&... Args)
+	{
+		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		Actor->Start();
+		mActors.push_back(Actor);
+		return Actor.get();
+	}
+
 	std::vector<PActor*> GetActors() const
 	{
 		std::vector<PActor*> Actors;

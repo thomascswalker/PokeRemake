@@ -3,25 +3,38 @@
 #include "../World.h"
 #include "Chunk.h"
 #include "Core/Settings.h"
+#include "Engine/Engine.h"
 
-FVector2 STile::GetLocalPosition() const
+FVector2 PTile::GetPosition() const
+{
+	if (Chunk)
+	{
+		auto Position = Chunk->GetPosition();
+		Position.X += mPosition.X;
+		Position.Y += mPosition.Y;
+		return Position;
+	}
+	return mPosition;
+}
+
+FVector2 PTile::GetLocalPosition() const
 {
 	return FVector2(X * TILE_SIZE, Y * TILE_SIZE);
 }
 
-FVector2 STile::GetWorldPosition() const
+FVector2 PTile::GetWorldPosition() const
 {
 	return GetLocalPosition() + Chunk->GetPosition();
 }
 
-void STile::Draw(const PRenderer* Renderer) const
+void PTile::Draw(const PRenderer* Renderer) const
 {
 	// Source rectangle to extract the tile from the texture
 	// Assuming each tile is 16x16 pixels
 	const FRect Source = { static_cast<float>(X * 16), static_cast<float>(Y * 16), 16, 16 };
 
 	// World position of this tile
-	const FVector2 WorldPosition = GetWorldPosition();
+	const FVector2 WorldPosition = GetPosition();
 
 	// Screenspace destination rectangle
 	const FRect Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
@@ -58,9 +71,22 @@ void STile::Draw(const PRenderer* Renderer) const
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
 	Renderer->DrawRectAt(Dest, WorldPosition);
+
+#if _EDITOR
+	if (bSelected)
+	{
+		Renderer->SetDrawColor(255, 150, 0, 100);
+		Renderer->DrawFillRectAt(Dest, WorldPosition);
+	}
+	if (bMouseOver)
+	{
+		Renderer->SetDrawColor(255, 150, 0, 255);
+		Renderer->DrawRectAt(Dest, WorldPosition);
+	}
+#endif
 }
 
-PActor* STile::GetActor() const
+PActor* PTile::GetActor() const
 {
 	for (const auto& Actor : GetWorld()->GetActors())
 	{
@@ -72,14 +98,14 @@ PActor* STile::GetActor() const
 	return nullptr;
 }
 
-bool STile::IsWalkable() const
+bool PTile::IsWalkable() const
 {
 	return Type != TT_Obstacle && Type != TT_Water;
 }
 
-bool STile::Contains(const FVector2& Position) const
+bool PTile::Contains(const FVector2& Position) const
 {
-	auto TilePosition = GetWorldPosition();
+	auto TilePosition = GetPosition();
 	return Position.X >= TilePosition.X						// Min X
 		   && Position.X < TilePosition.X + HALF_TILE_SIZE	// Max X
 		   && Position.Y >= TilePosition.Y					// Min Y
