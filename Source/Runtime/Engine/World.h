@@ -30,10 +30,18 @@ public:
 	void Tick(float DeltaTime) override;
 	void ConstructChunks();
 
+	template <ENABLE_IF(PObject), typename... ArgsType>
+	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
+	{
+		std::shared_ptr<T> Object = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		Object->GenerateInternalName();
+		return Object;
+	}
+
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
 		return Actor.get();
 	}
@@ -41,10 +49,9 @@ public:
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* SpawnActor(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Actor = ConstructActor<T>(std::forward<ArgsType>(Args)...);
 		Actor->Start();
-		mActors.push_back(Actor);
-		return Actor.get();
+		return Actor;
 	}
 
 	std::vector<PActor*> GetActors() const
@@ -76,8 +83,7 @@ public:
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 	{
-		auto Component = std::make_shared<T>(std::forward<ArgsType>(Args)...);
-		static_assert(std::is_base_of_v<PComponent, T>, "T must be derived from PComponent");
+		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Component->SetOwner(Owner);
 		mComponents.push_back(Component);
 		return Component.get();
@@ -96,7 +102,7 @@ public:
 	template <ENABLE_IF(PWidget), typename... ArgsType>
 	T* ConstructWidget(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Widget = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mWidgets.push_back(Widget);
 		return Widget.get();
 	}

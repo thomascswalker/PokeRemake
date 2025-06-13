@@ -1,7 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -26,5 +25,10 @@ namespace Files
 			}
 		}
 		return "";
+	}
+
+	static bool SaveFile(const std::string& FileName, void* Content)
+	{
+		// SDL_ShowSaveFileDialog()
 	}
 } // namespace Files

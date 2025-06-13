@@ -67,3 +67,20 @@ PTile* PChunk::GetTileAtPosition(const FVector2& Position)
 	}
 	return nullptr; // No tile found at the given position
 }
+
+json PChunk::Serialize() const
+{
+	json Result;
+	Result["Name"] = GetInternalName();
+	Result["Position"] = { GetPosition().X, GetPosition().Y };
+	auto Bounds = GetLocalBounds();
+	Result["Size"] = { Bounds.X, Bounds.Y, Bounds.W, Bounds.H };
+
+	auto TileArray = json::array();
+	for (const auto& Tile : GetTiles())
+	{
+		TileArray.push_back(Tile->Serialize());
+	}
+	Result["Tiles"] = TileArray;
+	return Result;
+}

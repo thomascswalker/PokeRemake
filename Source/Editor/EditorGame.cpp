@@ -3,6 +3,7 @@
 #include "Core/Logging.h"
 #include "EditorView.h"
 #include "Engine/InputManager.h"
+#include "Engine/Serializer.h"
 
 void PEditorGame::PreStart()
 {
@@ -45,6 +46,7 @@ void PEditorGame::ConstructInterface()
 	mSaveButton->W = BUTTON_WIDTH;
 	mSaveButton->H = BUTTON_HEIGHT;
 	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
+	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
 
 	mModeText = mWorld->ConstructWidget<PText>("View");
 	mModeText->W = BUTTON_WIDTH;
@@ -67,6 +69,18 @@ void PEditorGame::OnEditButtonClicked()
 	bEditMode = !bEditMode;
 	const auto Text = bEditMode ? "Edit" : "View";
 	mModeText->SetText(Text);
+}
+
+void PEditorGame::OnSaveButtonClicked()
+{
+	PSerializer Serializer;
+
+	for (auto Actor : mWorld->GetActors())
+	{
+		Serializer.Serialize(Actor);
+	}
+
+	LogDebug("Serialized: {}", Serializer.GetSerializedData().dump(4));
 }
 
 void PEditorGame::AddChunk()

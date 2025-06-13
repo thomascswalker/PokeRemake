@@ -111,3 +111,15 @@ bool PTile::Contains(const FVector2& Position) const
 		   && Position.Y >= TilePosition.Y					// Min Y
 		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
 }
+json PTile::Serialize() const
+{
+	json Result;
+	Result["Name"] = GetInternalName();
+	Result["Position"] = { X, Y };
+	Result["Type"] = Type;
+	return Result;
+}
+void PTile::Deserialize(const json& Data)
+{
+	PActor::Deserialize(Data);
+}

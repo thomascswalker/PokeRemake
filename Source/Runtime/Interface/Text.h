@@ -11,7 +11,7 @@ public:
 	explicit PText(const std::string& Text, float FontSize = 14.0f)
 		: mText(Text), mFontSize(FontSize)
 	{
-		GENERATE_INTERNAL_NAME(Text);
+		// GENERATE_OBJECT(Text);
 	}
 
 	void Draw(const PRenderer* Renderer) const override

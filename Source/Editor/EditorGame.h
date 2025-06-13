@@ -31,6 +31,7 @@ public:
 
 	// Interface
 	void OnEditButtonClicked();
+	void OnSaveButtonClicked();
 
 	// Scene
 	void AddChunk();

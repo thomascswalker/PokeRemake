@@ -17,7 +17,7 @@ public:
 	explicit PButton(const std::string& Label) : mText(Label)
 	{
 		PWidget::AddChild(&mText);
-		GENERATE_INTERNAL_NAME(Button);
+		// GENERATE_OBJECT(Button);
 	}
 
 	void Draw(const PRenderer* Renderer) const override

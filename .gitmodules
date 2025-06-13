@@ -10,3 +10,6 @@
 [submodule "ThirdParty/SDL_image"]
 	path = ThirdParty/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
+[submodule "ThirdParty/json"]
+	path = ThirdParty/json
+	url = https://github.com/nlohmann/json.git

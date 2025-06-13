@@ -14,10 +14,6 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
-#define GENERATE_INTERNAL_NAME(Class) \
-	static int Count = 0;             \
-	mInternalName = std::format(#Class "{}", Count++);
-
 struct SWidgetEvent
 {
 	bool	 bConsumed = false; // Event was consumed by a widget

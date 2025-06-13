@@ -8,6 +8,8 @@ class TestGame : public PGame
 public:
 	TestGame() = default;
 	~TestGame() override {}
-	void PreStart() override;
-	void Start() override;
+	void		PreStart() override;
+	void		Start() override;
+	std::string Serialize() const override { return ""; }
+	void		Deserialize(const std::string& Data) override {}
 };

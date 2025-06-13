@@ -6,6 +6,7 @@ include_directories(
         ../../ThirdParty
         ../../ThirdParty/glm
         ../../ThirdParty/SDL/include
+        ../../ThirdParty/json/include/
 )
 
 set(SOURCES
@@ -51,6 +52,7 @@ set(SOURCES
         Interface/Widget.cpp
         Interface/Layout.h
         Interface/Text.h
+        Engine/Serializer.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

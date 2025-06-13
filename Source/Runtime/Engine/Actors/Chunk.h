@@ -29,4 +29,6 @@ public:
 	FRect				GetWorldBounds() const override;
 	PTile*				GetTileAtPosition(const FVector2& Position);
 	std::vector<PTile*> GetTiles() const { return mTiles; }
+
+	json Serialize() const override;
 };

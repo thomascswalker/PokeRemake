@@ -32,8 +32,6 @@ void PEditorView::Start()
 	{
 		LogError("PEditorView::Start: InputManager is null");
 	}
-
-	SetInternalName("EditorCamera");
 }
 
 void PEditorView::Tick(float DeltaTime)

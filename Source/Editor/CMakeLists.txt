@@ -6,6 +6,7 @@ include_directories(
         ../Runtime
         ../../ThirdParty
         ../../ThirdParty/SDL/include
+        ../../ThirdParty/json/include/
 )
 
 set(SOURCES
