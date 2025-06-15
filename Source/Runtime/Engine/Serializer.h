@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Actors/Chunk.h"
 #include "Object.h"
 #include "nlohmann/json.hpp"
 
@@ -12,13 +11,8 @@ class PSerializer
 
 public:
 	PSerializer() { mSerializedData["Objects"] = json::array(); }
-	void Serialize(const PObject* Object)
-	{
-		if (!Object->IsSerializable())
-		{
-			return; // Skip non-serializable objects
-		}
-		mSerializedData["Objects"].push_back(Object->Serialize());
-	}
+	void Serialize(const PObject* Object);
 	json GetSerializedData() const { return mSerializedData; }
+	void Clear() { mSerializedData.clear(); }
+	void Deserialize(const json& JsonData);
 };

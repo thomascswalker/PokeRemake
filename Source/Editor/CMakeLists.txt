@@ -7,6 +7,7 @@ include_directories(
         ../../ThirdParty
         ../../ThirdParty/SDL/include
         ../../ThirdParty/json/include/
+        ../../ThirdParty/nativefiledialog-extended/include
 )
 
 set(SOURCES

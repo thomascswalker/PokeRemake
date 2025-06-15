@@ -13,3 +13,6 @@
 [submodule "ThirdParty/json"]
 	path = ThirdParty/json
 	url = https://github.com/nlohmann/json.git
+[submodule "ThirdParty/nativefiledialog-extended"]
+	path = ThirdParty/nativefiledialog-extended
+	url = https://github.com/btzy/nativefiledialog-extended.git

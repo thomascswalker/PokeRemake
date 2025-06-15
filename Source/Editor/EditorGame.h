@@ -18,6 +18,7 @@ class PEditorGame : public PGame
 	PButton* mNewButton;
 	PButton* mEditButton;
 	PButton* mSaveButton;
+	PButton* mLoadButton;
 	PText*	 mModeText;
 
 	std::vector<PChunk*> mChunks;
@@ -32,6 +33,7 @@ public:
 	// Interface
 	void OnEditButtonClicked();
 	void OnSaveButtonClicked();
+	void OnLoadButtonClicked();
 
 	// Scene
 	void AddChunk();

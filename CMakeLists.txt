@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(IN_EDITOR "IN_EDITOR" OFF)
 
+include(FetchContent)
+
 add_subdirectory(Source/Runtime)
 if (IN_EDITOR)
     add_subdirectory(Source/Editor)
@@ -61,13 +63,16 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Vulkan::Vulkan)
 
 # JSON
 
-include(FetchContent)
-
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
 FetchContent_MakeAvailable(json)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 target_include_directories(${PROJECT_NAME} PUBLIC ThirdParty/json/include)
+
+# Native file dialog
+
+add_subdirectory(ThirdParty/nativefiledialog-extended)
+target_link_libraries(${PROJECT_NAME} PRIVATE nfd)
+target_include_directories(${PROJECT_NAME} PUBLIC ThirdParty/nativefiledialog-extended/include)
 
 # Windows specific
 if (WIN32)

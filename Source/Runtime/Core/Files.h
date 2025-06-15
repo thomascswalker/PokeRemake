@@ -1,6 +1,10 @@
 #pragma once
 
+#include "Logging.h"
+#include "nativefiledialog-extended/src/include/nfd.h"
+
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -9,12 +13,12 @@ inline std::vector<std::string> gResourcePaths = { "Resources\\Shaders", "Resour
 
 namespace Files
 {
-	static std::filesystem::path GetRootPath()
+	inline std::filesystem::path GetRootPath()
 	{
 		return std::filesystem::current_path().parent_path();
 	}
 
-	static std::string FindFile(const std::string& FileName)
+	inline std::string FindFile(const std::string& FileName)
 	{
 		for (const auto& Path : gResourcePaths)
 		{
@@ -27,8 +31,107 @@ namespace Files
 		return "";
 	}
 
-	static bool SaveFile(const std::string& FileName, void* Content)
+	inline bool GetOpenFileName(std::string*											FileName,
+								const std::vector<std::pair<std::string, std::string>>& Filters)
 	{
-		// SDL_ShowSaveFileDialog()
+		NFD_Init();
+		std::vector<nfdu8filteritem_t> FilterItems;
+		for (const auto& Filter : Filters)
+		{
+			nfdu8filteritem_t Item = { Filter.first.c_str(), Filter.second.c_str() };
+			FilterItems.push_back(Item);
+		}
+		nfdopendialogu8args_t Args = { nullptr };
+		Args.filterList = FilterItems.data();
+		Args.filterCount = FilterItems.size();
+		char* OutPath;
+		int	  Result = NFD_OpenDialogU8_With(&OutPath, &Args);
+
+		if (Result == NFD_OKAY)
+		{
+			*FileName = OutPath;
+		}
+		else
+		{
+			LogDebug("Failed to open file dialog: {}", NFD_GetError());
+			return false;
+		}
+		NFD_Quit();
+		return true;
+	}
+
+	inline bool GetSaveFileName(std::string*											FileName,
+								const std::vector<std::pair<std::string, std::string>>& Filters)
+	{
+		NFD_Init();
+		std::vector<nfdu8filteritem_t> FilterItems;
+		for (const auto& Filter : Filters)
+		{
+			nfdu8filteritem_t Item = { Filter.first.c_str(), Filter.second.c_str() };
+			FilterItems.push_back(Item);
+		}
+		nfdsavedialogu8args_t Args = { nullptr };
+		Args.filterCount = FilterItems.size();
+		Args.filterList = FilterItems.data();
+		char* OutPath;
+		int	  Result = NFD_SaveDialogU8_With(&OutPath, &Args);
+
+		if (Result == NFD_OKAY)
+		{
+			*FileName = OutPath;
+		}
+		else
+		{
+			return false;
+		}
+		NFD_Quit();
+		return true;
+	}
+
+	inline bool WriteFile(const std::string& FileName, const std::string& Data)
+	{
+		std::ofstream File;
+		File.open(FileName.c_str());
+		if (!File.is_open())
+		{
+			LogError("Failed to open file: {}", FileName);
+			return false;
+		}
+		File << Data;
+		File.close();
+
+		return true;
+	}
+
+	inline bool ReadFile(const std::string& FileName, std::string& Buffer)
+	{
+		LogDebug("Reading file: {}", FileName.c_str());
+
+		std::ifstream File;
+		File.open(FileName.c_str(), std::ios::binary);
+		if (!File.is_open())
+		{
+			LogError("Failed to open file: {}", FileName);
+			return false;
+		}
+		size_t Size = std::filesystem::file_size(FileName);
+		if (Size == 0)
+		{
+			LogError("File is empty: {}", FileName);
+			return false;
+		}
+
+		Buffer.resize(Size);
+
+		LogDebug("Reading file: {} ({} bytes)", FileName.c_str(), Size);
+		File.read(Buffer.data(), Size);
+		if (!File)
+		{
+			LogError("Failed to read file: {}", FileName);
+			return false;
+		}
+		File.close();
+
+		return true;
 	}
 } // namespace Files

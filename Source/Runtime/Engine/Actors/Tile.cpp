@@ -115,6 +115,7 @@ json PTile::Serialize() const
 {
 	json Result;
 	Result["Name"] = GetInternalName();
+	Result["Class"] = GetClassName();
 	Result["Position"] = { X, Y };
 	Result["Type"] = Type;
 	return Result;

@@ -1,9 +1,16 @@
 #include "EditorGame.h"
 
+#include "Application/Application.h"
+#include "Core/Files.h"
 #include "Core/Logging.h"
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
+#include "nativefiledialog-extended/src/include/nfd.h"
+
+std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
+	{ "json", "JSON" },
+};
 
 void PEditorGame::PreStart()
 {
@@ -48,6 +55,12 @@ void PEditorGame::ConstructInterface()
 	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
 	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
 
+	mLoadButton = mWorld->ConstructWidget<PButton>("Load");
+	mLoadButton->W = BUTTON_WIDTH;
+	mLoadButton->H = BUTTON_HEIGHT;
+	mLoadButton->SetFontSize(WIDGET_FONT_SIZE);
+	mLoadButton->Clicked.AddRaw(this, &PEditorGame::OnLoadButtonClicked);
+
 	mModeText = mWorld->ConstructWidget<PText>("View");
 	mModeText->W = BUTTON_WIDTH;
 	mModeText->H = BUTTON_HEIGHT;
@@ -59,6 +72,7 @@ void PEditorGame::ConstructInterface()
 	mCanvas->AddChild(mNewButton);
 	mCanvas->AddChild(mEditButton);
 	mCanvas->AddChild(mSaveButton);
+	mCanvas->AddChild(mLoadButton);
 	mCanvas->AddChild(mModeText);
 
 	mWorld->SetCanvas(mCanvas);
@@ -80,7 +94,31 @@ void PEditorGame::OnSaveButtonClicked()
 		Serializer.Serialize(Actor);
 	}
 
-	LogDebug("Serialized: {}", Serializer.GetSerializedData().dump(4));
+	std::string FileName;
+	if (Files::GetSaveFileName(&FileName, gDefaultFilters))
+	{
+		LogDebug("Saving to file: {}", FileName);
+		Files::WriteFile(FileName, Serializer.GetSerializedData().dump(4));
+	}
+}
+void PEditorGame::OnLoadButtonClicked()
+{
+	PSerializer Serializer;
+	std::string FileName;
+
+	if (!Files::GetOpenFileName(&FileName, gDefaultFilters))
+	{
+		return;
+	}
+
+	std::string Data;
+	if (!Files::ReadFile(FileName, Data))
+	{
+		return;
+	}
+
+	json JsonData = json::parse(Data.data());
+	Serializer.Deserialize(JsonData);
 }
 
 void PEditorGame::AddChunk()

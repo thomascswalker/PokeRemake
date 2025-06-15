@@ -7,6 +7,7 @@ include_directories(
         ../../ThirdParty/glm
         ../../ThirdParty/SDL/include
         ../../ThirdParty/json/include/
+        ../../ThirdParty/nativefiledialog-extended/include
 )
 
 set(SOURCES
@@ -53,6 +54,7 @@ set(SOURCES
         Interface/Layout.h
         Interface/Text.h
         Engine/Serializer.h
+        Engine/Serializer.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

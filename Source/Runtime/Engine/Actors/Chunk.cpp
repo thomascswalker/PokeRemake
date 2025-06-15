@@ -72,6 +72,7 @@ json PChunk::Serialize() const
 {
 	json Result;
 	Result["Name"] = GetInternalName();
+	Result["Class"] = GetClassName();
 	Result["Position"] = { GetPosition().X, GetPosition().Y };
 	auto Bounds = GetLocalBounds();
 	Result["Size"] = { Bounds.X, Bounds.Y, Bounds.W, Bounds.H };

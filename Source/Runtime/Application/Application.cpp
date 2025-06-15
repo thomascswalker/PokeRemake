@@ -51,6 +51,12 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(World, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
+static const char* const* gFileList = nullptr;
+void OpenSaveFileDialogCallback(void* userdata, const char* const* filelist, int filter)
+{
+	gFileList = filelist;
+}
+
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode,
 							  bool IsEditor)
 {
