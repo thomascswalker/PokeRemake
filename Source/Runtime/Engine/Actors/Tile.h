@@ -2,6 +2,7 @@
 
 #include "Actor.h"
 #include "Core/Delegate.h"
+#include "Engine/ClassRegistry.h"
 #include "Renderer/Renderer.h"
 
 constexpr int CHUNK_SIZE = 20;
@@ -44,6 +45,8 @@ public:
 	PTexture* Texture = nullptr;
 	PChunk*	  Chunk = nullptr;
 
+	PTile() = default;
+	PTile(const json& JsonData);
 	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY)
 	{
 		bSerializable = false;
@@ -75,3 +78,5 @@ public:
 	bool GetSelected() { return bSelected; }
 #endif
 };
+
+REGISTER_CLASS(PTile);

@@ -3,8 +3,13 @@
 #include "../World.h"
 #include "Chunk.h"
 #include "Core/Settings.h"
+#include "Engine/ClassRegistry.h"
 #include "Engine/Engine.h"
 
+PTile::PTile(const json& JsonData)
+{
+	LogDebug("Constructing tile from JSON data");
+}
 FVector2 PTile::GetPosition() const
 {
 	if (Chunk)

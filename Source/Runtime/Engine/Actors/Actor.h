@@ -29,6 +29,7 @@ public:
 
 	PActor() = default;
 	~PActor() override = default;
+	PActor(const json& JsonData) {}
 	PActor(const PActor& other)
 		: PObject{ other }, IDrawable{ other }, mPosition{ other.mPosition }, mSize{ other.mSize }
 	{

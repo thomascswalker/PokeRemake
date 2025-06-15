@@ -1,6 +1,7 @@
 #include "Actor.h"
 
 #include "Core/Logging.h"
+#include "Engine/ClassRegistry.h"
 
 void PActor::Tick(float DeltaTime)
 {

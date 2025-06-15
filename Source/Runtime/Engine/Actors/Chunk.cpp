@@ -2,14 +2,39 @@
 
 #include "Chunk.h"
 
+#include "../../../Editor/EditorGame.h"
+#include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 
 PChunk::PChunk(const SChunkData& Data)
-	: mData(Data.Data), mGeometry(Data.Geometry), mTextureName(Data.TextureName)
+	: mData(Data.Data), mSizeX(Data.SizeX), mSizeY(Data.SizeY), mTextureName(Data.TextureName)
 {
 	mPriority = DP_BACKGROUND;
 	bBlocking = false;
-	mPosition = FVector2(mGeometry.X * TILE_SIZE, mGeometry.Y * TILE_SIZE);
+	mPosition = FVector2(mSizeX * TILE_SIZE, mSizeY * TILE_SIZE);
+}
+
+PChunk::PChunk(const json& JsonData)
+{
+	LogDebug("Constructing Chunk from JSON data");
+	mPriority = DP_BACKGROUND;
+	bBlocking = false;
+
+	auto Position = JsonData["Position"];
+	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
+
+	mSizeX = JsonData["SizeX"].get<int>();
+	mSizeY = JsonData["SizeY"].get<int>();
+	mData = std::vector(mSizeX, std::vector(mSizeY, 0));
+
+	auto Tiles = JsonData["Tiles"];
+	for (const auto& T : Tiles)
+	{
+		auto X = T["Position"][0].get<int>();
+		auto Y = T["Position"][1].get<int>();
+		auto Type = T["Type"].get<int>();
+		mData[X][Y] = Type;
+	}
 }
 
 void PChunk::Start()
@@ -24,9 +49,9 @@ void PChunk::Start()
 	auto W = GetWorld();
 
 	// Instantiate each tile in the grid
-	for (int X = 0; X < mGeometry.W; X++)
+	for (int X = 0; X < mSizeX; X++)
 	{
-		for (int Y = 0; Y < mGeometry.H; Y++)
+		for (int Y = 0; Y < mSizeY; Y++)
 		{
 			const auto Tile = W->ConstructActor<PTile>(X, Y);
 			Tile->Chunk = this;
@@ -35,6 +60,13 @@ void PChunk::Start()
 			mTiles.emplace_back(Tile);
 		}
 	}
+
+#if _EDITOR
+	if (PEditorGame* EditorGame = dynamic_cast<PEditorGame*>(GetGame()))
+	{
+		EditorGame->AddChunk(this);
+	}
+#endif
 }
 
 void PChunk::Draw(const PRenderer* Renderer) const
@@ -47,12 +79,12 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mGeometry.W * TILE_SIZE, mGeometry.H * TILE_SIZE };
+	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mGeometry.W * TILE_SIZE, mGeometry.H * TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position)
@@ -74,8 +106,9 @@ json PChunk::Serialize() const
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
 	Result["Position"] = { GetPosition().X, GetPosition().Y };
-	auto Bounds = GetLocalBounds();
-	Result["Size"] = { Bounds.X, Bounds.Y, Bounds.W, Bounds.H };
+
+	Result["SizeX"] = mSizeX;
+	Result["SizeY"] = mSizeY;
 
 	auto TileArray = json::array();
 	for (const auto& Tile : GetTiles())

@@ -46,6 +46,13 @@ public:
 		return Actor.get();
 	}
 
+	template <typename T>
+	void RegisterActor(T* Actor)
+	{
+		auto Actor2 = ConstructObject(Actor);
+		mActors.push_back(Actor2);
+	}
+
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* SpawnActor(ArgsType&&... Args)
 	{

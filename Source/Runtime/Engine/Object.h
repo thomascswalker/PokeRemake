@@ -15,6 +15,7 @@ protected:
 
 public:
 	PObject() = default;
+	PObject(const json& JsonData) {}
 	virtual ~PObject() = default;
 
 	// Called before the game begins

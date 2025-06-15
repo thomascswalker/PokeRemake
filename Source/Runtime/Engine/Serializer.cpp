@@ -1,6 +1,6 @@
 #include "Serializer.h"
 
-#include "Core/Logging.h"
+#include "ClassRegistry.h"
 #include "World.h"
 
 void PSerializer::Serialize(const PObject* Object)
@@ -15,15 +15,18 @@ void PSerializer::Serialize(const PObject* Object)
 void PSerializer::Deserialize(const json& JsonData)
 {
 	auto World = GetWorld();
+	auto Inst = PClassRegistry::Instance();
 	for (const auto& ObjectData : JsonData["Objects"])
 	{
 		if (ObjectData.is_null())
 		{
 			continue; // Skip null objects
 		}
-		if (ObjectData["Class"] == "6PChunk")
+
+		auto ClassName = ObjectData["Class"].get<std::string>();
+		if (ClassName.find("PChunk") != std::string::npos)
 		{
-			LogDebug("Loading chunk: {}", ObjectData["Name"].get<std::string>().c_str());
+			World->SpawnActor<PChunk>(ObjectData);
 		}
 	}
 }

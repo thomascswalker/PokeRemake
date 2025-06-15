@@ -8,6 +8,8 @@
 #include "Engine/Serializer.h"
 #include "nativefiledialog-extended/src/include/nfd.h"
 
+#define NEW_GRID_SIZE 5
+
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
 };
@@ -23,10 +25,6 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
-	if (const auto Input = GetInputManager())
-	{
-		Input->MouseRightClick.AddRaw(this, &PEditorGame::DeselectAllTiles);
-	}
 }
 
 void PEditorGame::Start()
@@ -40,7 +38,7 @@ void PEditorGame::ConstructInterface()
 	mNewButton = mWorld->ConstructWidget<PButton>("New");
 	mNewButton->W = BUTTON_WIDTH;
 	mNewButton->H = BUTTON_HEIGHT;
-	mNewButton->Clicked.AddRaw(this, &PEditorGame::AddChunk);
+	mNewButton->Clicked.AddRaw(this, &PEditorGame::OnNewButtonClicked);
 	mNewButton->SetFontSize(WIDGET_FONT_SIZE);
 
 	mEditButton = mWorld->ConstructWidget<PButton>("Edit");
@@ -76,6 +74,25 @@ void PEditorGame::ConstructInterface()
 	mCanvas->AddChild(mModeText);
 
 	mWorld->SetCanvas(mCanvas);
+}
+void PEditorGame::OnNewButtonClicked()
+{
+	json JsonData = {
+		{ "Position", { 0, 0 }	   },
+		{ "SizeX",	   NEW_GRID_SIZE },
+		{ "SizeY",	   NEW_GRID_SIZE },
+	};
+	for (int X = 0; X < NEW_GRID_SIZE; ++X)
+	{
+		for (int Y = 0; Y < NEW_GRID_SIZE; ++Y)
+		{
+			JsonData["Tiles"].push_back({
+				{ "Position", { X, Y } },
+				{ "Type",	  0		},
+			});
+		}
+	}
+	ConstructChunk(JsonData);
 }
 
 void PEditorGame::OnEditButtonClicked()
@@ -121,36 +138,41 @@ void PEditorGame::OnLoadButtonClicked()
 	Serializer.Deserialize(JsonData);
 }
 
-void PEditorGame::AddChunk()
+void PEditorGame::AddChunk(PChunk* Chunk)
 {
-	int		   DefaultChunkSize = 10;
-	SChunkData Data = {
-		{
-			0, 0,
-			DefaultChunkSize, DefaultChunkSize,
-		 },
-	};
+	mChunks.emplace_back(Chunk);
+	SetCurrentChunk(Chunk);
+}
 
-	// Fill all tiles with 0
-	for (int i = 0; i < Data.Geometry.H; ++i)
+void PEditorGame::SetCurrentChunk(PChunk* Chunk)
+{
+	if (mCurrentChunk)
 	{
-		Data.Data.emplace_back(std::vector(Data.Geometry.W, 0));
+		for (const auto& Tile : mCurrentChunk->GetTiles())
+		{
+			Tile->Clicked.RemoveAll();
+		}
 	}
 
+	mCurrentChunk = Chunk;
+
+	// Bind all tile clicks to SelectTile
+	for (const auto& Tile : mCurrentChunk->GetTiles())
+	{
+		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
+	}
+}
+
+void PEditorGame::ConstructChunk(const json& JsonData)
+{
 	// Create the chunk
-	const auto Chunk = mWorld->SpawnActor<PChunk>(Data);
+	const auto Chunk = mWorld->SpawnActor<PChunk>(JsonData);
 	if (!Chunk)
 	{
 		LogError("Failed to create chunk");
 		return;
 	}
-	mChunks.emplace_back(Chunk);
-
-	// Bind all tile clicks to SelectTile
-	for (const auto& Tile : Chunk->GetTiles())
-	{
-		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
-	}
+	AddChunk(Chunk);
 }
 
 void PEditorGame::DeselectAllTiles()

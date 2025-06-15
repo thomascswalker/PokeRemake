@@ -55,6 +55,7 @@ set(SOURCES
         Interface/Text.h
         Engine/Serializer.h
         Engine/Serializer.cpp
+        Engine/ClassRegistry.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

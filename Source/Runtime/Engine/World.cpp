@@ -7,6 +7,8 @@
 
 static SChunkData PaletteTownChunkData = {
 	{ 0, 0, 20, 18 },
+	20,
+	18,
 	"PalletTown.png",
 	{
 		{ 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 1, 0 },
@@ -32,6 +34,8 @@ static SChunkData PaletteTownChunkData = {
 
 static SChunkData Route1ChunkData = {
 	{ 0, -36, 20, 36 },
+	20,
+	36,
 	"Route1.png",
 	{
 		{ 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 },
