@@ -37,7 +37,6 @@ else ()
     target_link_libraries(${PROJECT_NAME} PUBLIC PokeRemakeGame)
 endif ()
 
-
 target_link_libraries(
         ${PROJECT_NAME} PUBLIC PokeRemakeRuntime
 )
@@ -46,6 +45,9 @@ target_link_libraries(
 # This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../$<CONFIGURATION>")
+
+# Forward the build config
+target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 
 # SDL3
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
@@ -85,14 +87,6 @@ if (WIN32)
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
             VERBATIM
     )
-    #    add_custom_command(
-    #            TARGET ${PROJECT_NAME} POST_BUILD
-    #            COMMAND "${CMAKE_COMMAND}"
-    #            -E copy_if_different
-    #            "$<TARGET_FILE:SDL3_image::SDL3_image>"
-    #            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    #            VERBATIM
-    #    )
     # D3D12
     list(APPEND CMAKE_PREFIX_PATH "C:/Windows/System32")
     target_link_libraries(${PROJECT_NAME} PRIVATE d3d12.lib)
