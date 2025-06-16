@@ -66,7 +66,11 @@ DEFINE_LOG_LEVEL(Info)
 DEFINE_LOG_LEVEL(Warning)
 DEFINE_LOG_LEVEL(Error)
 
+#if DEBUG
 #define LogDebug(x, ...) LogDebug(x, __FILE__, ##__VA_ARGS__)
+#else
+#define LogDebug(x, ...)
+#endif
 #define LogInfo(x, ...) LogInfo(x, __FILE__, ##__VA_ARGS__)
 #define LogWarning(x, ...) LogWarning(x, __FILE__, ##__VA_ARGS__)
 #define LogError(x, ...) LogError(x, __FILE__, ##__VA_ARGS__)

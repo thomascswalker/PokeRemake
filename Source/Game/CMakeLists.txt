@@ -13,5 +13,5 @@ include_directories(
 set(SOURCES
         TestGame.cpp
 )
-
 add_library(${PROJECT_NAME} ${SOURCES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
