@@ -14,6 +14,8 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 
 class PActor : public PObject, public IDrawable
 {
+	void UpdateMouseState();
+
 protected:
 	FVector2 mPosition;
 	FVector2 mSize;
@@ -29,6 +31,7 @@ public:
 
 	PActor() = default;
 	~PActor() override = default;
+	PActor(const json& JsonData) {}
 	PActor(const PActor& other)
 		: PObject{ other }, IDrawable{ other }, mPosition{ other.mPosition }, mSize{ other.mSize }
 	{

@@ -42,7 +42,7 @@ protected:
 public:
 	explicit PSpinner() : mUpButton("^"), mDownButton("v")
 	{
-		GENERATE_INTERNAL_NAME(Spinner);
+		GENERATE_OBJECT(Spinner);
 
 		mUpButton.W = WIDGET_HEIGHT;
 		mUpButton.H = WIDGET_HEIGHT / 2.0f;

@@ -5,7 +5,10 @@
 class PCanvas : public PWidget
 {
 public:
-	PCanvas() { GENERATE_INTERNAL_NAME(Canvas); }
+	PCanvas()
+	{
+		// GENERATE_OBJECT()
+	}
 	void LayoutChildren() const override { LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING); }
 
 	void Draw(const PRenderer* Renderer) const override

@@ -3,8 +3,13 @@
 #include "../World.h"
 #include "Chunk.h"
 #include "Core/Settings.h"
+#include "Engine/ClassRegistry.h"
 #include "Engine/Engine.h"
 
+PTile::PTile(const json& JsonData)
+{
+	LogDebug("Constructing tile from JSON data");
+}
 FVector2 PTile::GetPosition() const
 {
 	if (Chunk)
@@ -110,4 +115,17 @@ bool PTile::Contains(const FVector2& Position) const
 		   && Position.X < TilePosition.X + HALF_TILE_SIZE	// Max X
 		   && Position.Y >= TilePosition.Y					// Min Y
 		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
+}
+json PTile::Serialize() const
+{
+	json Result;
+	Result["Name"] = GetInternalName();
+	Result["Class"] = GetClassName();
+	Result["Position"] = { X, Y };
+	Result["Type"] = Type;
+	return Result;
+}
+void PTile::Deserialize(const json& Data)
+{
+	PActor::Deserialize(Data);
 }

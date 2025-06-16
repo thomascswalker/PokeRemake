@@ -2,6 +2,7 @@
 
 #include "Actor.h"
 #include "Core/Delegate.h"
+#include "Engine/ClassRegistry.h"
 #include "Renderer/Renderer.h"
 
 constexpr int CHUNK_SIZE = 20;
@@ -44,14 +45,18 @@ public:
 	PTexture* Texture = nullptr;
 	PChunk*	  Chunk = nullptr;
 
+	PTile() = default;
+	PTile(const json& JsonData);
 	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY)
 	{
+		bSerializable = false;
 		bBlocking = false;
 		mPosition.X = inX * TILE_SIZE;
 		mPosition.Y = inY * TILE_SIZE;
 	}
 	PTile(const STileData& Data) : X(Data.X), Y(Data.Y), Type(Data.Type)
 	{
+		bSerializable = false;
 		bBlocking = false;
 		mPosition.X = Data.X * TILE_SIZE;
 		mPosition.Y = Data.Y * TILE_SIZE;
@@ -65,8 +70,13 @@ public:
 	bool	 IsWalkable() const;
 	bool	 Contains(const FVector2& Position) const;
 
+	json Serialize() const override;
+	void Deserialize(const json& Data) override;
+
 #if _EDITOR
 	void SetSelected(bool State) { bSelected = State; }
 	bool GetSelected() { return bSelected; }
 #endif
 };
+
+REGISTER_CLASS(PTile);

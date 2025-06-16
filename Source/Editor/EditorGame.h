@@ -15,12 +15,14 @@ class PEditorGame : public PGame
 	// Widgets
 
 	PCanvas* mCanvas;
-	PButton* mNewButton;
+	PButton* mCreateButton;
 	PButton* mEditButton;
 	PButton* mSaveButton;
+	PButton* mLoadButton;
 	PText*	 mModeText;
 
 	std::vector<PChunk*> mChunks;
+	PChunk*				 mCurrentChunk;
 
 public:
 	// Init
@@ -30,10 +32,15 @@ public:
 	void ConstructInterface();
 
 	// Interface
+	void OnCreateButtonClicked();
 	void OnEditButtonClicked();
+	void OnSaveButtonClicked();
+	void OnLoadButtonClicked();
 
 	// Scene
-	void AddChunk();
+	void AddChunk(PChunk* Chunk);
+	void SetCurrentChunk(PChunk* Chunk);
+	void ConstructChunk(const json& JsonData);
 	void DeselectAllTiles();
 	void SelectTile(PActor* Actor);
 };

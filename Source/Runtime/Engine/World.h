@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Actors/Actor.h"
+#include "Actors/Character.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
 #include "Interface/Canvas.h"
@@ -28,23 +29,36 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
-	void ConstructChunks();
+
+	template <ENABLE_IF(PObject), typename... ArgsType>
+	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
+	{
+		std::shared_ptr<T> Object = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		Object->GenerateInternalName();
+		return Object;
+	}
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
 		return Actor.get();
+	}
+
+	template <typename T>
+	void RegisterActor(T* Actor)
+	{
+		auto Actor2 = ConstructObject(Actor);
+		mActors.push_back(Actor2);
 	}
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
 	T* SpawnActor(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Actor = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Actor = ConstructActor<T>(std::forward<ArgsType>(Args)...);
 		Actor->Start();
-		mActors.push_back(Actor);
-		return Actor.get();
+		return Actor;
 	}
 
 	std::vector<PActor*> GetActors() const
@@ -76,8 +90,7 @@ public:
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 	{
-		auto Component = std::make_shared<T>(std::forward<ArgsType>(Args)...);
-		static_assert(std::is_base_of_v<PComponent, T>, "T must be derived from PComponent");
+		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Component->SetOwner(Owner);
 		mComponents.push_back(Component);
 		return Component.get();
@@ -96,7 +109,7 @@ public:
 	template <ENABLE_IF(PWidget), typename... ArgsType>
 	T* ConstructWidget(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Widget = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mWidgets.push_back(Widget);
 		return Widget.get();
 	}
@@ -115,6 +128,22 @@ public:
 	PCanvas* GetRootWidget() const { return mCanvas; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
+	PActor* GetCharacterAtPosition(const FVector2& Position) const
+	{
+		for (const auto& Actor : mActors)
+		{
+			// Skip actors that are not characters
+			if (!dynamic_cast<PCharacter*>(Actor.get()))
+			{
+				continue;
+			}
+			if (Actor->GetPosition() == Position)
+			{
+				return Actor.get();
+			}
+		}
+		return nullptr;
+	}
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

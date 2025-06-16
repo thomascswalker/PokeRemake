@@ -1,8 +1,16 @@
 #include "EditorGame.h"
 
-#include "Core/Logging.h"
+#include "Application/Application.h"
+#include "Core/CoreFwd.h"
 #include "EditorView.h"
 #include "Engine/InputManager.h"
+#include "Engine/Serializer.h"
+
+#define NEW_GRID_SIZE 5
+
+std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
+	{ "json", "JSON" },
+};
 
 void PEditorGame::PreStart()
 {
@@ -15,10 +23,6 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
-	if (const auto Input = GetInputManager())
-	{
-		Input->MouseRightClick.AddRaw(this, &PEditorGame::DeselectAllTiles);
-	}
 }
 
 void PEditorGame::Start()
@@ -29,22 +33,23 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	mNewButton = mWorld->ConstructWidget<PButton>("New");
-	mNewButton->W = BUTTON_WIDTH;
-	mNewButton->H = BUTTON_HEIGHT;
-	mNewButton->Clicked.AddRaw(this, &PEditorGame::AddChunk);
-	mNewButton->SetFontSize(WIDGET_FONT_SIZE);
-
-	mEditButton = mWorld->ConstructWidget<PButton>("Edit");
-	mEditButton->W = BUTTON_WIDTH;
-	mEditButton->H = BUTTON_HEIGHT;
-	mEditButton->SetFontSize(WIDGET_FONT_SIZE);
-	mEditButton->Clicked.AddRaw(this, &PEditorGame::OnEditButtonClicked);
+	mCreateButton = mWorld->ConstructWidget<PButton>("Create");
+	mCreateButton->W = BUTTON_WIDTH;
+	mCreateButton->H = BUTTON_HEIGHT;
+	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
+	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
 
 	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
 	mSaveButton->W = BUTTON_WIDTH;
 	mSaveButton->H = BUTTON_HEIGHT;
 	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
+	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
+
+	mLoadButton = mWorld->ConstructWidget<PButton>("Load");
+	mLoadButton->W = BUTTON_WIDTH;
+	mLoadButton->H = BUTTON_HEIGHT;
+	mLoadButton->SetFontSize(WIDGET_FONT_SIZE);
+	mLoadButton->Clicked.AddRaw(this, &PEditorGame::OnLoadButtonClicked);
 
 	mModeText = mWorld->ConstructWidget<PText>("View");
 	mModeText->W = BUTTON_WIDTH;
@@ -54,51 +59,105 @@ void PEditorGame::ConstructInterface()
 	mCanvas = mWorld->ConstructWidget<PCanvas>();
 	mCanvas->X = 10;
 	mCanvas->Y = 10;
-	mCanvas->AddChild(mNewButton);
-	mCanvas->AddChild(mEditButton);
+	mCanvas->AddChild(mCreateButton);
 	mCanvas->AddChild(mSaveButton);
+	mCanvas->AddChild(mLoadButton);
 	mCanvas->AddChild(mModeText);
 
 	mWorld->SetCanvas(mCanvas);
 }
 
-void PEditorGame::OnEditButtonClicked()
+void PEditorGame::OnCreateButtonClicked()
 {
-	bEditMode = !bEditMode;
-	const auto Text = bEditMode ? "Edit" : "View";
-	mModeText->SetText(Text);
+	json JsonData = {
+		{ "Position", { 0, 0 }	   },
+		{ "SizeX",	   NEW_GRID_SIZE },
+		{ "SizeY",	   NEW_GRID_SIZE },
+	};
+	for (int X = 0; X < NEW_GRID_SIZE; ++X)
+	{
+		for (int Y = 0; Y < NEW_GRID_SIZE; ++Y)
+		{
+			JsonData["Tiles"].push_back({
+				{ "Position", { X, Y } },
+				{ "Type",	  0		},
+			});
+		}
+	}
+	ConstructChunk(JsonData);
 }
 
-void PEditorGame::AddChunk()
+void PEditorGame::OnSaveButtonClicked()
 {
-	int		   DefaultChunkSize = 10;
-	SChunkData Data = {
-		{
-			0, 0,
-			DefaultChunkSize, DefaultChunkSize,
-		 },
-	};
+	PSerializer Serializer;
 
-	// Fill all tiles with 0
-	for (int i = 0; i < Data.Geometry.H; ++i)
+	for (auto Actor : mWorld->GetActors())
 	{
-		Data.Data.emplace_back(std::vector(Data.Geometry.W, 0));
+		Serializer.Serialize(Actor);
 	}
 
+	std::string FileName;
+	if (Files::GetSaveFileName(&FileName, gDefaultFilters))
+	{
+		LogDebug("Saving to file: {}", FileName);
+		Files::WriteFile(FileName, Serializer.GetSerializedData().dump(4));
+	}
+}
+void PEditorGame::OnLoadButtonClicked()
+{
+	PSerializer Serializer;
+	std::string FileName;
+
+	if (!Files::GetOpenFileName(&FileName, gDefaultFilters))
+	{
+		return;
+	}
+
+	std::string Data;
+	if (!Files::ReadFile(FileName, Data))
+	{
+		return;
+	}
+
+	json JsonData = json::parse(Data.data());
+	Serializer.Deserialize(JsonData);
+}
+
+void PEditorGame::AddChunk(PChunk* Chunk)
+{
+	mChunks.emplace_back(Chunk);
+	SetCurrentChunk(Chunk);
+}
+
+void PEditorGame::SetCurrentChunk(PChunk* Chunk)
+{
+	if (mCurrentChunk)
+	{
+		for (const auto& Tile : mCurrentChunk->GetTiles())
+		{
+			Tile->Clicked.RemoveAll();
+		}
+	}
+
+	mCurrentChunk = Chunk;
+
+	// Bind all tile clicks to SelectTile
+	for (const auto& Tile : mCurrentChunk->GetTiles())
+	{
+		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
+	}
+}
+
+void PEditorGame::ConstructChunk(const json& JsonData)
+{
 	// Create the chunk
-	const auto Chunk = mWorld->SpawnActor<PChunk>(Data);
+	const auto Chunk = mWorld->SpawnActor<PChunk>(JsonData);
 	if (!Chunk)
 	{
 		LogError("Failed to create chunk");
 		return;
 	}
-	mChunks.emplace_back(Chunk);
-
-	// Bind all tile clicks to SelectTile
-	for (const auto& Tile : Chunk->GetTiles())
-	{
-		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
-	}
+	AddChunk(Chunk);
 }
 
 void PEditorGame::DeselectAllTiles()

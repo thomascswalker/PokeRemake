@@ -9,6 +9,10 @@ void PCharacterMovementComponent::Start()
 	// on game startup
 	mTargetPosition = mOwner->GetPosition();
 	mCurrentChunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
+	if (!mCurrentChunk)
+	{
+		LogError("No valid chunks in the world.");
+	}
 }
 
 void PCharacterMovementComponent::Tick(float DeltaTime)
@@ -108,7 +112,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	}
 
 	// Check if the tile contains an actor that blocks movement
-	const auto Actor = Tile->GetActor();
+	const auto Actor = GetWorld()->GetCharacterAtPosition(NewPosition);
 	if (Actor && Actor->IsBlocking())
 	{
 		return false;

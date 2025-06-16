@@ -127,7 +127,7 @@ bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition
 	{
 		const auto ViewPosition = CameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-		const auto Offset = Position - ViewPosition2D;
+		const auto Offset = (Position - ViewPosition2D) * CameraView->GetZoom();
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
@@ -269,14 +269,18 @@ void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position) const
 {
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
-	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
+	const auto CameraView = GetCameraView();
+	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
+			   Rect.H * CameraView->GetZoom() });
 }
 
 void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const
 {
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
-	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W, Rect.H });
+	const auto CameraView = GetCameraView();
+	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
+				   Rect.H * CameraView->GetZoom() });
 }
 
 void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
@@ -290,11 +294,12 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
-	const auto Min = Dest.Min() + ScreenPosition;
-	const auto Max = Dest.Max() + ScreenPosition;
-
+	const auto		Min = Dest.Min() + ScreenPosition;
+	const auto		Max = Dest.Max() + ScreenPosition;
+	const auto		CameraView = GetCameraView();
 	const SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
-	const SDL_FRect Dest2 = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
+	const SDL_FRect Dest2 = { Min.X, Min.Y, (Max.X - Min.X) * CameraView->GetZoom(),
+							  (Max.Y - Min.Y) * CameraView->GetZoom() };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
