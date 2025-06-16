@@ -15,7 +15,7 @@ class PEditorGame : public PGame
 	// Widgets
 
 	PCanvas* mCanvas;
-	PButton* mNewButton;
+	PButton* mCreateButton;
 	PButton* mEditButton;
 	PButton* mSaveButton;
 	PButton* mLoadButton;
@@ -32,7 +32,7 @@ public:
 	void ConstructInterface();
 
 	// Interface
-	void OnNewButtonClicked();
+	void OnCreateButtonClicked();
 	void OnEditButtonClicked();
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();

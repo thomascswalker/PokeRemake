@@ -1,12 +1,10 @@
 #include "EditorGame.h"
 
 #include "Application/Application.h"
-#include "Core/Files.h"
-#include "Core/Logging.h"
+#include "Core/CoreFwd.h"
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
-#include "nativefiledialog-extended/src/include/nfd.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -35,17 +33,11 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	mNewButton = mWorld->ConstructWidget<PButton>("New");
-	mNewButton->W = BUTTON_WIDTH;
-	mNewButton->H = BUTTON_HEIGHT;
-	mNewButton->Clicked.AddRaw(this, &PEditorGame::OnNewButtonClicked);
-	mNewButton->SetFontSize(WIDGET_FONT_SIZE);
-
-	mEditButton = mWorld->ConstructWidget<PButton>("Edit");
-	mEditButton->W = BUTTON_WIDTH;
-	mEditButton->H = BUTTON_HEIGHT;
-	mEditButton->SetFontSize(WIDGET_FONT_SIZE);
-	mEditButton->Clicked.AddRaw(this, &PEditorGame::OnEditButtonClicked);
+	mCreateButton = mWorld->ConstructWidget<PButton>("Create");
+	mCreateButton->W = BUTTON_WIDTH;
+	mCreateButton->H = BUTTON_HEIGHT;
+	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
+	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
 
 	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
 	mSaveButton->W = BUTTON_WIDTH;
@@ -67,15 +59,15 @@ void PEditorGame::ConstructInterface()
 	mCanvas = mWorld->ConstructWidget<PCanvas>();
 	mCanvas->X = 10;
 	mCanvas->Y = 10;
-	mCanvas->AddChild(mNewButton);
-	mCanvas->AddChild(mEditButton);
+	mCanvas->AddChild(mCreateButton);
 	mCanvas->AddChild(mSaveButton);
 	mCanvas->AddChild(mLoadButton);
 	mCanvas->AddChild(mModeText);
 
 	mWorld->SetCanvas(mCanvas);
 }
-void PEditorGame::OnNewButtonClicked()
+
+void PEditorGame::OnCreateButtonClicked()
 {
 	json JsonData = {
 		{ "Position", { 0, 0 }	   },
@@ -93,13 +85,6 @@ void PEditorGame::OnNewButtonClicked()
 		}
 	}
 	ConstructChunk(JsonData);
-}
-
-void PEditorGame::OnEditButtonClicked()
-{
-	bEditMode = !bEditMode;
-	const auto Text = bEditMode ? "Edit" : "View";
-	mModeText->SetText(Text);
 }
 
 void PEditorGame::OnSaveButtonClicked()

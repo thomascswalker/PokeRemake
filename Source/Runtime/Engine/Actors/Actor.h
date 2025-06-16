@@ -14,6 +14,8 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 
 class PActor : public PObject, public IDrawable
 {
+	void UpdateMouseState();
+
 protected:
 	FVector2 mPosition;
 	FVector2 mSize;

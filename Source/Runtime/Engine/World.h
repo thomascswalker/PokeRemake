@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Actors/Actor.h"
+#include "Actors/Character.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
 #include "Interface/Canvas.h"
@@ -28,7 +29,6 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
-	void ConstructChunks();
 
 	template <ENABLE_IF(PObject), typename... ArgsType>
 	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
@@ -128,6 +128,22 @@ public:
 	PCanvas* GetRootWidget() const { return mCanvas; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
+	PActor* GetCharacterAtPosition(const FVector2& Position) const
+	{
+		for (const auto& Actor : mActors)
+		{
+			// Skip actors that are not characters
+			if (!dynamic_cast<PCharacter*>(Actor.get()))
+			{
+				continue;
+			}
+			if (Actor->GetPosition() == Position)
+			{
+				return Actor.get();
+			}
+		}
+		return nullptr;
+	}
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

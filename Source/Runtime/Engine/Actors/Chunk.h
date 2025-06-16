@@ -1,23 +1,15 @@
 #pragma once
 
 #include "Actor.h"
+#include "Core/Json.h"
 #include "Engine/ClassRegistry.h"
 #include "Tile.h"
 
 using TileArray = std::vector<std::vector<int>>;
 
-struct SChunkData
-{
-	IRect		Geometry;
-	int			SizeX;
-	int			SizeY;
-	std::string TextureName;
-	TileArray	Data;
-};
-
 class PChunk : public PActor
 {
-	TileArray			mData{};
+	JSON				mData;
 	std::vector<PTile*> mTiles;
 	IRect				mGeometry;
 	std::string			mTextureName;
@@ -26,7 +18,6 @@ class PChunk : public PActor
 
 public:
 	PChunk() {}
-	PChunk(const SChunkData& Data);
 	PChunk(const json& JsonData);
 	~PChunk() override = default;
 	void				Start() override;

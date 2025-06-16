@@ -6,63 +6,53 @@
 #include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 
-PChunk::PChunk(const SChunkData& Data)
-	: mData(Data.Data), mSizeX(Data.SizeX), mSizeY(Data.SizeY), mTextureName(Data.TextureName)
-{
-	mPriority = DP_BACKGROUND;
-	bBlocking = false;
-	mPosition = FVector2(mSizeX * TILE_SIZE, mSizeY * TILE_SIZE);
-}
-
 PChunk::PChunk(const json& JsonData)
 {
 	LogDebug("Constructing Chunk from JSON data");
 	mPriority = DP_BACKGROUND;
 	bBlocking = false;
-
-	auto Position = JsonData["Position"];
-	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
-
-	mSizeX = JsonData["SizeX"].get<int>();
-	mSizeY = JsonData["SizeY"].get<int>();
-	mData = std::vector(mSizeX, std::vector(mSizeY, 0));
-
-	auto Tiles = JsonData["Tiles"];
-	for (const auto& T : Tiles)
-	{
-		auto X = T["Position"][0].get<int>();
-		auto Y = T["Position"][1].get<int>();
-		auto Type = T["Type"].get<int>();
-		mData[X][Y] = Type;
-	}
+	mData = JsonData;
 }
 
 void PChunk::Start()
 {
-	PTexture* T = nullptr;
+	mTextureName = mData.value("Texture", std::string());
+	PTexture* T = PTextureManager::Load(mTextureName);
 	if (!mTextureName.empty())
 	{
-		T = PTextureManager::Load(mTextureName);
-		mSprite.SetTexture(T);
+		if (!T)
+		{
+			LogWarning("Texture {} not found.", mTextureName.c_str());
+		}
+		else
+		{
+			mSprite.SetTexture(T);
+		}
 	}
 
 	auto W = GetWorld();
 
-	// Instantiate each tile in the grid
-	for (int X = 0; X < mSizeX; X++)
+	auto Position = mData.at("Position");
+	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
+
+	mSizeX = mData.at("SizeX").get<int>();
+	mSizeY = mData.at("SizeY").get<int>();
+
+	for (const auto& TileData : mData.at("Tiles"))
 	{
-		for (int Y = 0; Y < mSizeY; Y++)
-		{
-			const auto Tile = W->ConstructActor<PTile>(X, Y);
-			Tile->Chunk = this;
-			Tile->Type = static_cast<ETileType>(mData[Y][X]); // Access [Row][Column]
-			Tile->Texture = T;
-			mTiles.emplace_back(Tile);
-		}
+		LogDebug("Loading tile data");
+		auto Pos = TileData.at("Position");
+		auto X = Pos[0].get<int>();
+		auto Y = Pos[1].get<int>();
+		auto Tile = W->ConstructActor<PTile>(X, Y);
+		Tile->Type = static_cast<ETileType>(TileData.at("Type").get<int>());
+		Tile->Chunk = this;
+		Tile->Texture = T;
+		mTiles.emplace_back(Tile);
 	}
 
 #if _EDITOR
-	if (PEditorGame* EditorGame = dynamic_cast<PEditorGame*>(GetGame()))
+	if (auto EditorGame = dynamic_cast<PEditorGame*>(GetGame()))
 	{
 		EditorGame->AddChunk(this);
 	}

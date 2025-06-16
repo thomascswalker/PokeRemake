@@ -1,17 +1,22 @@
 #include "Actor.h"
 
-#include "Core/Logging.h"
-#include "Engine/ClassRegistry.h"
+#include "Engine/CameraView.h"
 
 void PActor::Tick(float DeltaTime)
 {
-#if _EDITOR
+	UpdateMouseState();
+}
+
+void PActor::UpdateMouseState()
+{
 	auto	   R = GetRenderer();
 	const auto MousePosition = R->GetMousePosition();
 	FVector2   ScreenPosition;
 	R->WorldToScreen(GetPosition(), &ScreenPosition);
 
-	FRect ScreenRect = { ScreenPosition.X, ScreenPosition.Y, HALF_TILE_SIZE, HALF_TILE_SIZE };
+	auto  CameraView = GetCameraView();
+	FRect ScreenRect = { ScreenPosition.X, ScreenPosition.Y, HALF_TILE_SIZE * CameraView->GetZoom(),
+						 HALF_TILE_SIZE * CameraView->GetZoom() };
 	bool  NewMouseState = ScreenRect.Contains(MousePosition);
 	if (!bMouseOver && NewMouseState)
 	{
@@ -34,7 +39,6 @@ void PActor::Tick(float DeltaTime)
 		Clicked.Broadcast(this);
 		bMouseDown = false;
 	}
-#endif
 }
 
 FVector2 PActor::GetDrawPosition() const

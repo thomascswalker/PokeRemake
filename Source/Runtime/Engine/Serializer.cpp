@@ -15,7 +15,6 @@ void PSerializer::Serialize(const PObject* Object)
 void PSerializer::Deserialize(const json& JsonData)
 {
 	auto World = GetWorld();
-	auto Inst = PClassRegistry::Instance();
 	for (const auto& ObjectData : JsonData["Objects"])
 	{
 		if (ObjectData.is_null())

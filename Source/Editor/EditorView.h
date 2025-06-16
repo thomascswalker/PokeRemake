@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Logging.h"
 #include "Engine/Actors/Actor.h"
 #include "Engine/Components/CameraComponent.h"
 
@@ -20,4 +21,11 @@ public:
 
 	void OnKeyDown(uint32_t KeyCode);
 	void OnKeyUp(uint32_t KeyCode);
+	void OnMouseScroll(float DeltaX)
+	{
+		if (mCameraComponent)
+		{
+			mCameraComponent->GetCameraView()->AddZoom(DeltaX);
+		}
+	}
 };

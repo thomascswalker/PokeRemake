@@ -4,6 +4,9 @@
 
 #include "Core/Matrix.h"
 
+constexpr float gMinZoom = 0.1f;
+constexpr float gMaxZoom = 2.0f;
+
 enum EViewMode
 {
 	VM_Perspective,
@@ -13,11 +16,14 @@ enum EViewMode
 class PCameraView
 {
 protected:
+	// 2D
+	FVector2 mPosition;
+	float	 mZoom = 1.0f;
+
+	// 3D
 	float	  mFOV = DEFAULT_FOV;
 	EViewMode mViewMode = VM_Orthographic;
-
-	FVector2 mPosition;
-	FVector2 mDirection;
+	FVector2  mDirection;
 
 public:
 	float	  GetFOV() const { return mFOV; }
@@ -34,6 +40,14 @@ public:
 #else
 		return mPosition;
 #endif
+	}
+
+	float GetZoom() const { return mZoom; }
+	void  SetZoom(float Zoom) { mZoom = Zoom; }
+	void  AddZoom(float Value)
+	{
+		float NewZoom = mZoom + Value * 0.1f;
+		mZoom = std::min(gMaxZoom, std::max(gMinZoom, NewZoom));
 	}
 
 	FMatrix GetViewMatrix() const

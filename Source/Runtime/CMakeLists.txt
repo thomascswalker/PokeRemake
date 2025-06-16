@@ -56,6 +56,8 @@ set(SOURCES
         Engine/Serializer.h
         Engine/Serializer.cpp
         Engine/ClassRegistry.h
+        Core/Json.h
+        Core/CoreFwd.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
