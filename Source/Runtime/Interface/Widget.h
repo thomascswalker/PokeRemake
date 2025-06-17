@@ -37,11 +37,17 @@ public:
 	float W = 0.0f;
 	float H = 0.0f;
 
-	explicit PWidget() = default;
+	PWidget() = default;
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
-	virtual void  Draw(const PRenderer* Renderer) const = 0;
+	virtual void Draw(const PRenderer* Renderer) const
+	{
+		for (const auto& Child : mChildren)
+		{
+			Child->Draw(Renderer);
+		}
+	}
 	void		  Tick(float DeltaTime) override {}
 	virtual FRect GetGeometry() const { return FRect{ X, Y, W, H }; }
 	virtual void  ProcessEvents(SWidgetEvent* Event) {}
@@ -70,7 +76,7 @@ public:
 		}
 	}
 	virtual std::vector<PWidget*> GetChildren() const { return mChildren; }
-	virtual void				  LayoutChildren() const {}
+	virtual void				  LayoutChildren() {}
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }

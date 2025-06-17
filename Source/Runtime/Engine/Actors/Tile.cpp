@@ -76,19 +76,6 @@ void PTile::Draw(const PRenderer* Renderer) const
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
 	Renderer->DrawRectAt(Dest, WorldPosition);
-
-#if _EDITOR
-	if (bSelected)
-	{
-		Renderer->SetDrawColor(255, 150, 0, 100);
-		Renderer->DrawFillRectAt(Dest, WorldPosition);
-	}
-	if (bMouseOver)
-	{
-		Renderer->SetDrawColor(255, 150, 0, 255);
-		Renderer->DrawRectAt(Dest, WorldPosition);
-	}
-#endif
 }
 
 PActor* PTile::GetActor() const

@@ -30,17 +30,17 @@ public:
 	void PreStart() override;
 	void Start() override;
 	void ConstructInterface();
+	void InitializeControls();
 
 	// Interface
 	void OnCreateButtonClicked();
-	void OnEditButtonClicked();
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
+	void OnKeyUp(uint32_t ScanCode);
 
 	// Scene
 	void AddChunk(PChunk* Chunk);
 	void SetCurrentChunk(PChunk* Chunk);
 	void ConstructChunk(const json& JsonData);
-	void DeselectAllTiles();
-	void SelectTile(PActor* Actor);
+	void ActorSelected(PActor* Actor);
 };

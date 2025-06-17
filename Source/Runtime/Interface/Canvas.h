@@ -9,7 +9,7 @@ public:
 	{
 		// GENERATE_OBJECT()
 	}
-	void LayoutChildren() const override { LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING); }
+	void LayoutChildren() override { LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING); }
 
 	void Draw(const PRenderer* Renderer) const override
 	{

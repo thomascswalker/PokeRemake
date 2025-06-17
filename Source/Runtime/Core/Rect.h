@@ -47,6 +47,20 @@ public:
 	bool operator!=(const TRect& Other) const { return !(*this == Other); }
 
 	std::string ToString() const { return std::format("[[{}, {}], [{}, {}]]", X, Y, W, H); }
+
+	void Expand(T Size)
+	{
+		X -= Size * 2;
+		Y -= Size * 2;
+		W += Size * 2;
+		H += Size * 2;
+	}
+	TRect Expanded(T Size) const
+	{
+		TRect Out = *this;
+		Out.Expand(Size);
+		return Out;
+	}
 };
 
 using FRect = TRect<float>;
