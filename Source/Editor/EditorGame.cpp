@@ -42,12 +42,18 @@ void PEditorGame::ConstructInterface()
 	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
 	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
 
+	auto Box = mWorld->ConstructWidget<PBox>();
+	Box->W = BUTTON_WIDTH * 2 + (WIDGET_SPACING * 2);
+	Box->H = BUTTON_HEIGHT + (WIDGET_SPACING * 2);
 	auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
 	SizeXSpinner->W = BUTTON_WIDTH;
 	SizeXSpinner->H = BUTTON_HEIGHT;
 	auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
 	SizeYSpinner->W = BUTTON_WIDTH;
 	SizeYSpinner->H = BUTTON_HEIGHT;
+	Box->SetLayoutMode(WL_Horizontal);
+	Box->AddChild(SizeXSpinner);
+	Box->AddChild(SizeYSpinner);
 
 	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
 	mSaveButton->W = BUTTON_WIDTH;
@@ -70,8 +76,7 @@ void PEditorGame::ConstructInterface()
 	mCanvas->X = 10;
 	mCanvas->Y = 10;
 	mCanvas->AddChild(mCreateButton);
-	mCanvas->AddChild(SizeXSpinner);
-	mCanvas->AddChild(SizeYSpinner);
+	mCanvas->AddChild(Box);
 	mCanvas->AddChild(mSaveButton);
 	mCanvas->AddChild(mLoadButton);
 	mCanvas->AddChild(mModeText);

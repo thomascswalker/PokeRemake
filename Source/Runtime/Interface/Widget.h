@@ -14,6 +14,12 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
+enum EWidgetLayoutMode
+{
+	WL_Horizontal,
+	WL_Vertical,
+};
+
 struct SWidgetEvent
 {
 	bool	 bConsumed = false; // Event was consumed by a widget
@@ -30,6 +36,8 @@ protected:
 	PWidget* mParent = nullptr;
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
+
+	EWidgetLayoutMode mLayoutMode = WL_Vertical; // Default layout mode is vertical
 
 public:
 	float X = 0.0f;
@@ -50,33 +58,22 @@ public:
 	}
 	void		  Tick(float DeltaTime) override {}
 	virtual FRect GetGeometry() const { return FRect{ X, Y, W, H }; }
-	virtual void  ProcessEvents(SWidgetEvent* Event) {}
+	virtual void  ProcessEvents(SWidgetEvent* Event);
 
 	PWidget* GetParent() const { return mParent; }
-	void	 SetParent(PWidget* Parent)
-	{
-		if (mParent)
-		{
-			mParent->RemoveChild(this);
-		}
-		mParent = Parent;
-	}
-	virtual void AddChild(PWidget* Child)
-	{
-		mChildren.push_back(Child);
-		Child->SetParent(this);
-	}
-	virtual void RemoveChild(PWidget* Child)
-	{
-		const auto it = std::ranges::remove(mChildren, Child).begin();
-		if (it != mChildren.end())
-		{
-			mChildren.erase(it);
-			Child->SetParent(nullptr);
-		}
-	}
+	void	 SetParent(PWidget* Parent);
+
+	// Children
+
+	virtual void				  AddChild(PWidget* Child);
+	virtual void				  RemoveChild(PWidget* Child);
 	virtual std::vector<PWidget*> GetChildren() const { return mChildren; }
-	virtual void				  LayoutChildren() {}
+
+	// Layout
+
+	virtual void	  LayoutChildren();
+	EWidgetLayoutMode GetLayoutMode() const { return mLayoutMode; }
+	void			  SetLayoutMode(EWidgetLayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }

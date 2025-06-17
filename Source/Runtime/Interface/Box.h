@@ -5,16 +5,11 @@
 class PBox : public PWidget
 {
 public:
-	void LayoutChildren() override
+	void Draw(const PRenderer* Renderer) const override
 	{
-		float CY = Y;
-		for (const auto& Child : mChildren)
-		{
-			Child->X = X + WIDGET_SPACING;
-			Child->Y = CY + WIDGET_SPACING;
-			CY += Child->H + WIDGET_SPACING;
-			Child->LayoutChildren();
-		}
-		Y += CY + WIDGET_SPACING;
+		FRect Rect = GetGeometry();
+		Renderer->SetDrawColor(255, 255, 255, 255); // White color
+		Renderer->DrawRect(Rect);
+		PWidget::Draw(Renderer);
 	}
 };
