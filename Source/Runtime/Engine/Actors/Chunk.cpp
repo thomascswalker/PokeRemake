@@ -40,7 +40,6 @@ void PChunk::Start()
 
 	for (const auto& TileData : mData.at("Tiles"))
 	{
-		LogDebug("Loading tile data");
 		auto Pos = TileData.at("Position");
 		auto X = Pos[0].get<int>();
 		auto Y = Pos[1].get<int>();
@@ -61,20 +60,34 @@ void PChunk::Start()
 
 void PChunk::Draw(const PRenderer* Renderer) const
 {
-	for (const auto& Tile : mTiles)
+	const FRect Dest = GetLocalBounds();
+
+#if _EDITOR
+	Renderer->SetDrawColor(255, 200, 0, 150);
+	if (bMouseOver)
 	{
-		Tile->Draw(Renderer);
+		constexpr float ExpandSize = 2.0f;
+		Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
+							 mPosition - FVector2(ExpandSize, ExpandSize));
 	}
+	if (bSelected)
+	{
+		Renderer->DrawFillRectAt(Dest, mPosition);
+	}
+#endif
+
+	Renderer->SetDrawColor(255, 255, 255, 128);
+	Renderer->DrawRectAt(Dest, mPosition);
 }
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return { 0, 0, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position)

@@ -42,8 +42,6 @@ protected:
 public:
 	explicit PSpinner() : mUpButton("^"), mDownButton("v")
 	{
-		GENERATE_OBJECT(Spinner);
-
 		mUpButton.W = WIDGET_HEIGHT;
 		mUpButton.H = WIDGET_HEIGHT / 2.0f;
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
@@ -81,7 +79,7 @@ public:
 		}
 	}
 
-	void LayoutChildren() const override
+	void LayoutChildren() override
 	{
 		LayoutVertical(mChildren, FVector2(X + W - WIDGET_HEIGHT, Y), 0.0f);
 	}

@@ -5,6 +5,8 @@
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
+#include "Interface/Box.h"
+#include "Interface/Spinner.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -23,6 +25,7 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
+	InitializeControls();
 }
 
 void PEditorGame::Start()
@@ -38,6 +41,13 @@ void PEditorGame::ConstructInterface()
 	mCreateButton->H = BUTTON_HEIGHT;
 	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
 	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
+
+	auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
+	SizeXSpinner->W = BUTTON_WIDTH;
+	SizeXSpinner->H = BUTTON_HEIGHT;
+	auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
+	SizeYSpinner->W = BUTTON_WIDTH;
+	SizeYSpinner->H = BUTTON_HEIGHT;
 
 	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
 	mSaveButton->W = BUTTON_WIDTH;
@@ -60,11 +70,21 @@ void PEditorGame::ConstructInterface()
 	mCanvas->X = 10;
 	mCanvas->Y = 10;
 	mCanvas->AddChild(mCreateButton);
+	mCanvas->AddChild(SizeXSpinner);
+	mCanvas->AddChild(SizeYSpinner);
 	mCanvas->AddChild(mSaveButton);
 	mCanvas->AddChild(mLoadButton);
 	mCanvas->AddChild(mModeText);
 
 	mWorld->SetCanvas(mCanvas);
+}
+
+void PEditorGame::InitializeControls()
+{
+	if (auto Input = GetInputManager())
+	{
+		Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
+	}
 }
 
 void PEditorGame::OnCreateButtonClicked()
@@ -123,29 +143,61 @@ void PEditorGame::OnLoadButtonClicked()
 	Serializer.Deserialize(JsonData);
 }
 
+void PEditorGame::OnKeyUp(uint32_t ScanCode)
+{
+	switch (ScanCode)
+	{
+		case SDLK_UP:
+			{
+				if (mCurrentChunk)
+				{
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
+											   - FVector2(0, TILE_SIZE));
+				}
+				break;
+			}
+		case SDLK_DOWN:
+			{
+				if (mCurrentChunk)
+				{
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
+											   + FVector2(0, TILE_SIZE));
+				}
+				break;
+			}
+		case SDLK_LEFT:
+			{
+				if (mCurrentChunk)
+				{
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
+											   - FVector2(TILE_SIZE, 0));
+				}
+				break;
+			}
+		case SDLK_RIGHT:
+			{
+				if (mCurrentChunk)
+				{
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
+											   + FVector2(TILE_SIZE, 0));
+				}
+				break;
+			}
+		default:
+			break;
+	}
+}
+
 void PEditorGame::AddChunk(PChunk* Chunk)
 {
 	mChunks.emplace_back(Chunk);
+	Chunk->Clicked.AddRaw(this, &PEditorGame::ActorSelected);
 	SetCurrentChunk(Chunk);
 }
 
 void PEditorGame::SetCurrentChunk(PChunk* Chunk)
 {
-	if (mCurrentChunk)
-	{
-		for (const auto& Tile : mCurrentChunk->GetTiles())
-		{
-			Tile->Clicked.RemoveAll();
-		}
-	}
-
 	mCurrentChunk = Chunk;
-
-	// Bind all tile clicks to SelectTile
-	for (const auto& Tile : mCurrentChunk->GetTiles())
-	{
-		Tile->Clicked.AddRaw(this, &PEditorGame::SelectTile);
-	}
 }
 
 void PEditorGame::ConstructChunk(const json& JsonData)
@@ -160,34 +212,20 @@ void PEditorGame::ConstructChunk(const json& JsonData)
 	AddChunk(Chunk);
 }
 
-void PEditorGame::DeselectAllTiles()
+void PEditorGame::ActorSelected(PActor* Actor)
 {
-	for (const auto& Chunk : mChunks)
+	if (auto Chunk = dynamic_cast<PChunk*>(Actor))
 	{
-		for (const auto& Tile : Chunk->GetTiles())
+		// Deselect all other chunks
+		for (auto C : mWorld->GetActorsOfType<PChunk>())
 		{
-			Tile->SetSelected(false);
+			if (C == Chunk)
+			{
+				continue; // Skip the currently selected chunk
+			}
+			C->SetSelected(false);
 		}
+
+		Chunk->GetSelected() ? SetCurrentChunk(Chunk) : SetCurrentChunk(nullptr);
 	}
-}
-
-void PEditorGame::SelectTile(PActor* Actor)
-{
-	const auto Tile = static_cast<PTile*>(Actor);
-
-	// Deselect tiles
-	if (GetInputManager()->IsCtrlDown())
-	{
-		Tile->SetSelected(false);
-		return;
-	}
-
-	// If shift is not pressed, deselect all tiles
-	if (!GetInputManager()->IsShiftDown())
-	{
-		DeselectAllTiles();
-	}
-
-	// Select the clicked tile. If shift is pressed, add tile to selection
-	Tile->SetSelected(true);
 }

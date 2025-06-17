@@ -9,15 +9,17 @@ void PActor::Tick(float DeltaTime)
 
 void PActor::UpdateMouseState()
 {
-	auto	   R = GetRenderer();
-	const auto MousePosition = R->GetMousePosition();
+	const auto Renderer = GetRenderer();
+	const auto MousePosition = Renderer->GetMousePosition();
 	FVector2   ScreenPosition;
-	R->WorldToScreen(GetPosition(), &ScreenPosition);
+	Renderer->WorldToScreen(GetPosition(), &ScreenPosition);
 
-	auto  CameraView = GetCameraView();
-	FRect ScreenRect = { ScreenPosition.X, ScreenPosition.Y, HALF_TILE_SIZE * CameraView->GetZoom(),
-						 HALF_TILE_SIZE * CameraView->GetZoom() };
-	bool  NewMouseState = ScreenRect.Contains(MousePosition);
+	auto	   CameraView = GetCameraView();
+	auto	   Rect = GetLocalBounds();
+	FRect	   ScreenRect = { ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
+							  Rect.H * CameraView->GetZoom() };
+	const bool NewMouseState = ScreenRect.Contains(MousePosition);
+
 	if (!bMouseOver && NewMouseState)
 	{
 		HoverBegin.Broadcast();
@@ -29,15 +31,16 @@ void PActor::UpdateMouseState()
 		bMouseOver = false;
 	}
 
-	bool NewClickState = R->GetMouseLeftDown();
+	bool NewClickState = Renderer->GetMouseLeftDown();
 	if (!bMouseDown && NewClickState && bMouseOver)
 	{
 		bMouseDown = true;
 	}
-	else if (bMouseDown && !NewClickState)
+	else if (bMouseDown && !NewClickState && bMouseOver)
 	{
-		Clicked.Broadcast(this);
+		bSelected = !bSelected; // Toggle selection on click
 		bMouseDown = false;
+		Clicked.Broadcast(this);
 	}
 }
 

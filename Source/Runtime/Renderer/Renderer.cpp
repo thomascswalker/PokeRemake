@@ -383,7 +383,7 @@ bool PRenderer::GetMouseLeftDown() const
 	return SDL_GetMouseState(nullptr, nullptr) == 1;
 }
 
-PActor* PRenderer::GetActorAtUnderMouse() const
+PActor* PRenderer::GetActorUnderMouse() const
 {
 	auto W = GetWorld();
 	for (const auto& Actor : W->GetActors())

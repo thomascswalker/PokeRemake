@@ -65,7 +65,7 @@ public:
 	FRect	 GetViewport() const;
 	FVector2 GetMousePosition() const;
 	bool	 GetMouseLeftDown() const;
-	PActor*	 GetActorAtUnderMouse() const;
+	PActor*	 GetActorUnderMouse() const;
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(Renderer)

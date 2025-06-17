@@ -35,10 +35,6 @@ struct STileData
 class PTile : public PActor
 {
 public:
-#if _EDITOR
-	bool bSelected = false;
-#endif
-
 	int32_t	  X;
 	int32_t	  Y;
 	ETileType Type = TT_Normal;
@@ -72,11 +68,6 @@ public:
 
 	json Serialize() const override;
 	void Deserialize(const json& Data) override;
-
-#if _EDITOR
-	void SetSelected(bool State) { bSelected = State; }
-	bool GetSelected() { return bSelected; }
-#endif
 };
 
 REGISTER_CLASS(PTile);

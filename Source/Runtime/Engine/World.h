@@ -71,16 +71,30 @@ public:
 		return Actors;
 	}
 
-	std::vector<IDrawable*> GetDrawables(EDrawPriority Priority) const
+	template <typename T>
+	std::vector<T*> GetActorsOfType() const
 	{
-		std::vector<IDrawable*> Drawables;
+		std::vector<T*> OutActors;
+		for (const auto& Actor : mActors)
+		{
+			if (auto TypedActor = dynamic_cast<T*>(Actor.get()))
+			{
+				OutActors.push_back(TypedActor);
+			}
+		}
+		return OutActors;
+	}
+
+	std::vector<PActor*> GetDrawables(EDrawPriority Priority) const
+	{
+		std::vector<PActor*> Drawables;
 		for (const auto& Actor : mActors)
 		{
 			if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
 			{
 				if (Drawable->GetPriority() == Priority)
 				{
-					Drawables.push_back(Drawable);
+					Drawables.push_back(Actor.get());
 				}
 			}
 		}

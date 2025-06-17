@@ -89,4 +89,13 @@ public:
 	virtual void OnHoverBegin() {}
 	virtual void OnHoverEnd() {}
 	virtual void OnClicked() {}
+
+#if _EDITOR
+protected:
+	bool bSelected = false;
+
+public:
+	void SetSelected(bool State) { bSelected = State; }
+	bool GetSelected() const { return bSelected; }
+#endif
 };
