@@ -37,44 +37,32 @@ void PEditorGame::Start()
 void PEditorGame::ConstructInterface()
 {
 	mCreateButton = mWorld->ConstructWidget<PButton>("Create");
-	mCreateButton->W = BUTTON_WIDTH;
-	mCreateButton->H = BUTTON_HEIGHT;
 	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
 	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
+	mCreateButton->SetResizeMode(RM_ExpandX);
 
 	auto Box = mWorld->ConstructWidget<PBox>();
-	Box->W = BUTTON_WIDTH * 2 + (WIDGET_SPACING * 2);
-	Box->H = BUTTON_HEIGHT + (WIDGET_SPACING * 2);
 	auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
-	SizeXSpinner->W = BUTTON_WIDTH;
-	SizeXSpinner->H = BUTTON_HEIGHT;
 	auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
-	SizeYSpinner->W = BUTTON_WIDTH;
-	SizeYSpinner->H = BUTTON_HEIGHT;
-	Box->SetLayoutMode(WL_Horizontal);
+	Box->SetResizeMode(RM_ExpandY);
+	Box->SetLayoutMode(LM_Horizontal);
 	Box->AddChild(SizeXSpinner);
 	Box->AddChild(SizeYSpinner);
 
 	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
-	mSaveButton->W = BUTTON_WIDTH;
-	mSaveButton->H = BUTTON_HEIGHT;
 	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
 	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
+	mSaveButton->SetResizeMode(RM_ExpandX);
 
 	mLoadButton = mWorld->ConstructWidget<PButton>("Load");
-	mLoadButton->W = BUTTON_WIDTH;
-	mLoadButton->H = BUTTON_HEIGHT;
 	mLoadButton->SetFontSize(WIDGET_FONT_SIZE);
 	mLoadButton->Clicked.AddRaw(this, &PEditorGame::OnLoadButtonClicked);
+	mLoadButton->SetResizeMode(RM_ExpandX);
 
 	mModeText = mWorld->ConstructWidget<PText>("View");
-	mModeText->W = BUTTON_WIDTH;
-	mModeText->H = BUTTON_HEIGHT;
 	mModeText->SetFontSize(WIDGET_FONT_SIZE);
 
 	mCanvas = mWorld->ConstructWidget<PCanvas>();
-	mCanvas->X = 10;
-	mCanvas->Y = 10;
 	mCanvas->AddChild(mCreateButton);
 	mCanvas->AddChild(Box);
 	mCanvas->AddChild(mSaveButton);

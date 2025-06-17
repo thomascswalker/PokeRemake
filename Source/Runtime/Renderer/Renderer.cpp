@@ -103,13 +103,20 @@ void PRenderer::Render() const
 
 		if (const auto Root = World->GetRootWidget())
 		{
+			// Resize the main root widget to fit the screen size
+			auto ScreenSize = GetScreenSize();
+			Root->W = ScreenSize.X;
+			Root->H = ScreenSize.Y;
+
+			// Recursively construct the layout of all widgets
+			Root->LayoutChildren();
+
+			// Once all widgets have been laid out, process
+			// recursively events for them.
 			SWidgetEvent Event;
 			Event.MousePosition = GetMousePosition();
 			Event.bMouseDown = GetMouseLeftDown();
 			Root->ProcessEvents(&Event);
-
-			// Recursively construct the layout of all widgets
-			Root->LayoutChildren();
 
 			// Recursively draw all widgets
 			Root->Draw(this);

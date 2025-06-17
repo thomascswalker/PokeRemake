@@ -14,10 +14,18 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
-enum EWidgetLayoutMode
+enum ELayoutMode
 {
-	WL_Horizontal,
-	WL_Vertical,
+	LM_Horizontal,
+	LM_Vertical,
+};
+
+enum EResizeMode
+{
+	RM_FixedXY,
+	RM_ExpandX,
+	RM_ExpandY,
+	RM_ExpandXY,
 };
 
 struct SWidgetEvent
@@ -37,7 +45,8 @@ protected:
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
 
-	EWidgetLayoutMode mLayoutMode = WL_Vertical; // Default layout mode is vertical
+	ELayoutMode mLayoutMode = LM_Vertical; // Default layout mode is vertical
+	EResizeMode mResizeMode = RM_ExpandXY;
 
 public:
 	float X = 0.0f;
@@ -71,9 +80,12 @@ public:
 
 	// Layout
 
-	virtual void	  LayoutChildren();
-	EWidgetLayoutMode GetLayoutMode() const { return mLayoutMode; }
-	void			  SetLayoutMode(EWidgetLayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
+	virtual void LayoutChildren();
+	ELayoutMode	 GetLayoutMode() const { return mLayoutMode; }
+	void		 SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
+
+	EResizeMode GetResizeMode() const { return mResizeMode; }
+	void		SetResizeMode(EResizeMode resizeMode) { mResizeMode = resizeMode; }
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }

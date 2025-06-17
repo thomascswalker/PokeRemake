@@ -22,6 +22,7 @@ protected:
 	float		 mValue = 0.0f;
 	ESpinnerMode mMode = SM_Integer;
 
+	PText	mText;
 	PButton mUpButton;
 	PButton mDownButton;
 
@@ -40,12 +41,16 @@ protected:
 	}
 
 public:
-	explicit PSpinner() : mUpButton("^"), mDownButton("v")
+	explicit PSpinner() : mUpButton("^"), mDownButton("v"), mText("0")
 	{
+
+
+		mUpButton.SetResizeMode(RM_FixedXY);
 		mUpButton.W = WIDGET_HEIGHT;
 		mUpButton.H = WIDGET_HEIGHT / 2.0f;
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
 
+		mDownButton.SetResizeMode(RM_FixedXY);
 		mDownButton.W = WIDGET_HEIGHT;
 		mDownButton.H = WIDGET_HEIGHT / 2.0f;
 		mDownButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedDownInternal);
@@ -78,18 +83,18 @@ public:
 			Child->Draw(Renderer);
 		}
 	}
-
-	void LayoutChildren() override
-	{
-		LayoutVertical(mChildren, FVector2(X + W - WIDGET_HEIGHT, Y), 0.0f);
-	}
-
-	void ProcessEvents(SWidgetEvent* Event) override
-	{
-		mSender = this;
-		for (const auto& Child : mChildren)
-		{
-			Child->ProcessEvents(Event);
-		}
-	}
+	//
+	// void LayoutChildren() override
+	// {
+	// 	LayoutVertical(mChildren, FVector2(X + W - WIDGET_HEIGHT, Y), 0.0f);
+	// }
+	//
+	// void ProcessEvents(SWidgetEvent* Event) override
+	// {
+	// 	mSender = this;
+	// 	for (const auto& Child : mChildren)
+	// 	{
+	// 		Child->ProcessEvents(Event);
+	// 	}
+	// }
 };

@@ -41,13 +41,26 @@ void PWidget::RemoveChild(PWidget* Child)
 
 void PWidget::LayoutChildren()
 {
-	switch (mLayoutMode)
+	switch (mResizeMode)
 	{
-		case WL_Horizontal:
-			LayoutHorizontal(mChildren, { X, Y }, WIDGET_SPACING);
+		case RM_FixedXY:
+			switch (mLayoutMode)
+			{
+				case LM_Horizontal:
+					LayoutHorizontal(mChildren, { X, Y }, WIDGET_SPACING);
+					break;
+				case LM_Vertical:
+					LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING);
+					break;
+			}
+		case RM_ExpandXY:
+			LayoutResizeXY(mChildren, GetGeometry(), WIDGET_SPACING);
 			break;
-		case WL_Vertical:
-			LayoutVertical(mChildren, { X, Y }, WIDGET_SPACING);
+		case RM_ExpandX:
+			LayoutResizeX(mChildren, GetGeometry(), WIDGET_SPACING);
+			break;
+		case RM_ExpandY:
+			LayoutResizeY(mChildren, GetGeometry(), WIDGET_SPACING);
 			break;
 	}
 }
