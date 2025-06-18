@@ -11,7 +11,8 @@ public:
 	explicit PText(const std::string& Text, float FontSize = 14.0f)
 		: mText(Text), mFontSize(FontSize)
 	{
-		// GENERATE_OBJECT(Text);
+		mResizeMode = RM_ExpandX;
+		H = WIDGET_HEIGHT;
 	}
 
 	void Draw(const PRenderer* Renderer) const override

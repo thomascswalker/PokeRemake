@@ -29,38 +29,68 @@ inline void LayoutHorizontal(const std::vector<PWidget*>& Widgets, const FVector
 	}
 }
 
-inline void LayoutResizeXY(const std::vector<PWidget*>& Widgets, const FRect& Rect, float Spacing)
+inline void Layout(const std::vector<PWidget*>& Widgets, const FRect& Rect, float Spacing,
+				   ELayoutMode LayoutMode, EResizeMode ResizeMode)
 {
-	FVector2 Available = { Rect.W - Spacing * 2, Rect.H - Spacing * 2 };
+	// Available size for the widgets to fit into
+	const FVector2 Available = { Rect.W, Rect.H };
 
+	float Width = 0.0f, Height = 0.0f;
 	float CX = Rect.X;
 	float CY = Rect.Y;
-	float W = Available.X / Widgets.size();
-	float H = Available.Y / Widgets.size();
+
+	const int Count = Widgets.size();
+
+	// Depending on the layout mode of the parent widget, calculate the desired size for
+	// each child widget.
+	switch (LayoutMode)
+	{
+		case LM_Horizontal:
+			Width = Count == 0 ? Available.X : Available.X / Count;
+			Height = Available.Y;
+			break;
+		case LM_Vertical:
+			Width = Available.X;
+			Height = Count == 0 ? Available.Y : Available.Y / Count;
+			break;
+	}
 
 	for (const auto& Child : Widgets)
 	{
+		// Set the current child's position to the current position with spacing
 		Child->X = CX + Spacing;
 		Child->Y = CY + Spacing;
 
+		// Depending on the child's resize mode, set the width and/or height to the expanded
+		// width/height minus the spacing.
 		switch (Child->GetResizeMode())
 		{
 			case RM_FixedXY:
 				break;
 			case RM_ExpandX:
-				Child->W = W - Spacing * 2;
+				Child->W = Width - Spacing * 2.0f;
 				break;
 			case RM_ExpandY:
-				Child->H = H - Spacing * 2;
+				Child->H = Height - Spacing * 2.0f;
 				break;
 			case RM_ExpandXY:
-				Child->W = W - Spacing * 2;
-				Child->H = H - Spacing * 2;
+				Child->W = Width - Spacing * 2.0f;
+				Child->H = Height - Spacing * 2.0f;
+				break;
 		}
 
-		// TODO: Something's wrong with the spacing
-		CX += Child->W + Spacing;
-		CY += Child->H + Spacing;
+		// Depending on the layout mode of the parent widget, update the current position
+		// given the new width/height of the child and spacing.
+		switch (LayoutMode)
+		{
+			case LM_Horizontal:
+				CX += Child->W + Spacing;
+				break;
+			case LM_Vertical:
+				CY += Child->H + Spacing;
+				break;
+		}
+
 		Child->LayoutChildren();
 	}
 }

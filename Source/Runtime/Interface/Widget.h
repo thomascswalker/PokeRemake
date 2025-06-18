@@ -48,6 +48,8 @@ protected:
 	ELayoutMode mLayoutMode = LM_Vertical; // Default layout mode is vertical
 	EResizeMode mResizeMode = RM_ExpandXY;
 
+	FVector2 mDesiredSize = { 0.0f, 0.0f };
+
 public:
 	float X = 0.0f;
 	float Y = 0.0f;
@@ -86,6 +88,11 @@ public:
 
 	EResizeMode GetResizeMode() const { return mResizeMode; }
 	void		SetResizeMode(EResizeMode resizeMode) { mResizeMode = resizeMode; }
+
+	FVector2 GetDesiredSize() const { return mDesiredSize; }
+	void	 SetDesiredSize(const FVector2& Size) { mDesiredSize = Size; }
+	void	 SetDesiredWidth(float W) { mDesiredSize.X = W; }
+	void	 SetDesiredHeight(float H) { mDesiredSize.Y = H; }
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }

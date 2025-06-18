@@ -19,7 +19,6 @@ class PEditorGame : public PGame
 	PButton* mEditButton;
 	PButton* mSaveButton;
 	PButton* mLoadButton;
-	PText*	 mModeText;
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
