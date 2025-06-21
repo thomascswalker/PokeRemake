@@ -17,7 +17,8 @@ public:
 	explicit PButton(const std::string& Label) : mText(Label)
 	{
 		PWidget::AddChild(&mText);
-		// GENERATE_OBJECT(Button);
+		mResizeMode = RM_ExpandX;
+		H = WIDGET_HEIGHT;
 	}
 
 	void Draw(const PRenderer* Renderer) const override

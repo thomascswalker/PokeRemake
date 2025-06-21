@@ -14,6 +14,20 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
+enum ELayoutMode
+{
+	LM_Horizontal,
+	LM_Vertical,
+};
+
+enum EResizeMode
+{
+	RM_FixedXY,
+	RM_ExpandX,
+	RM_ExpandY,
+	RM_ExpandXY,
+};
+
 struct SWidgetEvent
 {
 	bool	 bConsumed = false; // Event was consumed by a widget
@@ -30,6 +44,11 @@ protected:
 	PWidget* mParent = nullptr;
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
+
+	ELayoutMode mLayoutMode = LM_Vertical; // Default layout mode is vertical
+	EResizeMode mResizeMode = RM_ExpandXY;
+
+	FVector2 mDesiredSize = { 0.0f, 0.0f };
 
 public:
 	float X = 0.0f;
@@ -50,33 +69,30 @@ public:
 	}
 	void		  Tick(float DeltaTime) override {}
 	virtual FRect GetGeometry() const { return FRect{ X, Y, W, H }; }
-	virtual void  ProcessEvents(SWidgetEvent* Event) {}
+	virtual void  ProcessEvents(SWidgetEvent* Event);
 
 	PWidget* GetParent() const { return mParent; }
-	void	 SetParent(PWidget* Parent)
-	{
-		if (mParent)
-		{
-			mParent->RemoveChild(this);
-		}
-		mParent = Parent;
-	}
-	virtual void AddChild(PWidget* Child)
-	{
-		mChildren.push_back(Child);
-		Child->SetParent(this);
-	}
-	virtual void RemoveChild(PWidget* Child)
-	{
-		const auto it = std::ranges::remove(mChildren, Child).begin();
-		if (it != mChildren.end())
-		{
-			mChildren.erase(it);
-			Child->SetParent(nullptr);
-		}
-	}
+	void	 SetParent(PWidget* Parent);
+
+	// Children
+
+	virtual void				  AddChild(PWidget* Child);
+	virtual void				  RemoveChild(PWidget* Child);
 	virtual std::vector<PWidget*> GetChildren() const { return mChildren; }
-	virtual void				  LayoutChildren() {}
+
+	// Layout
+
+	virtual void LayoutChildren();
+	ELayoutMode	 GetLayoutMode() const { return mLayoutMode; }
+	void		 SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
+
+	EResizeMode GetResizeMode() const { return mResizeMode; }
+	void		SetResizeMode(EResizeMode resizeMode) { mResizeMode = resizeMode; }
+
+	FVector2 GetDesiredSize() const { return mDesiredSize; }
+	void	 SetDesiredSize(const FVector2& Size) { mDesiredSize = Size; }
+	void	 SetDesiredWidth(float W) { mDesiredSize.X = W; }
+	void	 SetDesiredHeight(float H) { mDesiredSize.Y = H; }
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }
