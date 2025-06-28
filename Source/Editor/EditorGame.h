@@ -3,7 +3,6 @@
 #include "Engine/Game.h"
 #include "Interface/Button.h"
 #include "Interface/Canvas.h"
-#include "Interface/Text.h"
 
 constexpr int BUTTON_WIDTH = 50;
 constexpr int BUTTON_HEIGHT = 20;
@@ -11,14 +10,6 @@ constexpr int BUTTON_HEIGHT = 20;
 class PEditorGame : public PGame
 {
 	bool bEditMode = false;
-
-	// Widgets
-
-	PCanvas* mCanvas;
-	PButton* mCreateButton;
-	PButton* mEditButton;
-	PButton* mSaveButton;
-	PButton* mLoadButton;
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;

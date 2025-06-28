@@ -26,12 +26,12 @@ BraceWrapping:
   BeforeElse: true
   BeforeWhile: true
   IndentBraces: false
-BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBinaryOperators: All
 BreakBeforeBraces: Custom
 BreakInheritanceList: AfterColon
 BreakBeforeTernaryOperators: true
 BreakStringLiterals: false
-ColumnLimit: 100
+ColumnLimit: 0
 Cpp11BracedListStyle: false
 EmptyLineBeforeAccessModifier: LogicalBlock
 IndentCaseBlocks: true

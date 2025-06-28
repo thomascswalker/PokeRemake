@@ -36,40 +36,36 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	auto Box = mWorld->ConstructWidget<PBox>();
+	const auto Box = mWorld->ConstructWidget<PBox>();
 	Box->SetResizeMode(RM_ExpandY);
 	Box->W = 100;
 
-	mCreateButton = mWorld->ConstructWidget<PButton>("Create");
-	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
-	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
+	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
-	auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
-	auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
 
-	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
-	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
-	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
+	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
+	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
 
-	mLoadButton = mWorld->ConstructWidget<PButton>("Load");
-	mLoadButton->SetFontSize(WIDGET_FONT_SIZE);
-	mLoadButton->Clicked.AddRaw(this, &PEditorGame::OnLoadButtonClicked);
+	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
+	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
 
-	Box->AddChild(mCreateButton);
+	Box->AddChild(CreateButton);
 	Box->AddChild(SizeXSpinner);
 	Box->AddChild(SizeYSpinner);
-	Box->AddChild(mSaveButton);
-	Box->AddChild(mLoadButton);
+	Box->AddChild(SaveButton);
+	Box->AddChild(LoadButton);
 
-	mCanvas = mWorld->ConstructWidget<PCanvas>();
-	mCanvas->AddChild(Box);
+	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
+	MainCanvas->AddChild(Box);
 
-	mWorld->SetCanvas(mCanvas);
+	mWorld->SetCanvas(MainCanvas);
 }
 
 void PEditorGame::InitializeControls()
 {
-	if (auto Input = GetInputManager())
+	if (const auto Input = GetInputManager())
 	{
 		Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
 	}
@@ -99,7 +95,7 @@ void PEditorGame::OnSaveButtonClicked()
 {
 	PSerializer Serializer;
 
-	for (auto Actor : mWorld->GetActors())
+	for (const auto Actor : mWorld->GetActors())
 	{
 		Serializer.Serialize(Actor);
 	}
@@ -127,7 +123,7 @@ void PEditorGame::OnLoadButtonClicked()
 		return;
 	}
 
-	json JsonData = json::parse(Data.data());
+	const json JsonData = json::parse(Data.data());
 	Serializer.Deserialize(JsonData);
 }
 
@@ -139,8 +135,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   - FVector2(0, TILE_SIZE));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(0, TILE_SIZE));
 				}
 				break;
 			}
@@ -148,8 +143,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   + FVector2(0, TILE_SIZE));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(0, TILE_SIZE));
 				}
 				break;
 			}
@@ -157,8 +151,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   - FVector2(TILE_SIZE, 0));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(TILE_SIZE, 0));
 				}
 				break;
 			}
@@ -166,8 +159,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   + FVector2(TILE_SIZE, 0));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(TILE_SIZE, 0));
 				}
 				break;
 			}
@@ -202,10 +194,10 @@ void PEditorGame::ConstructChunk(const json& JsonData)
 
 void PEditorGame::ActorSelected(PActor* Actor)
 {
-	if (auto Chunk = dynamic_cast<PChunk*>(Actor))
+	if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
 	{
 		// Deselect all other chunks
-		for (auto C : mWorld->GetActorsOfType<PChunk>())
+		for (const auto C : mWorld->GetActorsOfType<PChunk>())
 		{
 			if (C == Chunk)
 			{

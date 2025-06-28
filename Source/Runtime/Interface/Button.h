@@ -6,6 +6,30 @@
 
 DECLARE_MULTICAST_DELEGATE(DButtonClicked);
 
+template <typename T>
+struct SButtonClickedParams
+{
+	T* Sender;
+	void (T::*Delegate)();
+
+	SButtonClickedParams() : Sender(nullptr), Delegate(nullptr) {}
+	SButtonClickedParams(T* Sender, void (T::*Delegate)()) : Sender(Sender), Delegate(Delegate) {}
+	SButtonClickedParams(std::initializer_list<void*> init)
+	{
+		auto it = init.begin();
+		if (init.size() == 2)
+		{
+			Sender = static_cast<T*>(*it);
+			Delegate = reinterpret_cast<void (T::*)()>(*(it + 1));
+		}
+	}
+};
+
+struct SButtonClickedStaticParams
+{
+	void (*Delegate)();
+};
+
 class PButton : public PWidget
 {
 	PText mText;
@@ -14,11 +38,28 @@ class PButton : public PWidget
 public:
 	DButtonClicked Clicked;
 
-	explicit PButton(const std::string& Label) : mText(Label)
+	PButton(const std::string& Label) : mText(Label)
 	{
 		PWidget::AddChild(&mText);
 		mResizeMode = RM_ExpandX;
 		H = WIDGET_HEIGHT;
+	}
+
+	PButton(const std::string& Label, void (*Delegate)()) : mText(Label)
+	{
+		PWidget::AddChild(&mText);
+		mResizeMode = RM_ExpandX;
+		H = WIDGET_HEIGHT;
+		Clicked.AddStatic(Delegate);
+	}
+
+	template <typename T>
+	PButton(const std::string& Label, T* Sender, void (T::*Delegate)()) : mText(Label)
+	{
+		PWidget::AddChild(&mText);
+		mResizeMode = RM_ExpandX;
+		H = WIDGET_HEIGHT;
+		Clicked.AddRaw(Sender, Delegate);
 	}
 
 	void Draw(const PRenderer* Renderer) const override
