@@ -74,9 +74,8 @@ void PRenderer::LoadFont(const std::string& Name) const
 
 	free(Bitmap);
 	free(FontBuffer);
-	gCurrentFont.Texture =
-		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
-						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	gCurrentFont.Texture = SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+											 FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
 					  FONT_ATLAS_SIZE * sizeof(uint32_t));
@@ -235,7 +234,7 @@ void PRenderer::DrawGrid() const
 	}
 }
 
-void PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
+float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
 {
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
@@ -253,6 +252,8 @@ void PRenderer::DrawText(const std::string& Text, const FVector2& Position, floa
 		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
 	}
+
+	return Width;
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const

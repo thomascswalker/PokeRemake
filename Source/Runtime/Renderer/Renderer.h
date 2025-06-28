@@ -43,8 +43,8 @@ public:
 	void DrawRect(const FRect& Rect) const;
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
-	void DrawGrid() const;
-	void DrawText(const std::string& Text, const FVector2& Position, float FontSize) const;
+	void  DrawGrid() const;
+	float DrawText(const std::string& Text, const FVector2& Position, float FontSize) const;
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;

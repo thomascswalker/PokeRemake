@@ -59,6 +59,7 @@ set(SOURCES
         Core/Json.h
         Core/CoreFwd.h
         Interface/Box.h
+        Interface/Group.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

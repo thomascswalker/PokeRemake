@@ -30,8 +30,8 @@ constexpr float DEFAULT_CHAR_SPEED = RENDER_SCALE / 4.0f * GLOBAL_SPEED_MULTIPLI
 // This is kind of arbitrary for now and is simply based on what looks best visually.
 constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE * 1.50f / GLOBAL_SPEED_MULTIPLIER;
 
-constexpr int	FONT_ATLAS_SIZE = 1024;
-constexpr int	FONT_CHAR_COUNT = 96;			// ASCII 32..126
-constexpr int	FONT_CHAR_START = 32;			// ASCII 32 is the first printable character
-constexpr float FONT_ATLAS_BAKE_SCALE = 120.0f; // Font size in pixels
-constexpr float FONT_RENDER_SCALE = 16.0f;		// Scale for rendering text
+constexpr int	FONT_ATLAS_SIZE = 512;
+constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126
+constexpr int	FONT_CHAR_START = 32;		   // ASCII 32 is the first printable character
+constexpr float FONT_ATLAS_BAKE_SCALE = 32.0f; // Font size in pixels
+constexpr float FONT_RENDER_SCALE = 16.0f;	   // Scale for rendering text

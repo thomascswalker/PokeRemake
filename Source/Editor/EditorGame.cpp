@@ -6,6 +6,7 @@
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
 #include "Interface/Box.h"
+#include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
 #define NEW_GRID_SIZE 5
@@ -40,10 +41,12 @@ void PEditorGame::ConstructInterface()
 	Box->SetResizeMode(RM_ExpandY);
 	Box->W = 100;
 
+	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
+
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
 
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
@@ -51,11 +54,13 @@ void PEditorGame::ConstructInterface()
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
 	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
 
-	Box->AddChild(CreateButton);
-	Box->AddChild(SizeXSpinner);
-	Box->AddChild(SizeYSpinner);
-	Box->AddChild(SaveButton);
-	Box->AddChild(LoadButton);
+	FileGroup->AddChild(CreateButton);
+	FileGroup->AddChild(SizeXSpinner);
+	FileGroup->AddChild(SizeYSpinner);
+	FileGroup->AddChild(SaveButton);
+	FileGroup->AddChild(LoadButton);
+
+	Box->AddChild(FileGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(Box);
