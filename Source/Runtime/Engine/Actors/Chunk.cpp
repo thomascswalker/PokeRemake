@@ -15,6 +15,14 @@ PChunk::PChunk(const json& JsonData)
 	bBlocking = false;
 	mData = JsonData;
 }
+PChunk::~PChunk()
+{
+	auto W = GetWorld();
+	for (auto Tile : mTiles)
+	{
+		W->DestroyActor(Tile);
+	}
+}
 
 void PChunk::Start()
 {

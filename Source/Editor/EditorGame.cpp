@@ -31,7 +31,6 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
-	InitializeControls();
 }
 
 void PEditorGame::Start()
@@ -99,11 +98,6 @@ void PEditorGame::ConstructInterface()
 	mWorld->SetCanvas(MainCanvas);
 }
 
-void PEditorGame::InitializeControls()
-{
-	AddInputContext(IC_Move);
-}
-
 void PEditorGame::AddInputContext(uint8_t InputContext)
 {
 	mInputContext |= InputContext;
@@ -111,13 +105,11 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 	const auto Input = GetInputManager();
 	switch (InputContext)
 	{
-		case IC_Move:
-			break;
 		case IC_Select:
-			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnMove);
+			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
 		case IC_Tile:
-			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnSetTileType);
+			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpTile);
 			break;
 		default:
 			break;
@@ -130,8 +122,6 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 	const auto Input = GetInputManager();
 	switch (InputContext)
 	{
-		case IC_Move:
-			break;
 		case IC_Select:
 			Input->KeyUp.Remove(mSelectDelegate);
 			if (mCurrentChunk)
@@ -215,7 +205,7 @@ void PEditorGame::OnTileButtonChecked(bool State)
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
-void PEditorGame::OnSetTileType(uint32_t ScanCode)
+void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
 {
 	const auto HoverTile = GetActorUnderMouse<PTile>();
 	if (!HoverTile)
@@ -247,7 +237,7 @@ void PEditorGame::OnSetTileType(uint32_t ScanCode)
 	}
 }
 
-void PEditorGame::OnMove(uint32_t ScanCode)
+void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 {
 	if (!mCurrentChunk)
 	{
@@ -268,6 +258,18 @@ void PEditorGame::OnMove(uint32_t ScanCode)
 		case SDLK_RIGHT:
 			Offset = FVector2(TILE_SIZE, 0);
 			break;
+		case SDLK_DELETE:
+			// ReSharper disable once CppDFAConstantConditions
+			if (mCurrentChunk)
+			{
+				// Remove the chunk from the list of chunks
+				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
+				// Destroy the chunk actor
+				GetWorld()->DestroyActor(mCurrentChunk);
+				// Set the current chunk to null
+				mCurrentChunk = nullptr;
+			}
+			return;
 		default:
 			break;
 	}

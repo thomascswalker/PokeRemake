@@ -12,7 +12,6 @@ constexpr int BUTTON_HEIGHT = 20;
 enum EInputContext : uint8_t
 {
 	IC_None = 1U << 0,
-	IC_Move = 1U << 1,
 	IC_Select = 1U << 2,
 	IC_Tile = 1U << 3,
 };
@@ -49,15 +48,18 @@ public:
 	void PreStart() override;
 	void Start() override;
 	void ConstructInterface();
-	void InitializeControls();
+
+	// Input
 
 	uint8_t GetInputContext() { return mInputContext; }
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
+	void	OnKeyUpSelect(uint32_t ScanCode);
+	void	OnKeyUpTile(uint32_t ScanCode);
 
 	// Interface
-	void OnMove(uint32_t ScanCode);
+
 	void OnCreateButtonClicked();
 	void OnSizeXChanged(float Value) { mNewGridSizeX = Value; }
 	void OnSizeYChanged(float Value) { mNewGridSizeY = Value; }
@@ -65,7 +67,6 @@ public:
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
-	void OnSetTileType(uint32_t ScanCode);
 
 	// Scene
 	void AddChunk(PChunk* Chunk);
