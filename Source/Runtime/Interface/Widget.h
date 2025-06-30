@@ -2,7 +2,8 @@
 
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
-#include <algorithm>
+#include <initializer_list>
+#include <limits>
 
 #define WIDGET_TEXT 255, 255, 255, 255
 #define WIDGET_LIGHT 150, 150, 150, 255
@@ -26,6 +27,7 @@ enum EResizeMode
 	RM_ExpandX,
 	RM_ExpandY,
 	RM_ExpandXY,
+	RM_FitContent,
 };
 
 struct SWidgetEvent
@@ -34,6 +36,29 @@ struct SWidgetEvent
 	bool	 bMouseDown;
 	FVector2 MousePosition;
 };
+
+template <typename T>
+struct TPadding
+{
+	T Left;
+	T Bottom;
+	T Right;
+	T Top;
+
+	explicit TPadding(T Value)
+		: Left(Value), Bottom(Value), Right(Value), Top(Value) {}
+	explicit TPadding(T InLeft, T InBottom, T InRight, T InTop)
+		: Left(InLeft), Bottom(InBottom), Right(InRight), Top(InTop) {}
+	TPadding(std::initializer_list<T> Values)
+	{
+		T* P = &Left;
+		for (auto it = Values.begin(); it != Values.end(); ++it)
+		{
+			*P++ = *it;
+		}
+	}
+};
+using FPadding = TPadding<float>;
 
 class PWidget : public PObject
 {
@@ -49,6 +74,7 @@ protected:
 	EResizeMode mResizeMode = RM_ExpandXY;
 
 	FVector2 mDesiredSize = { 0.0f, 0.0f };
+	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
 public:
 	float X = 0.0f;
@@ -56,7 +82,10 @@ public:
 	float W = 0.0f;
 	float H = 0.0f;
 
-	PWidget() = default;
+	FPadding Padding;
+
+	PWidget()
+		: Padding(5.0f) {}
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
@@ -68,7 +97,7 @@ public:
 		}
 	}
 	void		  Tick(float DeltaTime) override {}
-	virtual FRect GetGeometry() const { return FRect{ X, Y, W, H }; }
+	virtual FRect GetGeometry() const { return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) }; }
 	virtual void  ProcessEvents(SWidgetEvent* Event);
 
 	PWidget* GetParent() const { return mParent; }
@@ -93,6 +122,11 @@ public:
 	void	 SetDesiredSize(const FVector2& Size) { mDesiredSize = Size; }
 	void	 SetDesiredWidth(float W) { mDesiredSize.X = W; }
 	void	 SetDesiredHeight(float H) { mDesiredSize.Y = H; }
+
+	FVector2 GetMaxSize() const { return mMaxSize; }
+	void	 SetMaxSize(const FVector2& MaxSize) { mMaxSize = MaxSize; }
+	void	 SetMaxWidth(float W) { mMaxSize.X = W; }
+	void	 SetMaxHeight(float H) { mMaxSize.Y = H; }
 
 	// Returns a pointer to the widget that sent the event.
 	static PWidget* GetSender() { return mSender; }

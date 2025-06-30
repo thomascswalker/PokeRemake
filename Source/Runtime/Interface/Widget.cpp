@@ -16,6 +16,7 @@ void PWidget::ProcessEvents(SWidgetEvent* Event)
 		Child->ProcessEvents(Event);
 	}
 }
+
 void PWidget::SetParent(PWidget* Parent)
 {
 	if (mParent)
@@ -24,11 +25,13 @@ void PWidget::SetParent(PWidget* Parent)
 	}
 	mParent = Parent;
 }
+
 void PWidget::AddChild(PWidget* Child)
 {
 	mChildren.push_back(Child);
 	Child->SetParent(this);
 }
+
 void PWidget::RemoveChild(PWidget* Child)
 {
 	const auto it = std::ranges::remove(mChildren, Child).begin();
@@ -41,5 +44,5 @@ void PWidget::RemoveChild(PWidget* Child)
 
 void PWidget::LayoutChildren()
 {
-	Layout(mChildren, GetGeometry(), WIDGET_SPACING, mLayoutMode, mResizeMode);
+	Layout(this, mChildren, GetGeometry(), mLayoutMode);
 }

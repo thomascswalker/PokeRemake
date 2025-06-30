@@ -38,10 +38,13 @@ void PEditorGame::Start()
 void PEditorGame::ConstructInterface()
 {
 	const auto Box = mWorld->ConstructWidget<PBox>();
-	Box->SetResizeMode(RM_ExpandY);
-	Box->W = 100;
+	Box->SetLayoutMode(LM_Vertical);
+	Box->SetMaxWidth(120.0f);
+
+	// Files
 
 	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
+	FileGroup->SetMaxWidth(100.0f);
 
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
@@ -60,7 +63,19 @@ void PEditorGame::ConstructInterface()
 	FileGroup->AddChild(SaveButton);
 	FileGroup->AddChild(LoadButton);
 
+	// Edit
+
+	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
+	EditGroup->SetMaxWidth(100.0f);
+
+	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select");
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile");
+
+	EditGroup->AddChild(EditModeSelect);
+	EditGroup->AddChild(EditModeTile);
+
 	Box->AddChild(FileGroup);
+	Box->AddChild(EditGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(Box);

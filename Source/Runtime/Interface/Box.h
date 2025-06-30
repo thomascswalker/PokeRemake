@@ -5,7 +5,7 @@
 class PBox : public PWidget
 {
 public:
-	PBox() { mResizeMode = RM_ExpandXY; }
+	PBox() { mResizeMode = RM_FitContent; }
 
 	void Draw(const PRenderer* Renderer) const override
 	{
