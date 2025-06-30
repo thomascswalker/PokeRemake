@@ -2,9 +2,6 @@
 
 #include "Core/Logging.h"
 #include "Core/Matrix.h"
-#include "glm/ext.hpp"
-#include "glm/glm.hpp"
-#include "glm/gtx/string_cast.hpp"
 #include "gtest/gtest.h"
 
 #define FLOAT_THRESHOLD 0.001f

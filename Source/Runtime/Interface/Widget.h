@@ -32,8 +32,8 @@ enum EResizeMode
 
 struct SWidgetEvent
 {
-	bool	 bConsumed = false; // Event was consumed by a widget
-	bool	 bMouseDown;
+	bool	 Consumed = false; // Event was consumed by a widget
+	bool	 MouseDown;
 	FVector2 MousePosition;
 };
 

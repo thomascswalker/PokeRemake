@@ -9,7 +9,7 @@ void PWidget::ProcessEvents(SWidgetEvent* Event)
 	mSender = this;
 	for (const auto& Child : mChildren)
 	{
-		if (Event->bConsumed)
+		if (Event->Consumed)
 		{
 			return;
 		}

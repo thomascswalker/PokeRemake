@@ -9,7 +9,7 @@
 #include "Engine/Texture.h"
 #include "Engine/World.h"
 
-std::string	 gDefaultFont = "Roboto-Regular"; // Default font name
+std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
 bool PRenderer::Initialize() const
@@ -85,7 +85,8 @@ void PRenderer::UnloadFonts() {}
 
 void PRenderer::Render() const
 {
-	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
+	auto BGColor = PColor::UIBackground;
+	SDL_SetRenderDrawColor(mContext->Renderer, BGColor.R, BGColor.G, BGColor.B, 255);
 	SDL_RenderClear(mContext->Renderer);
 
 	// Draw all renderables in the world
@@ -114,7 +115,7 @@ void PRenderer::Render() const
 			// recursively events for them.
 			SWidgetEvent Event;
 			Event.MousePosition = GetMousePosition();
-			Event.bMouseDown = GetMouseLeftDown();
+			Event.MouseDown = GetMouseLeftDown();
 			Root->ProcessEvents(&Event);
 
 			// Recursively draw all widgets
@@ -152,6 +153,10 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 	{
 		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
 	}
+}
+void PRenderer::SetDrawColor(const PColor& Color) const
+{
+	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
 }
 
 void PRenderer::DrawPoint(const FVector2& V, float Thickness) const

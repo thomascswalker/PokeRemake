@@ -71,11 +71,11 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		// Background
-		Renderer->SetDrawColor(WIDGET_DARK);
+		Renderer->SetDrawColor(PColor::UIBackground);
 		Renderer->DrawFillRect(GetGeometry());
 
 		// Outline
-		Renderer->SetDrawColor(WIDGET_LIGHT);
+		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(GetGeometry());
 
 		for (const auto& Child : mChildren)

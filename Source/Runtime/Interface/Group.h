@@ -22,7 +22,7 @@ public:
 		float X1 = Rect.X + Rect.W;
 		float Y1 = Rect.Y + Rect.H;
 
-		Renderer->SetDrawColor(128, 128, 128, 255); // White color
+		Renderer->SetDrawColor(PColor::UIBorder);
 
 		Renderer->DrawLine(X0, Y0, X0, Y1); // Left
 		Renderer->DrawLine(X0, Y1, X1, Y1); // Bottom
@@ -30,8 +30,12 @@ public:
 
 		float TextPadding = 5;
 		float TextX = X0 + TextPadding;
-		Renderer->DrawLine(X0, Y0, TextX, Y0); // Top
+
+		Renderer->SetDrawColor(PColor::UIText);
 		float Width = Renderer->DrawText(mLabel, { TextX + (TextPadding * 3), Y0 }, 14.0f);
+
+		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->DrawLine(X0, Y0, TextX, Y0); // Top
 		Renderer->DrawLine(TextX + Width + TextPadding, Y0, X1, Y0);
 
 		PWidget::Draw(Renderer);
