@@ -45,17 +45,17 @@ public:
 		// Clicked
 		if (mMouseDown)
 		{
-			Renderer->SetDrawColor(PColor::UIPrimaryClicked);
+			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
 		}
 		// Hovered
 		else if (Rect.Contains(Renderer->GetMousePosition()))
 		{
-			Renderer->SetDrawColor(PColor::UIPrimaryHover);
+			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
 		}
 		// Normal
 		else
 		{
-			Renderer->SetDrawColor(PColor::UIPrimary);
+			Renderer->SetDrawColor(mChecked ? PColor::UISecondary : PColor::UIPrimary);
 		}
 		Renderer->DrawFillRect(Rect);
 

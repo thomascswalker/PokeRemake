@@ -68,11 +68,13 @@ void PEditorGame::ConstructInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetMaxWidth(100.0f);
 
-	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select");
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile");
+	mEditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonClicked);
+	mEditModeSelect->SetCheckable(true);
+	mEditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonClicked);
+	mEditModeTile->SetCheckable(true);
 
-	EditGroup->AddChild(EditModeSelect);
-	EditGroup->AddChild(EditModeTile);
+	EditGroup->AddChild(mEditModeSelect);
+	EditGroup->AddChild(mEditModeTile);
 
 	Box->AddChild(FileGroup);
 	Box->AddChild(EditGroup);
@@ -145,6 +147,20 @@ void PEditorGame::OnLoadButtonClicked()
 
 	const json JsonData = json::parse(Data.data());
 	Serializer.Deserialize(JsonData);
+}
+
+void PEditorGame::OnSelectButtonClicked()
+{
+	mEditModeTile->SetChecked(false);
+	mEditMode = mEditModeSelect->GetChecked() ? EM_Select : EM_None;
+	EditModeChanged.Broadcast(mEditMode);
+}
+
+void PEditorGame::OnTileButtonClicked()
+{
+	mEditModeSelect->SetChecked(false);
+	mEditMode = mEditModeTile->GetChecked() ? EM_Tile : EM_None;
+	EditModeChanged.Broadcast(mEditMode);
 }
 
 void PEditorGame::OnKeyUp(uint32_t ScanCode)

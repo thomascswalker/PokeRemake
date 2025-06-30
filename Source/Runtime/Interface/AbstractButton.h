@@ -40,6 +40,12 @@ protected:
 public:
 	DButtonClicked Clicked;
 
+	bool GetCheckable() const { return mCheckable; }
+	void SetCheckable(bool State) { mCheckable = State; }
+	bool GetChecked() const { return mChecked; }
+	void SetChecked(bool State) { mChecked = State; }
+	void ToggleChecked() { mChecked = !mChecked; }
+
 	void ProcessEvents(SWidgetEvent* Event) override
 	{
 		mSender = this;
