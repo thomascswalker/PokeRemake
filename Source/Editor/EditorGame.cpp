@@ -15,6 +15,11 @@ std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
 };
 
+PEditorGame* GetEditorGame()
+{
+	return dynamic_cast<PEditorGame*>(GetGame());
+}
+
 void PEditorGame::PreStart()
 {
 	GetSettings()->bDebugDraw = true;
@@ -68,11 +73,12 @@ void PEditorGame::ConstructInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetMaxWidth(100.0f);
 
-	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select");
+	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
 	EditModeSelect->SetCheckable(true);
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile");
+	EditModeSelect->SetChecked(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
 	EditModeTile->SetCheckable(true);
-	EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	EditModeButtonGroup->AddButton(EditModeSelect);
 	EditModeButtonGroup->AddButton(EditModeTile);
 
@@ -90,9 +96,46 @@ void PEditorGame::ConstructInterface()
 
 void PEditorGame::InitializeControls()
 {
+	AddInputContext(IC_Select);
 	if (const auto Input = GetInputManager())
 	{
 		Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
+	}
+}
+void PEditorGame::AddInputContext(uint8_t InputContext)
+{
+	mInputContext |= InputContext;
+
+	const auto Input = GetInputManager();
+	switch (InputContext)
+	{
+		case IC_Move:
+			Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
+			break;
+		case IC_Select:
+			break;
+		case IC_Tile:
+			break;
+		default:
+			break;
+	}
+}
+void PEditorGame::RemoveInputContext(uint8_t InputContext)
+{
+	mInputContext &= ~InputContext;
+
+	const auto Input = GetInputManager();
+	switch (InputContext)
+	{
+		case IC_Move:
+			Input->KeyUp.RemoveObject(this);
+			break;
+		case IC_Select:
+			break;
+		case IC_Tile:
+			break;
+		default:
+			break;
 	}
 }
 
@@ -152,12 +195,16 @@ void PEditorGame::OnLoadButtonClicked()
 	Serializer.Deserialize(JsonData);
 }
 
-void PEditorGame::OnSelectButtonClicked()
+void PEditorGame::OnSelectButtonChecked(bool State)
 {
+	RemoveInputContext(IC_Tile);
+	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
 }
 
-void PEditorGame::OnTileButtonClicked()
+void PEditorGame::OnTileButtonChecked(bool State)
 {
+	RemoveInputContext(IC_Select);
+	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
 void PEditorGame::OnKeyUp(uint32_t ScanCode)

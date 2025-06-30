@@ -38,6 +38,16 @@ public:
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
+	template <typename T>
+	PButton(const std::string& Label, T* Sender, void (T::*Delegate)(bool))
+		: mText(Label)
+	{
+		PWidget::AddChild(&mText);
+		mResizeMode = RM_ExpandX;
+		H = WIDGET_HEIGHT;
+		Checked.AddRaw(Sender, Delegate);
+	}
+
 	void Draw(const PRenderer* Renderer) const override
 	{
 		const FRect Rect{ X, Y, W, H };

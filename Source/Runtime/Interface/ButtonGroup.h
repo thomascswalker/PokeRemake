@@ -13,10 +13,10 @@ public:
 	void AddButton(PAbstractButton* Button)
 	{
 		mButtons.push_back(Button);
-		Button->Clicked.AddRaw(this, &PButtonGroup::OnButtonClicked);
+		Button->Checked.AddRaw(this, &PButtonGroup::OnButtonChecked);
 	}
 
-	void OnButtonClicked()
+	void OnButtonChecked(bool State)
 	{
 		// Deselect all buttons other than the one which sent this broadcast.
 		auto Sender = static_cast<PAbstractButton*>(mSender);
