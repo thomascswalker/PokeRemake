@@ -62,6 +62,7 @@ set(SOURCES
         Core/Color.cpp
         Interface/ButtonGroup.h
         Core/Bitmask.h
+        Engine/InputContext.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

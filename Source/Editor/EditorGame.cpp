@@ -75,7 +75,6 @@ void PEditorGame::ConstructInterface()
 
 	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
 	EditModeSelect->SetCheckable(true);
-	EditModeSelect->SetChecked(true);
 	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
 	EditModeTile->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
@@ -96,12 +95,21 @@ void PEditorGame::ConstructInterface()
 
 void PEditorGame::InitializeControls()
 {
-	AddInputContext(IC_Select);
-	if (const auto Input = GetInputManager())
-	{
-		Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
-	}
+	AddInputContext(IC_Move);
+	//
+	// if (auto Input = GetInputManager())
+	// {
+	// 	Input->AddInputContext(
+	// 		"Move",
+	// 		{
+	// 			{ "Up",	IT_Keyboard },
+	// 			{ "Left",  IT_Keyboard },
+	// 			{ "Down",  IT_Keyboard },
+	// 			{ "Right", IT_Keyboard },
+	// 	});
+	// }
 }
+
 void PEditorGame::AddInputContext(uint8_t InputContext)
 {
 	mInputContext |= InputContext;
@@ -131,6 +139,7 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 			Input->KeyUp.RemoveObject(this);
 			break;
 		case IC_Select:
+			mCurrentChunk->SetSelected(false);
 			break;
 		case IC_Tile:
 			break;
