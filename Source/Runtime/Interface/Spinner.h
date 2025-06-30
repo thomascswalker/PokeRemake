@@ -44,12 +44,14 @@ protected:
 	}
 
 public:
-	explicit PSpinner() : mText("0"), mUpButton("^"), mDownButton("v")
+	explicit PSpinner(float Value = 0.0f)
+		: mValue(Value), mText("0"), mUpButton("^"), mDownButton("v")
 	{
 		H = WIDGET_HEIGHT;
 		mResizeMode = RM_ExpandX;
 
 		PWidget::AddChild(&mText);
+		mText.SetText(std::format("{}", mValue));
 		PWidget::AddChild(&mButtonBox);
 
 		mUpButton.SetResizeMode(RM_FixedXY);
@@ -69,11 +71,11 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		// Background
-		Renderer->SetDrawColor(WIDGET_DARK);
+		Renderer->SetDrawColor(PColor::UIBackground);
 		Renderer->DrawFillRect(GetGeometry());
 
 		// Outline
-		Renderer->SetDrawColor(WIDGET_LIGHT);
+		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(GetGeometry());
 
 		for (const auto& Child : mChildren)

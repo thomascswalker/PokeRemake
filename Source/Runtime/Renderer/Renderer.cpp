@@ -9,7 +9,7 @@
 #include "Engine/Texture.h"
 #include "Engine/World.h"
 
-std::string	 gDefaultFont = "Roboto-Regular"; // Default font name
+std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
 bool PRenderer::Initialize() const
@@ -74,9 +74,8 @@ void PRenderer::LoadFont(const std::string& Name) const
 
 	free(Bitmap);
 	free(FontBuffer);
-	gCurrentFont.Texture =
-		SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
-						  FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	gCurrentFont.Texture = SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+											 FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
 					  FONT_ATLAS_SIZE * sizeof(uint32_t));
@@ -86,7 +85,8 @@ void PRenderer::UnloadFonts() {}
 
 void PRenderer::Render() const
 {
-	SDL_SetRenderDrawColor(mContext->Renderer, 38, 38, 38, 255);
+	auto BGColor = PColor::UIBackground;
+	SDL_SetRenderDrawColor(mContext->Renderer, BGColor.R, BGColor.G, BGColor.B, 255);
 	SDL_RenderClear(mContext->Renderer);
 
 	// Draw all renderables in the world
@@ -115,7 +115,7 @@ void PRenderer::Render() const
 			// recursively events for them.
 			SWidgetEvent Event;
 			Event.MousePosition = GetMousePosition();
-			Event.bMouseDown = GetMouseLeftDown();
+			Event.MouseDown = GetMouseLeftDown();
 			Root->ProcessEvents(&Event);
 
 			// Recursively draw all widgets
@@ -153,6 +153,10 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 	{
 		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
 	}
+}
+void PRenderer::SetDrawColor(const PColor& Color) const
+{
+	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
 }
 
 void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
@@ -235,7 +239,7 @@ void PRenderer::DrawGrid() const
 	}
 }
 
-void PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
+float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
 {
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
@@ -253,6 +257,8 @@ void PRenderer::DrawText(const std::string& Text, const FVector2& Position, floa
 		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
 	}
+
+	return Width;
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const

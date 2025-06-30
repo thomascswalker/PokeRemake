@@ -43,7 +43,6 @@ set(SOURCES
         Core/Settings.cpp
         Engine/Actors/Tile.h
         Engine/Sprite.h
-        Engine/Components/CharacterMovementComponent.h
         Engine/Components/CharacterMovementComponent.cpp
         Engine/Actors/Tile.cpp
         Interface/Widget.h
@@ -53,12 +52,17 @@ set(SOURCES
         Interface/Widget.cpp
         Interface/Layout.h
         Interface/Text.h
-        Engine/Serializer.h
         Engine/Serializer.cpp
         Engine/ClassRegistry.h
         Core/Json.h
         Core/CoreFwd.h
         Interface/Box.h
+        Interface/Group.h
+        Interface/AbstractButton.h
+        Core/Color.cpp
+        Interface/ButtonGroup.h
+        Core/Bitmask.h
+        Engine/InputContext.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

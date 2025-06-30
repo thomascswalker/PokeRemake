@@ -2,9 +2,11 @@
 
 #include "Chunk.h"
 
-#include "../../../Editor/EditorGame.h"
 #include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
+#if _EDITOR
+#include "../../../Editor/EditorGame.h"
+#endif
 
 PChunk::PChunk(const json& JsonData)
 {
@@ -63,16 +65,21 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR
-	Renderer->SetDrawColor(255, 200, 0, 150);
-	if (bMouseOver)
+	auto Game = GetEditorGame();
+	auto IC = Game->GetInputContext();
+	if (Bitmask::Test(IC, IC_Select))
 	{
-		constexpr float ExpandSize = 2.0f;
-		Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
-							 mPosition - FVector2(ExpandSize, ExpandSize));
-	}
-	if (bSelected)
-	{
-		Renderer->DrawFillRectAt(Dest, mPosition);
+		Renderer->SetDrawColor(255, 200, 0, 150);
+		if (bMouseOver)
+		{
+			constexpr float ExpandSize = 2.0f;
+			Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
+								 mPosition - FVector2(ExpandSize, ExpandSize));
+		}
+		if (bSelected)
+		{
+			Renderer->DrawFillRectAt(Dest, mPosition);
+		}
 	}
 #endif
 

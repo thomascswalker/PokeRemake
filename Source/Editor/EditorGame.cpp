@@ -6,6 +6,7 @@
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
 #include "Interface/Box.h"
+#include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
 #define NEW_GRID_SIZE 5
@@ -13,6 +14,11 @@
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
 };
+
+PEditorGame* GetEditorGame()
+{
+	return dynamic_cast<PEditorGame*>(GetGame());
+}
 
 void PEditorGame::PreStart()
 {
@@ -36,42 +42,109 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	auto Box = mWorld->ConstructWidget<PBox>();
-	Box->SetResizeMode(RM_ExpandY);
-	Box->W = 100;
+	const auto Box = mWorld->ConstructWidget<PBox>();
+	Box->SetLayoutMode(LM_Vertical);
+	Box->SetMaxWidth(120.0f);
 
-	mCreateButton = mWorld->ConstructWidget<PButton>("Create");
-	mCreateButton->Clicked.AddRaw(this, &PEditorGame::OnCreateButtonClicked);
-	mCreateButton->SetFontSize(WIDGET_FONT_SIZE);
+	// Files
 
-	auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>();
-	auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>();
+	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
+	FileGroup->SetMaxWidth(100.0f);
 
-	mSaveButton = mWorld->ConstructWidget<PButton>("Save");
-	mSaveButton->SetFontSize(WIDGET_FONT_SIZE);
-	mSaveButton->Clicked.AddRaw(this, &PEditorGame::OnSaveButtonClicked);
+	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
-	mLoadButton = mWorld->ConstructWidget<PButton>("Load");
-	mLoadButton->SetFontSize(WIDGET_FONT_SIZE);
-	mLoadButton->Clicked.AddRaw(this, &PEditorGame::OnLoadButtonClicked);
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
 
-	Box->AddChild(mCreateButton);
-	Box->AddChild(SizeXSpinner);
-	Box->AddChild(SizeYSpinner);
-	Box->AddChild(mSaveButton);
-	Box->AddChild(mLoadButton);
+	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
+	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
 
-	mCanvas = mWorld->ConstructWidget<PCanvas>();
-	mCanvas->AddChild(Box);
+	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
+	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
 
-	mWorld->SetCanvas(mCanvas);
+	FileGroup->AddChild(CreateButton);
+	FileGroup->AddChild(SizeXSpinner);
+	FileGroup->AddChild(SizeYSpinner);
+	FileGroup->AddChild(SaveButton);
+	FileGroup->AddChild(LoadButton);
+
+	// Edit
+
+	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
+	EditGroup->SetMaxWidth(100.0f);
+
+	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
+	EditModeSelect->SetCheckable(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTile->SetCheckable(true);
+	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	EditModeButtonGroup->AddButton(EditModeSelect);
+	EditModeButtonGroup->AddButton(EditModeTile);
+
+	EditGroup->AddChild(EditModeSelect);
+	EditGroup->AddChild(EditModeTile);
+
+	Box->AddChild(FileGroup);
+	Box->AddChild(EditGroup);
+
+	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
+	MainCanvas->AddChild(Box);
+
+	mWorld->SetCanvas(MainCanvas);
 }
 
 void PEditorGame::InitializeControls()
 {
-	if (auto Input = GetInputManager())
+	AddInputContext(IC_Move);
+	//
+	// if (auto Input = GetInputManager())
+	// {
+	// 	Input->AddInputContext(
+	// 		"Move",
+	// 		{
+	// 			{ "Up",	IT_Keyboard },
+	// 			{ "Left",  IT_Keyboard },
+	// 			{ "Down",  IT_Keyboard },
+	// 			{ "Right", IT_Keyboard },
+	// 	});
+	// }
+}
+
+void PEditorGame::AddInputContext(uint8_t InputContext)
+{
+	mInputContext |= InputContext;
+
+	const auto Input = GetInputManager();
+	switch (InputContext)
 	{
-		Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
+		case IC_Move:
+			Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
+			break;
+		case IC_Select:
+			break;
+		case IC_Tile:
+			break;
+		default:
+			break;
+	}
+}
+void PEditorGame::RemoveInputContext(uint8_t InputContext)
+{
+	mInputContext &= ~InputContext;
+
+	const auto Input = GetInputManager();
+	switch (InputContext)
+	{
+		case IC_Move:
+			Input->KeyUp.RemoveObject(this);
+			break;
+		case IC_Select:
+			mCurrentChunk->SetSelected(false);
+			break;
+		case IC_Tile:
+			break;
+		default:
+			break;
 	}
 }
 
@@ -99,7 +172,7 @@ void PEditorGame::OnSaveButtonClicked()
 {
 	PSerializer Serializer;
 
-	for (auto Actor : mWorld->GetActors())
+	for (const auto Actor : mWorld->GetActors())
 	{
 		Serializer.Serialize(Actor);
 	}
@@ -127,8 +200,20 @@ void PEditorGame::OnLoadButtonClicked()
 		return;
 	}
 
-	json JsonData = json::parse(Data.data());
+	const json JsonData = json::parse(Data.data());
 	Serializer.Deserialize(JsonData);
+}
+
+void PEditorGame::OnSelectButtonChecked(bool State)
+{
+	RemoveInputContext(IC_Tile);
+	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
+}
+
+void PEditorGame::OnTileButtonChecked(bool State)
+{
+	RemoveInputContext(IC_Select);
+	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
 void PEditorGame::OnKeyUp(uint32_t ScanCode)
@@ -139,8 +224,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   - FVector2(0, TILE_SIZE));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(0, TILE_SIZE));
 				}
 				break;
 			}
@@ -148,8 +232,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   + FVector2(0, TILE_SIZE));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(0, TILE_SIZE));
 				}
 				break;
 			}
@@ -157,8 +240,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   - FVector2(TILE_SIZE, 0));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(TILE_SIZE, 0));
 				}
 				break;
 			}
@@ -166,8 +248,7 @@ void PEditorGame::OnKeyUp(uint32_t ScanCode)
 			{
 				if (mCurrentChunk)
 				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition()
-											   + FVector2(TILE_SIZE, 0));
+					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(TILE_SIZE, 0));
 				}
 				break;
 			}
@@ -202,10 +283,10 @@ void PEditorGame::ConstructChunk(const json& JsonData)
 
 void PEditorGame::ActorSelected(PActor* Actor)
 {
-	if (auto Chunk = dynamic_cast<PChunk*>(Actor))
+	if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
 	{
 		// Deselect all other chunks
-		for (auto C : mWorld->GetActorsOfType<PChunk>())
+		for (const auto C : mWorld->GetActorsOfType<PChunk>())
 		{
 			if (C == Chunk)
 			{

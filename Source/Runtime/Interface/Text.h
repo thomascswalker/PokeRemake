@@ -17,6 +17,7 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
+		Renderer->SetDrawColor(PColor::UIText);
 		Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), mFontSize);
 	}
 

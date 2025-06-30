@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application/Context.h"
+#include "Core/Color.h"
 #include "Core/Matrix.h"
 #include "Core/Rect.h"
 #include "Engine/Texture.h"
@@ -23,7 +24,8 @@ class PRenderer
 	FMatrix		mMVP;
 
 public:
-	explicit PRenderer(SDLContext* InContext) : mContext(InContext) {}
+	explicit PRenderer(SDLContext* InContext)
+		: mContext(InContext) {}
 
 	bool Initialize() const;
 	void PostInitialize() const;
@@ -38,13 +40,15 @@ public:
 	/* Drawing */
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
-	void DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
-	void DrawLine(float X1, float Y1, float X2, float Y2) const;
-	void DrawRect(const FRect& Rect) const;
-	void DrawFillRect(const FRect& Rect) const;
-	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
-	void DrawGrid() const;
-	void DrawText(const std::string& Text, const FVector2& Position, float FontSize) const;
+	void SetDrawColor(const PColor& Color) const;
+
+	void  DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
+	void  DrawLine(float X1, float Y1, float X2, float Y2) const;
+	void  DrawRect(const FRect& Rect) const;
+	void  DrawFillRect(const FRect& Rect) const;
+	void  DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
+	void  DrawGrid() const;
+	float DrawText(const std::string& Text, const FVector2& Position, float FontSize) const;
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;
