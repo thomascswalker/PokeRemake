@@ -6,6 +6,8 @@
 #include "Text.h"
 #include "Widget.h"
 
+constexpr float gButtonTextSize = 16.0f;
+
 class PButton : public PAbstractButton
 {
 	PText mText;
@@ -20,7 +22,7 @@ public:
 	}
 
 	PButton(const std::string& Label, void (*Delegate)())
-		: mText(Label)
+		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
 		mResizeMode = RM_ExpandX;
@@ -30,7 +32,7 @@ public:
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)())
-		: mText(Label)
+		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
 		mResizeMode = RM_ExpandX;
@@ -40,7 +42,7 @@ public:
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)(bool))
-		: mText(Label)
+		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
 		mResizeMode = RM_ExpandX;

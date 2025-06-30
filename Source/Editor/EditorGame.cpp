@@ -75,16 +75,20 @@ void PEditorGame::ConstructInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetMaxWidth(100.0f);
 
-	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
-	EditModeSelect->SetCheckable(true);
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTile->SetCheckable(true);
+	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
+	EditModeChunk->SetCheckable(true);
+	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileType->SetCheckable(true);
+	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileSprite->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	EditModeButtonGroup->AddButton(EditModeSelect);
-	EditModeButtonGroup->AddButton(EditModeTile);
+	EditModeButtonGroup->AddButton(EditModeChunk);
+	EditModeButtonGroup->AddButton(EditModeTileType);
+	EditModeButtonGroup->AddButton(EditModeTileSprite);
 
-	EditGroup->AddChild(EditModeSelect);
-	EditGroup->AddChild(EditModeTile);
+	EditGroup->AddChild(EditModeChunk);
+	EditGroup->AddChild(EditModeTileType);
+	EditGroup->AddChild(EditModeTileSprite);
 
 	Box->AddChild(FileGroup);
 	Box->AddChild(EditGroup);
