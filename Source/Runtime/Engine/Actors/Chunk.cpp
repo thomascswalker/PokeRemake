@@ -65,9 +65,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR
-	auto Game = GetEditorGame();
-	auto IC = Game->GetInputContext();
-	if (Bitmask::Test(IC, IC_Select))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (bMouseOver || bSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (bMouseOver)

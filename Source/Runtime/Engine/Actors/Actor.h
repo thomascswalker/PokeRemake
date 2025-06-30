@@ -71,7 +71,7 @@ public:
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }
-	virtual bool  IsMouseOver() const { return false; }
+	virtual bool  IsMouseOver() const { return bMouseOver; }
 
 	virtual FVector2 GetPosition() const { return mPosition; }
 	void			 SetPosition(const FVector2& Position) { mPosition = Position; }

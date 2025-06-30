@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Actor.h"
-#include "Core/Delegate.h"
 #include "Engine/ClassRegistry.h"
 #include "Renderer/Renderer.h"
 
@@ -42,16 +41,19 @@ public:
 	PChunk*	  Chunk = nullptr;
 
 	PTile() = default;
-	PTile(const json& JsonData);
-	PTile(int32_t inX, int32_t inY) : X(inX), Y(inY)
+	PTile(int32_t inX, int32_t inY)
+		: X(inX), Y(inY)
 	{
+		mPriority = DP_BACKGROUND;
 		bSerializable = false;
 		bBlocking = false;
 		mPosition.X = inX * TILE_SIZE;
 		mPosition.Y = inY * TILE_SIZE;
 	}
-	PTile(const STileData& Data) : X(Data.X), Y(Data.Y), Type(Data.Type)
+	PTile(const STileData& Data)
+		: X(Data.X), Y(Data.Y), Type(Data.Type)
 	{
+		mPriority = DP_BACKGROUND;
 		bSerializable = false;
 		bBlocking = false;
 		mPosition.X = Data.X * TILE_SIZE;
@@ -59,15 +61,21 @@ public:
 	}
 
 	FVector2 GetPosition() const override;
-	FVector2 GetLocalPosition() const;
-	FVector2 GetWorldPosition() const;
 	void	 Draw(const PRenderer* Renderer) const override;
 	PActor*	 GetActor() const;
 	bool	 IsWalkable() const;
 	bool	 Contains(const FVector2& Position) const;
 
+	FRect GetLocalBounds() const override
+	{
+		return FRect(0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE);
+	}
+	FRect GetWorldBounds() const override
+	{
+		auto P = GetPosition();
+		return FRect(P.X, P.Y, HALF_TILE_SIZE, HALF_TILE_SIZE);
+	}
+
 	json Serialize() const override;
 	void Deserialize(const json& Data) override;
 };
-
-REGISTER_CLASS(PTile);

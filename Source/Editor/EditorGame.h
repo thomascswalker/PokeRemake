@@ -29,6 +29,9 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
+	float mNewGridSizeX = 5.0f;
+	float mNewGridSizeY = 5.0f;
+
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
@@ -36,6 +39,9 @@ class PEditorGame : public PGame
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
+
+	DelegateHandle mSelectDelegate;
+	DelegateHandle mTileDelegate;
 
 public:
 	// Init
@@ -51,18 +57,36 @@ public:
 	void	RemoveInputContext(uint8_t InputContext);
 
 	// Interface
-	void OnKeyUp(uint32_t ScanCode);
+	void OnMove(uint32_t ScanCode);
 	void OnCreateButtonClicked();
+	void OnSizeXChanged(float Value) { mNewGridSizeX = Value; }
+	void OnSizeYChanged(float Value) { mNewGridSizeY = Value; }
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
+	void OnSetTileType(uint32_t ScanCode);
 
 	// Scene
 	void AddChunk(PChunk* Chunk);
 	void SetCurrentChunk(PChunk* Chunk);
 	void ConstructChunk(const json& JsonData);
 	void ActorSelected(PActor* Actor);
+
+	template <typename T = PActor>
+	T* GetActorUnderMouse()
+	{
+		auto W = GetWorld();
+		for (const auto& Actor : W->GetActors())
+		{
+			const auto TActor = dynamic_cast<T*>(Actor);
+			if (TActor && Actor->bMouseOver)
+			{
+				return TActor;
+			}
+		}
+		return nullptr;
+	}
 };
 
 PEditorGame* GetEditorGame();

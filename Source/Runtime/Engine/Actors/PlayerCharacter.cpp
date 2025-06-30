@@ -57,7 +57,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(255, 0, 0, 50);
 			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
-									 Tile->GetLocalPosition());
+									 Tile->GetPosition());
 		}
 
 		// Draw target tile
@@ -65,7 +65,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(0, 255, 0, 50);
 			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
-									 Tile->GetLocalPosition());
+									 Tile->GetPosition());
 		}
 
 		// Draw target position

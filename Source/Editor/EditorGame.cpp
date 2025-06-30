@@ -54,7 +54,9 @@ void PEditorGame::ConstructInterface()
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
 	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
 	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
@@ -96,18 +98,6 @@ void PEditorGame::ConstructInterface()
 void PEditorGame::InitializeControls()
 {
 	AddInputContext(IC_Move);
-	//
-	// if (auto Input = GetInputManager())
-	// {
-	// 	Input->AddInputContext(
-	// 		"Move",
-	// 		{
-	// 			{ "Up",	IT_Keyboard },
-	// 			{ "Left",  IT_Keyboard },
-	// 			{ "Down",  IT_Keyboard },
-	// 			{ "Right", IT_Keyboard },
-	// 	});
-	// }
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -118,11 +108,12 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Move:
-			Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
 			break;
 		case IC_Select:
+			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnMove);
 			break;
 		case IC_Tile:
+			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnSetTileType);
 			break;
 		default:
 			break;
@@ -136,12 +127,16 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Move:
-			Input->KeyUp.RemoveObject(this);
 			break;
 		case IC_Select:
-			mCurrentChunk->SetSelected(false);
+			Input->KeyUp.Remove(mSelectDelegate);
+			if (mCurrentChunk)
+			{
+				mCurrentChunk->SetSelected(false);
+			}
 			break;
 		case IC_Tile:
+			Input->KeyUp.Remove(mTileDelegate);
 			break;
 		default:
 			break;
@@ -152,12 +147,12 @@ void PEditorGame::OnCreateButtonClicked()
 {
 	json JsonData = {
 		{ "Position", { 0, 0 }	   },
-		{ "SizeX",	   NEW_GRID_SIZE },
-		{ "SizeY",	   NEW_GRID_SIZE },
+		{ "SizeX",	   mNewGridSizeX },
+		{ "SizeY",	   mNewGridSizeY },
 	};
-	for (int X = 0; X < NEW_GRID_SIZE; ++X)
+	for (int X = 0; X < mNewGridSizeX; ++X)
 	{
-		for (int Y = 0; Y < NEW_GRID_SIZE; ++Y)
+		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
 				{ "Position", { X, Y } },
@@ -216,45 +211,63 @@ void PEditorGame::OnTileButtonChecked(bool State)
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
-void PEditorGame::OnKeyUp(uint32_t ScanCode)
+void PEditorGame::OnSetTileType(uint32_t ScanCode)
 {
+	const auto HoverTile = GetActorUnderMouse<PTile>();
+	if (!HoverTile)
+	{
+		return;
+	}
 	switch (ScanCode)
 	{
-		case SDLK_UP:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(0, TILE_SIZE));
-				}
-				break;
-			}
-		case SDLK_DOWN:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(0, TILE_SIZE));
-				}
-				break;
-			}
-		case SDLK_LEFT:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(TILE_SIZE, 0));
-				}
-				break;
-			}
-		case SDLK_RIGHT:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(TILE_SIZE, 0));
-				}
-				break;
-			}
+		case SDLK_1:
+			HoverTile->Type = TT_Normal;
+			break;
+		case SDLK_2:
+			HoverTile->Type = TT_Obstacle;
+			break;
+		case SDLK_3:
+			HoverTile->Type = TT_Water;
+			break;
+		case SDLK_4:
+			HoverTile->Type = TT_Grass;
+			break;
+		case SDLK_5:
+			HoverTile->Type = TT_Cave;
+			break;
+		case SDLK_6:
+			HoverTile->Type = TT_Portal;
+			break;
 		default:
 			break;
 	}
+}
+
+void PEditorGame::OnMove(uint32_t ScanCode)
+{
+	if (!mCurrentChunk)
+	{
+		return;
+	}
+	FVector2 Offset;
+	switch (ScanCode)
+	{
+		case SDLK_UP:
+			Offset = FVector2(0, TILE_SIZE);
+			break;
+		case SDLK_DOWN:
+			Offset = FVector2(0, TILE_SIZE);
+			break;
+		case SDLK_LEFT:
+			Offset = FVector2(TILE_SIZE, 0);
+			break;
+		case SDLK_RIGHT:
+			Offset = FVector2(TILE_SIZE, 0);
+			break;
+		default:
+			break;
+	}
+	mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - Offset);
 }
 
 void PEditorGame::AddChunk(PChunk* Chunk)

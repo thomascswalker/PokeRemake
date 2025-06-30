@@ -1,0 +1,512 @@
+{
+    "Objects": [
+        null,
+        {
+            "Class": "6PChunk",
+            "Name": "6PChunk_14",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "SizeX": 11,
+            "SizeY": 5,
+            "Tiles": [
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_15",
+                    "Position": [
+                        0,
+                        0
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_16",
+                    "Position": [
+                        0,
+                        1
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_17",
+                    "Position": [
+                        0,
+                        2
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_18",
+                    "Position": [
+                        0,
+                        3
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_19",
+                    "Position": [
+                        0,
+                        4
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_20",
+                    "Position": [
+                        1,
+                        0
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_21",
+                    "Position": [
+                        1,
+                        1
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_22",
+                    "Position": [
+                        1,
+                        2
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_23",
+                    "Position": [
+                        1,
+                        3
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_24",
+                    "Position": [
+                        1,
+                        4
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_25",
+                    "Position": [
+                        2,
+                        0
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_26",
+                    "Position": [
+                        2,
+                        1
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_27",
+                    "Position": [
+                        2,
+                        2
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_28",
+                    "Position": [
+                        2,
+                        3
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_29",
+                    "Position": [
+                        2,
+                        4
+                    ],
+                    "Type": 0
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_30",
+                    "Position": [
+                        3,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_31",
+                    "Position": [
+                        3,
+                        1
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_32",
+                    "Position": [
+                        3,
+                        2
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_33",
+                    "Position": [
+                        3,
+                        3
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_34",
+                    "Position": [
+                        3,
+                        4
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_35",
+                    "Position": [
+                        4,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_36",
+                    "Position": [
+                        4,
+                        1
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_37",
+                    "Position": [
+                        4,
+                        2
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_38",
+                    "Position": [
+                        4,
+                        3
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_39",
+                    "Position": [
+                        4,
+                        4
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_40",
+                    "Position": [
+                        5,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_41",
+                    "Position": [
+                        5,
+                        1
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_42",
+                    "Position": [
+                        5,
+                        2
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_43",
+                    "Position": [
+                        5,
+                        3
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_44",
+                    "Position": [
+                        5,
+                        4
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_45",
+                    "Position": [
+                        6,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_46",
+                    "Position": [
+                        6,
+                        1
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_47",
+                    "Position": [
+                        6,
+                        2
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_48",
+                    "Position": [
+                        6,
+                        3
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_49",
+                    "Position": [
+                        6,
+                        4
+                    ],
+                    "Type": 3
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_50",
+                    "Position": [
+                        7,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_51",
+                    "Position": [
+                        7,
+                        1
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_52",
+                    "Position": [
+                        7,
+                        2
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_53",
+                    "Position": [
+                        7,
+                        3
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_54",
+                    "Position": [
+                        7,
+                        4
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_55",
+                    "Position": [
+                        8,
+                        0
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_56",
+                    "Position": [
+                        8,
+                        1
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_57",
+                    "Position": [
+                        8,
+                        2
+                    ],
+                    "Type": 1
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_58",
+                    "Position": [
+                        8,
+                        3
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_59",
+                    "Position": [
+                        8,
+                        4
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_60",
+                    "Position": [
+                        9,
+                        0
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_61",
+                    "Position": [
+                        9,
+                        1
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_62",
+                    "Position": [
+                        9,
+                        2
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_63",
+                    "Position": [
+                        9,
+                        3
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_64",
+                    "Position": [
+                        9,
+                        4
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_65",
+                    "Position": [
+                        10,
+                        0
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_66",
+                    "Position": [
+                        10,
+                        1
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_67",
+                    "Position": [
+                        10,
+                        2
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_68",
+                    "Position": [
+                        10,
+                        3
+                    ],
+                    "Type": 2
+                },
+                {
+                    "Class": "5PTile",
+                    "Name": "5PTile_69",
+                    "Position": [
+                        10,
+                        4
+                    ],
+                    "Type": 2
+                }
+            ]
+        }
+    ]
+}
