@@ -68,13 +68,16 @@ void PEditorGame::ConstructInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetMaxWidth(100.0f);
 
-	mEditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonClicked);
-	mEditModeSelect->SetCheckable(true);
-	mEditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonClicked);
-	mEditModeTile->SetCheckable(true);
+	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select");
+	EditModeSelect->SetCheckable(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile");
+	EditModeTile->SetCheckable(true);
+	EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	EditModeButtonGroup->AddButton(EditModeSelect);
+	EditModeButtonGroup->AddButton(EditModeTile);
 
-	EditGroup->AddChild(mEditModeSelect);
-	EditGroup->AddChild(mEditModeTile);
+	EditGroup->AddChild(EditModeSelect);
+	EditGroup->AddChild(EditModeTile);
 
 	Box->AddChild(FileGroup);
 	Box->AddChild(EditGroup);
@@ -151,16 +154,10 @@ void PEditorGame::OnLoadButtonClicked()
 
 void PEditorGame::OnSelectButtonClicked()
 {
-	mEditModeTile->SetChecked(false);
-	mEditMode = mEditModeSelect->GetChecked() ? EM_Select : EM_None;
-	EditModeChanged.Broadcast(mEditMode);
 }
 
 void PEditorGame::OnTileButtonClicked()
 {
-	mEditModeSelect->SetChecked(false);
-	mEditMode = mEditModeTile->GetChecked() ? EM_Tile : EM_None;
-	EditModeChanged.Broadcast(mEditMode);
 }
 
 void PEditorGame::OnKeyUp(uint32_t ScanCode)

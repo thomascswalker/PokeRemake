@@ -60,6 +60,7 @@ set(SOURCES
         Interface/Group.h
         Interface/AbstractButton.h
         Core/Color.cpp
+        Interface/ButtonGroup.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

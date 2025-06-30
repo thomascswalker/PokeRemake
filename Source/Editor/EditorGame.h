@@ -2,6 +2,7 @@
 
 #include "Engine/Game.h"
 #include "Interface/Button.h"
+#include "Interface/ButtonGroup.h"
 #include "Interface/Canvas.h"
 
 constexpr int BUTTON_WIDTH = 50;
@@ -26,8 +27,7 @@ class PEditorGame : public PGame
 
 	// Interface
 
-	PButton* mEditModeSelect;
-	PButton* mEditModeTile;
+	PButtonGroup* EditModeButtonGroup;
 
 public:
 	// Init
