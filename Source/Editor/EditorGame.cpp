@@ -65,24 +65,27 @@ void PEditorGame::ConstructInterface()
 	// FileGroup->AddChild(SizeYSpinner);
 	FileGroup->AddChild(SaveButton);
 	FileGroup->AddChild(LoadButton);
+
 	// Edit
-	// const auto EditGroup = mWorld->ConstructWidget<PBox>();
-	// const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
-	// EditModeChunk->SetCheckable(true);
-	// const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
-	// EditModeTileType->SetCheckable(true);
-	// const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
-	// EditModeTileSprite->SetCheckable(true);
-	// const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	// EditModeButtonGroup->AddButton(EditModeChunk);
-	// EditModeButtonGroup->AddButton(EditModeTileType);
-	// EditModeButtonGroup->AddButton(EditModeTileSprite);
-	// EditGroup->AddChild(EditModeChunk);
-	// EditGroup->AddChild(EditModeTileType);
-	// EditGroup->AddChild(EditModeTileSprite);
+	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
+	EditGroup->SetResizeModeH(RM_Fit);
+	EditGroup->SetLayoutMode(LM_Vertical);
+	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
+	EditModeChunk->SetCheckable(true);
+	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileType->SetCheckable(true);
+	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileSprite->SetCheckable(true);
+	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	EditModeButtonGroup->AddButton(EditModeChunk);
+	EditModeButtonGroup->AddButton(EditModeTileType);
+	EditModeButtonGroup->AddButton(EditModeTileSprite);
+	EditGroup->AddChild(EditModeChunk);
+	EditGroup->AddChild(EditModeTileType);
+	EditGroup->AddChild(EditModeTileSprite);
 
 	MainPanel->AddChild(FileGroup);
-	// MainPanel->AddChild(EditGroup);
+	MainPanel->AddChild(EditGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
