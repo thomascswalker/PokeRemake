@@ -247,13 +247,13 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 			Offset = FVector2(0, TILE_SIZE);
 			break;
 		case SDLK_DOWN:
-			Offset = FVector2(0, TILE_SIZE);
+			Offset = FVector2(0, -TILE_SIZE);
 			break;
 		case SDLK_LEFT:
 			Offset = FVector2(TILE_SIZE, 0);
 			break;
 		case SDLK_RIGHT:
-			Offset = FVector2(TILE_SIZE, 0);
+			Offset = FVector2(-TILE_SIZE, 0);
 			break;
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions
