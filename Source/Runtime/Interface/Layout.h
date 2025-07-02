@@ -5,30 +5,31 @@
 #include "Widget.h"
 
 // Grow this widget to the size of its parent
+// TODO: Account for multiple children that can grow
 inline void LayoutGrow(PWidget* Widget)
 {
-	PWidget*   Parent = Widget->GetParent();
-	const auto RMW = Widget->GetResizeModeW();
-	const auto RMH = Widget->GetResizeModeH();
+	const PWidget* Parent = Widget->GetParent();
+	const auto	   RMW = Widget->GetResizeModeW();
+	const auto	   RMH = Widget->GetResizeModeH();
 
 	if (Parent && (RMW == RM_Grow || RMH == RM_Grow))
 	{
-		float Padding = Widget->Padding.Left;
+		const float Padding = Widget->Padding.Left;
 
 		if (RMW == RM_Grow)
 		{
-			float RemainingWidth = Parent->W;
+			const float RemainingWidth = Parent->W;
 			Widget->W = RemainingWidth - (Padding * 2);
 		}
 
 		if (RMH == RM_Grow)
 		{
-			float RemainingHeight = Parent->H;
+			const float RemainingHeight = Parent->H;
 			Widget->H = RemainingHeight - (Padding * 2);
 		}
 	}
 
-	for (auto Child : Widget->GetChildren())
+	for (const auto Child : Widget->GetChildren())
 	{
 		LayoutGrow(Child);
 	}

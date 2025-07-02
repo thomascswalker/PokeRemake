@@ -134,6 +134,8 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 
 void PEditorGame::OnCreateButtonClicked()
 {
+	LogDebug("Creating new chunk: [{}, {}]", mNewGridSizeX, mNewGridSizeY);
+
 	json JsonData = {
 		{ "Position", { 0, 0 }	   },
 		{ "SizeX",	   mNewGridSizeX },

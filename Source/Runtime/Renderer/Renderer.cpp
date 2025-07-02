@@ -85,6 +85,7 @@ void PRenderer::UnloadFonts() {}
 
 void PRenderer::Render() const
 {
+	SetDrawColor(PColor::UIBackground);
 	SDL_RenderClear(mContext->Renderer);
 
 	// Draw all renderables in the world
@@ -115,8 +116,7 @@ void PRenderer::Render() const
 			Event.MouseDown = GetMouseLeftDown();
 			Root->ProcessEvents(&Event);
 
-			// Recursively draw all widgets
-			Root->Draw(this);
+			// Recursively draw all widgets, but not the root widget
 			Root->DrawChildren(this);
 		}
 	}
