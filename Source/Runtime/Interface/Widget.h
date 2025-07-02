@@ -15,7 +15,7 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
-#define DEFAULT_BUTTON_HEIGHT 20
+#define DEFAULT_WIDGET_HEIGHT 20
 
 enum ELayoutMode
 {

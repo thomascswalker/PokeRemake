@@ -16,3 +16,6 @@ PColor PColor::UIBackground = PColor("121212");
 PColor PColor::UIText = PColor("FFFFFF");
 PColor PColor::UIPanel = PColor("3F3F3F");
 PColor PColor::UIBorder = PColor("717171");
+PColor PColor::UIDebug1 = PColor("FF88DD");
+PColor PColor::UIDebug2 = PColor("DDFF88");
+PColor PColor::UIDebug3 = PColor("88DDFF");
