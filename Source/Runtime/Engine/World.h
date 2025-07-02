@@ -21,7 +21,7 @@ class PWorld : public PObject
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	PCanvas*							  mCanvas;
+	PWidget*							  mRootWidget;
 
 public:
 	PWorld() = default;
@@ -162,8 +162,8 @@ public:
 		return Widgets;
 	}
 
-	void	 SetCanvas(PCanvas* Widget) { mCanvas = Widget; }
-	PCanvas* GetRootWidget() const { return mCanvas; }
+	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
+	PWidget* GetRootWidget() const { return mRootWidget; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
 	PActor* GetCharacterAtPosition(const FVector2& Position) const

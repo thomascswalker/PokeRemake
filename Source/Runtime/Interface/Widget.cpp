@@ -44,5 +44,5 @@ void PWidget::RemoveChild(PWidget* Child)
 
 void PWidget::LayoutChildren()
 {
-	Layout(this, mChildren, GetGeometry(), mLayoutMode);
+	Layout2(this);
 }

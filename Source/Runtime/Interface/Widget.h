@@ -70,8 +70,8 @@ protected:
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
 
-	ELayoutMode mLayoutMode = LM_Vertical; // Default layout mode is vertical
-	EResizeMode mResizeMode = RM_ExpandXY;
+	ELayoutMode mLayoutMode = LM_Horizontal; // Default layout mode is vertical
+	EResizeMode mResizeMode = RM_FitContent;
 
 	FVector2 mDesiredSize = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
@@ -89,13 +89,17 @@ public:
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
-	virtual void Draw(const PRenderer* Renderer) const
+	void DrawChildren(const PRenderer* Renderer) const
 	{
 		for (const auto& Child : mChildren)
 		{
+			// Draw this widget
 			Child->Draw(Renderer);
+			// Draw its children
+			Child->DrawChildren(Renderer);
 		}
 	}
+	virtual void  Draw(const PRenderer* Renderer) const {}
 	void		  Tick(float DeltaTime) override {}
 	virtual FRect GetGeometry() const { return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) }; }
 	virtual void  ProcessEvents(SWidgetEvent* Event);

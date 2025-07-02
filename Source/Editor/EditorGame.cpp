@@ -41,61 +41,65 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	const auto Box = mWorld->ConstructWidget<PBox>();
-	Box->SetLayoutMode(LM_Vertical);
-	Box->SetMaxWidth(120.0f);
+	// const auto Box = mWorld->ConstructWidget<PBox>();
+	// Box->SetLayoutMode(LM_Vertical);
+	// Box->SetMaxWidth(120.0f);
+	//
+	// // Files
+	//
+	// const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
+	// FileGroup->SetMaxWidth(100.0f);
+	//
+	// const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
+	//
+	// const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	// SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
+	// const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	// SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
+	//
+	// const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
+	// SaveButton->SetFontSize(WIDGET_FONT_SIZE);
+	//
+	// const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
+	// LoadButton->SetFontSize(WIDGET_FONT_SIZE);
+	//
+	// FileGroup->AddChild(CreateButton);
+	// FileGroup->AddChild(SizeXSpinner);
+	// FileGroup->AddChild(SizeYSpinner);
+	// FileGroup->AddChild(SaveButton);
+	// FileGroup->AddChild(LoadButton);
+	//
+	// // Edit
+	//
+	// const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
+	// EditGroup->SetMaxWidth(100.0f);
+	//
+	// const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
+	// EditModeChunk->SetCheckable(true);
+	// const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	// EditModeTileType->SetCheckable(true);
+	// const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
+	// EditModeTileSprite->SetCheckable(true);
+	// const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	// EditModeButtonGroup->AddButton(EditModeChunk);
+	// EditModeButtonGroup->AddButton(EditModeTileType);
+	// EditModeButtonGroup->AddButton(EditModeTileSprite);
+	//
+	// EditGroup->AddChild(EditModeChunk);
+	// EditGroup->AddChild(EditModeTileType);
+	// EditGroup->AddChild(EditModeTileSprite);
+	//
+	// Box->AddChild(FileGroup);
+	// Box->AddChild(EditGroup);
 
-	// Files
-
-	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
-	FileGroup->SetMaxWidth(100.0f);
-
-	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
-
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
-	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
-	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
-
-	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
-	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
-
-	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
-	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
-
-	FileGroup->AddChild(CreateButton);
-	FileGroup->AddChild(SizeXSpinner);
-	FileGroup->AddChild(SizeYSpinner);
-	FileGroup->AddChild(SaveButton);
-	FileGroup->AddChild(LoadButton);
-
-	// Edit
-
-	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
-	EditGroup->SetMaxWidth(100.0f);
-
-	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
-	EditModeChunk->SetCheckable(true);
-	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileType->SetCheckable(true);
-	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileSprite->SetCheckable(true);
-	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	EditModeButtonGroup->AddButton(EditModeChunk);
-	EditModeButtonGroup->AddButton(EditModeTileType);
-	EditModeButtonGroup->AddButton(EditModeTileSprite);
-
-	EditGroup->AddChild(EditModeChunk);
-	EditGroup->AddChild(EditModeTileType);
-	EditGroup->AddChild(EditModeTileSprite);
-
-	Box->AddChild(FileGroup);
-	Box->AddChild(EditGroup);
-
+	const auto Box1 = mWorld->ConstructWidget<PBox>();
+	const auto Box2 = mWorld->ConstructWidget<PBox>();
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
-	MainCanvas->AddChild(Box);
+	MainCanvas->SetLayoutMode(LM_Vertical);
+	MainCanvas->AddChild(Box1);
+	MainCanvas->AddChild(Box2);
 
-	mWorld->SetCanvas(MainCanvas);
+	mWorld->SetRootWidget(MainCanvas);
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)

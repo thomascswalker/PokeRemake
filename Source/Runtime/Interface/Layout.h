@@ -109,3 +109,51 @@ inline void Layout(const PWidget* Parent, const std::vector<PWidget*>& Widgets, 
 		Child->LayoutChildren();
 	}
 }
+
+inline void Layout2(const PWidget* Parent)
+{
+	// Full geometry of the parent widget
+	const FRect Rect = Parent->GetGeometry();
+
+	// Top-left
+	const FVector2 Origin = { Rect.X, Rect.Y };
+	// Total available space
+	const FVector2 Available = { Rect.W, Rect.H };
+
+	// Change in X and Y as we layout children
+	float DX = Parent->Padding.Left;
+	float DY = Parent->Padding.Top;
+
+	const auto Children = Parent->GetChildren();
+	const int  ChildCount = Children.size();
+
+	// Automatic child width and height given the number of children
+	const float ChildSizeW = ChildCount == 0 ? Available.X : Available.X / ChildCount;
+	const float ChildSizeH = ChildCount == 0 ? Available.Y : Available.Y / ChildCount;
+
+	const auto LayoutMode = Parent->GetLayoutMode();
+
+	for (const auto Child : Children)
+	{
+		// Child position is at the origin plus the current offset in X/Y
+		Child->X = Origin.X + DX;
+		Child->Y = Origin.Y + DY;
+
+		// Child size is the automatic size minus padding for bottom and right
+		switch (LayoutMode)
+		{
+			case LM_Horizontal:
+				Child->W = ChildSizeW - Child->Padding.Right - (Child->Padding.Left / 2);
+				Child->H = Available.Y - Child->Padding.Bottom - Child->Padding.Top;
+				DX += Child->W + Child->Padding.Right;
+				break;
+			case LM_Vertical:
+				Child->W = Available.X - Child->Padding.Right - Child->Padding.Left;
+				Child->H = ChildSizeH - Child->Padding.Bottom - (Child->Padding.Top / 2);
+				DY += Child->H + Child->Padding.Bottom;
+				break;
+		}
+
+		Layout2(Child);
+	}
+}

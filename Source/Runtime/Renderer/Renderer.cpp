@@ -85,8 +85,6 @@ void PRenderer::UnloadFonts() {}
 
 void PRenderer::Render() const
 {
-	auto BGColor = PColor::UIBackground;
-	SDL_SetRenderDrawColor(mContext->Renderer, BGColor.R, BGColor.G, BGColor.B, 255);
 	SDL_RenderClear(mContext->Renderer);
 
 	// Draw all renderables in the world
@@ -109,7 +107,7 @@ void PRenderer::Render() const
 			Root->H = ScreenSize.Y;
 
 			// Recursively construct the layout of all widgets
-			Root->LayoutChildren();
+			Layout2(Root);
 
 			// Once all widgets have been laid out, process
 			// recursively events for them.
@@ -120,6 +118,7 @@ void PRenderer::Render() const
 
 			// Recursively draw all widgets
 			Root->Draw(this);
+			Root->DrawChildren(this);
 		}
 	}
 
