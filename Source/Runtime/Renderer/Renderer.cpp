@@ -103,11 +103,10 @@ void PRenderer::Render() const
 		{
 			// Resize the main root widget to fit the screen size
 			auto ScreenSize = GetScreenSize();
-			Root->W = ScreenSize.X;
-			Root->H = ScreenSize.Y;
+			Root->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
 
 			// Recursively construct the layout of all widgets
-			Layout2(Root);
+			Layout(Root);
 
 			// Once all widgets have been laid out, process
 			// recursively events for them.

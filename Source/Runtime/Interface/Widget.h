@@ -15,6 +15,8 @@
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
+#define DEFAULT_BUTTON_HEIGHT 20
+
 enum ELayoutMode
 {
 	LM_Horizontal,
@@ -23,11 +25,9 @@ enum ELayoutMode
 
 enum EResizeMode
 {
-	RM_FixedXY,
-	RM_ExpandX,
-	RM_ExpandY,
-	RM_ExpandXY,
-	RM_FitContent,
+	RM_Fixed,
+	RM_Fit,
+	RM_Grow,
 };
 
 struct SWidgetEvent
@@ -70,10 +70,12 @@ protected:
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
 
-	ELayoutMode mLayoutMode = LM_Horizontal; // Default layout mode is vertical
-	EResizeMode mResizeMode = RM_FitContent;
+	ELayoutMode mLayoutMode = LM_Horizontal;
 
-	FVector2 mDesiredSize = { 0.0f, 0.0f };
+	EResizeMode mResizeModeW = RM_Grow;
+	EResizeMode mResizeModeH = RM_Grow;
+
+	FVector2 mFixedSize = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
 public:
@@ -109,23 +111,30 @@ public:
 
 	// Children
 
-	virtual void				  AddChild(PWidget* Child);
-	virtual void				  RemoveChild(PWidget* Child);
-	virtual std::vector<PWidget*> GetChildren() const { return mChildren; }
+	virtual void		  AddChild(PWidget* Child);
+	virtual void		  RemoveChild(PWidget* Child);
+	std::vector<PWidget*> GetChildren() const { return mChildren; }
+	size_t				  GetChildCount() const { return mChildren.size(); }
 
 	// Layout
 
-	virtual void LayoutChildren();
-	ELayoutMode	 GetLayoutMode() const { return mLayoutMode; }
-	void		 SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
+	ELayoutMode GetLayoutMode() const { return mLayoutMode; }
+	void		SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
 
-	EResizeMode GetResizeMode() const { return mResizeMode; }
-	void		SetResizeMode(EResizeMode resizeMode) { mResizeMode = resizeMode; }
+	EResizeMode GetResizeModeW() const { return mResizeModeW; }
+	EResizeMode GetResizeModeH() const { return mResizeModeH; }
+	void		SetResizeModeW(EResizeMode resizeMode) { mResizeModeW = resizeMode; }
+	void		SetResizeModeH(EResizeMode resizeMode) { mResizeModeH = resizeMode; }
+	void		SetResizeMode(EResizeMode InW, EResizeMode InH)
+	{
+		mResizeModeW = InW;
+		mResizeModeH = InH;
+	}
 
-	FVector2 GetDesiredSize() const { return mDesiredSize; }
-	void	 SetDesiredSize(const FVector2& Size) { mDesiredSize = Size; }
-	void	 SetDesiredWidth(float W) { mDesiredSize.X = W; }
-	void	 SetDesiredHeight(float H) { mDesiredSize.Y = H; }
+	FVector2 GetFixedSize() const { return mFixedSize; }
+	void	 SetFixedSize(const FVector2& Size) { mFixedSize = Size; }
+	void	 SetFixedWidth(float W) { mFixedSize.X = W; }
+	void	 SetFixedHeight(float H) { mFixedSize.Y = H; }
 
 	FVector2 GetMaxSize() const { return mMaxSize; }
 	void	 SetMaxSize(const FVector2& MaxSize) { mMaxSize = MaxSize; }

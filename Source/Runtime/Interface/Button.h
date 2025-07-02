@@ -17,16 +17,12 @@ public:
 		: mText(Label)
 	{
 		PWidget::AddChild(&mText);
-		mResizeMode = RM_ExpandX;
-		H = WIDGET_HEIGHT;
 	}
 
 	PButton(const std::string& Label, void (*Delegate)())
 		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
-		mResizeMode = RM_ExpandX;
-		H = WIDGET_HEIGHT;
 		Clicked.AddStatic(Delegate);
 	}
 
@@ -35,8 +31,6 @@ public:
 		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
-		mResizeMode = RM_ExpandX;
-		H = WIDGET_HEIGHT;
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
@@ -45,8 +39,6 @@ public:
 		: mText(Label, gButtonTextSize)
 	{
 		PWidget::AddChild(&mText);
-		mResizeMode = RM_ExpandX;
-		H = WIDGET_HEIGHT;
 		Checked.AddRaw(Sender, Delegate);
 	}
 
@@ -74,11 +66,6 @@ public:
 		// Border
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(Rect);
-
-		// Text
-		Renderer->SetDrawColor(PColor::UIText);
-		Renderer->DrawText(mText.GetText(), FVector2(X + W / 2.0f, Y + H / 2.0f),
-						   mText.GetFontSize());
 	}
 
 	float GetFontSize() const { return mText.GetFontSize(); }

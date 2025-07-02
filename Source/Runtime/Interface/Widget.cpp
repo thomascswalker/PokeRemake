@@ -41,8 +41,3 @@ void PWidget::RemoveChild(PWidget* Child)
 		Child->SetParent(nullptr);
 	}
 }
-
-void PWidget::LayoutChildren()
-{
-	Layout2(this);
-}

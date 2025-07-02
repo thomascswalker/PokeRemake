@@ -11,7 +11,6 @@ public:
 	PGroup(const std::string& Label)
 		: mLabel(Label)
 	{
-		mResizeMode = RM_FitContent;
 	}
 
 	void Draw(const PRenderer* Renderer) const override
