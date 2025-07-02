@@ -62,4 +62,7 @@ struct PColor
 	static PColor UIText;
 	static PColor UIPanel;
 	static PColor UIBorder;
+	static PColor UIDebug1;
+	static PColor UIDebug2;
+	static PColor UIDebug3;
 };

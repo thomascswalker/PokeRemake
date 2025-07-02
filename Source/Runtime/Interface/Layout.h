@@ -4,9 +4,11 @@
 
 #include "Widget.h"
 
+void LayoutGrow(PWidget* Widget, FVector2* Remaining);
+void LayoutGrowChildren(const PWidget* Widget);
+
 // Grow this widget to the size of its parent
-// TODO: Account for multiple children that can grow
-inline void LayoutGrow(PWidget* Widget)
+inline void LayoutGrow(PWidget* Widget, FVector2* Remaining)
 {
 	const PWidget* Parent = Widget->GetParent();
 	const auto	   RMW = Widget->GetResizeModeW();
@@ -18,20 +20,76 @@ inline void LayoutGrow(PWidget* Widget)
 
 		if (RMW == RM_Grow)
 		{
-			const float RemainingWidth = Parent->W;
-			Widget->W = RemainingWidth - (Padding * 2);
+			Widget->W = Remaining->X;
+			Remaining->X -= Widget->W;
 		}
 
 		if (RMH == RM_Grow)
 		{
-			const float RemainingHeight = Parent->H;
-			Widget->H = RemainingHeight - (Padding * 2);
+			Widget->H = Remaining->Y;
+			Remaining->Y -= Widget->H;
 		}
 	}
 
-	for (const auto Child : Widget->GetChildren())
+	LayoutGrowChildren(Widget);
+}
+
+// Grow this widget's children to fit the space of this widget
+inline void LayoutGrowChildren(const PWidget* Widget)
+{
+	const auto LayoutMode = Widget->GetLayoutMode();
+	float	   ChildGap = Widget->Padding.Left;
+	float	   RemainingWidth = Widget->W;
+	float	   RemainingHeight = Widget->H;
+
+	RemainingWidth -= Widget->Padding.Left + Widget->Padding.Right;
+	RemainingHeight -= Widget->Padding.Top + Widget->Padding.Bottom;
+
+	for (auto Child : Widget->GetChildren())
 	{
-		LayoutGrow(Child);
+		if (LayoutMode == LM_Horizontal)
+		{
+			RemainingWidth -= Child->W;
+		}
+		else
+		{
+			RemainingHeight -= Child->H;
+		}
+	}
+	if (LayoutMode == LM_Horizontal)
+	{
+		RemainingWidth -= (Widget->GetChildCount() - 1) * ChildGap;
+	}
+	else
+	{
+		RemainingHeight -= (Widget->GetChildCount() - 1) * ChildGap;
+	}
+
+	for (auto Child : Widget->GetChildren())
+	{
+		if (LayoutMode == LM_Horizontal)
+		{
+			if (Child->GetResizeModeW() == RM_Grow)
+			{
+				Child->W += RemainingWidth;
+			}
+			if (Child->GetResizeModeH() == RM_Grow)
+			{
+				Child->H += (RemainingHeight - Child->H);
+			}
+		}
+		else
+		{
+			if (Child->GetResizeModeH() == RM_Grow)
+			{
+				Child->H += RemainingHeight;
+			}
+			if (Child->GetResizeModeW() == RM_Grow)
+			{
+				Child->W += (RemainingWidth - Child->W);
+			}
+		}
+		LayoutGrowChildren(Child);
 	}
 }
 
@@ -156,6 +214,6 @@ inline void Layout(PWidget* Widget)
 {
 	LayoutFixedSize(Widget);
 	LayoutFitSize(Widget);
-	LayoutGrow(Widget);
+	LayoutGrowChildren(Widget);
 	LayoutPosition(Widget);
 }

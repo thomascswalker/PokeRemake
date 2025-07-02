@@ -72,7 +72,7 @@ public:
 	{
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
-		mFixedSize.Y = DEFAULT_BUTTON_HEIGHT;
+		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
 	}
 
 	bool GetCheckable() const { return mCheckable; }

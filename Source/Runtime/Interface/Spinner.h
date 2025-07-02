@@ -22,6 +22,7 @@ protected:
 	float		 mValue = 0.0f;
 	ESpinnerMode mMode = SM_Integer;
 
+	PWidget mLayoutWidget;
 	PText	mText;
 	PBox	mButtonBox;
 	PButton mUpButton;
@@ -47,25 +48,30 @@ public:
 	explicit PSpinner(float Value = 0.0f)
 		: mValue(Value), mText("0"), mUpButton("^"), mDownButton("v")
 	{
-		H = WIDGET_HEIGHT;
 		mResizeModeW = RM_Grow;
+		mResizeModeH = RM_Fixed;
+		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
+		Padding = { 0 };
 
-		PWidget::AddChild(&mText);
 		mText.SetText(std::format("{}", mValue));
-		PWidget::AddChild(&mButtonBox);
 
-		mUpButton.SetResizeMode(RM_Fixed, RM_Fixed);
-		mUpButton.W = WIDGET_HEIGHT;
-		mUpButton.H = WIDGET_HEIGHT / 2.0f;
+		mButtonBox.SetLayoutMode(LM_Vertical);
+		mButtonBox.SetResizeMode(RM_Fit, RM_Fit);
+		mButtonBox.Padding = { 0 };
+
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
+		mUpButton.SetResizeMode(RM_Fixed, RM_Fixed);
+		mUpButton.SetFixedSize({ DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2 });
 
-		mDownButton.SetResizeMode(RM_Fixed, RM_Fixed);
-		mDownButton.W = WIDGET_HEIGHT;
-		mDownButton.H = WIDGET_HEIGHT / 2.0f;
 		mDownButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedDownInternal);
+		mDownButton.SetResizeMode(RM_Fixed, RM_Fixed);
+		mDownButton.SetFixedSize({ DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2 });
 
 		mButtonBox.AddChild(&mUpButton);
 		mButtonBox.AddChild(&mDownButton);
+
+		PWidget::AddChild(&mText);
+		PWidget::AddChild(&mButtonBox);
 	}
 
 	void Draw(const PRenderer* Renderer) const override
@@ -77,10 +83,5 @@ public:
 		// Outline
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(GetGeometry());
-
-		for (const auto& Child : mChildren)
-		{
-			Child->Draw(Renderer);
-		}
 	}
 };
