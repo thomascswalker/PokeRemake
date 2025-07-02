@@ -46,6 +46,30 @@ public:
 		return Actor.get();
 	}
 
+	void DestroyActor(const PActor* Actor)
+	{
+		if (!Actor)
+		{
+			return;
+		}
+
+		std::shared_ptr<PActor> SharedActor;
+		for (auto Ptr : mActors)
+		{
+			if (Ptr.get() == Actor)
+			{
+				SharedActor = Ptr;
+				break;
+			}
+		}
+		if (!SharedActor)
+		{
+			return;
+		}
+
+		mActors.erase(std::ranges::find(mActors, SharedActor));
+	}
+
 	template <typename T>
 	void RegisterActor(T* Actor)
 	{

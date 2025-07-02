@@ -31,7 +31,6 @@ void PEditorGame::PreStart()
 	}
 
 	ConstructInterface();
-	InitializeControls();
 }
 
 void PEditorGame::Start()
@@ -54,7 +53,9 @@ void PEditorGame::ConstructInterface()
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 
 	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
 	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
@@ -73,16 +74,20 @@ void PEditorGame::ConstructInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetMaxWidth(100.0f);
 
-	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
-	EditModeSelect->SetCheckable(true);
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTile->SetCheckable(true);
+	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
+	EditModeChunk->SetCheckable(true);
+	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileType->SetCheckable(true);
+	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTileSprite->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	EditModeButtonGroup->AddButton(EditModeSelect);
-	EditModeButtonGroup->AddButton(EditModeTile);
+	EditModeButtonGroup->AddButton(EditModeChunk);
+	EditModeButtonGroup->AddButton(EditModeTileType);
+	EditModeButtonGroup->AddButton(EditModeTileSprite);
 
-	EditGroup->AddChild(EditModeSelect);
-	EditGroup->AddChild(EditModeTile);
+	EditGroup->AddChild(EditModeChunk);
+	EditGroup->AddChild(EditModeTileType);
+	EditGroup->AddChild(EditModeTileSprite);
 
 	Box->AddChild(FileGroup);
 	Box->AddChild(EditGroup);
@@ -93,23 +98,6 @@ void PEditorGame::ConstructInterface()
 	mWorld->SetCanvas(MainCanvas);
 }
 
-void PEditorGame::InitializeControls()
-{
-	AddInputContext(IC_Move);
-	//
-	// if (auto Input = GetInputManager())
-	// {
-	// 	Input->AddInputContext(
-	// 		"Move",
-	// 		{
-	// 			{ "Up",	IT_Keyboard },
-	// 			{ "Left",  IT_Keyboard },
-	// 			{ "Down",  IT_Keyboard },
-	// 			{ "Right", IT_Keyboard },
-	// 	});
-	// }
-}
-
 void PEditorGame::AddInputContext(uint8_t InputContext)
 {
 	mInputContext |= InputContext;
@@ -117,12 +105,11 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 	const auto Input = GetInputManager();
 	switch (InputContext)
 	{
-		case IC_Move:
-			Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUp);
-			break;
 		case IC_Select:
+			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
 		case IC_Tile:
+			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpTile);
 			break;
 		default:
 			break;
@@ -135,13 +122,15 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 	const auto Input = GetInputManager();
 	switch (InputContext)
 	{
-		case IC_Move:
-			Input->KeyUp.RemoveObject(this);
-			break;
 		case IC_Select:
-			mCurrentChunk->SetSelected(false);
+			Input->KeyUp.Remove(mSelectDelegate);
+			if (mCurrentChunk)
+			{
+				mCurrentChunk->SetSelected(false);
+			}
 			break;
 		case IC_Tile:
+			Input->KeyUp.Remove(mTileDelegate);
 			break;
 		default:
 			break;
@@ -152,12 +141,12 @@ void PEditorGame::OnCreateButtonClicked()
 {
 	json JsonData = {
 		{ "Position", { 0, 0 }	   },
-		{ "SizeX",	   NEW_GRID_SIZE },
-		{ "SizeY",	   NEW_GRID_SIZE },
+		{ "SizeX",	   mNewGridSizeX },
+		{ "SizeY",	   mNewGridSizeY },
 	};
-	for (int X = 0; X < NEW_GRID_SIZE; ++X)
+	for (int X = 0; X < mNewGridSizeX; ++X)
 	{
-		for (int Y = 0; Y < NEW_GRID_SIZE; ++Y)
+		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
 				{ "Position", { X, Y } },
@@ -216,45 +205,75 @@ void PEditorGame::OnTileButtonChecked(bool State)
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
-void PEditorGame::OnKeyUp(uint32_t ScanCode)
+void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
 {
+	const auto HoverTile = GetActorUnderMouse<PTile>();
+	if (!HoverTile)
+	{
+		return;
+	}
 	switch (ScanCode)
 	{
-		case SDLK_UP:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(0, TILE_SIZE));
-				}
-				break;
-			}
-		case SDLK_DOWN:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(0, TILE_SIZE));
-				}
-				break;
-			}
-		case SDLK_LEFT:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - FVector2(TILE_SIZE, 0));
-				}
-				break;
-			}
-		case SDLK_RIGHT:
-			{
-				if (mCurrentChunk)
-				{
-					mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() + FVector2(TILE_SIZE, 0));
-				}
-				break;
-			}
+		case SDLK_1:
+			HoverTile->Type = TT_Normal;
+			break;
+		case SDLK_2:
+			HoverTile->Type = TT_Obstacle;
+			break;
+		case SDLK_3:
+			HoverTile->Type = TT_Water;
+			break;
+		case SDLK_4:
+			HoverTile->Type = TT_Grass;
+			break;
+		case SDLK_5:
+			HoverTile->Type = TT_Cave;
+			break;
+		case SDLK_6:
+			HoverTile->Type = TT_Portal;
+			break;
 		default:
 			break;
 	}
+}
+
+void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
+{
+	if (!mCurrentChunk)
+	{
+		return;
+	}
+	FVector2 Offset;
+	switch (ScanCode)
+	{
+		case SDLK_UP:
+			Offset = FVector2(0, TILE_SIZE);
+			break;
+		case SDLK_DOWN:
+			Offset = FVector2(0, TILE_SIZE);
+			break;
+		case SDLK_LEFT:
+			Offset = FVector2(TILE_SIZE, 0);
+			break;
+		case SDLK_RIGHT:
+			Offset = FVector2(TILE_SIZE, 0);
+			break;
+		case SDLK_DELETE:
+			// ReSharper disable once CppDFAConstantConditions
+			if (mCurrentChunk)
+			{
+				// Remove the chunk from the list of chunks
+				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
+				// Destroy the chunk actor
+				GetWorld()->DestroyActor(mCurrentChunk);
+				// Set the current chunk to null
+				mCurrentChunk = nullptr;
+			}
+			return;
+		default:
+			break;
+	}
+	mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - Offset);
 }
 
 void PEditorGame::AddChunk(PChunk* Chunk)

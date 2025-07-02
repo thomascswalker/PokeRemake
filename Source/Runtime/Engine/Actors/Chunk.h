@@ -19,7 +19,7 @@ class PChunk : public PActor
 public:
 	PChunk() {}
 	PChunk(const json& JsonData);
-	~PChunk() override = default;
+	~PChunk() override;
 	void				Start() override;
 	void				Draw(const PRenderer* Renderer) const override;
 	FRect				GetLocalBounds() const override;

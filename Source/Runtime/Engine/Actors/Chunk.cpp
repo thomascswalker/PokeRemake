@@ -15,6 +15,14 @@ PChunk::PChunk(const json& JsonData)
 	bBlocking = false;
 	mData = JsonData;
 }
+PChunk::~PChunk()
+{
+	auto W = GetWorld();
+	for (auto Tile : mTiles)
+	{
+		W->DestroyActor(Tile);
+	}
+}
 
 void PChunk::Start()
 {
@@ -65,9 +73,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR
-	auto Game = GetEditorGame();
-	auto IC = Game->GetInputContext();
-	if (Bitmask::Test(IC, IC_Select))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (bMouseOver || bSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (bMouseOver)

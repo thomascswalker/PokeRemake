@@ -14,10 +14,14 @@ void PActor::UpdateMouseState()
 	FVector2   ScreenPosition;
 	Renderer->WorldToScreen(GetPosition(), &ScreenPosition);
 
-	auto	   CameraView = GetCameraView();
-	auto	   Rect = GetLocalBounds();
-	FRect	   ScreenRect = { ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
-							  Rect.H * CameraView->GetZoom() };
+	auto  CameraView = GetCameraView();
+	auto  Rect = GetWorldBounds();
+	FRect ScreenRect = {
+		ScreenPosition.X,
+		ScreenPosition.Y,
+		Rect.W * CameraView->GetZoom(),
+		Rect.H * CameraView->GetZoom(),
+	};
 	const bool NewMouseState = ScreenRect.Contains(MousePosition);
 
 	if (!bMouseOver && NewMouseState)

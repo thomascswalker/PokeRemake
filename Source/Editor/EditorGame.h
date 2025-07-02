@@ -12,7 +12,6 @@ constexpr int BUTTON_HEIGHT = 20;
 enum EInputContext : uint8_t
 {
 	IC_None = 1U << 0,
-	IC_Move = 1U << 1,
 	IC_Select = 1U << 2,
 	IC_Tile = 1U << 3,
 };
@@ -29,6 +28,9 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
+	float mNewGridSizeX = 5.0f;
+	float mNewGridSizeY = 5.0f;
+
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
@@ -37,22 +39,30 @@ class PEditorGame : public PGame
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
 
+	DelegateHandle mSelectDelegate;
+	DelegateHandle mTileDelegate;
+
 public:
 	// Init
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
 	void ConstructInterface();
-	void InitializeControls();
+
+	// Input
 
 	uint8_t GetInputContext() { return mInputContext; }
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
+	void	OnKeyUpSelect(uint32_t ScanCode);
+	void	OnKeyUpTile(uint32_t ScanCode);
 
 	// Interface
-	void OnKeyUp(uint32_t ScanCode);
+
 	void OnCreateButtonClicked();
+	void OnSizeXChanged(float Value) { mNewGridSizeX = Value; }
+	void OnSizeYChanged(float Value) { mNewGridSizeY = Value; }
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);
@@ -63,6 +73,21 @@ public:
 	void SetCurrentChunk(PChunk* Chunk);
 	void ConstructChunk(const json& JsonData);
 	void ActorSelected(PActor* Actor);
+
+	template <typename T = PActor>
+	T* GetActorUnderMouse()
+	{
+		auto W = GetWorld();
+		for (const auto& Actor : W->GetActors())
+		{
+			const auto TActor = dynamic_cast<T*>(Actor);
+			if (TActor && Actor->bMouseOver)
+			{
+				return TActor;
+			}
+		}
+		return nullptr;
+	}
 };
 
 PEditorGame* GetEditorGame();

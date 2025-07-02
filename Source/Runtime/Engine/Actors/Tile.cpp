@@ -1,15 +1,10 @@
 #include "Tile.h"
 
+#include "../../../Editor/EditorGame.h"
 #include "../World.h"
 #include "Chunk.h"
 #include "Core/Settings.h"
-#include "Engine/ClassRegistry.h"
-#include "Engine/Engine.h"
 
-PTile::PTile(const json& JsonData)
-{
-	LogDebug("Constructing tile from JSON data");
-}
 FVector2 PTile::GetPosition() const
 {
 	if (Chunk)
@@ -20,16 +15,6 @@ FVector2 PTile::GetPosition() const
 		return Position;
 	}
 	return mPosition;
-}
-
-FVector2 PTile::GetLocalPosition() const
-{
-	return FVector2(X * TILE_SIZE, Y * TILE_SIZE);
-}
-
-FVector2 PTile::GetWorldPosition() const
-{
-	return GetLocalPosition() + Chunk->GetPosition();
 }
 
 void PTile::Draw(const PRenderer* Renderer) const
@@ -76,13 +61,25 @@ void PTile::Draw(const PRenderer* Renderer) const
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
 	Renderer->DrawRectAt(Dest, WorldPosition);
+
+#if _EDITOR
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (bMouseOver || bSelected))
+	{
+		Renderer->SetDrawColor(255, 200, 0, 150);
+		if (bMouseOver)
+		{
+			constexpr float ExpandSize = 2.0f;
+			Renderer->DrawRectAt(Dest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+		}
+	}
+#endif
 }
 
 PActor* PTile::GetActor() const
 {
 	for (const auto& Actor : GetWorld()->GetActors())
 	{
-		if (Actor->GetPosition() == GetWorldPosition())
+		if (Actor->GetPosition() == GetPosition())
 		{
 			return Actor; // Return the actor if its position matches the tile's world position
 		}
