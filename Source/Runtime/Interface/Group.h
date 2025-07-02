@@ -11,7 +11,6 @@ public:
 	PGroup(const std::string& Label)
 		: mLabel(Label)
 	{
-		mResizeMode = RM_FitContent;
 	}
 
 	void Draw(const PRenderer* Renderer) const override
@@ -32,11 +31,11 @@ public:
 		float TextX = X0 + TextPadding;
 
 		Renderer->SetDrawColor(PColor::UIText);
-		float Width = Renderer->DrawText(mLabel, { TextX + (TextPadding * 3), Y0 }, 14.0f);
+		float Width = Renderer->DrawText(mLabel, { TextX + 20, Y0 }, 14.0f);
 
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawLine(X0, Y0, TextX, Y0); // Top
-		Renderer->DrawLine(TextX + Width + TextPadding, Y0, X1, Y0);
+		Renderer->DrawLine(TextX + Width + (TextPadding * 2), Y0, X1, Y0);
 
 		PWidget::Draw(Renderer);
 	}

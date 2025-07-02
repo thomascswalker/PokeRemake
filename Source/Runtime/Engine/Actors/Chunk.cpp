@@ -27,9 +27,10 @@ PChunk::~PChunk()
 void PChunk::Start()
 {
 	mTextureName = mData.value("Texture", std::string());
-	PTexture* T = PTextureManager::Load(mTextureName);
+	PTexture* T = nullptr;
 	if (!mTextureName.empty())
 	{
+		T = PTextureManager::Load(mTextureName);
 		if (!T)
 		{
 			LogWarning("Texture {} not found.", mTextureName.c_str());
@@ -61,7 +62,7 @@ void PChunk::Start()
 	}
 
 #if _EDITOR
-	if (auto EditorGame = dynamic_cast<PEditorGame*>(GetGame()))
+	if (const auto EditorGame = GetEditorGame())
 	{
 		EditorGame->AddChunk(this);
 	}

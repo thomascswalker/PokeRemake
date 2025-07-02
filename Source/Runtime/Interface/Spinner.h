@@ -48,18 +48,18 @@ public:
 		: mValue(Value), mText("0"), mUpButton("^"), mDownButton("v")
 	{
 		H = WIDGET_HEIGHT;
-		mResizeMode = RM_ExpandX;
+		mResizeModeW = RM_Grow;
 
 		PWidget::AddChild(&mText);
 		mText.SetText(std::format("{}", mValue));
 		PWidget::AddChild(&mButtonBox);
 
-		mUpButton.SetResizeMode(RM_FixedXY);
+		mUpButton.SetResizeMode(RM_Fixed, RM_Fixed);
 		mUpButton.W = WIDGET_HEIGHT;
 		mUpButton.H = WIDGET_HEIGHT / 2.0f;
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
 
-		mDownButton.SetResizeMode(RM_FixedXY);
+		mDownButton.SetResizeMode(RM_Fixed, RM_Fixed);
 		mDownButton.W = WIDGET_HEIGHT;
 		mDownButton.H = WIDGET_HEIGHT / 2.0f;
 		mDownButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedDownInternal);
@@ -82,18 +82,5 @@ public:
 		{
 			Child->Draw(Renderer);
 		}
-	}
-
-	void LayoutChildren() override
-	{
-		// Align text to the left
-		mText.X = X + (WIDGET_SPACING * 2);
-		mText.Y = Y + (WIDGET_SPACING / 2);
-
-		// Align buttons to the right with no spacing between them (vertically)
-		mUpButton.X = X + W - WIDGET_HEIGHT;
-		mUpButton.Y = Y;
-		mDownButton.X = X + W - WIDGET_HEIGHT;
-		mDownButton.Y = Y + mUpButton.H;
 	}
 };

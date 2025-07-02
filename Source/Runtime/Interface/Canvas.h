@@ -5,5 +5,9 @@
 class PCanvas : public PWidget
 {
 public:
-	PCanvas() {}
+	PCanvas()
+	{
+		mResizeModeW = RM_Fixed;
+		mResizeModeH = RM_Fixed;
+	}
 };

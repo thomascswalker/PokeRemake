@@ -68,6 +68,13 @@ public:
 	DButtonClicked Clicked;
 	DButtonChecked Checked;
 
+	PAbstractButton()
+	{
+		mResizeModeW = RM_Grow;
+		mResizeModeH = RM_Fixed;
+		mFixedSize.Y = DEFAULT_BUTTON_HEIGHT;
+	}
+
 	bool GetCheckable() const { return mCheckable; }
 	void SetCheckable(bool State) { mCheckable = State; }
 	bool GetChecked() const { return mChecked; }

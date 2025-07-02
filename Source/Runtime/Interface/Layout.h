@@ -1,111 +1,161 @@
 #pragma once
-#include "Widget.h"
 
 #include <vector>
 
-inline void Layout(const PWidget* Parent, const std::vector<PWidget*>& Widgets, const FRect& Rect, ELayoutMode LayoutMode)
+#include "Widget.h"
+
+// Grow this widget to the size of its parent
+// TODO: Account for multiple children that can grow
+inline void LayoutGrow(PWidget* Widget)
 {
-	// Available size for the widgets to fit into
-	const FVector2 Available = { Rect.W, Rect.H };
+	const PWidget* Parent = Widget->GetParent();
+	const auto	   RMW = Widget->GetResizeModeW();
+	const auto	   RMH = Widget->GetResizeModeH();
 
-	float Width = 0.0f, Height = 0.0f;
-	float CX = Rect.X;
-	float CY = Rect.Y;
-
-	const int Count = Widgets.size();
-
-	// Depending on the layout mode of the parent widget, calculate the desired size for
-	// each child widget.
-	switch (LayoutMode)
+	if (Parent && (RMW == RM_Grow || RMH == RM_Grow))
 	{
-		case LM_Horizontal:
-			Width = Count == 0 ? Available.X : Available.X / Count;
-			Height = Available.Y;
-			break;
-		case LM_Vertical:
-			Width = Available.X;
-			Height = Count == 0 ? Available.Y : Available.Y / Count;
-			break;
+		const float Padding = Widget->Padding.Left;
+
+		if (RMW == RM_Grow)
+		{
+			const float RemainingWidth = Parent->W;
+			Widget->W = RemainingWidth - (Padding * 2);
+		}
+
+		if (RMH == RM_Grow)
+		{
+			const float RemainingHeight = Parent->H;
+			Widget->H = RemainingHeight - (Padding * 2);
+		}
 	}
 
-	for (const auto Child : Widgets)
+	for (const auto Child : Widget->GetChildren())
 	{
-		// Set the current child's position to the current position with spacing
-		Child->X = CX + Child->Padding.Left;
-		Child->Y = CY + Child->Padding.Top;
+		LayoutGrow(Child);
+	}
+}
 
-		if (Child->GetResizeMode() == RM_FitContent)
+inline void LayoutFitSize(PWidget* Widget)
+{
+	const auto RMW = Widget->GetResizeModeW();
+	const auto RMH = Widget->GetResizeModeH();
+
+	if (RMW == RM_Fit || RMH == RM_Fit)
+	{
+		const float Padding = Widget->Padding.Left;
+
+		if (RMW == RM_Fit)
 		{
-			// Layout children prior to determining this child's size
-			Child->LayoutChildren();
+			Widget->W += Padding;
+		}
+		if (RMH == RM_Fit)
+		{
+			Widget->H += Padding;
+		}
 
-			FVector2 ContentSize(0, 0);
-			for (const auto GrandChild : Child->GetChildren())
-			{
-				switch (Child->GetLayoutMode())
+		float SumW = 0;
+		float SumH = 0;
+		float LargestW = 0;
+		float LargestH = 0;
+
+		for (const auto Child : Widget->GetChildren())
+		{
+			SumW += Child->W + Padding;
+			SumH += Child->H + Padding;
+			LargestW = std::max(LargestW, Child->W + Padding);
+			LargestH = std::max(LargestH, Child->H + Padding);
+		}
+
+		switch (Widget->GetLayoutMode())
+		{
+			case LM_Horizontal:
+				if (RMW == RM_Fit)
 				{
-					case LM_Horizontal:
-						ContentSize.X += GrandChild->W + GrandChild->Padding.Right;
-						ContentSize.Y = std::max(GrandChild->H + GrandChild->Padding.Bottom, ContentSize.Y);
-						break;
-					case LM_Vertical:
-						ContentSize.X = std::max(GrandChild->W + GrandChild->Padding.Right, ContentSize.X);
-						ContentSize.Y += GrandChild->H + GrandChild->Padding.Bottom;
-						break;
+					Widget->W = SumW + Padding;
 				}
-			}
-			Child->W = std::min(ContentSize.X + Child->Padding.Right, Child->GetMaxSize().X);
-			Child->H = std::min(ContentSize.Y + Child->Padding.Bottom, Child->GetMaxSize().Y);
-
-			switch (LayoutMode)
-			{
-				case LM_Horizontal:
-					CX += Child->W + Child->Padding.Right;
-					break;
-				case LM_Vertical:
-					CY += Child->H + Child->Padding.Bottom;
-					break;
-			}
-
-			continue;
-		}
-
-		// Depending on the child's resize mode, set the width and/or height to the expanded
-		// width/height minus the spacing.
-		switch (Child->GetResizeMode())
-		{
-			case RM_FixedXY:
+				if (RMH == RM_Fit)
+				{
+					Widget->H = LargestH + Padding;
+				}
 				break;
-			case RM_ExpandX:
-				Child->W = Width - Child->Padding.Right;
-				break;
-			case RM_ExpandY:
-				Child->H = Height - Child->Padding.Bottom;
-				break;
-			case RM_ExpandXY:
-				Child->W = Width - Child->Padding.Right;
-				Child->H = Height - Child->Padding.Bottom;
-				break;
-			case RM_FitContent:
+			case LM_Vertical:
+				if (RMW == RM_Fit)
+				{
+					Widget->W = LargestW + Padding;
+				}
+				if (RMH == RM_Fit)
+				{
+					Widget->H = SumH + Padding;
+				}
 				break;
 		}
+	}
 
-		Child->W = std::min(Child->W, Child->GetMaxSize().X);
-		Child->H = std::min(Child->H, Child->GetMaxSize().Y);
+	for (const auto Child : Widget->GetChildren())
+	{
+		LayoutFitSize(Child);
+	}
+}
 
-		// Depending on the layout mode of the parent widget, update the current position
-		// given the new width/height of the child and spacing.
+inline void LayoutFixedSize(PWidget* Widget)
+{
+	// All widgets initialize at their fixed size.
+
+	const auto FixedSize = Widget->GetFixedSize();
+	Widget->W = FixedSize.X;
+	Widget->H = FixedSize.Y;
+
+	for (const auto Child : Widget->GetChildren())
+	{
+		LayoutFixedSize(Child);
+	}
+}
+
+inline void LayoutPosition(const PWidget* Widget)
+{
+	const auto Children = Widget->GetChildren();
+
+	// Full geometry of the parent widget
+	const FRect Rect = Widget->GetGeometry();
+
+	// Top-left
+	const FVector2 Origin = { Rect.X, Rect.Y };
+
+	// Uniform padding
+	const float Padding = Widget->Padding.Left;
+
+	// Change in X and Y as we lay out children
+	float DX = Padding;
+	float DY = Padding;
+
+	const auto LayoutMode = Widget->GetLayoutMode();
+
+	for (const auto Child : Children)
+	{
+		// // Child position is at the origin plus the current offset in X/Y
+		Child->X = Origin.X + DX;
+		Child->Y = Origin.Y + DY;
+
+		// Recursively call this positioning
+		LayoutPosition(Child);
+
+		// Child size is the automatic size minus padding for bottom and right
 		switch (LayoutMode)
 		{
 			case LM_Horizontal:
-				CX += Child->W + Child->Padding.Right;
+				DX += Child->W + Padding;
 				break;
 			case LM_Vertical:
-				CY += Child->H + Child->Padding.Bottom;
+				DY += Child->H + Padding;
 				break;
 		}
-
-		// Layout all children of this child.
-		Child->LayoutChildren();
 	}
+}
+
+inline void Layout(PWidget* Widget)
+{
+	LayoutFixedSize(Widget);
+	LayoutFitSize(Widget);
+	LayoutGrow(Widget);
+	LayoutPosition(Widget);
 }

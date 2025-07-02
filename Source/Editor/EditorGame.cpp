@@ -41,39 +41,35 @@ void PEditorGame::Start()
 
 void PEditorGame::ConstructInterface()
 {
-	const auto Box = mWorld->ConstructWidget<PBox>();
-	Box->SetLayoutMode(LM_Vertical);
-	Box->SetMaxWidth(120.0f);
+	const auto MainPanel = mWorld->ConstructWidget<PBox>();
+	MainPanel->SetLayoutMode(LM_Vertical);
+	MainPanel->SetResizeModeW(RM_Fixed);
+	MainPanel->SetFixedWidth(150);
 
 	// Files
-
 	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
-	FileGroup->SetMaxWidth(100.0f);
+	FileGroup->SetResizeModeH(RM_Fit);
+	FileGroup->SetLayoutMode(LM_Vertical);
 
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
-
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
-	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
-	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
-
+	// const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	// SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
+	// const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	// SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
-
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
 	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
-
 	FileGroup->AddChild(CreateButton);
-	FileGroup->AddChild(SizeXSpinner);
-	FileGroup->AddChild(SizeYSpinner);
+	// FileGroup->AddChild(SizeXSpinner);
+	// FileGroup->AddChild(SizeYSpinner);
 	FileGroup->AddChild(SaveButton);
 	FileGroup->AddChild(LoadButton);
 
 	// Edit
-
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
-	EditGroup->SetMaxWidth(100.0f);
-
+	EditGroup->SetResizeModeH(RM_Fit);
+	EditGroup->SetLayoutMode(LM_Vertical);
 	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
 	EditModeChunk->SetCheckable(true);
 	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
@@ -84,18 +80,17 @@ void PEditorGame::ConstructInterface()
 	EditModeButtonGroup->AddButton(EditModeChunk);
 	EditModeButtonGroup->AddButton(EditModeTileType);
 	EditModeButtonGroup->AddButton(EditModeTileSprite);
-
 	EditGroup->AddChild(EditModeChunk);
 	EditGroup->AddChild(EditModeTileType);
 	EditGroup->AddChild(EditModeTileSprite);
 
-	Box->AddChild(FileGroup);
-	Box->AddChild(EditGroup);
+	MainPanel->AddChild(FileGroup);
+	MainPanel->AddChild(EditGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
-	MainCanvas->AddChild(Box);
+	MainCanvas->AddChild(MainPanel);
 
-	mWorld->SetCanvas(MainCanvas);
+	mWorld->SetRootWidget(MainCanvas);
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -139,6 +134,8 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 
 void PEditorGame::OnCreateButtonClicked()
 {
+	LogDebug("Creating new chunk: [{}, {}]", mNewGridSizeX, mNewGridSizeY);
+
 	json JsonData = {
 		{ "Position", { 0, 0 }	   },
 		{ "SizeX",	   mNewGridSizeX },
@@ -250,13 +247,13 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 			Offset = FVector2(0, TILE_SIZE);
 			break;
 		case SDLK_DOWN:
-			Offset = FVector2(0, TILE_SIZE);
+			Offset = FVector2(0, -TILE_SIZE);
 			break;
 		case SDLK_LEFT:
 			Offset = FVector2(TILE_SIZE, 0);
 			break;
 		case SDLK_RIGHT:
-			Offset = FVector2(TILE_SIZE, 0);
+			Offset = FVector2(-TILE_SIZE, 0);
 			break;
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions

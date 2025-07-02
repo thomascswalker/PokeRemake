@@ -69,10 +69,11 @@ public:
 	void OnTileButtonChecked(bool State);
 
 	// Scene
-	void AddChunk(PChunk* Chunk);
-	void SetCurrentChunk(PChunk* Chunk);
-	void ConstructChunk(const json& JsonData);
-	void ActorSelected(PActor* Actor);
+	void   AddChunk(PChunk* Chunk);
+	size_t GetChunkCount() const { return mChunks.size(); }
+	void   SetCurrentChunk(PChunk* Chunk);
+	void   ConstructChunk(const json& JsonData);
+	void   ActorSelected(PActor* Actor);
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()
