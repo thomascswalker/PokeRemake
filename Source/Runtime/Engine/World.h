@@ -7,7 +7,7 @@
 #include "Actors/Character.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
-#include "Interface/Canvas.h"
+#include "Interface/AbstractView.h"
 #include "Interface/Widget.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
@@ -73,8 +73,7 @@ public:
 	template <typename T>
 	void RegisterActor(T* Actor)
 	{
-		auto Actor2 = ConstructObject(Actor);
-		mActors.push_back(Actor2);
+		mActors.push_back(ConstructObject<T>(Actor));
 	}
 
 	template <ENABLE_IF(PActor), typename... ArgsType>
@@ -150,6 +149,12 @@ public:
 		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mWidgets.push_back(Widget);
 		return Widget.get();
+	}
+
+	template <typename T>
+	void RegisterWidget(T* Widget)
+	{
+		mWidgets.push_back(ConstructObject<T>(Widget));
 	}
 
 	std::vector<PWidget*> GetWidgets() const

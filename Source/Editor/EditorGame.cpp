@@ -87,6 +87,22 @@ void PEditorGame::ConstructInterface()
 	MainPanel->AddChild(FileGroup);
 	MainPanel->AddChild(EditGroup);
 
+	// Tiles
+
+	const auto					   ItemView = mWorld->ConstructWidget<PAbstractView>();
+	const std::vector<std::string> Items = {
+		"Item1", "Item2", "Item3", "Item4", "Item5"
+	};
+	for (const auto& Item : Items)
+	{
+		auto NewItem = ItemView->AddItem<PButton>(Item);
+		auto Widget = NewItem->GetWidget<PButton>();
+		Widget->SetFixedSize({ 40, 40 });
+		Widget->SetResizeMode(RM_Fixed, RM_Fixed);
+	}
+
+	MainPanel->AddChild(ItemView);
+
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
 

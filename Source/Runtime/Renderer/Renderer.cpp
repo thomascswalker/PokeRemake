@@ -8,6 +8,7 @@
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
 #include "Engine/World.h"
+#include "Interface/Layout.h"
 
 std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
@@ -107,7 +108,7 @@ void PRenderer::Render() const
 			Root->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
 
 			// Recursively construct the layout of all widgets
-			Layout(Root);
+			Layout::Layout(Root);
 
 			// Once all widgets have been laid out, process
 			// recursively events for them.
