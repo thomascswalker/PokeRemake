@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "SDL3/SDL.h"
 #include "Vector.h"
 
 template <typename T>
@@ -13,8 +14,10 @@ public:
 	T W;
 	T H;
 
-	TRect() : X(0), Y(0), W(0), H(0) {}
-	TRect(T inX, T inY, T inW, T inH) : X(inX), Y(inY), W(inW), H(inH) {}
+	TRect()
+		: X(0), Y(0), W(0), H(0) {}
+	TRect(T inX, T inY, T inW, T inH)
+		: X(inX), Y(inY), W(inW), H(inH) {}
 
 	TVector4<T> ToVector4() const { return TVector4<T>(X, Y, W, H); }
 	TVector2<T> Min() const { return TVector2<T>(X, Y); }
@@ -60,6 +63,16 @@ public:
 		TRect Out = *this;
 		Out.Expand(Size);
 		return Out;
+	}
+
+	SDL_FRect ToSDL_FRect() const
+	{
+		return { X, Y, W, H };
+	}
+
+	SDL_Rect ToSDL_Rect() const
+	{
+		return { X, Y, W, H };
 	}
 };
 

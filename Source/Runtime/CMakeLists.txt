@@ -65,6 +65,7 @@ set(SOURCES
         Engine/InputContext.h
         Interface/AbstractView.h
         Interface/AbstractView.cpp
+        Interface/ClipArea.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

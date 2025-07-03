@@ -91,17 +91,22 @@ public:
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
-	void DrawChildren(const PRenderer* Renderer) const
+	virtual void DrawChildren(const PRenderer* Renderer) const
 	{
 		for (const auto& Child : mChildren)
 		{
 			// Draw this widget
+			Child->PreDraw(Renderer);
 			Child->Draw(Renderer);
+			Child->PostDraw(Renderer);
+
 			// Draw its children
 			Child->DrawChildren(Renderer);
 		}
 	}
+	virtual void  PreDraw(const PRenderer* Renderer) {}
 	virtual void  Draw(const PRenderer* Renderer) const {}
+	virtual void  PostDraw(const PRenderer* Renderer) {}
 	void		  Tick(float DeltaTime) override {}
 	virtual FRect GetGeometry() const { return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) }; }
 	virtual void  ProcessEvents(SWidgetEvent* Event);

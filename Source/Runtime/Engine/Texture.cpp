@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG // generate user friendly error messages
 
+#include "Renderer/Renderer.h"
 #include "stb/stb_image.h"
 
 #include <cstring>
@@ -33,47 +34,40 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	}
 	LogDebug("Loading texture: {}", AbsFileName.c_str());
 
-	PTexture Tex;
-	Tex.mFileName = AbsFileName;
-	const auto Data =
-		stbi_load(Tex.mFileName.c_str(), &Tex.mWidth, &Tex.mHeight, &Tex.mChannels, 4);
-	const auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
-	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
-	std::memcpy(Tex.mData, Data, DataSize);
-	stbi_image_free(Data);
+	int		   Width, Height, Channels;
+	const auto Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, 4);
 
-	if (!Tex.mData)
+	if (!Data)
 	{
 		LogError("Unable to load image: {}", stbi_failure_reason());
 		return nullptr;
 	}
 
-	LogDebug("Texture {} loaded", Tex.mFileName.c_str());
-	gTextures[FileName] = std::make_shared<PTexture>(Tex);
-
-	return gTextures.at(FileName).get();
+	PTexture* NewTexture = Create(AbsFileName, Width, Height, Data);
+	LogDebug("Texture {} loaded", FileName.c_str());
+	stbi_image_free(Data);
+	return NewTexture;
 }
 
-void PTextureManager::LoadSDL(SDL_Renderer* Renderer)
+void PTextureManager::LoadSDL(PTexture* Texture)
 {
-	for (const auto& [K, V] : GetTextures())
+	const auto Renderer = GetRenderer()->GetSDLRenderer();
+	const auto Width = Texture->GetWidth();
+	const auto Height = Texture->GetHeight();
+	const auto SDLTexture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
+											  SDL_TEXTUREACCESS_STATIC, Width, Height);
+	if (!SDLTexture)
 	{
-		const auto Width = V->GetWidth();
-		const auto Height = V->GetHeight();
-		const auto Texture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
-											   SDL_TEXTUREACCESS_STATIC, Width, Height);
-		if (!Texture)
-		{
-			LogError("Unable to create texture: {}", SDL_GetError());
-			continue;
-		}
-		SDL_Rect Source(0, 0, Width, Height);
-		if (SDL_UpdateTexture(Texture, &Source, V->GetData(), V->GetPitch()))
-		{
-			V->mSDLTexture = Texture;
-		}
+		LogError("Unable to create texture: {}", SDL_GetError());
+		return;
+	}
+	SDL_Rect Source(0, 0, Width, Height);
+	if (SDL_UpdateTexture(SDLTexture, &Source, Texture->GetData(), Texture->GetPitch()))
+	{
+		Texture->mSDLTexture = SDLTexture;
 	}
 }
+
 void PTextureManager::UnloadSDL()
 {
 	LogDebug("Destroying all SDL textures");
@@ -83,16 +77,50 @@ void PTextureManager::UnloadSDL()
 	}
 }
 
-PTexture* PTextureManager::Get(const std::string& FileName)
+PTexture* PTextureManager::Get(const std::string& Name)
 {
 	for (const auto& [K, V] : GetTextures())
 	{
-		if (V->GetFileName().ends_with(FileName))
+		if (V->GetName().ends_with(Name))
 		{
 			return V.get();
 		}
 	}
 	return nullptr;
+}
+
+PTexture* PTextureManager::Create(const std::string& Name, float Width, float Height, const void* Data)
+{
+	PTexture   Tex;
+	const auto DataSize = Tex.mWidth * Tex.mHeight * 4 * sizeof(uint8_t);
+	if (Data)
+	{
+		std::memcpy(Tex.mData, Data, DataSize);
+	}
+	else
+	{
+		Tex.mData = static_cast<uint8_t*>(std::malloc(DataSize));
+	}
+	Tex.mWidth = Width;
+	Tex.mHeight = Height;
+	Tex.mName = Name;
+	LoadSDL(&Tex);
+
+	gTextures[Name] = std::make_shared<PTexture>(Tex);
+	return gTextures[Name].get();
+}
+
+void PTextureManager::Destroy(const PTexture* Texture)
+{
+	auto Iter = gTextures.find(Texture->GetName());
+	if (Iter != gTextures.end())
+	{
+		gTextures.erase(Iter);
+	}
+	else
+	{
+		LogError("Unable to find texture: {}", Texture->GetName().c_str());
+	}
 }
 
 std::map<std::string, std::shared_ptr<PTexture>> PTextureManager::GetTextures()
