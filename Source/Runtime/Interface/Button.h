@@ -44,7 +44,7 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
-		const FRect Rect{ X, Y, W, H };
+		const FRect R = GetGeometry();
 
 		// Clicked
 		if (mMouseDown)
@@ -52,7 +52,7 @@ public:
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
 		}
 		// Hovered
-		else if (Rect.Contains(Renderer->GetMousePosition()))
+		else if (R.Contains(Renderer->GetMousePosition()))
 		{
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
 		}
@@ -61,11 +61,11 @@ public:
 		{
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondary : PColor::UIPrimary);
 		}
-		Renderer->DrawFillRect(Rect);
+		Renderer->DrawFillRect(R);
 
 		// Border
 		Renderer->SetDrawColor(PColor::UIBorder);
-		Renderer->DrawRect(Rect);
+		Renderer->DrawRect(R);
 	}
 
 	float GetFontSize() const { return mText.GetFontSize(); }

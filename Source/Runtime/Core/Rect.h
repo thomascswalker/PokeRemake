@@ -67,12 +67,12 @@ public:
 
 	SDL_FRect ToSDL_FRect() const
 	{
-		return { X, Y, W, H };
+		return { (float)X, (float)Y, (float)W, (float)H };
 	}
 
 	SDL_Rect ToSDL_Rect() const
 	{
-		return { X, Y, W, H };
+		return { (int)X, (int)Y, (int)W, (int)H };
 	}
 };
 

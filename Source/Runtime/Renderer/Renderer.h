@@ -60,6 +60,17 @@ public:
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void SetDrawColor(const PColor& Color) const;
 
+	bool SetClipRect(const FRect& ClipRect) const
+	{
+		SDL_Rect Clip = ClipRect.ToSDL_Rect();
+		return SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	}
+	bool ReleaseClipRect() const
+	{
+		SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
+		return SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	}
+
 	void  DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
 	void  DrawLine(float X1, float Y1, float X2, float Y2) const;
 	void  DrawRect(const FRect& Rect) const;

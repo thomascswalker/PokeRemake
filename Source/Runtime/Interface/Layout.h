@@ -163,7 +163,7 @@ namespace Layout
 
 		for (const auto Child : Children)
 		{
-			// // Child position is at the origin plus the current offset in X/Y
+			// Child position is at the origin plus the current change in X/Y
 			Child->X = Origin.X + DX;
 			Child->Y = Origin.Y + DY;
 
@@ -183,11 +183,35 @@ namespace Layout
 		}
 	}
 
+	inline void Offset(PWidget* Widget)
+	{
+		const auto Children = Widget->GetChildren();
+		const auto LayoutMode = Widget->GetLayoutMode();
+
+		auto OffsetX = Widget->GetOffset().X;
+		auto OffsetY = Widget->GetOffset().Y;
+
+		if (OffsetX && LayoutMode == LM_Horizontal)
+		{
+			Widget->X += Widget->GetOffset().X;
+		}
+		if (OffsetY && LayoutMode == LM_Vertical)
+		{
+			Widget->Y += Widget->GetOffset().Y;
+		}
+
+		for (const auto Child : Children)
+		{
+			Offset(Child);
+		}
+	}
+
 	inline void Layout(PWidget* Widget)
 	{
 		Fixed(Widget);
 		Fit(Widget);
 		GrowChildren(Widget);
 		Position(Widget);
+		Offset(Widget);
 	}
 } // namespace Layout

@@ -11,6 +11,7 @@ public:
 	{
 		mClipTexture = PTextureManager::Create(mInternalName, 100, 100, nullptr);
 	}
+
 	~PClipArea() override
 	{
 		SDL_DestroyTexture(mClipTexture->GetSDLTexture());
@@ -22,19 +23,20 @@ public:
 	void DrawChildren(const PRenderer* Renderer) const override {}
 	void PreDraw(const PRenderer* Renderer) override
 	{
-		const auto SDLTex = Renderer->CreateRenderTarget(W, H);
-		mClipTexture->SetSDLTexture(SDLTex);
-		Renderer->SetRenderTarget(mClipTexture->GetSDLTexture());
+		// const auto SDLTex = Renderer->CreateRenderTarget(W, H);
+		// mClipTexture->SetSDLTexture(SDLTex);
+		// Renderer->SetRenderTarget(mClipTexture->GetSDLTexture());
 	}
 	void Draw(const PRenderer* Renderer) const override
 	{
 		Renderer->SetDrawColor(PColor::Red);
 		Renderer->DrawFillRect(GetGeometry());
 	}
+
 	void PostDraw(const PRenderer* Renderer) override
 	{
-		Renderer->ReleaseRenderTarget();
-		Renderer->DrawTexture(mClipTexture, GetGeometry(), GetGeometry());
-		SDL_DestroyTexture(mClipTexture->GetSDLTexture());
+		// Renderer->ReleaseRenderTarget();
+		// Renderer->DrawTexture(mClipTexture, GetGeometry(), GetGeometry());
+		// SDL_DestroyTexture(mClipTexture->GetSDLTexture());
 	}
 };
