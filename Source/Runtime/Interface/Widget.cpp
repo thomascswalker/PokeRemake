@@ -7,6 +7,7 @@ PWidget* PWidget::mSender = nullptr;
 void PWidget::ProcessEvents(SWidgetEvent* Event)
 {
 	mSender = this;
+	mMouseOver = GetGeometry().Contains(Event->MousePosition);
 	for (const auto& Child : mChildren)
 	{
 		if (Event->Consumed)

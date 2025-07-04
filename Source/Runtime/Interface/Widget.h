@@ -79,6 +79,8 @@ protected:
 	FVector2 mOffset = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
+	bool mMouseOver = false;
+
 public:
 	float X = 0.0f;
 	float Y = 0.0f;
@@ -133,40 +135,40 @@ public:
 	}
 
 	FVector2 GetOffset() const { return mOffset; }
-	void	 SetOffset(const FVector2& Offset, bool Propogate = true)
+	void	 SetOffset(const FVector2& Offset, bool Propagate = true)
 	{
 		mOffset = Offset;
-		if (!Propogate)
+		if (!Propagate)
 		{
 			return;
 		}
 		for (auto Child : mChildren)
 		{
-			Child->SetOffset(Offset, Propogate);
+			Child->SetOffset(Offset, Propagate);
 		}
 	}
-	void SetOffsetX(float Value, bool Propogate = false)
+	void SetOffsetX(float Value, bool Propagate = false)
 	{
 		mOffset.X = Value;
-		if (!Propogate)
+		if (!Propagate)
 		{
 			return;
 		}
 		for (auto Child : mChildren)
 		{
-			Child->SetOffsetX(Value, Propogate);
+			Child->SetOffsetX(Value, Propagate);
 		}
 	}
-	void SetOffsetY(float Value, bool Propogate = false)
+	void SetOffsetY(float Value, bool Propagate = false)
 	{
 		mOffset.Y = Value;
-		if (!Propogate)
+		if (!Propagate)
 		{
 			return;
 		}
 		for (auto Child : mChildren)
 		{
-			Child->SetOffsetY(Value, Propogate);
+			Child->SetOffsetY(Value, Propagate);
 		}
 	}
 

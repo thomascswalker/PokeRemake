@@ -90,7 +90,8 @@ void PEditorGame::ConstructInterface()
 
 	// Tiles
 
-	const auto					   ItemView = mWorld->ConstructWidget<PAbstractView>();
+	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
+
 	const std::vector<std::string> Items = {
 		"Item1",
 		"Item2",

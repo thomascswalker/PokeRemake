@@ -186,19 +186,9 @@ namespace Layout
 	inline void Offset(PWidget* Widget)
 	{
 		const auto Children = Widget->GetChildren();
-		const auto LayoutMode = Widget->GetLayoutMode();
 
-		auto OffsetX = Widget->GetOffset().X;
-		auto OffsetY = Widget->GetOffset().Y;
-
-		if (OffsetX && LayoutMode == LM_Horizontal)
-		{
-			Widget->X += Widget->GetOffset().X;
-		}
-		if (OffsetY && LayoutMode == LM_Vertical)
-		{
-			Widget->Y += Widget->GetOffset().Y;
-		}
+		Widget->X += Widget->GetOffset().X;
+		Widget->Y += Widget->GetOffset().Y;
 
 		for (const auto Child : Children)
 		{
