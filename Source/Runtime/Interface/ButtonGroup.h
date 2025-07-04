@@ -13,7 +13,7 @@ public:
 	void AddButton(PAbstractButton* Button)
 	{
 		mButtons.push_back(Button);
-		Button->Checked.AddRaw(this, &PButtonGroup::OnButtonChecked);
+		Button->SetButtonGroup(this);
 	}
 
 	void OnButtonChecked(bool State)

@@ -7,6 +7,7 @@
 class PAbstractItem
 {
 	PWidget* mWidget;
+	void*	 mData;
 
 public:
 	PAbstractItem() = default;
@@ -17,6 +18,19 @@ public:
 	T* GetWidget() const
 	{
 		return dynamic_cast<T*>(mWidget);
+	}
+
+	template <typename T>
+	T* GetData() const
+	{
+		return dynamic_cast<T*>(mData);
+	}
+	template <typename T>
+	void SetData(T* Data)
+	{
+		auto Size = sizeof(T);
+		mData = std::malloc(Size);
+		std::memcpy(mData, Data, Size);
 	}
 };
 

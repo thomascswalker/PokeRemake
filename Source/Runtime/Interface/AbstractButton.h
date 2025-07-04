@@ -5,6 +5,8 @@
 DECLARE_MULTICAST_DELEGATE(DButtonClicked);
 DECLARE_MULTICAST_DELEGATE(DButtonChecked, bool);
 
+class PButtonGroup;
+
 template <typename T>
 struct SButtonClickedParams
 {
@@ -64,6 +66,8 @@ protected:
 	bool mCheckable = false;
 	bool mMouseDown = false;
 
+	PButtonGroup* mButtonGroup = nullptr;
+
 public:
 	DButtonClicked Clicked;
 	DButtonChecked Checked;
@@ -85,41 +89,7 @@ public:
 		LogInfo("Toggling {} == {}", mInternalName.c_str(), mChecked ? "true" : "false");
 	}
 
-	void ProcessEvents(SWidgetEvent* Event) override
-	{
-		mSender = this;
+	void SetButtonGroup(PButtonGroup* Group);
 
-		// Are we inside the button?
-		if (GetGeometry().Contains(Event->MousePosition))
-		{
-			// Is it a new press?
-			if (Event->MouseDown && !mMouseDown)
-			{
-				mMouseDown = true;
-			}
-			// Is it a release?
-			else if (!Event->MouseDown && mMouseDown)
-			{
-				mMouseDown = false;
-
-				// Consume the event so that we don't pass the click down to widgets
-				// underneath this button.
-				Event->Consumed = true;
-
-				Clicked.Broadcast();
-
-				// If this button is checkable, flip the checked state
-				if (mCheckable)
-				{
-					mChecked = !mChecked;
-					Checked.Broadcast(mChecked);
-				}
-			}
-		}
-		// Are we outside the button?
-		else
-		{
-			mMouseDown = false; // Reset button state
-		}
-	}
+	void ProcessEvents(SWidgetEvent* Event) override;
 };

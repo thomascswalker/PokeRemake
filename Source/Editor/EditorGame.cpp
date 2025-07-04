@@ -12,6 +12,12 @@
 
 #define NEW_GRID_SIZE 5
 
+struct TileSpriteButtonData
+{
+	std::string Name;
+	int			Index;
+};
+
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
 };
@@ -91,31 +97,28 @@ void PEditorGame::ConstructInterface()
 	// Tiles
 
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
+	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
-	const std::vector<std::string> Items = {
-		"Item1",
-		"Item2",
-		"Item3",
-		"Item4",
-		"Item5",
-		"Item6",
-		"Item7",
-		"Item8",
-		"Item9",
-		"Item10",
+	const std::vector<TileSpriteButtonData> TileData = {
+		{ "Item1", 0 },
+		{ "Item2", 1 },
+		{ "Item3", 2 },
 	};
-	for (const auto& Item : Items)
+
+	for (const auto& Item : TileData)
 	{
-		auto NewItem = ItemView->AddItem<PButton>(Item);
-		auto Widget = NewItem->GetWidget<PButton>();
-		Widget->SetFixedSize({ 40, 40 });
-		Widget->SetResizeMode(RM_Fixed, RM_Fixed);
+		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
+		NewItem->SetData(&Item);
+
+		auto Button = NewItem->GetWidget<PButton>();
+		Button->SetCheckable(true);
+		Button->SetFixedSize({ 40, 40 });
+		Button->SetResizeMode(RM_Fixed, RM_Fixed);
+
+		ItemViewButtonGroup->AddButton(Button);
 	}
 
 	MainPanel->AddChild(ItemView);
-	//
-	// const auto ClipArea = mWorld->ConstructWidget<PClipArea>();
-	// MainPanel->AddChild(ClipArea);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
@@ -230,6 +233,12 @@ void PEditorGame::OnTileButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Select);
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
+}
+
+void PEditorGame::OnTileSpriteButtonChecked(bool State)
+{
+	auto Sender = PWidget::GetSender();
+	LogInfo("Sender {}: {}", Sender->GetInternalName().c_str(), State ? "On" : "Off");
 }
 
 void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
