@@ -20,16 +20,34 @@ struct PFont
 
 class PRenderer
 {
-	SDLContext* mContext;
-	FMatrix		mMVP;
+	SDLContext*	 mContext;
+	FMatrix		 mMVP;
+	SDL_Texture* mRenderTarget;
 
 public:
 	explicit PRenderer(SDLContext* InContext)
-		: mContext(InContext) {}
+		: mContext(InContext), mRenderTarget(nullptr) {}
 
-	bool Initialize() const;
+	bool Initialize();
 	void PostInitialize() const;
 	void Uninitialize() const;
+
+	SDL_Renderer* GetSDLRenderer() { return mContext->Renderer; }
+
+	SDL_Texture* CreateRenderTarget(int Width, int Height) const
+	{
+		return SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, Width, Height);
+	}
+
+	void SetRenderTarget(SDL_Texture* InRenderTarget) const
+	{
+		SDL_SetRenderTarget(mContext->Renderer, InRenderTarget);
+	}
+
+	void ReleaseRenderTarget() const
+	{
+		SDL_SetRenderTarget(mContext->Renderer, mRenderTarget);
+	}
 
 	void LoadFont(const std::string& Name) const;
 	void UnloadFonts();
@@ -41,6 +59,17 @@ public:
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void SetDrawColor(const PColor& Color) const;
+
+	void SetClipRect(const FRect& ClipRect) const
+	{
+		SDL_Rect Clip = ClipRect.ToSDL_Rect();
+		SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	}
+	void ReleaseClipRect() const
+	{
+		SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
+		SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	}
 
 	void  DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
 	void  DrawLine(float X1, float Y1, float X2, float Y2) const;
@@ -54,6 +83,7 @@ public:
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;
 	void DrawRectAt(const FRect& Rect, const FVector2& Position) const;
 	void DrawFillRectAt(const FRect& Rect, const FVector2& Position) const;
+	void DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
 	void DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
 					   const FVector2& Position) const;
 	void DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,

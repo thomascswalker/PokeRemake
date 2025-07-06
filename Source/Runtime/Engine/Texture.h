@@ -16,7 +16,7 @@ class PTexture
 	int32_t		mHeight;
 	int32_t		mChannels;
 	uint8_t*	mData;
-	std::string mFileName;
+	std::string mName;
 
 	SDL_Texture* mSDLTexture;
 
@@ -31,8 +31,9 @@ public:
 	int32_t		 GetChannels() const { return mChannels; }
 	int32_t		 GetPitch() const { return mWidth * 4; }
 	uint8_t*	 GetData() const { return mData; }
-	std::string	 GetFileName() const { return mFileName; }
+	std::string	 GetName() const { return mName; }
 	SDL_Texture* GetSDLTexture() const { return mSDLTexture; }
+	void		 SetSDLTexture(SDL_Texture* SDLTex) { mSDLTexture = SDLTex; }
 
 	friend class PTextureManager;
 };
@@ -43,7 +44,9 @@ public:
 	static std::map<std::string, std::shared_ptr<PTexture>> GetTextures();
 
 	static PTexture* Load(const std::string& FileName);
-	static void		 LoadSDL(SDL_Renderer* Renderer);
+	static void		 LoadSDL(PTexture* Texture);
 	static void		 UnloadSDL();
-	static PTexture* Get(const std::string& FileName);
+	static PTexture* Get(const std::string& Name);
+	static PTexture* Create(const std::string& Name, float Width, float Height, const void* Data);
+	static void		 Destroy(const PTexture* Texture);
 };

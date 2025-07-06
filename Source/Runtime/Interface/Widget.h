@@ -76,7 +76,10 @@ protected:
 	EResizeMode mResizeModeH = RM_Grow;
 
 	FVector2 mFixedSize = { 0.0f, 0.0f };
+	FVector2 mOffset = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+
+	bool mMouseOver = false;
 
 public:
 	float X = 0.0f;
@@ -91,23 +94,38 @@ public:
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
-	void DrawChildren(const PRenderer* Renderer) const
+	// General
+
+	void		 Tick(float DeltaTime) override {}
+	virtual void ProcessEvents(SWidgetEvent* Event);
+	virtual void OnLayout()
+	{
+		for (auto Child : mChildren)
+		{
+			Child->OnLayout();
+		}
+	}
+
+	PWidget* GetParent() const { return mParent; }
+	void	 SetParent(PWidget* Parent);
+
+	// Drawing
+	virtual void DrawChildren(const PRenderer* Renderer) const
 	{
 		for (const auto& Child : mChildren)
 		{
 			// Draw this widget
+			Child->PreDraw(Renderer);
 			Child->Draw(Renderer);
+			Child->PostDraw(Renderer);
+
 			// Draw its children
 			Child->DrawChildren(Renderer);
 		}
 	}
-	virtual void  Draw(const PRenderer* Renderer) const {}
-	void		  Tick(float DeltaTime) override {}
-	virtual FRect GetGeometry() const { return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) }; }
-	virtual void  ProcessEvents(SWidgetEvent* Event);
-
-	PWidget* GetParent() const { return mParent; }
-	void	 SetParent(PWidget* Parent);
+	virtual void PreDraw(const PRenderer* Renderer) {}
+	virtual void Draw(const PRenderer* Renderer) const {}
+	virtual void PostDraw(const PRenderer* Renderer) {}
 
 	// Children
 
@@ -117,6 +135,49 @@ public:
 	size_t				  GetChildCount() const { return mChildren.size(); }
 
 	// Layout
+
+	virtual FRect GetGeometry() const
+	{
+		return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) };
+	}
+
+	FVector2 GetOffset() const { return mOffset; }
+	void	 SetOffset(const FVector2& Offset, bool Propagate = true)
+	{
+		mOffset = Offset;
+		if (!Propagate)
+		{
+			return;
+		}
+		for (auto Child : mChildren)
+		{
+			Child->SetOffset(Offset, Propagate);
+		}
+	}
+	void SetOffsetX(float Value, bool Propagate = false)
+	{
+		mOffset.X = Value;
+		if (!Propagate)
+		{
+			return;
+		}
+		for (auto Child : mChildren)
+		{
+			Child->SetOffsetX(Value, Propagate);
+		}
+	}
+	void SetOffsetY(float Value, bool Propagate = false)
+	{
+		mOffset.Y = Value;
+		if (!Propagate)
+		{
+			return;
+		}
+		for (auto Child : mChildren)
+		{
+			Child->SetOffsetY(Value, Propagate);
+		}
+	}
 
 	ELayoutMode GetLayoutMode() const { return mLayoutMode; }
 	void		SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }

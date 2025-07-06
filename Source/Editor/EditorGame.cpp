@@ -6,10 +6,22 @@
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
 #include "Interface/Box.h"
+#include "Interface/ClipArea.h"
 #include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
 #define NEW_GRID_SIZE 5
+
+#define TILE_1X1 { 1, 1 }
+#define TILE_2X2 { 2, 2 }
+#define TILE_3X3 { 3, 3 }
+
+struct TileSpriteData
+{
+	std::string Name;
+	uint32_t	Index;
+	IVector2	Size = TILE_1X1;
+};
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
@@ -86,6 +98,37 @@ void PEditorGame::ConstructInterface()
 
 	MainPanel->AddChild(FileGroup);
 	MainPanel->AddChild(EditGroup);
+
+	// Tiles
+
+	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
+	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+
+	const std::vector<TileSpriteData> TileData = {
+		{ "Grass1", 0 },
+		{ "Rock",  1 },
+		{ "Water", 2 },
+		{ "Item4", 3 },
+		{ "Item5", 3 },
+		{ "Item6", 3 },
+		{ "Item7", 3 },
+		{ "Item8", 3 },
+	};
+
+	for (const auto& Item : TileData)
+	{
+		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
+		NewItem->SetData(&Item);
+
+		auto Button = NewItem->GetWidget<PButton>();
+		Button->SetCheckable(true);
+		Button->SetFixedSize({ 40, 40 });
+		Button->SetResizeMode(RM_Fixed, RM_Fixed);
+
+		ItemViewButtonGroup->AddButton(Button);
+	}
+
+	MainPanel->AddChild(ItemView);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
@@ -200,6 +243,12 @@ void PEditorGame::OnTileButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Select);
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
+}
+
+void PEditorGame::OnTileSpriteButtonChecked(bool State)
+{
+	auto Sender = PWidget::GetSender();
+	LogInfo("Sender {}: {}", Sender->GetInternalName().c_str(), State ? "On" : "Off");
 }
 
 void PEditorGame::OnKeyUpTile(uint32_t ScanCode)

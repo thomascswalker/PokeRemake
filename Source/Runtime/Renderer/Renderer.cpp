@@ -8,19 +8,20 @@
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
 #include "Engine/World.h"
+#include "Interface/Layout.h"
 
 std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
-bool PRenderer::Initialize() const
+bool PRenderer::Initialize()
 {
+	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
 	LoadFont(gDefaultFont);
 	return true;
 }
 
 void PRenderer::PostInitialize() const
 {
-	PTextureManager::LoadSDL(mContext->Renderer);
 }
 
 void PRenderer::Uninitialize() const
@@ -107,7 +108,7 @@ void PRenderer::Render() const
 			Root->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
 
 			// Recursively construct the layout of all widgets
-			Layout(Root);
+			Layout::Layout(Root);
 
 			// Once all widgets have been laid out, process
 			// recursively events for them.
@@ -292,6 +293,18 @@ void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) cons
 	const auto CameraView = GetCameraView();
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
 				   Rect.H * CameraView->GetZoom() });
+}
+
+void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
+{
+	if (!Texture)
+	{
+		return;
+	}
+	SDL_Texture* Tex = Texture->GetSDLTexture();
+	auto		 Source2 = Source.ToSDL_FRect();
+	auto		 Dest2 = Dest.ToSDL_FRect();
+	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
 
 void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
