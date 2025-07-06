@@ -98,6 +98,13 @@ public:
 
 	void		 Tick(float DeltaTime) override {}
 	virtual void ProcessEvents(SWidgetEvent* Event);
+	virtual void OnLayout()
+	{
+		for (auto Child : mChildren)
+		{
+			Child->OnLayout();
+		}
+	}
 
 	PWidget* GetParent() const { return mParent; }
 	void	 SetParent(PWidget* Parent);

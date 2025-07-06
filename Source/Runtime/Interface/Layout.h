@@ -203,5 +203,9 @@ namespace Layout
 		GrowChildren(Widget);
 		Position(Widget);
 		Offset(Widget);
+
+		// Once all widgets have been recursively sized and positioned, call
+		// the OnLayout function.
+		Widget->OnLayout();
 	}
 } // namespace Layout

@@ -4,6 +4,7 @@
 #include "Layout.h"
 #include "Widget.h"
 
+// An item wrapper around some arbitrary data and its corresponding display widget.
 class PAbstractItem
 {
 	PWidget* mWidget;
@@ -25,6 +26,7 @@ public:
 	{
 		return dynamic_cast<T*>(mData);
 	}
+
 	template <typename T>
 	void SetData(T* Data)
 	{
@@ -61,16 +63,26 @@ public:
 		return Item;
 	}
 
+	/**
+	 * The maximum scroll value is equal to the summed height and top padding of each child,
+	 * plus the last child's bottom padding, minus the height of this widget.
+	 *
+	 *	- c = Children
+	 *	- nc = Child count
+	 *	- n = Nth Child
+	 *
+	 *	`[ c[n]->h + c[n]->pt ... nc ] + c[nc - 1]->pb - height`
+	 */
 	float GetMaximumScrollValue() const
 	{
 		float MaximumScrollValue = 0.0f;
-		for (auto& Item : mItems)
+		for (auto Child : mChildren)
 		{
-			auto Widget = Item.GetWidget<PWidget>();
-			MaximumScrollValue += Widget->H;
-			MaximumScrollValue += Widget->Padding.Top;
+			MaximumScrollValue += Child->H;
+			MaximumScrollValue += Child->Padding.Top;
 		}
-		return MaximumScrollValue + H;
+		MaximumScrollValue += mChildren[mChildren.size() - 1]->Padding.Bottom;
+		return std::max(0.0f, MaximumScrollValue - H);
 	}
 
 	void SetScrollValue(float Value)
@@ -82,13 +94,23 @@ public:
 		}
 	}
 
+	void OnLayout() override
+	{
+		for (auto Child : mChildren)
+		{
+			Child->SetOffsetY(-mScrollValue, true);
+		}
+		PWidget::OnLayout();
+	}
+
+	void Draw(const PRenderer* Renderer) const override
+	{
+		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->DrawRect(GetGeometry());
+	}
+
 	void DrawChildren(const PRenderer* Renderer) const override
 	{
-		for (auto& Item : mItems)
-		{
-			Item.GetWidget<PWidget>()->SetOffsetY(-mScrollValue, true);
-		}
-
 		Renderer->SetClipRect(GetGeometry());
 		PWidget::DrawChildren(Renderer);
 		Renderer->ReleaseClipRect();

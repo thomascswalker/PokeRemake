@@ -12,7 +12,7 @@
 
 #define NEW_GRID_SIZE 5
 
-struct TileSpriteButtonData
+struct TileSpriteData
 {
 	std::string Name;
 	int			Index;
@@ -99,10 +99,15 @@ void PEditorGame::ConstructInterface()
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
-	const std::vector<TileSpriteButtonData> TileData = {
-		{ "Item1", 0 },
-		{ "Item2", 1 },
-		{ "Item3", 2 },
+	const std::vector<TileSpriteData> TileData = {
+		{ "Grass", 0 },
+		{ "Rock",  1 },
+		{ "Water", 2 },
+		{ "Item4", 3 },
+		{ "Item5", 3 },
+		{ "Item6", 3 },
+		{ "Item7", 3 },
+		{ "Item8", 3 },
 	};
 
 	for (const auto& Item : TileData)
