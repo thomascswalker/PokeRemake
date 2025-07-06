@@ -106,13 +106,20 @@ void PEditorGame::ConstructInterface()
 
 	const std::vector<TileSpriteData> TileData = {
 		{ "Grass1", 0 },
-		{ "Rock",  1 },
-		{ "Water", 2 },
-		{ "Item4", 3 },
-		{ "Item5", 3 },
-		{ "Item6", 3 },
-		{ "Item7", 3 },
-		{ "Item8", 3 },
+		{ "Rock",	  1 },
+		{ "Water",  2 },
+		{ "Item4",  3 },
+		{ "Item5",  3 },
+		{ "Item6",  3 },
+		{ "Item7",  3 },
+		{ "Item8",  3 },
+		{ "Rock",	  1 },
+		{ "Water",  2 },
+		{ "Item4",  3 },
+		{ "Item5",  3 },
+		{ "Item6",  3 },
+		{ "Item7",  3 },
+		{ "Item8",  3 },
 	};
 
 	for (const auto& Item : TileData)
