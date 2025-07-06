@@ -12,10 +12,15 @@
 
 #define NEW_GRID_SIZE 5
 
+#define TILE_1X1 { 1, 1 }
+#define TILE_2X2 { 2, 2 }
+#define TILE_3X3 { 3, 3 }
+
 struct TileSpriteData
 {
 	std::string Name;
-	int			Index;
+	uint32_t	Index;
+	IVector2	Size = TILE_1X1;
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
@@ -100,7 +105,7 @@ void PEditorGame::ConstructInterface()
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
 	const std::vector<TileSpriteData> TileData = {
-		{ "Grass", 0 },
+		{ "Grass1", 0 },
 		{ "Rock",  1 },
 		{ "Water", 2 },
 		{ "Item4", 3 },

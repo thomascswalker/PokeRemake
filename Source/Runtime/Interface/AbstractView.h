@@ -13,7 +13,7 @@ class PAbstractItem
 public:
 	PAbstractItem() = default;
 	PAbstractItem(PWidget* Widget)
-		: mWidget(Widget) {}
+		: mWidget(Widget), mData(nullptr) {}
 
 	template <typename T>
 	T* GetWidget() const
@@ -55,6 +55,8 @@ public:
 		}
 	}
 
+	// Adds a new item to this view. This will instantiate a new widget of type T, forward
+	// its constructor arguments, and add that widget as a child of this widget.
 	template <typename T, typename... ArgsType>
 	PAbstractItem* AddItem(ArgsType... Args)
 	{
@@ -87,15 +89,23 @@ public:
 
 	void SetScrollValue(float Value)
 	{
-		if (mMouseOver)
+		// Only update when the mouse is over this widget.
+		if (!mMouseOver)
 		{
-			mScrollValue += -Value * mScrollSpeed;
-			mScrollValue = std::min(std::max(mScrollValue, 0.0f), GetMaximumScrollValue());
+			return;
 		}
+
+		// Value comes in as +1 for a forwards scroll, -1 for a backwards scroll. Invert this
+		// so a forwards scroll will scroll up, and a backwards scroll will scroll down.
+		mScrollValue += -Value * mScrollSpeed;
+
+		// Clamp the new scroll value between 0 and the maximum possible scroll value.
+		mScrollValue = std::min(std::max(mScrollValue, 0.0f), GetMaximumScrollValue());
 	}
 
 	void OnLayout() override
 	{
+		// Update the Y offset for each child to be the inverse of the current scroll value.
 		for (auto Child : mChildren)
 		{
 			Child->SetOffsetY(-mScrollValue, true);
