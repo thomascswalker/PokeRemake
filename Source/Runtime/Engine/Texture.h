@@ -29,7 +29,7 @@ public:
 	int32_t		 GetWidth() const { return mWidth; }
 	int32_t		 GetHeight() const { return mHeight; }
 	int32_t		 GetChannels() const { return mChannels; }
-	int32_t		 GetPitch() const { return mWidth * 4; }
+	int32_t		 GetPitch() const { return mWidth * sizeof(uint32_t); }
 	uint8_t*	 GetData() const { return mData; }
 	std::string	 GetName() const { return mName; }
 	SDL_Texture* GetSDLTexture() const { return mSDLTexture; }
@@ -44,9 +44,9 @@ public:
 	static std::map<std::string, std::shared_ptr<PTexture>> GetTextures();
 
 	static PTexture* Load(const std::string& FileName);
-	static void		 LoadSDL(PTexture* Texture);
+	static bool		 LoadSDL(PTexture* Texture);
 	static void		 UnloadSDL();
 	static PTexture* Get(const std::string& Name);
-	static PTexture* Create(const std::string& Name, float Width, float Height, const void* Data);
+	static PTexture* Create(const std::string& Name, float Width, float Height, int Channels, void* Data);
 	static void		 Destroy(const PTexture* Texture);
 };

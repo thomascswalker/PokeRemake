@@ -2,7 +2,6 @@
 
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
-#include "Layout.h"
 #include "Widget.h"
 
 // An item wrapper around some arbitrary data and its corresponding display widget.

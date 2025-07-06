@@ -8,6 +8,7 @@
 #include "Interface/AbstractView.h"
 #include "Interface/Box.h"
 #include "Interface/Group.h"
+#include "Interface/Image.h"
 #include "Interface/Spinner.h"
 
 #define NEW_GRID_SIZE 5
@@ -47,6 +48,7 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
+	PTextureManager::Load("Tileset1.png");
 	ConstructInterface();
 }
 
@@ -108,18 +110,40 @@ void PEditorGame::ConstructInterface()
 
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	auto	   TilesetTexture = PTextureManager::Get("Tileset1.png");
 
 	for (const auto& Item : gTileset1)
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
-		NewItem->SetData(&Item);
 
 		auto Button = NewItem->GetWidget<PButton>();
 		Button->SetCheckable(true);
+		Button->SetCustomData(&Item);
+		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
+
 		ItemViewButtonGroup->AddButton(Button);
+
+		// 16x6
+		if (TilesetTexture)
+		{
+			PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
+			Img->SetUseSourceRect(true);
+			float X = Item.Index % 16;
+			float Y = Item.Index / 16;
+			FRect SourceRect = {
+				X * 8,
+				Y * 8,
+				static_cast<float>(Item.Size.X) * 8,
+				static_cast<float>(Item.Size.Y) * 8,
+			};
+			Img->SetSourceRect(SourceRect);
+		}
 	}
 
-	MainPanel->AddChild(ItemView);
+	// MainPanel->AddChild(ItemView);
+
+	auto Image = mWorld->ConstructWidget<PImage>("Tileset1.png");
+	MainPanel->AddChild(Image);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
@@ -236,10 +260,12 @@ void PEditorGame::OnTileButtonChecked(bool State)
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
-void PEditorGame::OnTileSpriteButtonChecked(bool State)
+void PEditorGame::OnTilesetButtonChecked(bool State)
 {
-	auto Sender = PWidget::GetSender();
+	auto Sender = PWidget::GetSender<PButton>();
 	LogInfo("Sender {}: {}", Sender->GetInternalName().c_str(), State ? "On" : "Off");
+	auto Data = Sender->GetCustomData<TilesetItem>();
+	LogInfo("Tileset: {}, {}, {}", Data->Name.c_str(), Data->Index, Data->Size.ToString().c_str());
 }
 
 void PEditorGame::OnKeyUpTile(uint32_t ScanCode)

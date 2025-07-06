@@ -9,7 +9,7 @@ public:
 	PClipArea()
 		: mClipTexture()
 	{
-		mClipTexture = PTextureManager::Create(mInternalName, 100, 100, nullptr);
+		mClipTexture = PTextureManager::Create(mInternalName, 100, 100, TODO, nullptr);
 	}
 
 	~PClipArea() override

@@ -42,7 +42,6 @@ void PActor::UpdateMouseState()
 	}
 	else if (bMouseDown && !NewClickState && bMouseOver)
 	{
-		bSelected = !bSelected; // Toggle selection on click
 		bMouseDown = false;
 		Clicked.Broadcast(this);
 	}

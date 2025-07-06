@@ -23,8 +23,13 @@ public:
 			return;
 		}
 
-		FRect Rect = mUseSourceRect ? mSourceRect : FRect{ 0, 0, mTexture->GetWidth(), mTexture->GetHeight() };
+		float TexWidth = mTexture->GetWidth();
+		float TexHeight = mTexture->GetHeight();
+		FRect Rect = mUseSourceRect ? mSourceRect : FRect{ 0, 0, TexWidth, TexHeight };
 		Renderer->DrawTexture(mTexture, Rect, GetGeometry());
+
+		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->DrawRect(GetGeometry());
 	}
 
 	PTexture* GetTexture() const { return mTexture; }

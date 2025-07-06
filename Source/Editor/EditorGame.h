@@ -67,7 +67,7 @@ public:
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
-	void OnTileSpriteButtonChecked(bool State);
+	void OnTilesetButtonChecked(bool State);
 
 	// Scene
 	void   AddChunk(PChunk* Chunk);
