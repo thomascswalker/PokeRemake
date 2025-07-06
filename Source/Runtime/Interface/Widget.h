@@ -90,7 +90,7 @@ public:
 	FPadding Padding;
 
 	PWidget()
-		: Padding(5.0f) {}
+		: Padding(5.0f) { GenerateInternalName(); }
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 

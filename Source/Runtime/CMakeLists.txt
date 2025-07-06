@@ -67,6 +67,7 @@ set(SOURCES
         Interface/AbstractView.cpp
         Interface/ClipArea.h
         Interface/AbstractButton.cpp
+        Interface/Image.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

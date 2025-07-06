@@ -5,8 +5,8 @@
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
+#include "Interface/AbstractView.h"
 #include "Interface/Box.h"
-#include "Interface/ClipArea.h"
 #include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
@@ -16,11 +16,16 @@
 #define TILE_2X2 { 2, 2 }
 #define TILE_3X3 { 3, 3 }
 
-struct TileSpriteData
+struct TilesetItem
 {
 	std::string Name;
 	uint32_t	Index;
 	IVector2	Size = TILE_1X1;
+};
+
+std::vector<TilesetItem> gTileset1 = {
+	{ "Grass1", 0,  TILE_1X1 },
+	{ "Grass2", 36, TILE_1X1 },
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
@@ -104,34 +109,13 @@ void PEditorGame::ConstructInterface()
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
-	const std::vector<TileSpriteData> TileData = {
-		{ "Grass1", 0 },
-		{ "Rock",	  1 },
-		{ "Water",  2 },
-		{ "Item4",  3 },
-		{ "Item5",  3 },
-		{ "Item6",  3 },
-		{ "Item7",  3 },
-		{ "Item8",  3 },
-		{ "Rock",	  1 },
-		{ "Water",  2 },
-		{ "Item4",  3 },
-		{ "Item5",  3 },
-		{ "Item6",  3 },
-		{ "Item7",  3 },
-		{ "Item8",  3 },
-	};
-
-	for (const auto& Item : TileData)
+	for (const auto& Item : gTileset1)
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
 		NewItem->SetData(&Item);
 
 		auto Button = NewItem->GetWidget<PButton>();
 		Button->SetCheckable(true);
-		Button->SetFixedSize({ 40, 40 });
-		Button->SetResizeMode(RM_Fixed, RM_Fixed);
-
 		ItemViewButtonGroup->AddButton(Button);
 	}
 

@@ -7,7 +7,6 @@
 #include "Actors/Character.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
-#include "Interface/AbstractView.h"
 #include "Interface/Widget.h"
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>

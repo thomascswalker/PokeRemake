@@ -83,11 +83,7 @@ public:
 	void SetCheckable(bool State) { mCheckable = State; }
 	bool GetChecked() const { return mChecked; }
 	void SetChecked(bool State) { mChecked = State; }
-	void ToggleChecked()
-	{
-		mChecked = !mChecked;
-		LogInfo("Toggling {} == {}", mInternalName.c_str(), mChecked ? "true" : "false");
-	}
+	void ToggleChecked() { mChecked = !mChecked; }
 
 	void SetButtonGroup(PButtonGroup* Group);
 
