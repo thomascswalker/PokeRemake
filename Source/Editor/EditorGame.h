@@ -4,16 +4,15 @@
 #include "Engine/Game.h"
 #include "Interface/Button.h"
 #include "Interface/ButtonGroup.h"
-#include "Interface/Canvas.h"
 
-constexpr int BUTTON_WIDTH = 50;
-constexpr int BUTTON_HEIGHT = 20;
+#define NEW_GRID_SIZE 5
 
 enum EInputContext : uint8_t
 {
 	IC_None = 1U << 0,
 	IC_Select = 1U << 2,
-	IC_Tile = 1U << 3,
+	IC_TileType = 1U << 3,
+	IC_TileSprite = 1U << 4,
 };
 DEFINE_BITMASK_OPERATORS(EInputContext);
 
@@ -42,15 +41,19 @@ class PEditorGame : public PGame
 	DelegateHandle mSelectDelegate;
 	DelegateHandle mTileDelegate;
 
+	STilesetItem* mCurrentTilesetItem;
+
 public:
 	// Init
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
-	void ConstructInterface();
+	void SetupInterface();
+	void SetupInputs();
 
 	// Input
 
+	void	OnMouseLeftClick();
 	uint8_t GetInputContext() { return mInputContext; }
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
@@ -79,7 +82,7 @@ public:
 	template <typename T = PActor>
 	T* GetActorUnderMouse()
 	{
-		auto W = GetWorld();
+		const auto W = GetWorld();
 		for (const auto& Actor : W->GetActors())
 		{
 			const auto TActor = dynamic_cast<T*>(Actor);

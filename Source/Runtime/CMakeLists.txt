@@ -68,6 +68,7 @@ set(SOURCES
         Interface/ClipArea.h
         Interface/AbstractButton.cpp
         Interface/Image.h
+        Engine/Tileset.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

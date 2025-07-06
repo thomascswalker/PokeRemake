@@ -7,26 +7,15 @@
 #include "Engine/Serializer.h"
 #include "Interface/AbstractView.h"
 #include "Interface/Box.h"
+#include "Interface/Canvas.h"
 #include "Interface/Group.h"
 #include "Interface/Image.h"
 #include "Interface/Spinner.h"
 
-#define NEW_GRID_SIZE 5
-
-#define TILE_1X1 { 1, 1 }
-#define TILE_2X2 { 2, 2 }
-#define TILE_3X3 { 3, 3 }
-
-struct TilesetItem
-{
-	std::string Name;
-	uint32_t	Index;
-	IVector2	Size = TILE_1X1;
-};
-
-std::vector<TilesetItem> gTileset1 = {
-	{ "Grass1", 0,  TILE_1X1 },
-	{ "Grass2", 36, TILE_1X1 },
+std::vector<STilesetItem> gTileset1 = {
+	{ "Grass1", { 0, 0 },  TILE_1X1, TT_Normal	  },
+	{ "Grass2", { 9, 3 },  TILE_1X1, TT_Normal	  },
+	{ "Rock1",  { 10, 2 }, TILE_2X2, TT_Obstacle }
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
@@ -49,7 +38,8 @@ void PEditorGame::PreStart()
 	}
 
 	PTextureManager::Load("Tileset1.png");
-	ConstructInterface();
+	SetupInterface();
+	SetupInputs();
 }
 
 void PEditorGame::Start()
@@ -58,7 +48,7 @@ void PEditorGame::Start()
 	FindActiveCamera();
 }
 
-void PEditorGame::ConstructInterface()
+void PEditorGame::SetupInterface()
 {
 	const auto MainPanel = mWorld->ConstructWidget<PBox>();
 	MainPanel->SetLayoutMode(LM_Vertical);
@@ -124,31 +114,48 @@ void PEditorGame::ConstructInterface()
 		ItemViewButtonGroup->AddButton(Button);
 
 		// 16x6
-		if (TilesetTexture)
-		{
-			PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
-			Img->SetUseSourceRect(true);
-			float X = Item.Index % 16;
-			float Y = Item.Index / 16;
-			FRect SourceRect = {
-				X * 8,
-				Y * 8,
-				static_cast<float>(Item.Size.X) * 8,
-				static_cast<float>(Item.Size.Y) * 8,
-			};
-			Img->SetSourceRect(SourceRect);
-		}
+		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
+		Button->AddChild(Img);
+		Img->SetFixedSize({ 16, 16 });
+		Img->SetResizeMode(RM_Fixed, RM_Fixed);
+		Img->SetUseSourceRect(true);
+		FRect SourceRect = { Item.Index * 8.0f, Item.Size };
+		Img->SetSourceRect(SourceRect);
 	}
 
-	// MainPanel->AddChild(ItemView);
-
-	auto Image = mWorld->ConstructWidget<PImage>("Tileset1.png");
-	MainPanel->AddChild(Image);
+	MainPanel->AddChild(ItemView);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
 
 	mWorld->SetRootWidget(MainCanvas);
+}
+
+void PEditorGame::SetupInputs()
+{
+	auto Input = GetInputManager();
+	Input->MouseLeftClick.AddRaw(this, &PEditorGame::OnMouseLeftClick);
+}
+
+void PEditorGame::OnMouseLeftClick()
+{
+	auto Actor = GetActorUnderMouse();
+	if (!Actor)
+	{
+		return;
+	}
+
+	switch (mInputContext)
+	{
+		case IC_None:
+			break;
+		case IC_Select:
+			break;
+		case IC_TileType:
+			break;
+		case IC_TileSprite:
+			break;
+	}
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -161,7 +168,7 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 		case IC_Select:
 			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
-		case IC_Tile:
+		case IC_TileType:
 			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpTile);
 			break;
 		default:
@@ -182,7 +189,7 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 				mCurrentChunk->SetSelected(false);
 			}
 			break;
-		case IC_Tile:
+		case IC_TileType:
 			Input->KeyUp.Remove(mTileDelegate);
 			break;
 		default:
@@ -250,22 +257,20 @@ void PEditorGame::OnLoadButtonClicked()
 
 void PEditorGame::OnSelectButtonChecked(bool State)
 {
-	RemoveInputContext(IC_Tile);
+	RemoveInputContext(IC_TileType);
 	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
 }
 
 void PEditorGame::OnTileButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Select);
-	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
+	State ? AddInputContext(IC_TileType) : RemoveInputContext(IC_TileType);
 }
 
 void PEditorGame::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
-	LogInfo("Sender {}: {}", Sender->GetInternalName().c_str(), State ? "On" : "Off");
-	auto Data = Sender->GetCustomData<TilesetItem>();
-	LogInfo("Tileset: {}, {}, {}", Data->Name.c_str(), Data->Index, Data->Size.ToString().c_str());
+	mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
 }
 
 void PEditorGame::OnKeyUpTile(uint32_t ScanCode)

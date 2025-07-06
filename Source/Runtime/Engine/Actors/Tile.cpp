@@ -63,7 +63,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 	Renderer->DrawRectAt(Dest, WorldPosition);
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (bMouseOver || bSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_TileType) && (bMouseOver || bSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (bMouseOver)

@@ -2,21 +2,12 @@
 
 #include "Actor.h"
 #include "Engine/ClassRegistry.h"
+#include "Engine/Tileset.h"
 #include "Renderer/Renderer.h"
 
 constexpr int CHUNK_SIZE = 20;
 
 class PChunk;
-
-enum ETileType
-{
-	TT_Normal,
-	TT_Obstacle,
-	TT_Water,
-	TT_Grass,
-	TT_Cave,
-	TT_Portal
-};
 
 struct SPortal
 {
