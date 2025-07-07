@@ -177,6 +177,7 @@ static STileset& GetTileset(const std::string& Name)
 	{
 		LoadTileset(Name);
 	}
+	// ReSharper disable once CppDFAUnusedValue
 	auto Tileset = &gTilesets.at(Name);
 	if (!Tileset->Texture)
 	{

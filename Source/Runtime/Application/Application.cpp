@@ -207,8 +207,8 @@ void PApplication::Loop()
 
 	// Tick the engine
 	const uint64_t Now = SDL_GetTicksNS();
-	const uint64_t DeltaTimeNS = Now - mCurrentTime; // Get delta time in nanoseconds
-	const float DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
+	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
 	mEngine->Tick(DeltaTime);
 	mCurrentTime = Now;
 
@@ -270,6 +270,12 @@ bool PApplication::OnEvent(void* Event)
 						break;
 				}
 				break;
+			}
+		case SDL_EVENT_WINDOW_RESIZED:
+			{
+				float Width = static_cast<float>(SDLEvent->window.data1);
+				float Height = static_cast<float>(SDLEvent->window.data2);
+				mRenderer->OnResize({ Width, Height });
 			}
 		default:
 			break;

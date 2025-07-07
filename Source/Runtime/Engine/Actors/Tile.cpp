@@ -54,6 +54,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 		}
 	}
 
+	// If not in debug mode, return.
 	if (!GetSettings()->mDebugDraw)
 	{
 		return;

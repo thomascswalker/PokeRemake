@@ -13,11 +13,21 @@
 std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
+constexpr auto gLogicalPresentation = SDL_LOGICAL_PRESENTATION_DISABLED;
+constexpr auto gTextureScaleMode = SDL_SCALEMODE_NEAREST;
+constexpr auto gTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
+
 bool PRenderer::Initialize()
 {
-	SDL_SetDefaultTextureScaleMode(mContext->Renderer, SDL_SCALEMODE_NEAREST);
+	auto Size = GetScreenSize();
+
+	SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
+	SDL_SetDefaultTextureScaleMode(mContext->Renderer, gTextureScaleMode);
+	SDL_SetRenderTextureAddressMode(mContext->Renderer, gTextureAddressMode, gTextureAddressMode);
+
 	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
 	LoadFont(gDefaultFont);
+
 	return true;
 }
 
@@ -30,9 +40,14 @@ void PRenderer::Uninitialize() const
 	PTextureManager::UnloadSDL();
 }
 
+void PRenderer::OnResize(const FVector2& Size)
+{
+	SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
+}
+
 void PRenderer::LoadFont(const std::string& Name) const
 {
-	const auto FontFileName = Files::FindFile(std::format("{}.ttf", Name.c_str()));
+	const std::string FontFileName = Files::FindFile(std::format("{}.ttf", Name.c_str()));
 	if (FontFileName.empty())
 	{
 		LogError("Failed to find font file: {}", Name.c_str());
@@ -356,6 +371,7 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
+
 void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
 							 int32_t Index) const
 {

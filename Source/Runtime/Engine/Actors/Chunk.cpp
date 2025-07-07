@@ -2,6 +2,7 @@
 
 #include "Chunk.h"
 
+#include "Core/Settings.h"
 #include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 #if _EDITOR
@@ -59,6 +60,11 @@ void PChunk::Start()
 
 void PChunk::Draw(const PRenderer* Renderer) const
 {
+	if (!GetSettings()->mDebugDraw)
+	{
+		return;
+	}
+
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR

@@ -61,6 +61,7 @@ bool PTextureManager::LoadSDL(PTexture* Texture)
 	const auto Height = Texture->GetHeight();
 	const auto SDLTexture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
 											  SDL_TEXTUREACCESS_STATIC, Width, Height);
+
 	if (!SDLTexture)
 	{
 		LogError("Unable to create texture: {}", SDL_GetError());
