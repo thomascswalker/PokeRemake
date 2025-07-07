@@ -34,8 +34,9 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	}
 	LogDebug("Loading texture: {}", AbsFileName.c_str());
 
-	int			   Width, Height, Channels;
-	const uint8_t* Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, 4);
+	int	  Width, Height, Channels;
+	int	  DesiredChannelCount = 4;
+	void* Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
 
 	if (!Data)
 	{
@@ -43,7 +44,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 		return nullptr;
 	}
 
-	PTexture* NewTexture = Create(AbsFileName, Width, Height, Channels, (void*)Data);
+	PTexture* NewTexture = Create(AbsFileName, Width, Height, DesiredChannelCount, Data);
 	if (!NewTexture)
 	{
 		return nullptr;

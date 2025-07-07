@@ -5,6 +5,10 @@
 #include "Chunk.h"
 #include "Core/Settings.h"
 
+static FRect DoubleTileDest = { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
+static FRect FullTileDest = { 0, 0, TILE_SIZE, TILE_SIZE };
+static FRect HalfTileDest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+
 FVector2 PTile::GetPosition() const
 {
 	if (Chunk)
@@ -19,23 +23,35 @@ FVector2 PTile::GetPosition() const
 
 void PTile::Draw(const PRenderer* Renderer) const
 {
-	const FRect Source = Data.GetSourceRect();
-
 	// World position of this tile
 	const FVector2 WorldPosition = GetPosition();
 
-	// Screenspace destination rectangle
-	const FRect Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
-
 	auto Texture = Data.GetTexture();
+
+	// Draw the debug color indicating the texture is invalid
 	if (!Texture)
 	{
 		Renderer->SetDrawColor(PColor::UIDebug1);
-		Renderer->DrawFillRectAt(Dest, WorldPosition);
+		Renderer->DrawFillRectAt(DoubleTileDest, WorldPosition);
 	}
 	else
 	{
-		Renderer->DrawTextureAt(Texture, Source, Dest, WorldPosition);
+		auto Dest = Data.IsSubIndexed() ? HalfTileDest : FullTileDest;
+		if (!Data.IsSubIndexed())
+		{
+			Renderer->DrawTextureAt(Texture, Data.GetSourceRect(), Dest, WorldPosition);
+		}
+		else
+		{
+			for (int X = 0; X < 2; X++)
+			{
+				for (int Y = 0; Y < 2; Y++)
+				{
+					FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
+					Renderer->DrawTextureAt(Texture, Data.GetSourceRect(Y * 2 + X), Dest, WorldPosition + LocalOffset);
+				}
+			}
+		}
 	}
 
 	if (!GetSettings()->mDebugDraw)
@@ -50,24 +66,24 @@ void PTile::Draw(const PRenderer* Renderer) const
 			break;
 		case TT_Obstacle:
 			Renderer->SetDrawColor(255, 0, 0, 128);
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Water:
 			Renderer->SetDrawColor(0, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Grass:
 		case TT_Cave:
 			Renderer->SetDrawColor(0, 255, 0, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Portal:
 			Renderer->SetDrawColor(255, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 	}
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
-	Renderer->DrawRectAt(Dest, WorldPosition);
+	Renderer->DrawRectAt(FullTileDest, WorldPosition);
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
@@ -76,11 +92,11 @@ void PTile::Draw(const PRenderer* Renderer) const
 		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(Dest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+			Renderer->DrawRectAt(FullTileDest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
 		}
 		if (mSelected)
 		{
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 		}
 	}
 #endif
@@ -107,10 +123,10 @@ bool PTile::IsWalkable() const
 bool PTile::Contains(const FVector2& Position) const
 {
 	auto TilePosition = GetPosition();
-	return Position.X >= TilePosition.X						// Min X
-		   && Position.X < TilePosition.X + HALF_TILE_SIZE	// Max X
-		   && Position.Y >= TilePosition.Y					// Min Y
-		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
+	return Position.X >= TilePosition.X				   // Min X
+		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
+		   && Position.Y >= TilePosition.Y			   // Min Y
+		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
 }
 
 json PTile::Serialize() const
@@ -119,7 +135,7 @@ json PTile::Serialize() const
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
 	Result["Position"] = { Data.X, Data.Y };
-	Result["Index"] = Data.Index;
+	Result["SubIndexes"] = Data.SubIndexes;
 	return Result;
 }
 

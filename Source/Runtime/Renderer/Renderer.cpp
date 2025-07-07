@@ -231,7 +231,7 @@ void PRenderer::DrawGrid() const
 	// Draw vertical lines
 	for (int32_t Index = 0; Index <= TILE_COLUMNS; Index++)
 	{
-		X0 = Index * HALF_TILE_SIZE;
+		X0 = Index * TILE_SIZE;
 		X1 = X0;
 		Y0 = 0;
 		Y1 = ScreenHeight;
@@ -243,7 +243,7 @@ void PRenderer::DrawGrid() const
 	{
 		X0 = 0;
 		X1 = ScreenWidth;
-		Y0 = Index * HALF_TILE_SIZE;
+		Y0 = Index * TILE_SIZE;
 		Y1 = Y0;
 		DrawLine(X0, Y0, X1, Y1);
 	}

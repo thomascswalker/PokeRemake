@@ -92,7 +92,7 @@ void PEditorGame::SetupInterface()
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
-	for (const auto& Item : GetTileset("Tileset1"))
+	for (auto& Item : GetTileset("Tileset1"))
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
 
@@ -109,7 +109,8 @@ void PEditorGame::SetupInterface()
 		Img->SetFixedSize({ 16, 16 });
 		Img->SetResizeMode(RM_Fixed, RM_Fixed);
 		Img->SetUseSourceRect(true);
-		FRect SourceRect = { Item.Index * gTilesetItemSize, Item.Size };
+
+		FRect SourceRect = { Item.GetSourceRect() };
 		Img->SetSourceRect(SourceRect);
 	}
 
@@ -175,8 +176,8 @@ void PEditorGame::OnCreateButtonClicked()
 		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position", { X, Y } },
-				{ "Index",	   0		 },
+				{ "Position",	  { X, Y }	   },
+				{ "SubIndexes", { 0, 0, 0, 0 } },
 			});
 		}
 	}
@@ -272,8 +273,18 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			}
 			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
 			{
-				LogDebug("New Tile Index: {}", ToLinearIndex(mCurrentTilesetItem->Index));
-				Tile->Data.Index = ToLinearIndex(mCurrentTilesetItem->Index);
+				// TODO: Account for what quadrant you're clicking in
+				if (mCurrentTilesetItem->SizeType == TST_Half)
+				{
+					Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+					Tile->Data.SubIndexes[1] = mCurrentTilesetItem->LinearIndex;
+					Tile->Data.SubIndexes[2] = mCurrentTilesetItem->LinearIndex;
+					Tile->Data.SubIndexes[3] = mCurrentTilesetItem->LinearIndex;
+				}
+				else
+				{
+					Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+				}
 			}
 			break;
 		default:
@@ -295,16 +306,16 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 	switch (ScanCode)
 	{
 		case SDLK_UP:
-			Offset = FVector2(0, TILE_SIZE);
+			Offset = FVector2(0, DOUBLE_TILE_SIZE);
 			break;
 		case SDLK_DOWN:
-			Offset = FVector2(0, -TILE_SIZE);
+			Offset = FVector2(0, -DOUBLE_TILE_SIZE);
 			break;
 		case SDLK_LEFT:
-			Offset = FVector2(TILE_SIZE, 0);
+			Offset = FVector2(DOUBLE_TILE_SIZE, 0);
 			break;
 		case SDLK_RIGHT:
-			Offset = FVector2(-TILE_SIZE, 0);
+			Offset = FVector2(-DOUBLE_TILE_SIZE, 0);
 			break;
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions

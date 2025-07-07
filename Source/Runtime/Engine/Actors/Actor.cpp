@@ -54,5 +54,5 @@ FVector2 PActor::GetDrawPosition() const
 
 void PActor::MoveToTile(int32_t X, int32_t Y)
 {
-	mPosition = FVector2(X * TILE_SIZE, Y * TILE_SIZE);
+	mPosition = FVector2(X * DOUBLE_TILE_SIZE, Y * DOUBLE_TILE_SIZE);
 }

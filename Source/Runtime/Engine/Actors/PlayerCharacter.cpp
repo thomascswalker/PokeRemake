@@ -31,19 +31,19 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (mInputState[0])
 		{
-			mMovementComponent->Move({ TILE_SIZE, 0 });
+			mMovementComponent->Move({ DOUBLE_TILE_SIZE, 0 });
 		}
 		else if (mInputState[1])
 		{
-			mMovementComponent->Move({ -TILE_SIZE, 0 });
+			mMovementComponent->Move({ -DOUBLE_TILE_SIZE, 0 });
 		}
 		else if (mInputState[2])
 		{
-			mMovementComponent->Move({ 0, TILE_SIZE });
+			mMovementComponent->Move({ 0, DOUBLE_TILE_SIZE });
 		}
 		else if (mInputState[3])
 		{
-			mMovementComponent->Move({ 0, -TILE_SIZE });
+			mMovementComponent->Move({ 0, -DOUBLE_TILE_SIZE });
 		}
 	}
 }
@@ -56,7 +56,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		if (const auto& Tile = mMovementComponent->GetCurrentTile())
 		{
 			Renderer->SetDrawColor(255, 0, 0, 50);
-			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
+			Renderer->DrawFillRectAt({ 0, 0, TILE_SIZE, TILE_SIZE },
 									 Tile->GetPosition());
 		}
 
@@ -64,7 +64,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		if (const auto& Tile = mMovementComponent->GetCurrentTile())
 		{
 			Renderer->SetDrawColor(0, 255, 0, 50);
-			Renderer->DrawFillRectAt({ 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE },
+			Renderer->DrawFillRectAt({ 0, 0, TILE_SIZE, TILE_SIZE },
 									 Tile->GetPosition());
 		}
 
@@ -72,7 +72,7 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 		if (mMovementComponent->IsMoving())
 		{
 			Renderer->SetDrawColor(255, 0, 128, 255);
-			auto Offset = FVector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+			auto Offset = FVector2(TILE_SIZE, TILE_SIZE);
 			Renderer->DrawPointAt(mMovementComponent->GetTargetPosition() + Offset, 4);
 		}
 	}

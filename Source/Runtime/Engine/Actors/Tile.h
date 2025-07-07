@@ -22,8 +22,8 @@ public:
 		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
 		mBlocking = false;
-		mPosition.X = inX * TILE_SIZE;
-		mPosition.Y = inY * TILE_SIZE;
+		mPosition.X = inX * DOUBLE_TILE_SIZE;
+		mPosition.Y = inY * DOUBLE_TILE_SIZE;
 	}
 	PTile(const STileData& Data)
 		: Data(Data)
@@ -31,8 +31,8 @@ public:
 		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
 		mBlocking = false;
-		mPosition.X = Data.X * TILE_SIZE;
-		mPosition.Y = Data.Y * TILE_SIZE;
+		mPosition.X = Data.X * DOUBLE_TILE_SIZE;
+		mPosition.Y = Data.Y * DOUBLE_TILE_SIZE;
 	}
 
 	FVector2 GetPosition() const override;
@@ -43,12 +43,12 @@ public:
 
 	FRect GetLocalBounds() const override
 	{
-		return FRect(0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE);
+		return FRect(0, 0, TILE_SIZE, TILE_SIZE);
 	}
 	FRect GetWorldBounds() const override
 	{
 		auto P = GetPosition();
-		return FRect(P.X, P.Y, HALF_TILE_SIZE, HALF_TILE_SIZE);
+		return FRect(P.X, P.Y, TILE_SIZE, TILE_SIZE);
 	}
 
 	json Serialize() const override;

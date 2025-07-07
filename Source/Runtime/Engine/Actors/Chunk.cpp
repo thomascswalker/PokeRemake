@@ -43,7 +43,7 @@ void PChunk::Start()
 		auto X = Pos[0].get<int>();
 		auto Y = Pos[1].get<int>();
 		auto Tile = W->ConstructActor<PTile>(X, Y);
-		Tile->Data.Index = TileData.at("Index");
+		Tile->Data.SubIndexes = TileData.at("SubIndexes");
 		Tile->Chunk = this;
 		Tile->Data.Tileset = mTileset;
 		mTiles.emplace_back(Tile);
@@ -84,12 +84,12 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
+	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position)

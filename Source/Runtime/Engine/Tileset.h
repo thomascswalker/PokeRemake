@@ -6,16 +6,22 @@
 #include <string>
 #include <vector>
 
-constexpr float gTilesetItemSize = 16.0f;
+constexpr float gTilesetItemSize = 32.0f;
+constexpr float gTilesetItemHalfSize = gTilesetItemSize / 2.0f;
 constexpr int	gTilesetWidth = 16;
 constexpr int	gTilesetHeight = 6;
 
-#define TILE_1X1 { gTilesetItemSize, gTilesetItemSize }
-#define TILE_2X2 { gTilesetItemSize * 2, gTilesetItemSize * 2 }
-#define TILE_3X3 { gTilesetItemSize * 3, gTilesetItemSize * 3 }
+#define TILE_HALF { gTilesetItemHalfSize, gTilesetItemHalfSize }
+#define TILE_FULL { gTilesetItemSize, gTilesetItemSize }
 
 struct STileset;
 struct STilesetItem;
+
+enum ETileSizeType
+{
+	TST_Full,
+	TST_Half
+};
 
 enum ETileType
 {
@@ -27,26 +33,35 @@ enum ETileType
 	TT_Portal
 };
 
-static int32_t ToLinearIndex(const FVector2& Index)
+static int32_t ToLinearIndex(const FVector2& Index, const int32_t Factor = gTilesetWidth)
 {
-	return Index.Y * gTilesetWidth + Index.X;
+	return Index.Y * Factor + Index.X;
 }
 
-static FVector2 ToCoordIndex(const int32_t Index)
+static FVector2 ToCoordIndex(const int32_t Index, const int32_t Factor = gTilesetWidth)
 {
-	return { static_cast<float>(Index % gTilesetWidth), static_cast<float>(Index / gTilesetWidth) };
+	return { static_cast<float>(Index % Factor), static_cast<float>(Index / Factor) };
 }
 
 struct STilesetItem
 {
-	std::string Name;
-	FVector2	Index = { 0, 0 };
-	FVector2	Size = TILE_1X1;
-	ETileType	Type = TT_Normal;
+	std::string	  Name;
+	int32_t		  LinearIndex;
+	ETileType	  Type = TT_Normal;
+	ETileSizeType SizeType = TST_Full;
 
-	int32_t GetArrayIndex() const
+	STilesetItem(const std::string& InName, const FVector2& InIndex, ETileType InType, ETileSizeType InSizeType)
+		: Name(InName), LinearIndex(ToLinearIndex(InIndex)), Type(InType), SizeType(InSizeType)
 	{
-		return Index.Y * gTilesetWidth + Index.X;
+	}
+
+	FRect GetSourceRect()
+	{
+		auto CoordIndex = ToCoordIndex(LinearIndex);
+		auto Size = SizeType == TST_Half ? gTilesetItemHalfSize : gTilesetItemSize;
+		return {
+			CoordIndex * gTilesetItemHalfSize, { Size, Size }
+		};
 	}
 };
 
@@ -68,6 +83,18 @@ struct STileset
 		}
 	}
 
+	STilesetItem* GetItemByLinearIndex(int LinearIndex)
+	{
+		for (auto& Item : Items)
+		{
+			if (Item.LinearIndex == LinearIndex)
+			{
+				return &Item;
+			}
+		}
+		return nullptr;
+	}
+
 	int32_t IndexOf(const STilesetItem* Ptr)
 	{
 		for (int32_t Index = 0; Index < Items.size(); Index++)
@@ -87,25 +114,30 @@ struct STileset
 
 struct STileData
 {
-	int32_t	  X;
-	int32_t	  Y;
-	STileset* Tileset;
-	int32_t	  Index;
+	using SubIndexType = std::array<int32_t, 4>;
 
-	STilesetItem* GetItem() const { return &Tileset->Items[Index]; }
-	ETileType	  GetType() const { return Tileset->Items[Index].Type; }
-	PTexture*	  GetTexture() const { return Tileset->Texture; }
+	int32_t		 X;
+	int32_t		 Y;
+	STileset*	 Tileset;
+	SubIndexType SubIndexes = { 0, 0, 0, 0 };
 
-	FRect GetSourceRect() const
+	STilesetItem* GetItemBySubIndex(int Index = 0) const
 	{
-		auto CoordIndex = ToCoordIndex(Index);
-		return {
-			CoordIndex.X * gTilesetItemSize,
-			CoordIndex.Y * gTilesetItemSize,
-			gTilesetItemSize,
-			gTilesetItemSize,
-		};
+		return Tileset->GetItemByLinearIndex(SubIndexes[Index]);
 	}
+	ETileType GetType(int Index = 0) const
+	{
+		return GetItemBySubIndex(Index)->Type;
+	}
+	PTexture* GetTexture() const
+	{
+		return Tileset->Texture;
+	}
+	FRect GetSourceRect(int Index = 0) const
+	{
+		return GetItemBySubIndex(Index)->GetSourceRect();
+	}
+	bool IsSubIndexed() const { return GetItemBySubIndex(0)->SizeType == TST_Half; }
 };
 
 static std::map<std::string, STileset> gTilesets = {
@@ -114,12 +146,9 @@ static std::map<std::string, STileset> gTilesets = {
 		{
 			"Tileset1",
 			{
-				{ "Grass1", { 0, 0 }, TILE_1X1, TT_Normal },
-				{ "Grass2", { 9, 3 }, TILE_1X1, TT_Normal },
-				{ "RockTopLeft", { 10, 2 }, TILE_1X1, TT_Obstacle },
-				{ "RockTopRight", { 11, 2 }, TILE_1X1, TT_Obstacle },
-				{ "RockBottomLeft", { 10, 3 }, TILE_1X1, TT_Obstacle },
-				{ "RockBottomRight", { 11, 3 }, TILE_1X1, TT_Obstacle },
+				{ "Grass1", { 0, 0 }, TT_Normal, TST_Half },
+				{ "Grass2", { 9, 3 }, TT_Normal, TST_Half },
+				{ "Rock", { 10, 2 }, TT_Obstacle, TST_Full },
 			},
 		},
 	 }
