@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Actor.h"
-#include "Engine/ClassRegistry.h"
 #include "Engine/Tileset.h"
 #include "Renderer/Renderer.h"
 
@@ -9,42 +8,27 @@ constexpr int CHUNK_SIZE = 20;
 
 class PChunk;
 
-struct SPortal
-{
-	std::string DestChunkName;
-	IVector2	DestPosition;
-};
-
-struct STileData
-{
-	int32_t	  X;
-	int32_t	  Y;
-	ETileType Type;
-};
-
 class PTile : public PActor
 {
 public:
-	int32_t	  X;
-	int32_t	  Y;
-	ETileType Type = TT_Normal;
-	PTexture* Texture = nullptr;
+	STileData Data;
 	PChunk*	  Chunk = nullptr;
 
 	PTile() = default;
 	PTile(int32_t inX, int32_t inY)
-		: X(inX), Y(inY)
 	{
-		mPriority = DP_BACKGROUND;
+		Data.X = inX;
+		Data.Y = inY;
+		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
 		mBlocking = false;
 		mPosition.X = inX * TILE_SIZE;
 		mPosition.Y = inY * TILE_SIZE;
 	}
 	PTile(const STileData& Data)
-		: X(Data.X), Y(Data.Y), Type(Data.Type)
+		: Data(Data)
 	{
-		mPriority = DP_BACKGROUND;
+		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
 		mBlocking = false;
 		mPosition.X = Data.X * TILE_SIZE;

@@ -8,7 +8,7 @@
 
 void PCharacter::Start()
 {
-	mPriority = DP_FOREGROUND;
+	mRenderPriority = DP_FOREGROUND;
 
 	mSprite = PSprite();
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_GARY));

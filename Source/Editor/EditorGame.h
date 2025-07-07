@@ -69,6 +69,7 @@ public:
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
 	void OnTilesetButtonChecked(bool State);
+	void OnActorClicked(PActor* ClickedActor);
 
 	// Scene
 	void   AddChunk(PChunk* Chunk);

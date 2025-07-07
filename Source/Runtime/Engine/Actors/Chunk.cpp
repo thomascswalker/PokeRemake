@@ -11,10 +11,11 @@
 PChunk::PChunk(const json& JsonData)
 {
 	LogDebug("Constructing Chunk from JSON data");
-	mPriority = DP_BACKGROUND;
+	mRenderPriority = DP_BACKGROUND;
 	mBlocking = false;
 	mData = JsonData;
 }
+
 PChunk::~PChunk()
 {
 	auto W = GetWorld();
@@ -26,21 +27,6 @@ PChunk::~PChunk()
 
 void PChunk::Start()
 {
-	mTextureName = mData.value("Texture", std::string());
-	PTexture* T = nullptr;
-	if (!mTextureName.empty())
-	{
-		T = PTextureManager::Load(mTextureName);
-		if (!T)
-		{
-			LogWarning("Texture {} not found.", mTextureName.c_str());
-		}
-		else
-		{
-			mSprite.SetTexture(T);
-		}
-	}
-
 	auto W = GetWorld();
 
 	auto Position = mData.at("Position");
@@ -49,15 +35,17 @@ void PChunk::Start()
 	mSizeX = mData.at("SizeX").get<int>();
 	mSizeY = mData.at("SizeY").get<int>();
 
+	mTileset = &GetTileset(mData.at("Tileset"));
+
 	for (const auto& TileData : mData.at("Tiles"))
 	{
 		auto Pos = TileData.at("Position");
 		auto X = Pos[0].get<int>();
 		auto Y = Pos[1].get<int>();
 		auto Tile = W->ConstructActor<PTile>(X, Y);
-		Tile->Type = static_cast<ETileType>(TileData.at("Type").get<int>());
+		Tile->Data.Index = TileData.at("Index");
 		Tile->Chunk = this;
-		Tile->Texture = T;
+		Tile->Data.Tileset = mTileset;
 		mTiles.emplace_back(Tile);
 	}
 

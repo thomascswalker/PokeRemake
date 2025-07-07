@@ -15,6 +15,7 @@ static PFont gCurrentFont;
 
 bool PRenderer::Initialize()
 {
+	SDL_SetRenderTextureAddressMode(mContext->Renderer, SDL_TEXTURE_ADDRESS_CLAMP, SDL_TEXTURE_ADDRESS_CLAMP);
 	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
 	LoadFont(gDefaultFont);
 	return true;
@@ -156,6 +157,16 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
+}
+void PRenderer::SetClipRect(const FRect& ClipRect) const
+{
+	SDL_Rect Clip = ClipRect.ToSDL_Rect();
+	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+}
+void PRenderer::ReleaseClipRect() const
+{
+	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
+	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
 }
 
 void PRenderer::DrawPoint(const FVector2& V, float Thickness) const

@@ -8,4 +8,5 @@ protected:
 public:
 	bool GetSelected() { return mSelected; }
 	void SetSelected(bool value) { mSelected = value; }
+	void ToggleSelected() { mSelected = !mSelected; }
 };

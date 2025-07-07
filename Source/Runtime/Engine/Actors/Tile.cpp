@@ -19,9 +19,7 @@ FVector2 PTile::GetPosition() const
 
 void PTile::Draw(const PRenderer* Renderer) const
 {
-	// Source rectangle to extract the tile from the texture
-	// Assuming each tile is 16x16 pixels
-	const FRect Source = { static_cast<float>(X * 16), static_cast<float>(Y * 16), 16, 16 };
+	const FRect Source = Data.GetSourceRect();
 
 	// World position of this tile
 	const FVector2 WorldPosition = GetPosition();
@@ -29,7 +27,16 @@ void PTile::Draw(const PRenderer* Renderer) const
 	// Screenspace destination rectangle
 	const FRect Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
 
-	Renderer->DrawTextureAt(Texture, Source, Dest, WorldPosition);
+	auto Texture = Data.GetTexture();
+	if (!Texture)
+	{
+		Renderer->SetDrawColor(PColor::UIDebug1);
+		Renderer->DrawFillRectAt(Dest, WorldPosition);
+	}
+	else
+	{
+		Renderer->DrawTextureAt(Texture, Source, Dest, WorldPosition);
+	}
 
 	if (!GetSettings()->mDebugDraw)
 	{
@@ -37,7 +44,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 	}
 
 	// Debug drawing
-	switch (Type)
+	switch (Data.GetType())
 	{
 		case TT_Normal:
 			break;
@@ -93,6 +100,7 @@ PActor* PTile::GetActor() const
 
 bool PTile::IsWalkable() const
 {
+	auto Type = Data.GetType();
 	return Type != TT_Obstacle && Type != TT_Water;
 }
 
@@ -110,8 +118,8 @@ json PTile::Serialize() const
 	json Result;
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
-	Result["Position"] = { X, Y };
-	Result["Type"] = Type;
+	Result["Position"] = { Data.X, Data.Y };
+	Result["Type"] = Data.GetType();
 	return Result;
 }
 

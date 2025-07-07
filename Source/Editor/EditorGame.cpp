@@ -31,20 +31,14 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	PTextureManager::Load("Tileset1.png");
+	LoadTileset("Tileset1");
 	SetupInterface();
-}
-
-void OnActorClicked(PActor* Actor)
-{
-	LogDebug("Selected: {}", Actor->GetInternalName().c_str());
-	Actor->SetSelected(true);
 }
 
 void PEditorGame::Start()
 {
 	mWorld->Start();
-	mWorld->ActorClicked.AddStatic(&OnActorClicked);
+	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 	FindActiveCamera();
 }
 
@@ -100,9 +94,9 @@ void PEditorGame::SetupInterface()
 
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	auto	   TilesetTexture = PTextureManager::Get("Tileset1.png");
+	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
-	for (const auto& Item : gPalletTownTileset)
+	for (const auto& Item : GetTileset("Tileset1"))
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
 
@@ -119,7 +113,7 @@ void PEditorGame::SetupInterface()
 		Img->SetFixedSize({ 16, 16 });
 		Img->SetResizeMode(RM_Fixed, RM_Fixed);
 		Img->SetUseSourceRect(true);
-		FRect SourceRect = { Item.Index * 8.0f, Item.Size };
+		FRect SourceRect = { Item.Index * gTilesetItemSize, Item.Size };
 		Img->SetSourceRect(SourceRect);
 	}
 
@@ -178,6 +172,7 @@ void PEditorGame::OnCreateButtonClicked()
 		{ "Position", { 0, 0 }	   },
 		{ "SizeX",	   mNewGridSizeX },
 		{ "SizeY",	   mNewGridSizeY },
+		{ "Tileset",	 "Tileset1"	}
 	};
 	for (int X = 0; X < mNewGridSizeX; ++X)
 	{
@@ -185,7 +180,7 @@ void PEditorGame::OnCreateButtonClicked()
 		{
 			JsonData["Tiles"].push_back({
 				{ "Position", { X, Y } },
-				{ "Type",	  0		},
+				{ "Index",	   0		 },
 			});
 		}
 	}
@@ -246,36 +241,36 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
 }
 
-void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
+void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
-	const auto HoverTile = GetActorUnderMouse<PTile>();
-	if (!HoverTile)
+	LogDebug("Selected: {}", ClickedActor->GetInternalName().c_str());
+	switch (mInputContext)
 	{
-		return;
-	}
-	switch (ScanCode)
-	{
-		case SDLK_1:
-			HoverTile->Type = TT_Normal;
+		case IC_Select:
+			if (dynamic_cast<PChunk*>(ClickedActor))
+			{
+				ClickedActor->ToggleSelected();
+				for (auto Actor : GetWorld()->GetActors())
+				{
+					if (ClickedActor->GetInternalName() == Actor->GetInternalName())
+					{
+						continue;
+					}
+					Actor->SetSelected(false);
+				}
+			}
 			break;
-		case SDLK_2:
-			HoverTile->Type = TT_Obstacle;
+		case IC_TileType:
 			break;
-		case SDLK_3:
-			HoverTile->Type = TT_Water;
-			break;
-		case SDLK_4:
-			HoverTile->Type = TT_Grass;
-			break;
-		case SDLK_5:
-			HoverTile->Type = TT_Cave;
-			break;
-		case SDLK_6:
-			HoverTile->Type = TT_Portal;
+		case IC_TileSprite:
 			break;
 		default:
 			break;
 	}
+}
+
+void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
+{
 }
 
 void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)

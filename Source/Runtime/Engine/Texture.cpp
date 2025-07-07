@@ -66,6 +66,8 @@ bool PTextureManager::LoadSDL(PTexture* Texture)
 		return false;
 	}
 
+	SDL_SetTextureScaleMode(SDLTexture, SDL_SCALEMODE_NEAREST);
+
 	SDL_Rect Source(0, 0, Width, Height);
 	if (SDL_UpdateTexture(SDLTexture, &Source, Texture->GetData(), Texture->GetPitch()))
 	{
