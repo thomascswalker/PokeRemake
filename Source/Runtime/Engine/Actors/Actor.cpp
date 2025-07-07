@@ -10,8 +10,8 @@ void PActor::Tick(float DeltaTime)
 void PActor::UpdateMouseState()
 {
 	const auto Renderer = GetRenderer();
-	const auto MousePosition = Renderer->GetMousePosition();
-	FVector2   ScreenPosition;
+	mMousePosition = Renderer->GetMousePosition();
+	FVector2 ScreenPosition;
 	Renderer->WorldToScreen(GetPosition(), &ScreenPosition);
 
 	auto  CameraView = GetCameraView();
@@ -22,7 +22,7 @@ void PActor::UpdateMouseState()
 		Rect.W * CameraView->GetZoom(),
 		Rect.H * CameraView->GetZoom(),
 	};
-	const bool NewMouseState = ScreenRect.Contains(MousePosition);
+	const bool NewMouseState = ScreenRect.Contains(mMousePosition);
 
 	if (!mMouseOver && NewMouseState)
 	{

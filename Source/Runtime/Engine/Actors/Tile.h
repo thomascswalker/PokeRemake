@@ -51,6 +51,9 @@ public:
 		return FRect(P.X, P.Y, TILE_SIZE, TILE_SIZE);
 	}
 
+	FVector2 GetQuadrant(const FVector2& Position) const;
+	int		 GetQuadrantIndex(const FVector2& Position) const;
+
 	json Serialize() const override;
 	void Deserialize(const json& Data) override;
 };

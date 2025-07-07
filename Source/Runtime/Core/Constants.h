@@ -7,9 +7,9 @@ constexpr float EPSILON = 0.000000000001f;
 constexpr int SPRITE_WIDTH = 16;
 
 constexpr float RENDER_SCALE = 1.0f;
-constexpr float DOUBLE_TILE_SIZE = 100.0f * RENDER_SCALE;
-constexpr float TILE_SIZE = DOUBLE_TILE_SIZE / 2.0f;
-constexpr float HALF_TILE_SIZE = DOUBLE_TILE_SIZE / 4.0f;
+constexpr float TILE_SIZE = (100.0f * RENDER_SCALE) / 2.0f;
+constexpr float HALF_TILE_SIZE = TILE_SIZE / 2.0f;
+constexpr float DOUBLE_TILE_SIZE = TILE_SIZE * 2.0f;
 constexpr int	TILE_ROWS = 10;
 constexpr int	TILE_COLUMNS = 9;
 

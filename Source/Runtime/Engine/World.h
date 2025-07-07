@@ -37,10 +37,12 @@ public:
 	void Start() override;
 	void Tick(float DeltaTime) override;
 
+#if _EDITOR
 	void OnActorClicked(PActor* Actor)
 	{
 		ActorClicked.Broadcast(Actor);
 	}
+#endif
 
 	template <ENABLE_IF(PObject), typename... ArgsType>
 	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
@@ -55,7 +57,8 @@ public:
 	{
 		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
-#ifdef _EDITOR
+
+#if _EDITOR
 		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
 #endif
 		return Actor.get();

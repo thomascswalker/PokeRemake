@@ -24,6 +24,7 @@ protected:
 	bool	 mBlocking = true;
 
 public:
+	FVector2	mMousePosition;
 	bool		mMouseOver = false;
 	bool		mMouseDown = false;
 	DHoverBegin HoverBegin;

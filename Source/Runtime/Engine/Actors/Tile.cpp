@@ -88,11 +88,17 @@ void PTile::Draw(const PRenderer* Renderer) const
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
 	{
+
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
 			Renderer->DrawRectAt(FullTileDest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+
+			auto  QuadrantPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
+			FRect QuadrantRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+			Renderer->SetDrawColor(255, 0, 0, 255);
+			Renderer->DrawRectAt(QuadrantRect, WorldPosition + QuadrantPosition);
 		}
 		if (mSelected)
 		{
@@ -127,6 +133,25 @@ bool PTile::Contains(const FVector2& Position) const
 		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
 		   && Position.Y >= TilePosition.Y			   // Min Y
 		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
+}
+
+FVector2 PTile::GetQuadrant(const FVector2& Position) const
+{
+	auto	 TilePosition = GetPosition();
+	FVector2 TileCenter = { TilePosition.X + TILE_SIZE, TilePosition.Y + TILE_SIZE };
+
+	float X = Position.X > TileCenter.X ? 1.0f : 0.0f;
+	float Y = Position.Y > TileCenter.Y ? 1.0f : 0.0f;
+
+	return { X, Y };
+}
+
+int PTile::GetQuadrantIndex(const FVector2& Position) const
+{
+	auto Q = GetQuadrant(Position);
+	auto I = ToLinearIndex(Q, 2);
+	LogDebug("{} => {}", Q.ToString().c_str(), I);
+	return I;
 }
 
 json PTile::Serialize() const

@@ -35,6 +35,13 @@ public:
 
 	SDL_Renderer* GetSDLRenderer() { return mContext->Renderer; }
 	SDL_Window*	  GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
+	float		  GetScreenWidth() const;
+	float		  GetScreenHeight() const;
+	FVector2	  GetScreenSize() const;
+	FRect		  GetViewport() const;
+	FVector2	  GetMousePosition() const;
+	FVector2	  GetMouseWorldPosition() const;
+	bool		  GetMouseLeftDown() const;
 
 	/* Fonts */
 
@@ -44,15 +51,10 @@ public:
 
 	/* Math*/
 
-	bool WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const;
+	bool WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const;
+	bool ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const;
 
-	float	 GetScreenWidth() const;
-	float	 GetScreenHeight() const;
-	FVector2 GetScreenSize() const;
-	FRect	 GetViewport() const;
-	FVector2 GetMousePosition() const;
-	bool	 GetMouseLeftDown() const;
-	PActor*	 GetActorUnderMouse() const;
+	PActor* GetActorUnderMouse() const;
 
 	/* Drawing */
 

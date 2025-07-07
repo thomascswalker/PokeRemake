@@ -247,6 +247,8 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
+	auto R = GetRenderer();
+
 	LogDebug("Selected: {}", ClickedActor->GetInternalName().c_str());
 	LogDebug("Input Context: {}", mInputContext);
 	switch (mInputContext)
@@ -273,13 +275,9 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			}
 			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
 			{
-				// TODO: Account for what quadrant you're clicking in
 				if (mCurrentTilesetItem->SizeType == TST_Half)
 				{
-					Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
-					Tile->Data.SubIndexes[1] = mCurrentTilesetItem->LinearIndex;
-					Tile->Data.SubIndexes[2] = mCurrentTilesetItem->LinearIndex;
-					Tile->Data.SubIndexes[3] = mCurrentTilesetItem->LinearIndex;
+					Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
 				}
 				else
 				{

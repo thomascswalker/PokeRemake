@@ -15,7 +15,7 @@ static PFont gCurrentFont;
 
 bool PRenderer::Initialize()
 {
-	SDL_SetRenderTextureAddressMode(mContext->Renderer, SDL_TEXTURE_ADDRESS_CLAMP, SDL_TEXTURE_ADDRESS_CLAMP);
+	SDL_SetDefaultTextureScaleMode(mContext->Renderer, SDL_SCALEMODE_NEAREST);
 	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
 	LoadFont(gDefaultFont);
 	return true;
@@ -126,7 +126,7 @@ void PRenderer::Render() const
 	SDL_RenderPresent(mContext->Renderer);
 }
 
-bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const
+bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const
 {
 	const auto ScreenSize = GetScreenSize();
 
@@ -134,9 +134,27 @@ bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition
 	{
 		const auto ViewPosition = CameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-		const auto Offset = (Position - ViewPosition2D) * CameraView->GetZoom();
+		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		return true;
+	}
+	return false;
+}
+
+bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const
+{
+	const auto ScreenSize = GetScreenSize();
+
+	if (const auto CameraView = GetCameraView())
+	{
+		auto Offset = (ScreenPosition * 2.0f) - ScreenSize;
+		auto Position2D = Offset / CameraView->GetZoom();
+
+		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+
+		*WorldPosition = Position2D + ViewPosition2D;
 		return true;
 	}
 	return false;
@@ -411,6 +429,13 @@ FVector2 PRenderer::GetMousePosition() const
 	float X, Y;
 	SDL_GetMouseState(&X, &Y);
 	return { X, Y };
+}
+
+FVector2 PRenderer::GetMouseWorldPosition() const
+{
+	FVector2 MouseWorldPosition;
+	GetRenderer()->ScreenToWorld(GetMousePosition(), &MouseWorldPosition);
+	return MouseWorldPosition;
 }
 
 bool PRenderer::GetMouseLeftDown() const
