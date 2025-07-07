@@ -75,17 +75,13 @@ void PEditorGame::SetupInterface()
 	EditGroup->SetLayoutMode(LM_Vertical);
 	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
 	EditModeChunk->SetCheckable(true);
-	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileType->SetCheckable(true);
-	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileSprite->SetCheckable(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTile->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	EditModeButtonGroup->AddButton(EditModeChunk);
-	EditModeButtonGroup->AddButton(EditModeTileType);
-	EditModeButtonGroup->AddButton(EditModeTileSprite);
+	EditModeButtonGroup->AddButton(EditModeTile);
 	EditGroup->AddChild(EditModeChunk);
-	EditGroup->AddChild(EditModeTileType);
-	EditGroup->AddChild(EditModeTileSprite);
+	EditGroup->AddChild(EditModeTile);
 
 	MainPanel->AddChild(FileGroup);
 	MainPanel->AddChild(EditGroup);
@@ -135,7 +131,7 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 		case IC_Select:
 			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
-		case IC_TileType:
+		case IC_Tile:
 			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpTile);
 			break;
 		default:
@@ -156,7 +152,7 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 				mCurrentChunk->SetSelected(false);
 			}
 			break;
-		case IC_TileType:
+		case IC_Tile:
 			Input->KeyUp.Remove(mTileDelegate);
 			break;
 		default:
@@ -225,25 +221,33 @@ void PEditorGame::OnLoadButtonClicked()
 
 void PEditorGame::OnSelectButtonChecked(bool State)
 {
-	RemoveInputContext(IC_TileType);
+	RemoveInputContext(IC_Tile);
 	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
 }
 
 void PEditorGame::OnTileButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Select);
-	State ? AddInputContext(IC_TileType) : RemoveInputContext(IC_TileType);
+	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
 void PEditorGame::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
-	mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
+	if (State)
+	{
+		mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
+	}
+	else
+	{
+		mCurrentTilesetItem = nullptr;
+	}
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
 	LogDebug("Selected: {}", ClickedActor->GetInternalName().c_str());
+	LogDebug("Input Context: {}", mInputContext);
 	switch (mInputContext)
 	{
 		case IC_Select:
@@ -260,9 +264,17 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 				}
 			}
 			break;
-		case IC_TileType:
-			break;
-		case IC_TileSprite:
+		case IC_Tile:
+			if (!mCurrentTilesetItem)
+			{
+				LogWarning("No tileset item selected.");
+				return;
+			}
+			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
+			{
+				LogDebug("New Tile Index: {}", ToLinearIndex(mCurrentTilesetItem->Index));
+				Tile->Data.Index = ToLinearIndex(mCurrentTilesetItem->Index);
+			}
 			break;
 		default:
 			break;

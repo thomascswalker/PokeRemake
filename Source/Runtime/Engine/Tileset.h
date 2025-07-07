@@ -27,12 +27,27 @@ enum ETileType
 	TT_Portal
 };
 
+static int32_t ToLinearIndex(const FVector2& Index)
+{
+	return Index.Y * gTilesetWidth + Index.X;
+}
+
+static FVector2 ToCoordIndex(const int32_t Index)
+{
+	return { static_cast<float>(Index % gTilesetWidth), static_cast<float>(Index / gTilesetWidth) };
+}
+
 struct STilesetItem
 {
 	std::string Name;
 	FVector2	Index = { 0, 0 };
 	FVector2	Size = TILE_1X1;
 	ETileType	Type = TT_Normal;
+
+	int32_t GetArrayIndex() const
+	{
+		return Index.Y * gTilesetWidth + Index.X;
+	}
 };
 
 struct STileset
@@ -53,6 +68,19 @@ struct STileset
 		}
 	}
 
+	int32_t IndexOf(const STilesetItem* Ptr)
+	{
+		for (int32_t Index = 0; Index < Items.size(); Index++)
+		{
+			auto Item = &Items[Index];
+			if (Item == Ptr)
+			{
+				return Index;
+			}
+		}
+		return -1;
+	}
+
 	auto begin() { return Items.begin(); }
 	auto end() { return Items.end(); }
 };
@@ -70,10 +98,10 @@ struct STileData
 
 	FRect GetSourceRect() const
 	{
-		auto SourceIndex = Tileset->Items[Index].Index;
+		auto CoordIndex = ToCoordIndex(Index);
 		return {
-			SourceIndex.X * gTilesetItemSize,
-			SourceIndex.Y * gTilesetItemSize,
+			CoordIndex.X * gTilesetItemSize,
+			CoordIndex.Y * gTilesetItemSize,
 			gTilesetItemSize,
 			gTilesetItemSize,
 		};

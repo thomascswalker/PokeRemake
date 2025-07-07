@@ -115,6 +115,8 @@ json PChunk::Serialize() const
 	Result["SizeX"] = mSizeX;
 	Result["SizeY"] = mSizeY;
 
+	Result["Tileset"] = mTileset->Name;
+
 	auto TileArray = json::array();
 	for (const auto& Tile : GetTiles())
 	{

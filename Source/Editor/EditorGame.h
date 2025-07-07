@@ -11,8 +11,7 @@ enum EInputContext : uint8_t
 {
 	IC_None = 1U << 0,
 	IC_Select = 1U << 2,
-	IC_TileType = 1U << 3,
-	IC_TileSprite = 1U << 4,
+	IC_Tile = 1U << 3,
 };
 DEFINE_BITMASK_OPERATORS(EInputContext);
 

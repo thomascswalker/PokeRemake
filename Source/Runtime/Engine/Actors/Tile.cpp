@@ -70,7 +70,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 	Renderer->DrawRectAt(Dest, WorldPosition);
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_TileType) && (mMouseOver || mSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (mMouseOver)
@@ -119,7 +119,7 @@ json PTile::Serialize() const
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
 	Result["Position"] = { Data.X, Data.Y };
-	Result["Type"] = Data.GetType();
+	Result["Index"] = Data.Index;
 	return Result;
 }
 
