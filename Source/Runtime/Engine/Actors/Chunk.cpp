@@ -11,10 +11,11 @@
 PChunk::PChunk(const json& JsonData)
 {
 	LogDebug("Constructing Chunk from JSON data");
-	mPriority = DP_BACKGROUND;
-	bBlocking = false;
+	mRenderPriority = DP_BACKGROUND;
+	mBlocking = false;
 	mData = JsonData;
 }
+
 PChunk::~PChunk()
 {
 	auto W = GetWorld();
@@ -26,21 +27,6 @@ PChunk::~PChunk()
 
 void PChunk::Start()
 {
-	mTextureName = mData.value("Texture", std::string());
-	PTexture* T = nullptr;
-	if (!mTextureName.empty())
-	{
-		T = PTextureManager::Load(mTextureName);
-		if (!T)
-		{
-			LogWarning("Texture {} not found.", mTextureName.c_str());
-		}
-		else
-		{
-			mSprite.SetTexture(T);
-		}
-	}
-
 	auto W = GetWorld();
 
 	auto Position = mData.at("Position");
@@ -49,15 +35,17 @@ void PChunk::Start()
 	mSizeX = mData.at("SizeX").get<int>();
 	mSizeY = mData.at("SizeY").get<int>();
 
+	mTileset = &GetTileset(mData.at("Tileset"));
+
 	for (const auto& TileData : mData.at("Tiles"))
 	{
 		auto Pos = TileData.at("Position");
 		auto X = Pos[0].get<int>();
 		auto Y = Pos[1].get<int>();
 		auto Tile = W->ConstructActor<PTile>(X, Y);
-		Tile->Type = static_cast<ETileType>(TileData.at("Type").get<int>());
+		Tile->Data.SubIndexes = TileData.at("SubIndexes");
 		Tile->Chunk = this;
-		Tile->Texture = T;
+		Tile->Data.Tileset = mTileset;
 		mTiles.emplace_back(Tile);
 	}
 
@@ -74,16 +62,16 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (bMouseOver || bSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (bMouseOver)
+		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
 								 mPosition - FVector2(ExpandSize, ExpandSize));
 		}
-		if (bSelected)
+		if (mSelected)
 		{
 			Renderer->DrawFillRectAt(Dest, mPosition);
 		}
@@ -96,12 +84,12 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
+	return { 0, 0, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * HALF_TILE_SIZE, mSizeY * HALF_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position)
@@ -126,6 +114,8 @@ json PChunk::Serialize() const
 
 	Result["SizeX"] = mSizeX;
 	Result["SizeY"] = mSizeY;
+
+	Result["Tileset"] = mTileset->Name;
 
 	auto TileArray = json::array();
 	for (const auto& Tile : GetTiles())

@@ -69,6 +69,8 @@ protected:
 	PWidget* mParent = nullptr;
 	// List of child widgets.
 	std::vector<PWidget*> mChildren;
+	// Custom data associated with this widget
+	void* mCustomData = nullptr;
 
 	ELayoutMode mLayoutMode = LM_Horizontal;
 
@@ -90,7 +92,7 @@ public:
 	FPadding Padding;
 
 	PWidget()
-		: Padding(5.0f) {}
+		: Padding(5.0f) { GenerateInternalName(); }
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
@@ -202,6 +204,25 @@ public:
 	void	 SetMaxWidth(float W) { mMaxSize.X = W; }
 	void	 SetMaxHeight(float H) { mMaxSize.Y = H; }
 
+	// Custom data
+	template <typename T>
+	T* GetCustomData()
+	{
+		return static_cast<T*>(mCustomData);
+	}
+
+	template <typename T>
+	void SetCustomData(T* Data)
+	{
+		auto Size = sizeof(T);
+		mCustomData = std::malloc(Size);
+		std::memcpy(mCustomData, Data, Size);
+	}
+
 	// Returns a pointer to the widget that sent the event.
-	static PWidget* GetSender() { return mSender; }
+	template <typename T = PWidget>
+	static T* GetSender()
+	{
+		return static_cast<T*>(mSender);
+	}
 };

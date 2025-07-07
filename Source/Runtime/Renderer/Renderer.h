@@ -5,6 +5,7 @@
 #include "Core/Matrix.h"
 #include "Core/Rect.h"
 #include "Engine/Texture.h"
+#include "Engine/Tileset.h"
 #include "stb/stb_truetype.h"
 #include <vector>
 
@@ -33,43 +34,37 @@ public:
 	void Uninitialize() const;
 
 	SDL_Renderer* GetSDLRenderer() { return mContext->Renderer; }
+	SDL_Window*	  GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
+	float		  GetScreenWidth() const;
+	float		  GetScreenHeight() const;
+	FVector2	  GetScreenSize() const;
+	FRect		  GetViewport() const;
+	FVector2	  GetMousePosition() const;
+	FVector2	  GetMouseWorldPosition() const;
+	bool		  GetMouseLeftDown() const;
 
-	SDL_Texture* CreateRenderTarget(int Width, int Height) const
-	{
-		return SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, Width, Height);
-	}
+	/* Fonts */
 
-	void SetRenderTarget(SDL_Texture* InRenderTarget) const
-	{
-		SDL_SetRenderTarget(mContext->Renderer, InRenderTarget);
-	}
+	void  LoadFont(const std::string& Name) const;
+	void  UnloadFonts();
+	float GetTextWidth(const std::string& Text) const;
 
-	void ReleaseRenderTarget() const
-	{
-		SDL_SetRenderTarget(mContext->Renderer, mRenderTarget);
-	}
+	/* Math*/
 
-	void LoadFont(const std::string& Name) const;
-	void UnloadFonts();
+	bool WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const;
+	bool ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const;
 
-	void Render() const;
-	bool WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const;
+	PActor* GetActorUnderMouse() const;
 
 	/* Drawing */
+
+	void Render() const;
 
 	void SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
 	void SetDrawColor(const PColor& Color) const;
 
-	void SetClipRect(const FRect& ClipRect) const
-	{
-		SDL_Rect Clip = ClipRect.ToSDL_Rect();
-		SDL_SetRenderClipRect(mContext->Renderer, &Clip);
-	}
-	void ReleaseClipRect() const
-	{
-		SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
-		SDL_SetRenderClipRect(mContext->Renderer, &Clip);
-	}
+	void SetClipRect(const FRect& ClipRect) const;
+	void ReleaseClipRect() const;
 
 	void  DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
 	void  DrawLine(float X1, float Y1, float X2, float Y2) const;
@@ -88,18 +83,6 @@ public:
 					   const FVector2& Position) const;
 	void DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
 					  int32_t Index) const;
-
-	float GetTextWidth(const std::string& Text) const;
-
-	SDL_Window* GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
-
-	float	 GetScreenWidth() const;
-	float	 GetScreenHeight() const;
-	FVector2 GetScreenSize() const;
-	FRect	 GetViewport() const;
-	FVector2 GetMousePosition() const;
-	bool	 GetMouseLeftDown() const;
-	PActor*	 GetActorUnderMouse() const;
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(Renderer)

@@ -6,7 +6,7 @@
 
 struct PSettings
 {
-	bool bDebugDraw = false;
+	bool mDebugDraw = false;
 
 	void Initialize();
 	void OnKeyUp(uint32_t KeyCode);

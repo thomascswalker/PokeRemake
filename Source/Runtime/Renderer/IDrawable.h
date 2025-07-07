@@ -11,10 +11,10 @@ enum EDrawPriority
 class IDrawable
 {
 protected:
-	EDrawPriority mPriority = DP_BACKGROUND;
+	EDrawPriority mRenderPriority = DP_BACKGROUND;
 
 public:
 	virtual ~IDrawable() = default;
 	virtual void  Draw(const PRenderer* Renderer) const = 0;
-	EDrawPriority GetPriority() const { return mPriority; }
+	EDrawPriority GetPriority() const { return mRenderPriority; }
 };

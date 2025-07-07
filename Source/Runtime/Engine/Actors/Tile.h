@@ -1,63 +1,38 @@
 #pragma once
 
 #include "Actor.h"
-#include "Engine/ClassRegistry.h"
+#include "Engine/Tileset.h"
 #include "Renderer/Renderer.h"
 
 constexpr int CHUNK_SIZE = 20;
 
 class PChunk;
 
-enum ETileType
-{
-	TT_Normal,
-	TT_Obstacle,
-	TT_Water,
-	TT_Grass,
-	TT_Cave,
-	TT_Portal
-};
-
-struct SPortal
-{
-	std::string DestChunkName;
-	IVector2	DestPosition;
-};
-
-struct STileData
-{
-	int32_t	  X;
-	int32_t	  Y;
-	ETileType Type;
-};
-
 class PTile : public PActor
 {
 public:
-	int32_t	  X;
-	int32_t	  Y;
-	ETileType Type = TT_Normal;
-	PTexture* Texture = nullptr;
+	STileData Data;
 	PChunk*	  Chunk = nullptr;
 
 	PTile() = default;
 	PTile(int32_t inX, int32_t inY)
-		: X(inX), Y(inY)
 	{
-		mPriority = DP_BACKGROUND;
+		Data.X = inX;
+		Data.Y = inY;
+		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
-		bBlocking = false;
-		mPosition.X = inX * TILE_SIZE;
-		mPosition.Y = inY * TILE_SIZE;
+		mBlocking = false;
+		mPosition.X = inX * DOUBLE_TILE_SIZE;
+		mPosition.Y = inY * DOUBLE_TILE_SIZE;
 	}
 	PTile(const STileData& Data)
-		: X(Data.X), Y(Data.Y), Type(Data.Type)
+		: Data(Data)
 	{
-		mPriority = DP_BACKGROUND;
+		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
-		bBlocking = false;
-		mPosition.X = Data.X * TILE_SIZE;
-		mPosition.Y = Data.Y * TILE_SIZE;
+		mBlocking = false;
+		mPosition.X = Data.X * DOUBLE_TILE_SIZE;
+		mPosition.Y = Data.Y * DOUBLE_TILE_SIZE;
 	}
 
 	FVector2 GetPosition() const override;
@@ -68,13 +43,16 @@ public:
 
 	FRect GetLocalBounds() const override
 	{
-		return FRect(0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE);
+		return FRect(0, 0, TILE_SIZE, TILE_SIZE);
 	}
 	FRect GetWorldBounds() const override
 	{
 		auto P = GetPosition();
-		return FRect(P.X, P.Y, HALF_TILE_SIZE, HALF_TILE_SIZE);
+		return FRect(P.X, P.Y, TILE_SIZE, TILE_SIZE);
 	}
+
+	FVector2 GetQuadrant(const FVector2& Position) const;
+	int		 GetQuadrantIndex(const FVector2& Position) const;
 
 	json Serialize() const override;
 	void Deserialize(const json& Data) override;

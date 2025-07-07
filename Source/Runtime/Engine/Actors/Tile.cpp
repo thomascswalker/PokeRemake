@@ -5,6 +5,10 @@
 #include "Chunk.h"
 #include "Core/Settings.h"
 
+static FRect DoubleTileDest = { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
+static FRect FullTileDest = { 0, 0, TILE_SIZE, TILE_SIZE };
+static FRect HalfTileDest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+
 FVector2 PTile::GetPosition() const
 {
 	if (Chunk)
@@ -19,57 +23,86 @@ FVector2 PTile::GetPosition() const
 
 void PTile::Draw(const PRenderer* Renderer) const
 {
-	// Source rectangle to extract the tile from the texture
-	// Assuming each tile is 16x16 pixels
-	const FRect Source = { static_cast<float>(X * 16), static_cast<float>(Y * 16), 16, 16 };
-
 	// World position of this tile
 	const FVector2 WorldPosition = GetPosition();
 
-	// Screenspace destination rectangle
-	const FRect Dest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+	auto Texture = Data.GetTexture();
 
-	Renderer->DrawTextureAt(Texture, Source, Dest, WorldPosition);
+	// Draw the debug color indicating the texture is invalid
+	if (!Texture)
+	{
+		Renderer->SetDrawColor(PColor::UIDebug1);
+		Renderer->DrawFillRectAt(DoubleTileDest, WorldPosition);
+	}
+	else
+	{
+		auto Dest = Data.IsSubIndexed() ? HalfTileDest : FullTileDest;
+		if (!Data.IsSubIndexed())
+		{
+			Renderer->DrawTextureAt(Texture, Data.GetSourceRect(), Dest, WorldPosition);
+		}
+		else
+		{
+			for (int X = 0; X < 2; X++)
+			{
+				for (int Y = 0; Y < 2; Y++)
+				{
+					FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
+					Renderer->DrawTextureAt(Texture, Data.GetSourceRect(Y * 2 + X), Dest, WorldPosition + LocalOffset);
+				}
+			}
+		}
+	}
 
-	if (!GetSettings()->bDebugDraw)
+	if (!GetSettings()->mDebugDraw)
 	{
 		return;
 	}
 
 	// Debug drawing
-	switch (Type)
+	switch (Data.GetType())
 	{
 		case TT_Normal:
 			break;
 		case TT_Obstacle:
 			Renderer->SetDrawColor(255, 0, 0, 128);
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Water:
 			Renderer->SetDrawColor(0, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Grass:
 		case TT_Cave:
 			Renderer->SetDrawColor(0, 255, 0, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 			break;
 		case TT_Portal:
 			Renderer->SetDrawColor(255, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(Dest, WorldPosition);
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 	}
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
-	Renderer->DrawRectAt(Dest, WorldPosition);
+	Renderer->DrawRectAt(FullTileDest, WorldPosition);
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (bMouseOver || bSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
 	{
+
 		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (bMouseOver)
+		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(Dest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+			Renderer->DrawRectAt(FullTileDest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+
+			auto  QuadrantPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
+			FRect QuadrantRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+			Renderer->SetDrawColor(255, 0, 0, 255);
+			Renderer->DrawRectAt(QuadrantRect, WorldPosition + QuadrantPosition);
+		}
+		if (mSelected)
+		{
+			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
 		}
 	}
 #endif
@@ -89,26 +122,48 @@ PActor* PTile::GetActor() const
 
 bool PTile::IsWalkable() const
 {
+	auto Type = Data.GetType();
 	return Type != TT_Obstacle && Type != TT_Water;
 }
 
 bool PTile::Contains(const FVector2& Position) const
 {
 	auto TilePosition = GetPosition();
-	return Position.X >= TilePosition.X						// Min X
-		   && Position.X < TilePosition.X + HALF_TILE_SIZE	// Max X
-		   && Position.Y >= TilePosition.Y					// Min Y
-		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
+	return Position.X >= TilePosition.X				   // Min X
+		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
+		   && Position.Y >= TilePosition.Y			   // Min Y
+		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
 }
+
+FVector2 PTile::GetQuadrant(const FVector2& Position) const
+{
+	auto	 TilePosition = GetPosition();
+	FVector2 TileCenter = { TilePosition.X + TILE_SIZE, TilePosition.Y + TILE_SIZE };
+
+	float X = Position.X > TileCenter.X ? 1.0f : 0.0f;
+	float Y = Position.Y > TileCenter.Y ? 1.0f : 0.0f;
+
+	return { X, Y };
+}
+
+int PTile::GetQuadrantIndex(const FVector2& Position) const
+{
+	auto Q = GetQuadrant(Position);
+	auto I = ToLinearIndex(Q, 2);
+	LogDebug("{} => {}", Q.ToString().c_str(), I);
+	return I;
+}
+
 json PTile::Serialize() const
 {
 	json Result;
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
-	Result["Position"] = { X, Y };
-	Result["Type"] = Type;
+	Result["Position"] = { Data.X, Data.Y };
+	Result["SubIndexes"] = Data.SubIndexes;
 	return Result;
 }
+
 void PTile::Deserialize(const json& Data)
 {
 	PActor::Deserialize(Data);

@@ -4,10 +4,8 @@
 #include "Engine/Game.h"
 #include "Interface/Button.h"
 #include "Interface/ButtonGroup.h"
-#include "Interface/Canvas.h"
 
-constexpr int BUTTON_WIDTH = 50;
-constexpr int BUTTON_HEIGHT = 20;
+#define NEW_GRID_SIZE 5
 
 enum EInputContext : uint8_t
 {
@@ -42,12 +40,14 @@ class PEditorGame : public PGame
 	DelegateHandle mSelectDelegate;
 	DelegateHandle mTileDelegate;
 
+	STilesetItem* mCurrentTilesetItem;
+
 public:
 	// Init
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
-	void ConstructInterface();
+	void SetupInterface();
 
 	// Input
 
@@ -67,7 +67,8 @@ public:
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
-	void OnTileSpriteButtonChecked(bool State);
+	void OnTilesetButtonChecked(bool State);
+	void OnActorClicked(PActor* ClickedActor);
 
 	// Scene
 	void   AddChunk(PChunk* Chunk);
@@ -79,11 +80,11 @@ public:
 	template <typename T = PActor>
 	T* GetActorUnderMouse()
 	{
-		auto W = GetWorld();
+		const auto W = GetWorld();
 		for (const auto& Actor : W->GetActors())
 		{
 			const auto TActor = dynamic_cast<T*>(Actor);
-			if (TActor && Actor->bMouseOver)
+			if (TActor && Actor->mMouseOver)
 			{
 				return TActor;
 			}

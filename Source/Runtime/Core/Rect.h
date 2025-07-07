@@ -18,6 +18,8 @@ public:
 		: X(0), Y(0), W(0), H(0) {}
 	TRect(T inX, T inY, T inW, T inH)
 		: X(inX), Y(inY), W(inW), H(inH) {}
+	TRect(const TVector2<T>& Position, const TVector2<T>& Size)
+		: X(Position.X), Y(Position.Y), W(Size.X), H(Size.Y) {}
 
 	TVector4<T> ToVector4() const { return TVector4<T>(X, Y, W, H); }
 	TVector2<T> Min() const { return TVector2<T>(X, Y); }

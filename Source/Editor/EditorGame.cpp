@@ -5,23 +5,12 @@
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
+#include "Interface/AbstractView.h"
 #include "Interface/Box.h"
-#include "Interface/ClipArea.h"
+#include "Interface/Canvas.h"
 #include "Interface/Group.h"
+#include "Interface/Image.h"
 #include "Interface/Spinner.h"
-
-#define NEW_GRID_SIZE 5
-
-#define TILE_1X1 { 1, 1 }
-#define TILE_2X2 { 2, 2 }
-#define TILE_3X3 { 3, 3 }
-
-struct TileSpriteData
-{
-	std::string Name;
-	uint32_t	Index;
-	IVector2	Size = TILE_1X1;
-};
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
@@ -34,7 +23,7 @@ PEditorGame* GetEditorGame()
 
 void PEditorGame::PreStart()
 {
-	GetSettings()->bDebugDraw = true;
+	GetSettings()->mDebugDraw = true;
 
 	const auto EV = mWorld->ConstructActor<PEditorView>();
 	if (!EV)
@@ -42,16 +31,18 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	ConstructInterface();
+	LoadTileset("Tileset1");
+	SetupInterface();
 }
 
 void PEditorGame::Start()
 {
 	mWorld->Start();
+	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 	FindActiveCamera();
 }
 
-void PEditorGame::ConstructInterface()
+void PEditorGame::SetupInterface()
 {
 	const auto MainPanel = mWorld->ConstructWidget<PBox>();
 	MainPanel->SetLayoutMode(LM_Vertical);
@@ -84,17 +75,13 @@ void PEditorGame::ConstructInterface()
 	EditGroup->SetLayoutMode(LM_Vertical);
 	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
 	EditModeChunk->SetCheckable(true);
-	const auto EditModeTileType = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileType->SetCheckable(true);
-	const auto EditModeTileSprite = mWorld->ConstructWidget<PButton>("Tile Sprite", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTileSprite->SetCheckable(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	EditModeTile->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	EditModeButtonGroup->AddButton(EditModeChunk);
-	EditModeButtonGroup->AddButton(EditModeTileType);
-	EditModeButtonGroup->AddButton(EditModeTileSprite);
+	EditModeButtonGroup->AddButton(EditModeTile);
 	EditGroup->AddChild(EditModeChunk);
-	EditGroup->AddChild(EditModeTileType);
-	EditGroup->AddChild(EditModeTileSprite);
+	EditGroup->AddChild(EditModeTile);
 
 	MainPanel->AddChild(FileGroup);
 	MainPanel->AddChild(EditGroup);
@@ -103,36 +90,28 @@ void PEditorGame::ConstructInterface()
 
 	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
-	const std::vector<TileSpriteData> TileData = {
-		{ "Grass1", 0 },
-		{ "Rock",	  1 },
-		{ "Water",  2 },
-		{ "Item4",  3 },
-		{ "Item5",  3 },
-		{ "Item6",  3 },
-		{ "Item7",  3 },
-		{ "Item8",  3 },
-		{ "Rock",	  1 },
-		{ "Water",  2 },
-		{ "Item4",  3 },
-		{ "Item5",  3 },
-		{ "Item6",  3 },
-		{ "Item7",  3 },
-		{ "Item8",  3 },
-	};
-
-	for (const auto& Item : TileData)
+	for (auto& Item : GetTileset("Tileset1"))
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
-		NewItem->SetData(&Item);
 
 		auto Button = NewItem->GetWidget<PButton>();
 		Button->SetCheckable(true);
-		Button->SetFixedSize({ 40, 40 });
-		Button->SetResizeMode(RM_Fixed, RM_Fixed);
+		Button->SetCustomData(&Item);
+		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
 		ItemViewButtonGroup->AddButton(Button);
+
+		// 16x6
+		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
+		Button->AddChild(Img);
+		Img->SetFixedSize({ 16, 16 });
+		Img->SetResizeMode(RM_Fixed, RM_Fixed);
+		Img->SetUseSourceRect(true);
+
+		FRect SourceRect = { Item.GetSourceRect() };
+		Img->SetSourceRect(SourceRect);
 	}
 
 	MainPanel->AddChild(ItemView);
@@ -190,14 +169,15 @@ void PEditorGame::OnCreateButtonClicked()
 		{ "Position", { 0, 0 }	   },
 		{ "SizeX",	   mNewGridSizeX },
 		{ "SizeY",	   mNewGridSizeY },
+		{ "Tileset",	 "Tileset1"	}
 	};
 	for (int X = 0; X < mNewGridSizeX; ++X)
 	{
 		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position", { X, Y } },
-				{ "Type",	  0		},
+				{ "Position",	  { X, Y }	   },
+				{ "SubIndexes", { 0, 0, 0, 0 } },
 			});
 		}
 	}
@@ -252,42 +232,66 @@ void PEditorGame::OnTileButtonChecked(bool State)
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
 }
 
-void PEditorGame::OnTileSpriteButtonChecked(bool State)
+void PEditorGame::OnTilesetButtonChecked(bool State)
 {
-	auto Sender = PWidget::GetSender();
-	LogInfo("Sender {}: {}", Sender->GetInternalName().c_str(), State ? "On" : "Off");
+	auto Sender = PWidget::GetSender<PButton>();
+	if (State)
+	{
+		mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
+	}
+	else
+	{
+		mCurrentTilesetItem = nullptr;
+	}
 }
 
-void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
+void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
-	const auto HoverTile = GetActorUnderMouse<PTile>();
-	if (!HoverTile)
+	auto R = GetRenderer();
+
+	LogDebug("Selected: {}", ClickedActor->GetInternalName().c_str());
+	LogDebug("Input Context: {}", mInputContext);
+	switch (mInputContext)
 	{
-		return;
-	}
-	switch (ScanCode)
-	{
-		case SDLK_1:
-			HoverTile->Type = TT_Normal;
+		case IC_Select:
+			if (dynamic_cast<PChunk*>(ClickedActor))
+			{
+				ClickedActor->ToggleSelected();
+				for (auto Actor : GetWorld()->GetActors())
+				{
+					if (ClickedActor->GetInternalName() == Actor->GetInternalName())
+					{
+						continue;
+					}
+					Actor->SetSelected(false);
+				}
+			}
 			break;
-		case SDLK_2:
-			HoverTile->Type = TT_Obstacle;
-			break;
-		case SDLK_3:
-			HoverTile->Type = TT_Water;
-			break;
-		case SDLK_4:
-			HoverTile->Type = TT_Grass;
-			break;
-		case SDLK_5:
-			HoverTile->Type = TT_Cave;
-			break;
-		case SDLK_6:
-			HoverTile->Type = TT_Portal;
+		case IC_Tile:
+			if (!mCurrentTilesetItem)
+			{
+				LogWarning("No tileset item selected.");
+				return;
+			}
+			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
+			{
+				if (mCurrentTilesetItem->SizeType == TST_Half)
+				{
+					Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
+				}
+				else
+				{
+					Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+				}
+			}
 			break;
 		default:
 			break;
 	}
+}
+
+void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
+{
 }
 
 void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
@@ -300,16 +304,16 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 	switch (ScanCode)
 	{
 		case SDLK_UP:
-			Offset = FVector2(0, TILE_SIZE);
+			Offset = FVector2(0, DOUBLE_TILE_SIZE);
 			break;
 		case SDLK_DOWN:
-			Offset = FVector2(0, -TILE_SIZE);
+			Offset = FVector2(0, -DOUBLE_TILE_SIZE);
 			break;
 		case SDLK_LEFT:
-			Offset = FVector2(TILE_SIZE, 0);
+			Offset = FVector2(DOUBLE_TILE_SIZE, 0);
 			break;
 		case SDLK_RIGHT:
-			Offset = FVector2(-TILE_SIZE, 0);
+			Offset = FVector2(-DOUBLE_TILE_SIZE, 0);
 			break;
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions
@@ -332,7 +336,6 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 void PEditorGame::AddChunk(PChunk* Chunk)
 {
 	mChunks.emplace_back(Chunk);
-	Chunk->Clicked.AddRaw(this, &PEditorGame::ActorSelected);
 	SetCurrentChunk(Chunk);
 }
 

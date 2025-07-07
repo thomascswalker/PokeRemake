@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/InputManager.h"
-#include "Layout.h"
+#include "Engine/World.h"
 #include "Widget.h"
 
 // An item wrapper around some arbitrary data and its corresponding display widget.
@@ -58,10 +58,11 @@ public:
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward
 	// its constructor arguments, and add that widget as a child of this widget.
 	template <typename T, typename... ArgsType>
-	PAbstractItem* AddItem(ArgsType... Args)
+	PAbstractItem* AddItem(ArgsType&&... Args)
 	{
-		auto Item = &mItems.emplace_back(new T(std::forward<ArgsType>(Args)...));
-		PWidget::AddChild(Item->template GetWidget<T>());
+		T*			   Widget = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+		PAbstractItem* Item = &mItems.emplace_back(Widget);
+		this->AddChild(Item->GetWidget<T>());
 		return Item;
 	}
 

@@ -36,7 +36,7 @@ public:
 	FVector2 GetPosition() const
 	{
 #ifdef OFFSET_CAMERA
-		return mPosition + FVector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+		return mPosition + FVector2(TILE_SIZE, TILE_SIZE);
 #else
 		return mPosition;
 #endif

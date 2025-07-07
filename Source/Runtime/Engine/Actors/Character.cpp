@@ -8,7 +8,7 @@
 
 void PCharacter::Start()
 {
-	mPriority = DP_FOREGROUND;
+	mRenderPriority = DP_FOREGROUND;
 
 	mSprite = PSprite();
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_GARY));
@@ -50,12 +50,12 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 
 FRect PCharacter::GetLocalBounds() const
 {
-	return { 0, 0, TILE_SIZE, TILE_SIZE };
+	return { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
 }
 
 FRect PCharacter::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, TILE_SIZE, TILE_SIZE };
+	return { mPosition.X, mPosition.Y, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
 }
 
 void PCharacter::OnMovementStarted(EMovementDirection Direction)

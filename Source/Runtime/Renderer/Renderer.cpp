@@ -15,6 +15,7 @@ static PFont gCurrentFont;
 
 bool PRenderer::Initialize()
 {
+	SDL_SetDefaultTextureScaleMode(mContext->Renderer, SDL_SCALEMODE_NEAREST);
 	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
 	LoadFont(gDefaultFont);
 	return true;
@@ -125,7 +126,7 @@ void PRenderer::Render() const
 	SDL_RenderPresent(mContext->Renderer);
 }
 
-bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition) const
+bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const
 {
 	const auto ScreenSize = GetScreenSize();
 
@@ -133,9 +134,27 @@ bool PRenderer::WorldToScreen(const FVector2& Position, FVector2* ScreenPosition
 	{
 		const auto ViewPosition = CameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-		const auto Offset = (Position - ViewPosition2D) * CameraView->GetZoom();
+		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		return true;
+	}
+	return false;
+}
+
+bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const
+{
+	const auto ScreenSize = GetScreenSize();
+
+	if (const auto CameraView = GetCameraView())
+	{
+		auto Offset = (ScreenPosition * 2.0f) - ScreenSize;
+		auto Position2D = Offset / CameraView->GetZoom();
+
+		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
+
+		*WorldPosition = Position2D + ViewPosition2D;
 		return true;
 	}
 	return false;
@@ -156,6 +175,16 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
+}
+void PRenderer::SetClipRect(const FRect& ClipRect) const
+{
+	SDL_Rect Clip = ClipRect.ToSDL_Rect();
+	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+}
+void PRenderer::ReleaseClipRect() const
+{
+	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
+	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
 }
 
 void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
@@ -220,7 +249,7 @@ void PRenderer::DrawGrid() const
 	// Draw vertical lines
 	for (int32_t Index = 0; Index <= TILE_COLUMNS; Index++)
 	{
-		X0 = Index * HALF_TILE_SIZE;
+		X0 = Index * TILE_SIZE;
 		X1 = X0;
 		Y0 = 0;
 		Y1 = ScreenHeight;
@@ -232,7 +261,7 @@ void PRenderer::DrawGrid() const
 	{
 		X0 = 0;
 		X1 = ScreenWidth;
-		Y0 = Index * HALF_TILE_SIZE;
+		Y0 = Index * TILE_SIZE;
 		Y1 = Y0;
 		DrawLine(X0, Y0, X1, Y1);
 	}
@@ -402,6 +431,13 @@ FVector2 PRenderer::GetMousePosition() const
 	return { X, Y };
 }
 
+FVector2 PRenderer::GetMouseWorldPosition() const
+{
+	FVector2 MouseWorldPosition;
+	GetRenderer()->ScreenToWorld(GetMousePosition(), &MouseWorldPosition);
+	return MouseWorldPosition;
+}
+
 bool PRenderer::GetMouseLeftDown() const
 {
 	return SDL_GetMouseState(nullptr, nullptr) == 1;
@@ -412,7 +448,7 @@ PActor* PRenderer::GetActorUnderMouse() const
 	auto W = GetWorld();
 	for (const auto& Actor : W->GetActors())
 	{
-		if (Actor->bMouseOver)
+		if (Actor->mMouseOver)
 		{
 			return Actor;
 		}

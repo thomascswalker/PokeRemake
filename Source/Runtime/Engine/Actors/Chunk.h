@@ -15,6 +15,7 @@ class PChunk : public PActor
 	std::string			mTextureName;
 	int					mSizeX = 0;
 	int					mSizeY = 0;
+	STileset*			mTileset = nullptr;
 
 public:
 	PChunk() {}
