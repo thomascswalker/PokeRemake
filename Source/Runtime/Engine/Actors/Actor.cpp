@@ -24,25 +24,25 @@ void PActor::UpdateMouseState()
 	};
 	const bool NewMouseState = ScreenRect.Contains(MousePosition);
 
-	if (!bMouseOver && NewMouseState)
+	if (!mMouseOver && NewMouseState)
 	{
 		HoverBegin.Broadcast();
-		bMouseOver = true;
+		mMouseOver = true;
 	}
-	else if (bMouseOver && !NewMouseState)
+	else if (mMouseOver && !NewMouseState)
 	{
 		HoverEnd.Broadcast();
-		bMouseOver = false;
+		mMouseOver = false;
 	}
 
 	bool NewClickState = Renderer->GetMouseLeftDown();
-	if (!bMouseDown && NewClickState && bMouseOver)
+	if (!mMouseDown && NewClickState && mMouseOver)
 	{
-		bMouseDown = true;
+		mMouseDown = true;
 	}
-	else if (bMouseDown && !NewClickState && bMouseOver)
+	else if (mMouseDown && !NewClickState && mMouseOver)
 	{
-		bMouseDown = false;
+		mMouseDown = false;
 		Clicked.Broadcast(this);
 	}
 }

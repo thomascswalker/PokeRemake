@@ -412,7 +412,7 @@ PActor* PRenderer::GetActorUnderMouse() const
 	auto W = GetWorld();
 	for (const auto& Actor : W->GetActors())
 	{
-		if (Actor->bMouseOver)
+		if (Actor->mMouseOver)
 		{
 			return Actor;
 		}

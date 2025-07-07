@@ -11,6 +11,10 @@
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
 
+#if _EDITOR
+DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
+#endif
+
 class PWorld : public PObject
 {
 	// Chunks
@@ -23,11 +27,20 @@ class PWorld : public PObject
 	PWidget*							  mRootWidget;
 
 public:
+#if _EDITOR
+	DActorSelected ActorClicked;
+#endif
+
 	PWorld() = default;
 	~PWorld() override = default;
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+
+	void OnActorClicked(PActor* Actor)
+	{
+		ActorClicked.Broadcast(Actor);
+	}
 
 	template <ENABLE_IF(PObject), typename... ArgsType>
 	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
@@ -42,6 +55,9 @@ public:
 	{
 		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		mActors.push_back(Actor);
+#ifdef _EDITOR
+		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
+#endif
 		return Actor.get();
 	}
 

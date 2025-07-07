@@ -12,7 +12,7 @@ PChunk::PChunk(const json& JsonData)
 {
 	LogDebug("Constructing Chunk from JSON data");
 	mPriority = DP_BACKGROUND;
-	bBlocking = false;
+	mBlocking = false;
 	mData = JsonData;
 }
 PChunk::~PChunk()
@@ -74,16 +74,16 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	const FRect Dest = GetLocalBounds();
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (bMouseOver || bSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (bMouseOver)
+		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
 								 mPosition - FVector2(ExpandSize, ExpandSize));
 		}
-		if (bSelected)
+		if (mSelected)
 		{
 			Renderer->DrawFillRectAt(Dest, mPosition);
 		}

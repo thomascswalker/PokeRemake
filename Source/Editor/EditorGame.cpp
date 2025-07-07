@@ -12,12 +12,6 @@
 #include "Interface/Image.h"
 #include "Interface/Spinner.h"
 
-std::vector<STilesetItem> gTileset1 = {
-	{ "Grass1", { 0, 0 },  TILE_1X1, TT_Normal	  },
-	{ "Grass2", { 9, 3 },  TILE_1X1, TT_Normal	  },
-	{ "Rock1",  { 10, 2 }, TILE_2X2, TT_Obstacle }
-};
-
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
 };
@@ -29,7 +23,7 @@ PEditorGame* GetEditorGame()
 
 void PEditorGame::PreStart()
 {
-	GetSettings()->bDebugDraw = true;
+	GetSettings()->mDebugDraw = true;
 
 	const auto EV = mWorld->ConstructActor<PEditorView>();
 	if (!EV)
@@ -39,12 +33,18 @@ void PEditorGame::PreStart()
 
 	PTextureManager::Load("Tileset1.png");
 	SetupInterface();
-	SetupInputs();
+}
+
+void OnActorClicked(PActor* Actor)
+{
+	LogDebug("Selected: {}", Actor->GetInternalName().c_str());
+	Actor->SetSelected(true);
 }
 
 void PEditorGame::Start()
 {
 	mWorld->Start();
+	mWorld->ActorClicked.AddStatic(&OnActorClicked);
 	FindActiveCamera();
 }
 
@@ -102,7 +102,7 @@ void PEditorGame::SetupInterface()
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	auto	   TilesetTexture = PTextureManager::Get("Tileset1.png");
 
-	for (const auto& Item : gTileset1)
+	for (const auto& Item : gPalletTownTileset)
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
 
@@ -129,33 +129,6 @@ void PEditorGame::SetupInterface()
 	MainCanvas->AddChild(MainPanel);
 
 	mWorld->SetRootWidget(MainCanvas);
-}
-
-void PEditorGame::SetupInputs()
-{
-	auto Input = GetInputManager();
-	Input->MouseLeftClick.AddRaw(this, &PEditorGame::OnMouseLeftClick);
-}
-
-void PEditorGame::OnMouseLeftClick()
-{
-	auto Actor = GetActorUnderMouse();
-	if (!Actor)
-	{
-		return;
-	}
-
-	switch (mInputContext)
-	{
-		case IC_None:
-			break;
-		case IC_Select:
-			break;
-		case IC_TileType:
-			break;
-		case IC_TileSprite:
-			break;
-	}
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -347,7 +320,6 @@ void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
 void PEditorGame::AddChunk(PChunk* Chunk)
 {
 	mChunks.emplace_back(Chunk);
-	Chunk->Clicked.AddRaw(this, &PEditorGame::ActorSelected);
 	SetCurrentChunk(Chunk);
 }
 

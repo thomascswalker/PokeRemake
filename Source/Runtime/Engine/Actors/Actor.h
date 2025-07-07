@@ -4,6 +4,7 @@
 #include "Core/Vector.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
+#include "ISelectable.h"
 #include "Renderer/IDrawable.h"
 
 class PActor;
@@ -12,7 +13,7 @@ DECLARE_MULTICAST_DELEGATE(DHoverBegin);
 DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 
-class PActor : public PObject, public IDrawable
+class PActor : public PObject, public IDrawable, public ISelectable
 {
 	void UpdateMouseState();
 
@@ -20,11 +21,11 @@ protected:
 	FVector2 mPosition;
 	FVector2 mSize;
 	PSprite	 mSprite{};
-	bool	 bBlocking = true;
+	bool	 mBlocking = true;
 
 public:
-	bool		bMouseOver = false;
-	bool		bMouseDown = false;
+	bool		mMouseOver = false;
+	bool		mMouseDown = false;
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 	DClicked	Clicked;
@@ -71,7 +72,7 @@ public:
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }
-	virtual bool  IsMouseOver() const { return bMouseOver; }
+	virtual bool  IsMouseOver() const { return mMouseOver; }
 
 	virtual FVector2 GetPosition() const { return mPosition; }
 	void			 SetPosition(const FVector2& Position) { mPosition = Position; }
@@ -82,20 +83,11 @@ public:
 	}
 
 	void MoveToTile(int32_t X, int32_t Y);
-	bool IsBlocking() const { return bBlocking; }
+	bool IsBlocking() const { return mBlocking; }
 
 	// Mouse events
 
 	virtual void OnHoverBegin() {}
 	virtual void OnHoverEnd() {}
 	virtual void OnClicked() {}
-
-#if _EDITOR
-protected:
-	bool bSelected = false;
-
-public:
-	void SetSelected(bool State) { bSelected = State; }
-	bool GetSelected() const { return bSelected; }
-#endif
 };

@@ -31,7 +31,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 
 	Renderer->DrawTextureAt(Texture, Source, Dest, WorldPosition);
 
-	if (!GetSettings()->bDebugDraw)
+	if (!GetSettings()->mDebugDraw)
 	{
 		return;
 	}
@@ -63,13 +63,17 @@ void PTile::Draw(const PRenderer* Renderer) const
 	Renderer->DrawRectAt(Dest, WorldPosition);
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_TileType) && (bMouseOver || bSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_TileType) && (mMouseOver || mSelected))
 	{
 		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (bMouseOver)
+		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
+		}
+		if (mSelected)
+		{
+			Renderer->DrawFillRectAt(Dest, WorldPosition);
 		}
 	}
 #endif
@@ -100,6 +104,7 @@ bool PTile::Contains(const FVector2& Position) const
 		   && Position.Y >= TilePosition.Y					// Min Y
 		   && Position.Y < TilePosition.Y + HALF_TILE_SIZE; // Max Y
 }
+
 json PTile::Serialize() const
 {
 	json Result;
@@ -109,6 +114,7 @@ json PTile::Serialize() const
 	Result["Type"] = Type;
 	return Result;
 }
+
 void PTile::Deserialize(const json& Data)
 {
 	PActor::Deserialize(Data);

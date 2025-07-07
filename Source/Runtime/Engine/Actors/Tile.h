@@ -37,7 +37,7 @@ public:
 	{
 		mPriority = DP_BACKGROUND;
 		bSerializable = false;
-		bBlocking = false;
+		mBlocking = false;
 		mPosition.X = inX * TILE_SIZE;
 		mPosition.Y = inY * TILE_SIZE;
 	}
@@ -46,7 +46,7 @@ public:
 	{
 		mPriority = DP_BACKGROUND;
 		bSerializable = false;
-		bBlocking = false;
+		mBlocking = false;
 		mPosition.X = Data.X * TILE_SIZE;
 		mPosition.Y = Data.Y * TILE_SIZE;
 	}

@@ -6,7 +6,7 @@
 
 void PEditorView::Start()
 {
-	bBlocking = false;
+	mBlocking = false;
 
 	if (const auto W = GetWorld())
 	{

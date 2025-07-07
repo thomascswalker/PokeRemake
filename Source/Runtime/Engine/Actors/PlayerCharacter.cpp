@@ -50,7 +50,7 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
-	if (GetSettings()->bDebugDraw && mMovementComponent)
+	if (GetSettings()->mDebugDraw && mMovementComponent)
 	{
 		// Draw current tile under the character
 		if (const auto& Tile = mMovementComponent->GetCurrentTile())

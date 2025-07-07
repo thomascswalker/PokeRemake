@@ -49,11 +49,9 @@ public:
 	void PreStart() override;
 	void Start() override;
 	void SetupInterface();
-	void SetupInputs();
 
 	// Input
 
-	void	OnMouseLeftClick();
 	uint8_t GetInputContext() { return mInputContext; }
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
@@ -86,7 +84,7 @@ public:
 		for (const auto& Actor : W->GetActors())
 		{
 			const auto TActor = dynamic_cast<T*>(Actor);
-			if (TActor && Actor->bMouseOver)
+			if (TActor && Actor->mMouseOver)
 			{
 				return TActor;
 			}

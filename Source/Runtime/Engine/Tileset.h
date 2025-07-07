@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Core/Vector.h"
 
 #include <string>
@@ -30,5 +31,30 @@ struct STilesetItem
 
 struct STileset
 {
+	std::string				  Name{};
 	std::vector<STilesetItem> Items;
+	PTexture*				  Texture = nullptr;
+
+	STileset(const std::string& InName)
+		: Name(InName) {}
+	STileset(const std::string& InName, const std::initializer_list<STilesetItem>& InItems)
+		: Name(InName)
+	{
+		for (auto Iter = InItems.begin(); Iter != InItems.end(); Iter++)
+		{
+			Items.push_back(*Iter);
+		}
+	}
+
+	auto begin() { return Items.begin(); }
+	auto end() { return Items.end(); }
+};
+
+static STileset gPalletTownTileset = {
+	"Pallet Town",
+	{
+		{ "Grass1", { 0, 0 }, TILE_1X1, TT_Normal },
+		{ "Grass2", { 9, 3 }, TILE_1X1, TT_Normal },
+		{ "Rock1", { 10, 2 }, TILE_2X2, TT_Obstacle },
+	  },
 };
