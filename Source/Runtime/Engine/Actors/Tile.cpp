@@ -89,21 +89,27 @@ void PTile::Draw(const PRenderer* Renderer) const
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
 	{
-
-		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (mMouseOver)
+		if (!mMouseOver)
 		{
-			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(FullTileDest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
-
-			auto  QuadrantPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
-			FRect QuadrantRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
-			Renderer->SetDrawColor(255, 0, 0, 255);
-			Renderer->DrawRectAt(QuadrantRect, WorldPosition + QuadrantPosition);
+			return;
 		}
-		if (mSelected)
+		auto G = GetEditorGame();
+		auto Item = G->GetCurrentTilesetItem();
+		if (!Item)
 		{
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
+			return;
+		}
+		Renderer->SetDrawColor(255, 0, 0, 255);
+		if (Item->SizeType == TST_1X1)
+		{
+			auto  HoverPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
+			FRect HoverRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+			Renderer->DrawRectAt(HoverRect, WorldPosition + HoverPosition);
+		}
+		else
+		{
+			FRect HoverRect = { 0, 0, TILE_SIZE, TILE_SIZE };
+			Renderer->DrawRectAt(HoverRect, WorldPosition);
 		}
 	}
 #endif

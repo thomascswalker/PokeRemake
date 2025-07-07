@@ -71,11 +71,12 @@ public:
 	void OnActorClicked(PActor* ClickedActor);
 
 	// Scene
-	void   AddChunk(PChunk* Chunk);
-	size_t GetChunkCount() const { return mChunks.size(); }
-	void   SetCurrentChunk(PChunk* Chunk);
-	void   ConstructChunk(const json& JsonData);
-	void   ActorSelected(PActor* Actor);
+	void		  AddChunk(PChunk* Chunk);
+	size_t		  GetChunkCount() const { return mChunks.size(); }
+	void		  SetCurrentChunk(PChunk* Chunk);
+	void		  ConstructChunk(const json& JsonData);
+	void		  ActorSelected(PActor* Actor);
+	STilesetItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

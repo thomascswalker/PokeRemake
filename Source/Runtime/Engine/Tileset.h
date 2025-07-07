@@ -19,8 +19,10 @@ struct STilesetItem;
 
 enum ETileSizeType
 {
-	TST_Full,
-	TST_Half
+	TST_1X1,
+	TST_1X2,
+	TST_2X2,
+	TST_2X3,
 };
 
 enum ETileType
@@ -48,7 +50,7 @@ struct STilesetItem
 	std::string	  Name;
 	int32_t		  LinearIndex;
 	ETileType	  Type = TT_Normal;
-	ETileSizeType SizeType = TST_Full;
+	ETileSizeType SizeType = TST_2X2;
 
 	STilesetItem(const std::string& InName, const FVector2& InIndex, ETileType InType, ETileSizeType InSizeType)
 		: Name(InName), LinearIndex(ToLinearIndex(InIndex)), Type(InType), SizeType(InSizeType)
@@ -57,11 +59,55 @@ struct STilesetItem
 
 	FRect GetSourceRect()
 	{
-		auto CoordIndex = ToCoordIndex(LinearIndex);
-		auto Size = SizeType == TST_Half ? gTilesetItemHalfSize : gTilesetItemSize;
-		return {
-			CoordIndex * gTilesetItemHalfSize, { Size, Size }
-		};
+		auto	 CoordIndex = ToCoordIndex(LinearIndex);
+		FVector2 Size;
+		switch (SizeType)
+		{
+			case TST_1X1:
+				Size = { gTilesetItemHalfSize,
+						 gTilesetItemHalfSize };
+				break;
+			case TST_1X2:
+				Size = { gTilesetItemHalfSize,
+						 gTilesetItemSize };
+				break;
+			case TST_2X2:
+				Size = { gTilesetItemSize,
+						 gTilesetItemSize };
+				break;
+			case TST_2X3:
+				Size = { gTilesetItemSize,
+						 gTilesetItemHalfSize * 3.0f };
+				break;
+		}
+		return { CoordIndex * gTilesetItemHalfSize, Size };
+	}
+
+	FRect GetDestRect()
+	{
+		auto	 CoordIndex = ToCoordIndex(LinearIndex);
+		FVector2 Size;
+		switch (SizeType)
+		{
+			case TST_1X1:
+				Size = { HALF_TILE_SIZE,
+						 HALF_TILE_SIZE };
+				break;
+			case TST_1X2:
+				Size = { HALF_TILE_SIZE,
+						 TILE_SIZE };
+				break;
+			case TST_2X2:
+				Size = { TILE_SIZE,
+						 TILE_SIZE };
+				break;
+			case TST_2X3:
+				Size = { TILE_SIZE,
+						 HALF_TILE_SIZE * 3.0f };
+				break;
+		}
+
+		return { CoordIndex * HALF_TILE_SIZE, Size };
 	}
 };
 
@@ -137,7 +183,7 @@ struct STileData
 	{
 		return GetItemBySubIndex(Index)->GetSourceRect();
 	}
-	bool IsSubIndexed() const { return GetItemBySubIndex(0)->SizeType == TST_Half; }
+	bool IsSubIndexed() const { return GetItemBySubIndex(0)->SizeType == TST_1X1; }
 };
 
 static std::map<std::string, STileset> gTilesets = {
@@ -146,9 +192,13 @@ static std::map<std::string, STileset> gTilesets = {
 		{
 			"Tileset1",
 			{
-				{ "Grass1", { 0, 0 }, TT_Normal, TST_Half },
-				{ "Grass2", { 9, 3 }, TT_Normal, TST_Half },
-				{ "Rock", { 10, 2 }, TT_Obstacle, TST_Full },
+				{ "Grass1", { 0, 0 }, TT_Normal, TST_1X1 },
+				{ "Grass2", { 9, 3 }, TT_Normal, TST_1X1 },
+				{ "Grass3", { 12, 2 }, TT_Normal, TST_1X1 },
+				{ "Rock", { 10, 2 }, TT_Obstacle, TST_2X2 },
+				{ "HouseRoofLeft", { 5, 0 }, TT_Obstacle, TST_2X3 },
+				{ "HouseRoofCenter", { 7, 0 }, TT_Obstacle, TST_1X2 },
+				{ "HouseRoofRight", { 8, 0 }, TT_Obstacle, TST_2X3 },
 			},
 		},
 	 }

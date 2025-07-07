@@ -275,7 +275,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			}
 			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
 			{
-				if (mCurrentTilesetItem->SizeType == TST_Half)
+				if (mCurrentTilesetItem->SizeType == TST_1X1)
 				{
 					Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
 				}
