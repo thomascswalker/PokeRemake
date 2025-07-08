@@ -197,7 +197,7 @@ static std::map<std::string, STileset> gTilesets = {
 				{ "Window", { 10, 0 }, TT_Obstacle, TST_1X1 },
 				{ "Brick", { 11, 4 }, TT_Obstacle, TST_1X1 },
 				{ "Sign", { 6, 4 }, TT_Obstacle, TST_2X2 },
-				{ "Door", { 11, 0 }, TT_Portal, TST_2X2 },
+				{ "Door", { 11, 0 }, TT_Normal, TST_2X2 },
 				{ "Fence Bottom", { 5, 5 }, TT_Obstacle, TST_1X1 },
 				{ "Fence Top", { 14, 0 }, TT_Obstacle, TST_1X1 },
 			},

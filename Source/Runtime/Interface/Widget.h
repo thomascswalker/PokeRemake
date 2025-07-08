@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Containers.h"
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
 #include <initializer_list>
@@ -82,6 +83,7 @@ protected:
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
 	bool mMouseOver = false;
+	bool mVisible = true;
 
 public:
 	float X = 0.0f;
@@ -111,11 +113,24 @@ public:
 	PWidget* GetParent() const { return mParent; }
 	void	 SetParent(PWidget* Parent);
 
+	bool GetVisible() const { return mVisible; }
+	void SetVisible(bool State) { mVisible = State; }
+	void ToggleVisible() { SetVisible(!mVisible); }
+
 	// Drawing
+
 	virtual void DrawChildren(const PRenderer* Renderer) const
 	{
+		if (!mVisible)
+		{
+			return;
+		}
 		for (const auto& Child : mChildren)
 		{
+			if (!Child->GetVisible())
+			{
+				return;
+			}
 			// Draw this widget
 			Child->PreDraw(Renderer);
 			Child->Draw(Renderer);
@@ -133,8 +148,11 @@ public:
 
 	virtual void		  AddChild(PWidget* Child);
 	virtual void		  RemoveChild(PWidget* Child);
-	std::vector<PWidget*> GetChildren() const { return mChildren; }
-	size_t				  GetChildCount() const { return mChildren.size(); }
+	std::vector<PWidget*> GetChildren() const
+	{
+		return mChildren;
+	}
+	size_t GetChildCount() const { return mChildren.size(); }
 
 	// Layout
 
