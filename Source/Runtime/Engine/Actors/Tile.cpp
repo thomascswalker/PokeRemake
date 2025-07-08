@@ -36,20 +36,19 @@ void PTile::Draw(const PRenderer* Renderer) const
 	}
 	else
 	{
-		auto Dest = Data.IsSubIndexed() ? HalfTileDest : FullTileDest;
-		if (!Data.IsSubIndexed())
+		for (int X = 0; X < 2; X++)
 		{
-			Renderer->DrawTextureAt(Texture, Data.GetSourceRect(), Dest, WorldPosition);
-		}
-		else
-		{
-			for (int X = 0; X < 2; X++)
+			for (int Y = 0; Y < 2; Y++)
 			{
-				for (int Y = 0; Y < 2; Y++)
-				{
-					FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
-					Renderer->DrawTextureAt(Texture, Data.GetSourceRect(Y * 2 + X), Dest, WorldPosition + LocalOffset);
-				}
+				FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
+				FVector2 Position = WorldPosition + LocalOffset;
+				int32_t	 SubIndex = Data.SubIndexes[Y * 2 + X];
+				FVector2 SubPosition = ToCoordIndex(SubIndex);
+				FVector2 SourcePosition = { SubPosition.X * gTilesetItemHalfSize,
+											SubPosition.Y * gTilesetItemHalfSize };
+				FVector2 SourceSize = { gTilesetItemHalfSize, gTilesetItemHalfSize };
+				FRect	 SourceRect = { SourcePosition, SourceSize };
+				Renderer->DrawTextureAt(Texture, SourceRect, HalfTileDest, Position);
 			}
 		}
 	}
@@ -157,7 +156,6 @@ int PTile::GetQuadrantIndex(const FVector2& Position) const
 {
 	auto Q = GetQuadrant(Position);
 	auto I = ToLinearIndex(Q, 2);
-	LogDebug("{} => {}", Q.ToString().c_str(), I);
 	return I;
 }
 

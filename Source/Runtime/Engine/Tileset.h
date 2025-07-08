@@ -20,9 +20,7 @@ struct STilesetItem;
 enum ETileSizeType
 {
 	TST_1X1,
-	TST_1X2,
 	TST_2X2,
-	TST_2X3,
 };
 
 enum ETileType
@@ -59,28 +57,11 @@ struct STilesetItem
 
 	FRect GetSourceRect()
 	{
-		auto	 CoordIndex = ToCoordIndex(LinearIndex);
-		FVector2 Size;
-		switch (SizeType)
-		{
-			case TST_1X1:
-				Size = { gTilesetItemHalfSize,
-						 gTilesetItemHalfSize };
-				break;
-			case TST_1X2:
-				Size = { gTilesetItemHalfSize,
-						 gTilesetItemSize };
-				break;
-			case TST_2X2:
-				Size = { gTilesetItemSize,
-						 gTilesetItemSize };
-				break;
-			case TST_2X3:
-				Size = { gTilesetItemSize,
-						 gTilesetItemHalfSize * 3.0f };
-				break;
-		}
-		return { CoordIndex * gTilesetItemHalfSize, Size };
+		auto CoordIndex = ToCoordIndex(LinearIndex);
+		auto Factor = SizeType == TST_1X1 ? gTilesetItemHalfSize : gTilesetItemSize;
+		return {
+			CoordIndex * gTilesetItemHalfSize, { Factor, Factor }
+		};
 	}
 
 	FRect GetDestRect()
@@ -93,17 +74,9 @@ struct STilesetItem
 				Size = { HALF_TILE_SIZE,
 						 HALF_TILE_SIZE };
 				break;
-			case TST_1X2:
-				Size = { HALF_TILE_SIZE,
-						 TILE_SIZE };
-				break;
 			case TST_2X2:
 				Size = { TILE_SIZE,
 						 TILE_SIZE };
-				break;
-			case TST_2X3:
-				Size = { TILE_SIZE,
-						 HALF_TILE_SIZE * 3.0f };
 				break;
 		}
 
@@ -171,9 +144,9 @@ struct STileData
 	{
 		return Tileset->GetItemByLinearIndex(SubIndexes[Index]);
 	}
-	ETileType GetType(int Index = 0) const
+	ETileType GetType() const
 	{
-		return GetItemBySubIndex(Index)->Type;
+		return GetItemBySubIndex(0)->Type;
 	}
 	PTexture* GetTexture() const
 	{
@@ -181,9 +154,13 @@ struct STileData
 	}
 	FRect GetSourceRect(int Index = 0) const
 	{
-		return GetItemBySubIndex(Index)->GetSourceRect();
+		auto Item = GetItemBySubIndex(Index);
+		if (!Item)
+		{
+			return {};
+		}
+		return Item->GetSourceRect();
 	}
-	bool IsSubIndexed() const { return GetItemBySubIndex(0)->SizeType == TST_1X1; }
 };
 
 static std::map<std::string, STileset> gTilesets = {
@@ -192,13 +169,37 @@ static std::map<std::string, STileset> gTilesets = {
 		{
 			"Tileset1",
 			{
-				{ "Grass1", { 0, 0 }, TT_Normal, TST_1X1 },
-				{ "Grass2", { 9, 3 }, TT_Normal, TST_1X1 },
-				{ "Grass3", { 12, 2 }, TT_Normal, TST_1X1 },
+				{ "Grass 1", { 0, 0 }, TT_Normal, TST_1X1 },
+				{ "Grass 2", { 9, 3 }, TT_Normal, TST_1X1 },
+				{ "Grass 3", { 12, 2 }, TT_Normal, TST_1X1 },
 				{ "Rock", { 10, 2 }, TT_Obstacle, TST_2X2 },
-				{ "HouseRoofLeft", { 5, 0 }, TT_Obstacle, TST_2X3 },
-				{ "HouseRoofCenter", { 7, 0 }, TT_Obstacle, TST_1X2 },
-				{ "HouseRoofRight", { 8, 0 }, TT_Obstacle, TST_2X3 },
+				{ "Roof", { 8, 3 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Top-Left", { 5, 0 }, TT_Obstacle, TST_2X2 },
+				{ "Roof Bottom-Left 1", { 5, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Bottom-Left 2", { 6, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 1", { 2, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 2", { 3, 5 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 3", { 7, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 4", { 7, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Top-Right", { 8, 0 }, TT_Obstacle, TST_2X2 },
+				{ "Roof Bottom-Right 1", { 8, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Bottom-Right 2", { 9, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Left 1", { 5, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Left 2", { 6, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Right 1", { 8, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Right 2", { 9, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Wall", { 2, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Left", { 15, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Right", { 15, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Left Corner", { 14, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Right Corner", { 15, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Bottom", { 10, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Window", { 10, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Brick", { 11, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Sign", { 6, 4 }, TT_Obstacle, TST_2X2 },
+				{ "Door", { 11, 0 }, TT_Portal, TST_2X2 },
+				{ "Fence Bottom", { 5, 5 }, TT_Obstacle, TST_1X1 },
+				{ "Fence Top", { 14, 0 }, TT_Obstacle, TST_1X1 },
 			},
 		},
 	 }
@@ -219,6 +220,15 @@ static void LoadTileset(const std::string& Name)
 		}
 	}
 	Tileset->Texture = Tex;
+
+	// for (int i = 0; i < 16 * 6; i++)
+	// {
+	// 	if (Tileset->GetItemByLinearIndex(i))
+	// 	{
+	// 		continue;
+	// 	}
+	// 	Tileset->Items.emplace_back(std::to_string(i), ToCoordIndex(i), TT_Normal, TST_1X1);
+	// }
 }
 
 static STileset& GetTileset(const std::string& Name)
