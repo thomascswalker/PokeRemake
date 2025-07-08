@@ -36,24 +36,24 @@ void PTile::Draw(const PRenderer* Renderer) const
 	}
 	else
 	{
-		auto Dest = Data.IsSubIndexed() ? HalfTileDest : FullTileDest;
-		if (!Data.IsSubIndexed())
+		for (int X = 0; X < 2; X++)
 		{
-			Renderer->DrawTextureAt(Texture, Data.GetSourceRect(), Dest, WorldPosition);
-		}
-		else
-		{
-			for (int X = 0; X < 2; X++)
+			for (int Y = 0; Y < 2; Y++)
 			{
-				for (int Y = 0; Y < 2; Y++)
-				{
-					FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
-					Renderer->DrawTextureAt(Texture, Data.GetSourceRect(Y * 2 + X), Dest, WorldPosition + LocalOffset);
-				}
+				FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
+				FVector2 Position = WorldPosition + LocalOffset;
+				int32_t	 SubIndex = Data.SubIndexes[Y * 2 + X];
+				FVector2 SubPosition = ToCoordIndex(SubIndex);
+				FVector2 SourcePosition = { SubPosition.X * gTilesetItemHalfSize,
+											SubPosition.Y * gTilesetItemHalfSize };
+				FVector2 SourceSize = { gTilesetItemHalfSize, gTilesetItemHalfSize };
+				FRect	 SourceRect = { SourcePosition, SourceSize };
+				Renderer->DrawTextureAt(Texture, SourceRect, HalfTileDest, Position);
 			}
 		}
 	}
 
+	// If not in debug mode, return.
 	if (!GetSettings()->mDebugDraw)
 	{
 		return;
@@ -88,21 +88,27 @@ void PTile::Draw(const PRenderer* Renderer) const
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
 	{
-
-		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (mMouseOver)
+		if (!mMouseOver)
 		{
-			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(FullTileDest.Expanded(ExpandSize), WorldPosition - FVector2(ExpandSize, ExpandSize));
-
-			auto  QuadrantPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
-			FRect QuadrantRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
-			Renderer->SetDrawColor(255, 0, 0, 255);
-			Renderer->DrawRectAt(QuadrantRect, WorldPosition + QuadrantPosition);
+			return;
 		}
-		if (mSelected)
+		auto G = GetEditorGame();
+		auto Item = G->GetCurrentTilesetItem();
+		if (!Item)
 		{
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
+			return;
+		}
+		Renderer->SetDrawColor(255, 0, 0, 255);
+		if (Item->SizeType == TST_1X1)
+		{
+			auto  HoverPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
+			FRect HoverRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+			Renderer->DrawRectAt(HoverRect, WorldPosition + HoverPosition);
+		}
+		else
+		{
+			FRect HoverRect = { 0, 0, TILE_SIZE, TILE_SIZE };
+			Renderer->DrawRectAt(HoverRect, WorldPosition);
 		}
 	}
 #endif
@@ -150,7 +156,6 @@ int PTile::GetQuadrantIndex(const FVector2& Position) const
 {
 	auto Q = GetQuadrant(Position);
 	auto I = ToLinearIndex(Q, 2);
-	LogDebug("{} => {}", Q.ToString().c_str(), I);
 	return I;
 }
 

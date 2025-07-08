@@ -19,8 +19,8 @@ struct STilesetItem;
 
 enum ETileSizeType
 {
-	TST_Full,
-	TST_Half
+	TST_1X1,
+	TST_2X2,
 };
 
 enum ETileType
@@ -48,7 +48,7 @@ struct STilesetItem
 	std::string	  Name;
 	int32_t		  LinearIndex;
 	ETileType	  Type = TT_Normal;
-	ETileSizeType SizeType = TST_Full;
+	ETileSizeType SizeType = TST_2X2;
 
 	STilesetItem(const std::string& InName, const FVector2& InIndex, ETileType InType, ETileSizeType InSizeType)
 		: Name(InName), LinearIndex(ToLinearIndex(InIndex)), Type(InType), SizeType(InSizeType)
@@ -58,10 +58,29 @@ struct STilesetItem
 	FRect GetSourceRect()
 	{
 		auto CoordIndex = ToCoordIndex(LinearIndex);
-		auto Size = SizeType == TST_Half ? gTilesetItemHalfSize : gTilesetItemSize;
+		auto Factor = SizeType == TST_1X1 ? gTilesetItemHalfSize : gTilesetItemSize;
 		return {
-			CoordIndex * gTilesetItemHalfSize, { Size, Size }
+			CoordIndex * gTilesetItemHalfSize, { Factor, Factor }
 		};
+	}
+
+	FRect GetDestRect()
+	{
+		auto	 CoordIndex = ToCoordIndex(LinearIndex);
+		FVector2 Size;
+		switch (SizeType)
+		{
+			case TST_1X1:
+				Size = { HALF_TILE_SIZE,
+						 HALF_TILE_SIZE };
+				break;
+			case TST_2X2:
+				Size = { TILE_SIZE,
+						 TILE_SIZE };
+				break;
+		}
+
+		return { CoordIndex * HALF_TILE_SIZE, Size };
 	}
 };
 
@@ -125,9 +144,9 @@ struct STileData
 	{
 		return Tileset->GetItemByLinearIndex(SubIndexes[Index]);
 	}
-	ETileType GetType(int Index = 0) const
+	ETileType GetType() const
 	{
-		return GetItemBySubIndex(Index)->Type;
+		return GetItemBySubIndex(0)->Type;
 	}
 	PTexture* GetTexture() const
 	{
@@ -135,9 +154,13 @@ struct STileData
 	}
 	FRect GetSourceRect(int Index = 0) const
 	{
-		return GetItemBySubIndex(Index)->GetSourceRect();
+		auto Item = GetItemBySubIndex(Index);
+		if (!Item)
+		{
+			return {};
+		}
+		return Item->GetSourceRect();
 	}
-	bool IsSubIndexed() const { return GetItemBySubIndex(0)->SizeType == TST_Half; }
 };
 
 static std::map<std::string, STileset> gTilesets = {
@@ -146,9 +169,37 @@ static std::map<std::string, STileset> gTilesets = {
 		{
 			"Tileset1",
 			{
-				{ "Grass1", { 0, 0 }, TT_Normal, TST_Half },
-				{ "Grass2", { 9, 3 }, TT_Normal, TST_Half },
-				{ "Rock", { 10, 2 }, TT_Obstacle, TST_Full },
+				{ "Grass 1", { 0, 0 }, TT_Normal, TST_1X1 },
+				{ "Grass 2", { 9, 3 }, TT_Normal, TST_1X1 },
+				{ "Grass 3", { 12, 2 }, TT_Normal, TST_1X1 },
+				{ "Rock", { 10, 2 }, TT_Obstacle, TST_2X2 },
+				{ "Roof", { 8, 3 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Top-Left", { 5, 0 }, TT_Obstacle, TST_2X2 },
+				{ "Roof Bottom-Left 1", { 5, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Bottom-Left 2", { 6, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 1", { 2, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 2", { 3, 5 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 3", { 7, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Center 4", { 7, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Top-Right", { 8, 0 }, TT_Obstacle, TST_2X2 },
+				{ "Roof Bottom-Right 1", { 8, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Bottom-Right 2", { 9, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Left 1", { 5, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Left 2", { 6, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Right 1", { 8, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Roof Right 2", { 9, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Wall", { 2, 2 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Left", { 15, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Right", { 15, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Left Corner", { 14, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Right Corner", { 15, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Wall Bottom", { 10, 1 }, TT_Obstacle, TST_1X1 },
+				{ "Window", { 10, 0 }, TT_Obstacle, TST_1X1 },
+				{ "Brick", { 11, 4 }, TT_Obstacle, TST_1X1 },
+				{ "Sign", { 6, 4 }, TT_Obstacle, TST_2X2 },
+				{ "Door", { 11, 0 }, TT_Portal, TST_2X2 },
+				{ "Fence Bottom", { 5, 5 }, TT_Obstacle, TST_1X1 },
+				{ "Fence Top", { 14, 0 }, TT_Obstacle, TST_1X1 },
 			},
 		},
 	 }
@@ -169,6 +220,15 @@ static void LoadTileset(const std::string& Name)
 		}
 	}
 	Tileset->Texture = Tex;
+
+	// for (int i = 0; i < 16 * 6; i++)
+	// {
+	// 	if (Tileset->GetItemByLinearIndex(i))
+	// 	{
+	// 		continue;
+	// 	}
+	// 	Tileset->Items.emplace_back(std::to_string(i), ToCoordIndex(i), TT_Normal, TST_1X1);
+	// }
 }
 
 static STileset& GetTileset(const std::string& Name)
@@ -177,6 +237,7 @@ static STileset& GetTileset(const std::string& Name)
 	{
 		LoadTileset(Name);
 	}
+	// ReSharper disable once CppDFAUnusedValue
 	auto Tileset = &gTilesets.at(Name);
 	if (!Tileset->Texture)
 	{

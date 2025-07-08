@@ -106,11 +106,11 @@ void PEditorGame::SetupInterface()
 		// 16x6
 		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
 		Button->AddChild(Img);
-		Img->SetFixedSize({ 16, 16 });
+		Img->SetFixedSize({ 24, 24 });
 		Img->SetResizeMode(RM_Fixed, RM_Fixed);
 		Img->SetUseSourceRect(true);
 
-		FRect SourceRect = { Item.GetSourceRect() };
+		FRect SourceRect = Item.GetSourceRect();
 		Img->SetSourceRect(SourceRect);
 	}
 
@@ -275,13 +275,17 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			}
 			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
 			{
-				if (mCurrentTilesetItem->SizeType == TST_Half)
+				switch (mCurrentTilesetItem->SizeType)
 				{
-					Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
-				}
-				else
-				{
-					Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+					case TST_1X1:
+						Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
+						break;
+					case TST_2X2:
+						Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+						Tile->Data.SubIndexes[1] = mCurrentTilesetItem->LinearIndex + 1;
+						Tile->Data.SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gTilesetWidth;
+						Tile->Data.SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gTilesetWidth + 1;
+						break;
 				}
 			}
 			break;

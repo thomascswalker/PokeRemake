@@ -33,6 +33,8 @@ public:
 	void PostInitialize() const;
 	void Uninitialize() const;
 
+	void OnResize(const FVector2& Size);
+
 	SDL_Renderer* GetSDLRenderer() { return mContext->Renderer; }
 	SDL_Window*	  GetRenderWindow() const { return SDL_GetRenderWindow(mContext->Renderer); }
 	float		  GetScreenWidth() const;
