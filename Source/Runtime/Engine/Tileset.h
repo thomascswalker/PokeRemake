@@ -220,15 +220,6 @@ static void LoadTileset(const std::string& Name)
 		}
 	}
 	Tileset->Texture = Tex;
-
-	// for (int i = 0; i < 16 * 6; i++)
-	// {
-	// 	if (Tileset->GetItemByLinearIndex(i))
-	// 	{
-	// 		continue;
-	// 	}
-	// 	Tileset->Items.emplace_back(std::to_string(i), ToCoordIndex(i), TT_Normal, TST_1X1);
-	// }
 }
 
 static STileset& GetTileset(const std::string& Name)

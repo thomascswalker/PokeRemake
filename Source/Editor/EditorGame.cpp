@@ -47,7 +47,7 @@ void PEditorGame::SetupInterface()
 	const auto MainPanel = mWorld->ConstructWidget<PBox>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
-	MainPanel->SetFixedWidth(150);
+	MainPanel->SetFixedWidth(200);
 
 	// Files
 	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
