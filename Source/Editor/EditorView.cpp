@@ -50,8 +50,6 @@ void PEditorView::Tick(float DeltaTime)
 	{
 		AddPosition(Destination);
 	}
-
-	LogDebug("POS: {}", mPosition.ToString().c_str());
 }
 
 bool PEditorView::OnKeyDown(SInputEvent* Event)

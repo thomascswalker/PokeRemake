@@ -80,9 +80,9 @@ void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 	PCharacter::Draw(Renderer);
 }
 
-void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
+bool PPlayerCharacter::OnKeyDown(SInputEvent* Event)
 {
-	switch (KeyCode)
+	switch (Event->KeyDown)
 	{
 		case SDLK_RIGHT: // Right
 		case SDLK_D:
@@ -108,11 +108,13 @@ void PPlayerCharacter::OnKeyDown(uint32_t KeyCode)
 	{
 		bInputAllowed = false;
 	}
+
+	return false;
 }
 
-void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
+bool PPlayerCharacter::OnKeyUp(SInputEvent* Event)
 {
-	switch (KeyCode)
+	switch (Event->KeyUp)
 	{
 		case SDLK_RIGHT: // Right
 		case SDLK_D:
@@ -138,4 +140,6 @@ void PPlayerCharacter::OnKeyUp(uint32_t KeyCode)
 	{
 		bInputAllowed = true;
 	}
+
+	return false;
 }

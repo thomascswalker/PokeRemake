@@ -10,6 +10,7 @@
 #include "Interface/Canvas.h"
 #include "Interface/Group.h"
 #include "Interface/Image.h"
+#include "Interface/Panel.h"
 #include "Interface/Spinner.h"
 
 static PGroup* TileGroup = nullptr;
@@ -45,7 +46,7 @@ void PEditorGame::Start()
 
 void PEditorGame::SetupInterface()
 {
-	const auto MainPanel = mWorld->ConstructWidget<PBox>();
+	const auto MainPanel = mWorld->ConstructWidget<PPanel>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(200);

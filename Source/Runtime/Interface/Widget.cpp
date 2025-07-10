@@ -6,18 +6,20 @@ PWidget* PWidget::mSender = nullptr;
 
 bool PWidget::ProcessEvents(SInputEvent* Event)
 {
-	mSender = this;
-	if (IInputHandler::ProcessEvents(Event))
-	{
-		return true;
-	}
-
+	// Process all child events first so the parent
+	// doesn't consume events meant for children
 	for (const auto& Child : mChildren)
 	{
 		if (Child->ProcessEvents(Event))
 		{
 			return true;
 		}
+	}
+
+	mSender = this;
+	if (IInputHandler::ProcessEvents(Event))
+	{
+		return true;
 	}
 	return false;
 }
