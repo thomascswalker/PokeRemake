@@ -1,6 +1,7 @@
 #include "Actor.h"
 
 #include "Engine/CameraView.h"
+#include "Engine/Components/Component.h"
 
 bool PActor::OnMouseEvent(SInputEvent* Event)
 {
@@ -52,6 +53,7 @@ FVector2 PActor::GetDrawPosition() const
 
 void PActor::AddComponent(PComponent* Component)
 {
+	Component->SetOwner(this);
 	mComponents.push_back(Component);
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Logging.h"
 #include "Engine/Actors/Actor.h"
 #include "Engine/Components/CameraComponent.h"
 
@@ -15,6 +14,7 @@ protected:
 public:
 	PEditorView() = default;
 	~PEditorView() override = default;
+
 	void Start() override;
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override {}

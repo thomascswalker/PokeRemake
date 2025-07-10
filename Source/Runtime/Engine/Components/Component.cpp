@@ -5,7 +5,6 @@
 void PComponent::SetOwner(PActor* Owner)
 {
 	mOwner = Owner;
-	Owner->AddComponent(this);
 }
 
 FVector2 PComponent::GetPosition() const

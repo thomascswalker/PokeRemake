@@ -146,7 +146,7 @@ public:
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 	{
 		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
-		Component->SetOwner(Owner);
+		Owner->AddComponent(Component.get());
 		mComponents.push_back(Component);
 		return Component.get();
 	}

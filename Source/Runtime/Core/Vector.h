@@ -35,8 +35,10 @@ public:
 	};
 
 	// Constructors
-	TVector2() : X(0), Y(0) {}
-	TVector2(T InX, T InY) : X(InX), Y(InY) {}
+	TVector2()
+		: X(0), Y(0) {}
+	TVector2(T InX, T InY)
+		: X(InX), Y(InY) {}
 	TVector2(const TVector2& Other) = default;
 	TVector2(TVector2&& Other) noexcept = default;
 	TVector2& operator=(const TVector2& Other) = default;
@@ -131,6 +133,8 @@ public:
 	bool operator<(const TVector2& Other) const { return Other.X > X || Other.Y > Y; }
 	bool operator>(const TVector2& Other) const { return Other.X < X || Other.Y < Y; }
 
+	operator bool() const { return X != 0 || Y != 0; }
+
 	friend std::ostream& operator<<(std::ostream& Stream, const TVector2& V)
 	{
 		Stream << "[" << V.X << ", " << V.Y << "]";
@@ -151,8 +155,10 @@ public:
 		T XYZ[3];
 	};
 
-	TVector3() : X(0), Y(0), Z(0) {}
-	TVector3(T InX, T InY, T InZ) : X(InX), Y(InY), Z(InZ) {}
+	TVector3()
+		: X(0), Y(0), Z(0) {}
+	TVector3(T InX, T InY, T InZ)
+		: X(InX), Y(InY), Z(InZ) {}
 	TVector3(const TVector3& Other) = default;
 	TVector3(TVector3&& Other) noexcept = default;
 	TVector3& operator=(const TVector3& Other) = default;
@@ -239,8 +245,10 @@ public:
 		T XYZW[4];
 	};
 
-	TVector4() : X(0), Y(0), Z(0), W(0) {}
-	TVector4(T InX, T InY, T InZ, T InW) : X(InX), Y(InY), Z(InZ), W(InW) {}
+	TVector4()
+		: X(0), Y(0), Z(0), W(0) {}
+	TVector4(T InX, T InY, T InZ, T InW)
+		: X(InX), Y(InY), Z(InZ), W(InW) {}
 	TVector4(const TVector4& Other) = default;
 	TVector4(TVector4&& Other) noexcept = default;
 	TVector4& operator=(const TVector4& Other) = default;

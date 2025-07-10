@@ -13,15 +13,11 @@
 std::string	 gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
-constexpr auto gLogicalPresentation = SDL_LOGICAL_PRESENTATION_DISABLED;
 constexpr auto gTextureScaleMode = SDL_SCALEMODE_NEAREST;
 constexpr auto gTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
 
 bool PRenderer::Initialize()
 {
-	auto Size = GetScreenSize();
-
-	// SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
 	SDL_SetDefaultTextureScaleMode(mContext->Renderer, gTextureScaleMode);
 	SDL_SetRenderTextureAddressMode(mContext->Renderer, gTextureAddressMode, gTextureAddressMode);
 
@@ -131,7 +127,8 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 {
 	const auto ScreenSize = GetScreenSize();
 
-	if (const auto CameraView = GetCameraView())
+	const auto CameraView = GetCameraView();
+	if (CameraView)
 	{
 		const auto ViewPosition = CameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);

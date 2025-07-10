@@ -13,7 +13,7 @@ enum EViewMode
 	VM_Orthographic,
 };
 
-class PCameraView
+class PCameraView : public PObject
 {
 protected:
 	// 2D
@@ -26,6 +26,8 @@ protected:
 	FVector2  mDirection;
 
 public:
+	void Tick(float DeltaTime) override {}
+
 	float	  GetFOV() const { return mFOV; }
 	EViewMode GetViewMode() const { return mViewMode; }
 

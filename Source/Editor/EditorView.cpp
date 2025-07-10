@@ -46,7 +46,12 @@ void PEditorView::Tick(float DeltaTime)
 		Destination = FVector2(CameraSpeed, 0);
 	}
 
-	AddPosition(Destination);
+	if (Destination)
+	{
+		AddPosition(Destination);
+	}
+
+	LogDebug("POS: {}", mPosition.ToString().c_str());
 }
 
 bool PEditorView::OnKeyDown(SInputEvent* Event)
@@ -70,9 +75,10 @@ bool PEditorView::OnKeyDown(SInputEvent* Event)
 			// Destination = { CameraSpeed, 0 };
 			break;
 		default:
-			break;
+			return false;
 	}
-	return false;
+	Event->Consume();
+	return true;
 }
 
 bool PEditorView::OnKeyUp(SInputEvent* Event)
@@ -92,9 +98,10 @@ bool PEditorView::OnKeyUp(SInputEvent* Event)
 			mInputState[3] = false;
 			break;
 		default:
-			break;
+			return false;
 	}
-	return false;
+	Event->Consume();
+	return true;
 }
 
 bool PEditorView::OnMouseEvent(SInputEvent* Event)
@@ -105,6 +112,8 @@ bool PEditorView::OnMouseEvent(SInputEvent* Event)
 			if (mCameraComponent)
 			{
 				mCameraComponent->GetCameraView()->AddZoom(Event->MouseScroll);
+				Event->Consume();
+				return true;
 			}
 			break;
 		default:

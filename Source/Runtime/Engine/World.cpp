@@ -36,6 +36,10 @@ void PWorld::Tick(float DeltaTime)
 	for (auto& Actor : GetActors())
 	{
 		Actor->Tick(DeltaTime);
+		for (auto& Component : Actor->GetComponents())
+		{
+			Component->Tick(DeltaTime);
+		}
 	}
 }
 
@@ -69,12 +73,14 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 	{
 		if (Actor->ProcessEvents(Event))
 		{
+			LogInfo("Event consumed from {}", Actor->GetInternalName().c_str());
 			return;
 		}
 		for (const auto& Component : Actor->GetComponents())
 		{
 			if (Component->ProcessEvents(Event))
 			{
+				LogInfo("Event consumed from {}", Component->GetInternalName().c_str());
 				return;
 			}
 		}
