@@ -46,17 +46,17 @@ public:
 	{
 		const FRect R = GetGeometry();
 
-		// Clicked
-		if (mMouseDown)
+		// Clicked and hovered
+		if (mMouseDown && mMouseOver)
 		{
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
 		}
-		// Hovered
-		else if (R.Contains(Renderer->GetMousePosition()))
+		// Hovered and not clicked
+		else if (mMouseOver)
 		{
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
 		}
-		// Normal
+		// Not hovered and not clicked
 		else
 		{
 			Renderer->SetDrawColor(mChecked ? PColor::UISecondary : PColor::UIPrimary);

@@ -67,6 +67,7 @@ protected:
 	bool mMouseDown = false;
 
 	PButtonGroup* mButtonGroup = nullptr;
+	bool		  OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	DButtonClicked Clicked;
@@ -86,6 +87,4 @@ public:
 	void ToggleChecked() { mChecked = !mChecked; }
 
 	void SetButtonGroup(PButtonGroup* Group);
-
-	void ProcessEvents(SWidgetEvent* Event) override;
 };

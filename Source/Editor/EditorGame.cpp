@@ -10,7 +10,10 @@
 #include "Interface/Canvas.h"
 #include "Interface/Group.h"
 #include "Interface/Image.h"
+#include "Interface/Panel.h"
 #include "Interface/Spinner.h"
+
+static PGroup* TileGroup = nullptr;
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
@@ -25,8 +28,8 @@ void PEditorGame::PreStart()
 {
 	GetSettings()->mDebugDraw = true;
 
-	const auto EV = mWorld->ConstructActor<PEditorView>();
-	if (!EV)
+	const auto EditorView = mWorld->ConstructActor<PEditorView>();
+	if (!EditorView)
 	{
 		LogError("Failed to create Editor View");
 	}
@@ -37,14 +40,13 @@ void PEditorGame::PreStart()
 
 void PEditorGame::Start()
 {
-	mWorld->Start();
+	PGame::Start();
 	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
-	FindActiveCamera();
 }
 
 void PEditorGame::SetupInterface()
 {
-	const auto MainPanel = mWorld->ConstructWidget<PBox>();
+	const auto MainPanel = mWorld->ConstructWidget<PPanel>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(200);
@@ -73,14 +75,14 @@ void PEditorGame::SetupInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetResizeModeH(RM_Fit);
 	EditGroup->SetLayoutMode(LM_Vertical);
-	const auto EditModeChunk = mWorld->ConstructWidget<PButton>("Chunk", this, &PEditorGame::OnSelectButtonChecked);
-	EditModeChunk->SetCheckable(true);
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile Type", this, &PEditorGame::OnTileButtonChecked);
+	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
+	EditModeSelect->SetCheckable(true);
+	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
 	EditModeTile->SetCheckable(true);
 	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	EditModeButtonGroup->AddButton(EditModeChunk);
+	EditModeButtonGroup->AddButton(EditModeSelect);
 	EditModeButtonGroup->AddButton(EditModeTile);
-	EditGroup->AddChild(EditModeChunk);
+	EditGroup->AddChild(EditModeSelect);
 	EditGroup->AddChild(EditModeTile);
 
 	MainPanel->AddChild(FileGroup);
@@ -88,7 +90,8 @@ void PEditorGame::SetupInterface()
 
 	// Tiles
 
-	const auto ItemView = mWorld->ConstructWidget<PAbstractView>();
+	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
+	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
@@ -114,7 +117,10 @@ void PEditorGame::SetupInterface()
 		Img->SetSourceRect(SourceRect);
 	}
 
-	MainPanel->AddChild(ItemView);
+	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
+	TileGroup->SetVisible(false);
+	TileGroup->AddChild(ItemView);
+	MainPanel->AddChild(TileGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
@@ -130,15 +136,15 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Select:
-			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
+			// mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
 		case IC_Tile:
-			mTileDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpTile);
 			break;
 		default:
 			break;
 	}
 }
+
 void PEditorGame::RemoveInputContext(uint8_t InputContext)
 {
 	mInputContext &= ~InputContext;
@@ -147,14 +153,13 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Select:
-			Input->KeyUp.Remove(mSelectDelegate);
+			// Input->KeyUp.Remove(mSelectDelegate);
 			if (mCurrentChunk)
 			{
 				mCurrentChunk->SetSelected(false);
 			}
 			break;
 		case IC_Tile:
-			Input->KeyUp.Remove(mTileDelegate);
 			break;
 		default:
 			break;
@@ -224,12 +229,16 @@ void PEditorGame::OnSelectButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Tile);
 	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
+
+	TileGroup->SetVisible(false);
 }
 
 void PEditorGame::OnTileButtonChecked(bool State)
 {
 	RemoveInputContext(IC_Select);
 	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
+
+	TileGroup->SetVisible(State);
 }
 
 void PEditorGame::OnTilesetButtonChecked(bool State)
@@ -292,10 +301,6 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		default:
 			break;
 	}
-}
-
-void PEditorGame::OnKeyUpTile(uint32_t ScanCode)
-{
 }
 
 void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)

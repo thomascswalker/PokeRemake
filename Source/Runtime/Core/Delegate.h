@@ -290,15 +290,18 @@ private:
 class DelegateHandle
 {
 public:
-	constexpr DelegateHandle() noexcept : m_Id(INVALID_ID) {}
+	constexpr DelegateHandle() noexcept
+		: m_Id(INVALID_ID) {}
 
-	explicit DelegateHandle(bool /*generateId*/) noexcept : m_Id(GetNewID()) {}
+	explicit DelegateHandle(bool /*generateId*/) noexcept
+		: m_Id(GetNewID()) {}
 
 	~DelegateHandle() noexcept = default;
 	DelegateHandle(const DelegateHandle& other) = default;
 	DelegateHandle& operator=(const DelegateHandle& other) = default;
 
-	DelegateHandle(DelegateHandle&& other) noexcept : m_Id(other.m_Id) { other.Reset(); }
+	DelegateHandle(DelegateHandle&& other) noexcept
+		: m_Id(other.m_Id) { other.Reset(); }
 
 	DelegateHandle& operator=(DelegateHandle&& other) noexcept
 	{
@@ -339,7 +342,8 @@ class InlineAllocator
 {
 public:
 	// Constructor
-	constexpr InlineAllocator() noexcept : m_Size(0)
+	constexpr InlineAllocator() noexcept
+		: m_Size(0)
 	{
 		DELEGATE_STATIC_ASSERT(
 			MaxStackSize > sizeof(void*),
@@ -350,7 +354,8 @@ public:
 	~InlineAllocator() noexcept { Free(); }
 
 	// Copy constructor
-	InlineAllocator(const InlineAllocator& other) : m_Size(0)
+	InlineAllocator(const InlineAllocator& other)
+		: m_Size(0)
 	{
 		if (other.HasAllocation())
 		{
@@ -371,7 +376,8 @@ public:
 	}
 
 	// Move constructor
-	InlineAllocator(InlineAllocator&& other) noexcept : m_Size(other.m_Size)
+	InlineAllocator(InlineAllocator&& other) noexcept
+		: m_Size(other.m_Size)
 	{
 		other.m_Size = 0;
 		if (m_Size > MaxStackSize)
@@ -462,7 +468,8 @@ class DelegateBase
 {
 public:
 	// Default constructor
-	constexpr DelegateBase() noexcept : m_Allocator() {}
+	constexpr DelegateBase() noexcept
+		: m_Allocator() {}
 
 	// Default destructor
 	virtual ~DelegateBase() noexcept { Release(); }
@@ -490,7 +497,8 @@ public:
 	}
 
 	// Move constructor
-	DelegateBase(DelegateBase&& other) noexcept : m_Allocator(std::move(other.m_Allocator)) {}
+	DelegateBase(DelegateBase&& other) noexcept
+		: m_Allocator(std::move(other.m_Allocator)) {}
 
 	// Move assignment operator
 	DelegateBase& operator=(DelegateBase&& other) noexcept
@@ -724,7 +732,8 @@ private:
 	{
 		DelegateHandle Handle;
 		DelegateT	   Callback;
-		DelegateHandlerPair() : Handle(false) {}
+		DelegateHandlerPair()
+			: Handle(false) {}
 		DelegateHandlerPair(const DelegateHandle& handle, const DelegateT& callback)
 			: Handle(handle), Callback(callback)
 		{
@@ -743,7 +752,8 @@ private:
 
 public:
 	// Default constructor
-	constexpr MulticastDelegate() : m_Locks(0) {}
+	constexpr MulticastDelegate()
+		: m_Locks(0) {}
 
 	// Default destructor
 	~MulticastDelegate() noexcept = default;
@@ -960,6 +970,9 @@ public:
 
 	size_t GetSize() const { return m_Events.size(); }
 
+	bool GetConsumed() const { return m_Consumed; }
+	void SetConsumed(bool State) { m_Consumed = State; }
+
 private:
 	void Lock() { ++m_Locks; }
 
@@ -977,4 +990,5 @@ private:
 
 	std::vector<DelegateHandlerPair> m_Events;
 	unsigned int					 m_Locks;
+	bool							 m_Consumed = false;
 };

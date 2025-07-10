@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Logging.h"
 #include "Engine/Actors/Actor.h"
 #include "Engine/Components/CameraComponent.h"
 
@@ -15,17 +14,12 @@ protected:
 public:
 	PEditorView() = default;
 	~PEditorView() override = default;
+
 	void Start() override;
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override {}
 
-	void OnKeyDown(uint32_t KeyCode);
-	void OnKeyUp(uint32_t KeyCode);
-	void OnMouseScroll(float DeltaX)
-	{
-		if (mCameraComponent)
-		{
-			mCameraComponent->GetCameraView()->AddZoom(DeltaX);
-		}
-	}
+	bool OnKeyDown(SInputEvent* Event) override;
+	bool OnKeyUp(SInputEvent* Event) override;
+	bool OnMouseEvent(SInputEvent* Event) override;
 };

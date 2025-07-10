@@ -195,7 +195,15 @@ void PApplication::Uninitialize() const
 
 void PApplication::Loop()
 {
-	// Handle events
+
+	// Tick the engine
+	const uint64_t Now = SDL_GetTicksNS();
+	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
+	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	mEngine->Tick(DeltaTime);
+	mCurrentTime = Now;
+
+	// Handle events after all events in the engine are handled
 	SDL_Event Event;
 	if (SDL_PollEvent(&Event))
 	{
@@ -205,71 +213,25 @@ void PApplication::Loop()
 		}
 	}
 
-	// Tick the engine
-	const uint64_t Now = SDL_GetTicksNS();
-	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
-	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
-	mEngine->Tick(DeltaTime);
-	mCurrentTime = Now;
-
 	// Draw to the screen
 	OnDraw();
 }
 
 bool PApplication::OnEvent(void* Event)
 {
-	const auto* SDLEvent = static_cast<SDL_Event*>(Event);
+	auto* SDLEvent = static_cast<SDL_Event*>(Event);
 	if (!SDLEvent)
 	{
 		return false;
 	}
 
+	// Handle window-level events
 	switch (SDLEvent->type)
 	{
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 			{
 				Uninitialize();
 				return false;
-			}
-		case SDL_EVENT_KEY_DOWN:
-			{
-				mKeyStates[SDLEvent->key.key] = true;
-				KeyDown.Broadcast(SDLEvent->key.key);
-				break;
-			}
-		case SDL_EVENT_KEY_UP:
-			{
-				mKeyStates[SDLEvent->key.key] = false;
-				KeyUp.Broadcast(SDLEvent->key.key);
-				break;
-			}
-		case SDL_EVENT_MOUSE_WHEEL:
-			{
-				MouseScroll.Broadcast(SDLEvent->wheel.y);
-				break;
-			}
-		case SDL_EVENT_MOUSE_MOTION:
-			{
-				MouseMotion.Broadcast(SDLEvent->motion.x, SDLEvent->motion.y);
-				break;
-			}
-		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			{
-				switch (SDLEvent->button.button)
-				{
-					case SDL_BUTTON_LEFT:
-						MouseLeftClick.Broadcast();
-						break;
-					case SDL_BUTTON_RIGHT:
-						MouseRightClick.Broadcast();
-						break;
-					case SDL_BUTTON_MIDDLE:
-						MouseMiddleClick.Broadcast();
-						break;
-					default:
-						break;
-				}
-				break;
 			}
 		case SDL_EVENT_WINDOW_RESIZED:
 			{
@@ -281,6 +243,9 @@ bool PApplication::OnEvent(void* Event)
 			break;
 	}
 
+	// Handle all other events
+	SInputEvent InputEvent(SDLEvent);
+	GetWorld()->ProcessEvents(&InputEvent);
 	return true;
 }
 

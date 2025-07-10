@@ -2,26 +2,29 @@
 
 #include "Core/Delegate.h"
 #include "Core/Vector.h"
+#include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
 #include "ISelectable.h"
 #include "Renderer/IDrawable.h"
 
 class PActor;
+class PComponent;
 
 DECLARE_MULTICAST_DELEGATE(DHoverBegin);
 DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 
-class PActor : public PObject, public IDrawable, public ISelectable
+class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
 {
-	void UpdateMouseState();
-
 protected:
-	FVector2 mPosition;
-	FVector2 mSize;
-	PSprite	 mSprite{};
-	bool	 mBlocking = true;
+	FVector2				 mPosition;
+	FVector2				 mSize;
+	PSprite					 mSprite{};
+	bool					 mBlocking = true;
+	std::vector<PComponent*> mComponents;
+
+	bool OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	FVector2	mMousePosition;
@@ -67,9 +70,12 @@ public:
 	void Start() override {}
 	void End() override {}
 
-	void	 Tick(float DeltaTime) override;
+	void	 Tick(float DeltaTime) override {}
 	void	 Draw(const PRenderer* Renderer) const override = 0;
 	FVector2 GetDrawPosition() const;
+
+	void					 AddComponent(PComponent* Component);
+	std::vector<PComponent*> GetComponents() const { return mComponents; }
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
 	virtual FRect GetWorldBounds() const { return FRect(); }
@@ -88,7 +94,7 @@ public:
 
 	// Mouse events
 
-	virtual void OnHoverBegin() {}
-	virtual void OnHoverEnd() {}
-	virtual void OnClicked() {}
+	virtual void OnHoverBegin() { LogInfo("HoverBegin {}", GetInternalName().c_str()); }
+	virtual void OnHoverEnd() { LogInfo("HoverEnd {}", GetInternalName().c_str()); }
+	virtual void OnClicked() { LogInfo("Clicked {}", GetInternalName().c_str()); }
 };

@@ -15,8 +15,8 @@ public:
 	void Start() override;
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override;
-	void OnKeyDown(uint32_t KeyCode);
-	void OnKeyUp(uint32_t KeyCode);
+	bool OnKeyDown(SInputEvent* Event) override;
+	bool OnKeyUp(SInputEvent* Event) override;
 
 	PCameraComponent* GetCameraComponent() const { return mCameraComponent; }
 };

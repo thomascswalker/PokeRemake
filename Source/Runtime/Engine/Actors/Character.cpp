@@ -35,6 +35,7 @@ void PCharacter::Start()
 
 void PCharacter::Tick(float DeltaTime)
 {
+	PActor::Tick(DeltaTime);
 	mSprite.Tick(DeltaTime);
 }
 

@@ -10,6 +10,10 @@ namespace Layout
 	// Grow this widget's children to fit the space of this widget
 	inline void GrowChildren(const PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
 		const auto LayoutMode = Widget->GetLayoutMode();
 		float	   ChildGap = Widget->Padding.Left;
 		float	   RemainingWidth = Widget->W;
@@ -20,6 +24,10 @@ namespace Layout
 
 		for (auto Child : Widget->GetChildren())
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			if (LayoutMode == LM_Horizontal)
 			{
 				RemainingWidth -= Child->W;
@@ -40,6 +48,10 @@ namespace Layout
 
 		for (auto Child : Widget->GetChildren())
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			if (LayoutMode == LM_Horizontal)
 			{
 				if (Child->GetResizeModeW() == RM_Grow)
@@ -68,6 +80,11 @@ namespace Layout
 
 	inline void Fit(PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
+
 		const auto RMW = Widget->GetResizeModeW();
 		const auto RMH = Widget->GetResizeModeH();
 
@@ -91,6 +108,10 @@ namespace Layout
 
 			for (const auto Child : Widget->GetChildren())
 			{
+				if (!Child->GetVisible())
+				{
+					continue;
+				}
 				SumW += Child->W + Padding;
 				SumH += Child->H + Padding;
 				LargestW = std::max(LargestW, Child->W + Padding);
@@ -124,12 +145,21 @@ namespace Layout
 
 		for (const auto Child : Widget->GetChildren())
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			Fit(Child);
 		}
 	}
 
 	inline void Fixed(PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
+
 		// All widgets initialize at their fixed size.
 
 		const auto Size = Widget->GetFixedSize();
@@ -138,12 +168,21 @@ namespace Layout
 
 		for (const auto Child : Widget->GetChildren())
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			Fixed(Child);
 		}
 	}
 
 	inline void Position(const PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
+
 		const auto Children = Widget->GetChildren();
 
 		// Full geometry of the parent widget
@@ -163,6 +202,10 @@ namespace Layout
 
 		for (const auto Child : Children)
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			// Child position is at the origin plus the current change in X/Y
 			Child->X = Origin.X + DX;
 			Child->Y = Origin.Y + DY;
@@ -185,6 +228,11 @@ namespace Layout
 
 	inline void Offset(PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
+
 		const auto Children = Widget->GetChildren();
 
 		Widget->X += Widget->GetOffset().X;
@@ -192,12 +240,21 @@ namespace Layout
 
 		for (const auto Child : Children)
 		{
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
 			Offset(Child);
 		}
 	}
 
 	inline void Layout(PWidget* Widget)
 	{
+		if (!Widget->GetVisible())
+		{
+			return;
+		}
+
 		Fixed(Widget);
 		Fit(Widget);
 		GrowChildren(Widget);

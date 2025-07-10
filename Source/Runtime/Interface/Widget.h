@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Containers.h"
+#include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
 #include <initializer_list>
@@ -30,13 +32,6 @@ enum EResizeMode
 	RM_Grow,
 };
 
-struct SWidgetEvent
-{
-	bool	 Consumed = false; // Event was consumed by a widget
-	bool	 MouseDown;
-	FVector2 MousePosition;
-};
-
 template <typename T>
 struct TPadding
 {
@@ -60,7 +55,7 @@ struct TPadding
 };
 using FPadding = TPadding<float>;
 
-class PWidget : public PObject
+class PWidget : public PObject, public IInputHandler
 {
 protected:
 	// Static pointer to the widget that sent the event.
@@ -82,6 +77,7 @@ protected:
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
 	bool mMouseOver = false;
+	bool mVisible = true;
 
 public:
 	float X = 0.0f;
@@ -99,7 +95,7 @@ public:
 	// General
 
 	void		 Tick(float DeltaTime) override {}
-	virtual void ProcessEvents(SWidgetEvent* Event);
+	bool		 ProcessEvents(SInputEvent* Event) override;
 	virtual void OnLayout()
 	{
 		for (auto Child : mChildren)
@@ -111,11 +107,24 @@ public:
 	PWidget* GetParent() const { return mParent; }
 	void	 SetParent(PWidget* Parent);
 
+	bool GetVisible() const { return mVisible; }
+	void SetVisible(bool State) { mVisible = State; }
+	void ToggleVisible() { SetVisible(!mVisible); }
+
 	// Drawing
+
 	virtual void DrawChildren(const PRenderer* Renderer) const
 	{
+		if (!mVisible)
+		{
+			return;
+		}
 		for (const auto& Child : mChildren)
 		{
+			if (!Child->GetVisible())
+			{
+				return;
+			}
 			// Draw this widget
 			Child->PreDraw(Renderer);
 			Child->Draw(Renderer);
@@ -133,8 +142,11 @@ public:
 
 	virtual void		  AddChild(PWidget* Child);
 	virtual void		  RemoveChild(PWidget* Child);
-	std::vector<PWidget*> GetChildren() const { return mChildren; }
-	size_t				  GetChildCount() const { return mChildren.size(); }
+	std::vector<PWidget*> GetChildren() const
+	{
+		return mChildren;
+	}
+	size_t GetChildCount() const { return mChildren.size(); }
 
 	// Layout
 
