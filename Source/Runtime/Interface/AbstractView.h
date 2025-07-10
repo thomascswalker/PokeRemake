@@ -48,11 +48,16 @@ public:
 	{
 		mLayoutMode = LM_Vertical;
 		mResizeModeH = RM_Grow;
+	}
 
-		if (auto Input = GetInputManager())
+	bool OnMouseEvent(SInputEvent* Event) override
+	{
+		if (Event->Type != IET_MouseScroll)
 		{
-			Input->MouseScroll.AddRaw(this, &PAbstractView::SetScrollValue);
+			return false;
 		}
+		SetScrollValue(Event->MouseScroll);
+		return true;
 	}
 
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward

@@ -19,13 +19,7 @@ public:
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override {}
 
-	void OnKeyDown(uint32_t KeyCode);
-	void OnKeyUp(uint32_t KeyCode);
-	void OnMouseScroll(float DeltaX)
-	{
-		if (mCameraComponent)
-		{
-			mCameraComponent->GetCameraView()->AddZoom(DeltaX);
-		}
-	}
+	bool OnKeyDown(SInputEvent* Event) override;
+	bool OnKeyUp(SInputEvent* Event) override;
+	bool OnMouseEvent(SInputEvent* Event) override;
 };

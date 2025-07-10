@@ -86,12 +86,8 @@ void PTile::Draw(const PRenderer* Renderer) const
 	Renderer->DrawRectAt(FullTileDest, WorldPosition);
 
 #if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && (mMouseOver || mSelected))
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
 	{
-		if (!mMouseOver)
-		{
-			return;
-		}
 		auto G = GetEditorGame();
 		auto Item = G->GetCurrentTilesetItem();
 		if (!Item)

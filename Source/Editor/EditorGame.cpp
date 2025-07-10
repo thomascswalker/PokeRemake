@@ -27,8 +27,8 @@ void PEditorGame::PreStart()
 {
 	GetSettings()->mDebugDraw = true;
 
-	const auto EV = mWorld->ConstructActor<PEditorView>();
-	if (!EV)
+	const auto EditorView = mWorld->ConstructActor<PEditorView>();
+	if (!EditorView)
 	{
 		LogError("Failed to create Editor View");
 	}
@@ -39,9 +39,8 @@ void PEditorGame::PreStart()
 
 void PEditorGame::Start()
 {
-	mWorld->Start();
+	PGame::Start();
 	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
-	FindActiveCamera();
 }
 
 void PEditorGame::SetupInterface()
@@ -136,7 +135,7 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Select:
-			mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
+			// mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
 			break;
 		case IC_Tile:
 			break;
@@ -144,6 +143,7 @@ void PEditorGame::AddInputContext(uint8_t InputContext)
 			break;
 	}
 }
+
 void PEditorGame::RemoveInputContext(uint8_t InputContext)
 {
 	mInputContext &= ~InputContext;
@@ -152,7 +152,7 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 	switch (InputContext)
 	{
 		case IC_Select:
-			Input->KeyUp.Remove(mSelectDelegate);
+			// Input->KeyUp.Remove(mSelectDelegate);
 			if (mCurrentChunk)
 			{
 				mCurrentChunk->SetSelected(false);

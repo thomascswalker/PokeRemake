@@ -9,7 +9,7 @@ enum EInputType
 	IT_Mouse
 };
 
-struct PInputAction
+struct SInputAction
 {
 	std::string Name;
 	EInputType	Type;
@@ -20,13 +20,14 @@ struct PInputAction
 	};
 };
 
-class PInputContext
+class SInputContext
 {
 	bool					  mEnabled;
-	std::vector<PInputAction> mActions;
+	std::vector<SInputAction> mActions;
 
-	PInputContext()
+public:
+	SInputContext()
 		: mEnabled(false) {}
-	PInputContext(std::initializer_list<PInputAction> Actions)
+	SInputContext(std::initializer_list<SInputAction> Actions)
 		: mEnabled(false), mActions(Actions) {}
 };

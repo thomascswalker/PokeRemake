@@ -21,26 +21,13 @@ void PEditorView::Start()
 			LogDebug("Created camera component for PEditorView");
 		}
 	}
-
-	if (auto Input = GetInputManager())
-	{
-		Input->KeyDown.AddRaw(this, &PEditorView::OnKeyDown);
-		Input->KeyUp.AddRaw(this, &PEditorView::OnKeyUp);
-		Input->MouseScroll.AddRaw(this, &PEditorView::OnMouseScroll);
-		LogDebug("Bound input events for PEditorView");
-	}
-	else
-	{
-		LogError("PEditorView::Start: InputManager is null");
-	}
 }
 
 void PEditorView::Tick(float DeltaTime)
 {
 	FVector2	Destination;
 	auto		View = GetCameraView();
-	const float CameraSpeed =
-		DeltaTime / View->GetZoom(); // Adjust camera speed based on zoom level
+	const float CameraSpeed = DeltaTime / View->GetZoom(); // Adjust camera speed based on zoom level
 
 	if (mInputState[0]) // W
 	{
@@ -62,9 +49,9 @@ void PEditorView::Tick(float DeltaTime)
 	AddPosition(Destination);
 }
 
-void PEditorView::OnKeyDown(const uint32_t KeyCode)
+bool PEditorView::OnKeyDown(SInputEvent* Event)
 {
-	switch (KeyCode)
+	switch (Event->KeyDown)
 	{
 		case SDLK_W:
 			mInputState[0] = true;
@@ -85,10 +72,12 @@ void PEditorView::OnKeyDown(const uint32_t KeyCode)
 		default:
 			break;
 	}
+	return false;
 }
-void PEditorView::OnKeyUp(uint32_t KeyCode)
+
+bool PEditorView::OnKeyUp(SInputEvent* Event)
 {
-	switch (KeyCode)
+	switch (Event->KeyUp)
 	{
 		case SDLK_W:
 			mInputState[0] = false;
@@ -105,4 +94,21 @@ void PEditorView::OnKeyUp(uint32_t KeyCode)
 		default:
 			break;
 	}
+	return false;
+}
+
+bool PEditorView::OnMouseEvent(SInputEvent* Event)
+{
+	switch (Event->Type)
+	{
+		case IET_MouseScroll:
+			if (mCameraComponent)
+			{
+				mCameraComponent->GetCameraView()->AddZoom(Event->MouseScroll);
+			}
+			break;
+		default:
+			break;
+	}
+	return false;
 }

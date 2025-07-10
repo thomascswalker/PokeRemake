@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Containers.h"
+#include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
 #include <initializer_list>
@@ -31,13 +32,6 @@ enum EResizeMode
 	RM_Grow,
 };
 
-struct SWidgetEvent
-{
-	bool	 Consumed = false; // Event was consumed by a widget
-	bool	 MouseDown;
-	FVector2 MousePosition;
-};
-
 template <typename T>
 struct TPadding
 {
@@ -61,7 +55,7 @@ struct TPadding
 };
 using FPadding = TPadding<float>;
 
-class PWidget : public PObject
+class PWidget : public PObject, public IInputHandler
 {
 protected:
 	// Static pointer to the widget that sent the event.
@@ -101,7 +95,7 @@ public:
 	// General
 
 	void		 Tick(float DeltaTime) override {}
-	virtual void ProcessEvents(SWidgetEvent* Event);
+	bool		 ProcessEvents(SInputEvent* Event) override;
 	virtual void OnLayout()
 	{
 		for (auto Child : mChildren)

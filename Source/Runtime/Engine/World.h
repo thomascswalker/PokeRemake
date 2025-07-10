@@ -205,6 +205,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	void ProcessEvents(SInputEvent* Event);
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

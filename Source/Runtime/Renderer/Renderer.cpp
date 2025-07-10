@@ -21,7 +21,7 @@ bool PRenderer::Initialize()
 {
 	auto Size = GetScreenSize();
 
-	SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
+	// SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
 	SDL_SetDefaultTextureScaleMode(mContext->Renderer, gTextureScaleMode);
 	SDL_SetRenderTextureAddressMode(mContext->Renderer, gTextureAddressMode, gTextureAddressMode);
 
@@ -42,7 +42,7 @@ void PRenderer::Uninitialize() const
 
 void PRenderer::OnResize(const FVector2& Size)
 {
-	SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
+	// SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, gLogicalPresentation);
 }
 
 void PRenderer::LoadFont(const std::string& Name) const
@@ -119,20 +119,6 @@ void PRenderer::Render() const
 
 		if (const auto Root = World->GetRootWidget())
 		{
-			// Resize the main root widget to fit the screen size
-			auto ScreenSize = GetScreenSize();
-			Root->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
-
-			// Recursively construct the layout of all widgets
-			Layout::Layout(Root);
-
-			// Once all widgets have been laid out, process
-			// recursively events for them.
-			SWidgetEvent Event;
-			Event.MousePosition = GetMousePosition();
-			Event.MouseDown = GetMouseLeftDown();
-			Root->ProcessEvents(&Event);
-
 			// Recursively draw all widgets, but not the root widget
 			Root->DrawChildren(this);
 		}

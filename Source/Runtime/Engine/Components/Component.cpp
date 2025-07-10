@@ -2,6 +2,12 @@
 
 #include "Core/Logging.h"
 
+void PComponent::SetOwner(PActor* Owner)
+{
+	mOwner = Owner;
+	Owner->AddComponent(this);
+}
+
 FVector2 PComponent::GetPosition() const
 {
 	if (mOwner)

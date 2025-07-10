@@ -4,18 +4,22 @@
 
 PWidget* PWidget::mSender = nullptr;
 
-void PWidget::ProcessEvents(SWidgetEvent* Event)
+bool PWidget::ProcessEvents(SInputEvent* Event)
 {
 	mSender = this;
-	mMouseOver = GetGeometry().Contains(Event->MousePosition);
+	if (IInputHandler::ProcessEvents(Event))
+	{
+		return true;
+	}
+
 	for (const auto& Child : mChildren)
 	{
-		if (Event->Consumed)
+		if (Child->ProcessEvents(Event))
 		{
-			return;
+			return true;
 		}
-		Child->ProcessEvents(Event);
 	}
+	return false;
 }
 
 void PWidget::SetParent(PWidget* Parent)

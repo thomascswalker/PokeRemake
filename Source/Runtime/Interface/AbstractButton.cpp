@@ -6,28 +6,27 @@ void PAbstractButton::SetButtonGroup(PButtonGroup* Group)
 	mButtonGroup = Group;
 }
 
-void PAbstractButton::ProcessEvents(SWidgetEvent* Event)
+bool PAbstractButton::OnMouseEvent(SInputEvent* Event)
 {
-	mSender = this;
-
 	// Are we inside the button?
-	if (GetGeometry().Contains(Event->MousePosition))
+	mMouseOver = GetGeometry().Contains(Event->MousePosition);
+
+	if (mMouseOver)
 	{
 		// Is it a new press?
-		if (Event->MouseDown && !mMouseDown)
+		if (Event->Type == IET_MouseDown && Event->LeftMouseDown && !mMouseDown)
 		{
 			mMouseDown = true;
+			Event->Consume();
+			return true;
 		}
 		// Is it a release?
-		else if (!Event->MouseDown && mMouseDown)
+		if (Event->Type == IET_MouseUp && !Event->LeftMouseDown && mMouseDown)
 		{
-			mMouseDown = false;
-
-			// Consume the event so that we don't pass the click down to widgets
-			// underneath this button.
-			Event->Consumed = true;
-
+			// Broadcast that we've clicked
 			Clicked.Broadcast();
+			// Reset the mouse state
+			mMouseDown = false;
 
 			// If this button is checkable, flip the checked state
 			if (mCheckable)
@@ -42,11 +41,15 @@ void PAbstractButton::ProcessEvents(SWidgetEvent* Event)
 					mButtonGroup->OnButtonChecked(mChecked);
 				}
 			}
+
+			// Consume the event so that we don't pass the click down to widgets
+			// underneath this button.
+			Event->Consume();
+			return false;
 		}
 	}
 	// Are we outside the button?
-	else
-	{
-		mMouseDown = false; // Reset button state
-	}
+	mMouseDown = false; // Reset button state
+
+	return false;
 }

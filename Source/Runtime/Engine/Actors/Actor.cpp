@@ -2,15 +2,10 @@
 
 #include "Engine/CameraView.h"
 
-void PActor::Tick(float DeltaTime)
-{
-	UpdateMouseState();
-}
-
-void PActor::UpdateMouseState()
+bool PActor::OnMouseEvent(SInputEvent* Event)
 {
 	const auto Renderer = GetRenderer();
-	mMousePosition = Renderer->GetMousePosition();
+	mMousePosition = Event->MousePosition;
 	FVector2 ScreenPosition;
 	Renderer->WorldToScreen(GetPosition(), &ScreenPosition);
 
@@ -44,12 +39,20 @@ void PActor::UpdateMouseState()
 	{
 		mMouseDown = false;
 		Clicked.Broadcast(this);
+		Event->Consume();
 	}
+
+	return Event->Consumed;
 }
 
 FVector2 PActor::GetDrawPosition() const
 {
 	return mPosition - FVector2(0, CHARACTER_OFFSET);
+}
+
+void PActor::AddComponent(PComponent* Component)
+{
+	mComponents.push_back(Component);
 }
 
 void PActor::MoveToTile(int32_t X, int32_t Y)

@@ -14,11 +14,11 @@ void PPlayerCharacter::Start()
 	PCharacter::Start();
 
 	// Bind input
-	if (const auto Input = GetInputManager())
-	{
-		Input->KeyDown.AddRaw(this, &PPlayerCharacter::OnKeyDown);
-		Input->KeyUp.AddRaw(this, &PPlayerCharacter::OnKeyUp);
-	}
+	// if (const auto Input = GetInputManager())
+	// {
+	// 	Input->KeyDown.AddRaw(this, &PPlayerCharacter::OnKeyDown);
+	// 	Input->KeyUp.AddRaw(this, &PPlayerCharacter::OnKeyUp);
+	// }
 
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));

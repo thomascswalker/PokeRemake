@@ -4,10 +4,10 @@
 
 void PSettings::Initialize()
 {
-	if (const auto Input = GetInputManager())
-	{
-		Input->KeyUp.AddRaw(this, &PSettings::OnKeyUp);
-	}
+	// if (const auto Input = GetInputManager())
+	// {
+	// 	Input->KeyUp.AddRaw(this, &PSettings::OnKeyUp);
+	// }
 }
 
 void PSettings::OnKeyUp(uint32_t KeyCode)
