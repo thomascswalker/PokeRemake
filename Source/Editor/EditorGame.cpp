@@ -97,6 +97,8 @@ void PEditorGame::SetupInterface()
 	BrushSizeLabel->SetResizeModeW(RM_Fixed);
 	BrushSizeLabel->SetFixedWidth(50);
 	const auto BrushSizeSpinner = mWorld->ConstructWidget<PSpinner>(1);
+	BrushSizeSpinner->ValueChanged.AddRaw(this, &PEditorGame::SetBrushSize);
+	BrushSizeSpinner->SetRange(1, 3);
 	const auto BrushSizeBox = mWorld->ConstructWidget<PBox>();
 	BrushSizeBox->SetResizeModeH(RM_Fit);
 	BrushSizeBox->AddChild(BrushSizeLabel);

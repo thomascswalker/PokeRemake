@@ -36,9 +36,7 @@ class PEditorGame : public PGame
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
-
-	DelegateHandle mSelectDelegate;
-	DelegateHandle mTileDelegate;
+	int					 mBrushSize = 1;
 
 	STilesetItem* mCurrentTilesetItem;
 
@@ -56,7 +54,6 @@ public:
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
 	void	OnKeyUp(SInputEvent* Event) override;
-	void	OnKeyUpSelect(uint32_t ScanCode);
 
 	// Interface
 
@@ -70,6 +67,7 @@ public:
 	void OnTileButtonChecked(bool State);
 	void OnTilesetButtonChecked(bool State);
 	void OnActorClicked(PActor* ClickedActor);
+	void SetBrushSize(float Value) { mBrushSize = Value; }
 
 	// Scene
 	void		  AddChunk(PChunk* Chunk);
