@@ -26,8 +26,8 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
-	float mNewGridSizeX = 5.0f;
-	float mNewGridSizeY = 5.0f;
+	float mNewGridSizeX = 8.0f;
+	float mNewGridSizeY = 8.0f;
 
 	uint8_t mInputContext;
 
@@ -53,6 +53,7 @@ public:
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
+	bool	HasInputContext(uint8_t InputContext);
 	void	OnKeyUp(SInputEvent* Event) override;
 
 	// Interface
@@ -66,8 +67,11 @@ public:
 	void OnSelectButtonChecked(bool State);
 	void OnTileButtonChecked(bool State);
 	void OnTilesetButtonChecked(bool State);
+	void UpdateSelection(PActor* ClickedActor);
+	void UpdateTile(PTile* Tile);
 	void OnActorClicked(PActor* ClickedActor);
 	void SetBrushSize(float Value) { mBrushSize = Value; }
+	int	 GetBrushSize() { return mBrushSize; }
 
 	// Scene
 	void		  AddChunk(PChunk* Chunk);

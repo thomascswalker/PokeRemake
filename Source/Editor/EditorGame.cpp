@@ -6,7 +6,6 @@
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
 #include "Interface/AbstractView.h"
-#include "Interface/Box.h"
 #include "Interface/Canvas.h"
 #include "Interface/Group.h"
 #include "Interface/Image.h"
@@ -93,17 +92,6 @@ void PEditorGame::SetupInterface()
 
 	// Tiles
 
-	const auto BrushSizeLabel = mWorld->ConstructWidget<PText>("Brush Sz");
-	BrushSizeLabel->SetResizeModeW(RM_Fixed);
-	BrushSizeLabel->SetFixedWidth(50);
-	const auto BrushSizeSpinner = mWorld->ConstructWidget<PSpinner>(1);
-	BrushSizeSpinner->ValueChanged.AddRaw(this, &PEditorGame::SetBrushSize);
-	BrushSizeSpinner->SetRange(1, 3);
-	const auto BrushSizeBox = mWorld->ConstructWidget<PBox>();
-	BrushSizeBox->SetResizeModeH(RM_Fit);
-	BrushSizeBox->AddChild(BrushSizeLabel);
-	BrushSizeBox->AddChild(BrushSizeSpinner);
-
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
@@ -134,7 +122,6 @@ void PEditorGame::SetupInterface()
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
 	TileGroup->SetVisible(false);
-	TileGroup->AddChild(BrushSizeBox);
 	TileGroup->AddChild(ItemView);
 
 	MainPanel->AddChild(TileGroup);
@@ -154,6 +141,10 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 {
 	mInputContext &= ~InputContext;
 }
+bool PEditorGame::HasInputContext(uint8_t InputContext)
+{
+	return (mInputContext & InputContext) == InputContext;
+}
 
 void PEditorGame::OnKeyUp(SInputEvent* Event)
 {
@@ -167,7 +158,7 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions
-			if (mCurrentChunk)
+			if (HasInputContext(IC_Select) && mCurrentChunk)
 			{
 				// Remove the chunk from the list of chunks
 				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
@@ -177,6 +168,20 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 				mCurrentChunk = nullptr;
 				Event->Consume();
 			}
+			break;
+		case SDLK_UP:
+		case SDLK_DOWN:
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushSize = std::clamp(
+					Event->KeyUp == SDLK_UP
+						? mBrushSize + 1
+						: mBrushSize - 1,
+					1,
+					3);
+				;
+			}
+			break;
 		default:
 			break;
 	}
@@ -270,51 +275,79 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	}
 }
 
-void PEditorGame::OnActorClicked(PActor* ClickedActor)
+void PEditorGame::UpdateSelection(PActor* ClickedActor)
+{
+	if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
+	{
+		Chunk->ToggleSelected();
+		for (auto Actor : GetWorld()->GetActors())
+		{
+			if (Chunk->GetInternalName() == Actor->GetInternalName())
+			{
+				continue;
+			}
+			Actor->SetSelected(false);
+		}
+		mCurrentChunk = Chunk;
+	}
+}
+
+void PEditorGame::UpdateTile(PTile* Tile)
 {
 	auto R = GetRenderer();
 
-	switch (mInputContext)
+	std::array SubIndexes = { -1, -1, -1, -1 };
+	switch (mCurrentTilesetItem->SizeType)
 	{
-		case IC_Select:
-			if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
+		case TST_1X1:
+			if (mBrushSize == 1)
 			{
-				Chunk->ToggleSelected();
-				for (auto Actor : GetWorld()->GetActors())
-				{
-					if (Chunk->GetInternalName() == Actor->GetInternalName())
-					{
-						continue;
-					}
-					Actor->SetSelected(false);
-				}
-				mCurrentChunk = Chunk;
+				SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
+			}
+			else
+			{
+				SubIndexes.fill(mCurrentTilesetItem->LinearIndex);
 			}
 			break;
-		case IC_Tile:
-			if (!mCurrentTilesetItem)
-			{
-				LogWarning("No tileset item selected.");
-				return;
-			}
-			if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
-			{
-				switch (mCurrentTilesetItem->SizeType)
-				{
-					case TST_1X1:
-						Tile->Data.SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
-						break;
-					case TST_2X2:
-						Tile->Data.SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
-						Tile->Data.SubIndexes[1] = mCurrentTilesetItem->LinearIndex + 1;
-						Tile->Data.SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gTilesetWidth;
-						Tile->Data.SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gTilesetWidth + 1;
-						break;
-				}
-			}
+		case TST_2X2:
+			SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
+			SubIndexes[1] = mCurrentTilesetItem->LinearIndex + 1;
+			SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gTilesetWidth;
+			SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gTilesetWidth + 1;
 			break;
-		default:
-			break;
+	}
+
+	// Set the subindexes of the target tile
+	Tile->Data.SetSubIndexes(SubIndexes);
+
+	// If we're painting a 2X2 item or greater, and the brush size is greater than 1, find all
+	// possible overlapping tiles and set their subindexes.
+	if (mCurrentTilesetItem->SizeType != TST_1X1 && mBrushSize > 1)
+	{
+		auto Tiles = mCurrentChunk->GetAdjacentTiles(Tile, mBrushSize);
+		for (const auto T : Tiles)
+		{
+			T->Data.SetSubIndexes(SubIndexes);
+		}
+	}
+}
+void PEditorGame::OnActorClicked(PActor* ClickedActor)
+{
+	if (HasInputContext(IC_Select))
+	{
+		UpdateSelection(ClickedActor);
+	}
+	if (HasInputContext(IC_Tile))
+	{
+		if (!mCurrentTilesetItem)
+		{
+			LogWarning("No tileset item selected.");
+			return;
+		}
+		if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
+		{
+			UpdateTile(Tile);
+		}
 	}
 }
 

@@ -9,6 +9,7 @@ constexpr int SPRITE_WIDTH = 16;
 constexpr float RENDER_SCALE = 1.0f;
 constexpr float TILE_SIZE = (100.0f * RENDER_SCALE) / 2.0f;
 constexpr float HALF_TILE_SIZE = TILE_SIZE / 2.0f;
+constexpr float QUARTER_TILE_SIZE = TILE_SIZE / 4.0f;
 constexpr float DOUBLE_TILE_SIZE = TILE_SIZE * 2.0f;
 constexpr int	TILE_ROWS = 10;
 constexpr int	TILE_COLUMNS = 9;
@@ -21,14 +22,14 @@ constexpr float WINDOW_DEFAULT_HEIGHT = TILE_SIZE * TILE_COLUMNS;
 constexpr float GLOBAL_SPEED_MULTIPLIER = 2.0f;
 
 // Visual character offset to add some 'depth'
-constexpr float CHARACTER_OFFSET = DOUBLE_TILE_SIZE / 4.0f;
+constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
 
 // Tiles per second
 constexpr float DEFAULT_CHAR_SPEED = RENDER_SCALE / 4.0f * GLOBAL_SPEED_MULTIPLIER;
 
 // How often a sprite animation will move to the next frame (in milliseconds)
 // This is kind of arbitrary for now and is simply based on what looks best visually.
-constexpr float DEFAULT_ANIM_SPEED = DOUBLE_TILE_SIZE * 1.50f / GLOBAL_SPEED_MULTIPLIER;
+constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE * 3.0f / GLOBAL_SPEED_MULTIPLIER;
 
 const std::string FONT_NAME = "pokemon";
 constexpr int	  FONT_ATLAS_SIZE = 1024;

@@ -185,6 +185,7 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
 	}
 }
+
 void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);

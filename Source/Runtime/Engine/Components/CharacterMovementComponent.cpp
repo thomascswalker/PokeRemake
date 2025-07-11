@@ -7,7 +7,7 @@ void PCharacterMovementComponent::Start()
 {
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
-	mTargetPosition = mOwner->GetPosition();
+	mTargetPosition = mOwner->GetWorldPosition();
 	mCurrentChunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
 	if (!mCurrentChunk)
 	{
@@ -25,7 +25,7 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 
 	// Are we close enough to snap to the target position?
 	bool CloseEnough = false;
-	auto OwnerPosition = mOwner->GetPosition();
+	auto OwnerPosition = mOwner->GetWorldPosition();
 	switch (mMovementDirection)
 	{
 		case MD_Right:
@@ -77,13 +77,13 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 
 bool PCharacterMovementComponent::IsMoving() const
 {
-	return mOwner->GetPosition() != mTargetPosition;
+	return mOwner->GetWorldPosition() != mTargetPosition;
 }
 
 bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
 	// Compute the target position
-	const auto NewPosition = Velocity + mOwner->GetPosition();
+	const auto NewPosition = Velocity + mOwner->GetWorldPosition();
 	// Convert velocity to a movement direction
 	mMovementDirection = VectorToDirection(Velocity);
 	// Allow changing direction even if the character doesn't move
@@ -98,7 +98,6 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 		// If no chunk is found at the new position, return false.
 		if (!NewChunk)
 		{
-			LogError("No chunk found at position: {}", NewPosition.ToString().c_str());
 			return false; // No chunk at the new position
 		}
 		mCurrentChunk = NewChunk;
@@ -131,7 +130,7 @@ PTile* PCharacterMovementComponent::GetCurrentTile() const
 	{
 		return nullptr;
 	}
-	return mCurrentChunk->GetTileAtPosition(mOwner->GetPosition());
+	return mCurrentChunk->GetTileAtPosition(mOwner->GetWorldPosition());
 }
 
 PTile* PCharacterMovementComponent::GetTargetTile() const

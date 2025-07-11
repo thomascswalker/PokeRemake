@@ -18,6 +18,7 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
 {
 protected:
+	PActor*					 mParent = nullptr;
 	FVector2				 mPosition;
 	FVector2				 mSize;
 	PSprite					 mSprite{};
@@ -74,6 +75,9 @@ public:
 	void	 Draw(const PRenderer* Renderer) const override {};
 	FVector2 GetDrawPosition() const;
 
+	PActor* GetParent() const { return mParent; }
+	void	SetParent(PActor* Parent) { mParent = Parent; }
+
 	void					 AddComponent(PComponent* Component);
 	std::vector<PComponent*> GetComponents() const { return mComponents; }
 
@@ -82,11 +86,25 @@ public:
 	virtual bool  IsMouseOver() const { return mMouseOver; }
 
 	virtual FVector2 GetPosition() const { return mPosition; }
-	void			 SetPosition(const FVector2& Position) { mPosition = Position; }
-	void			 AddPosition(const FVector2& Position)
+	virtual FVector2 GetWorldPosition() const
+	{
+		if (mParent)
+		{
+			return mParent->GetWorldPosition() + mPosition;
+		}
+		return mPosition;
+	}
+	void SetPosition(const FVector2& Position) { mPosition = Position; }
+	void AddPosition(const FVector2& Position)
 	{
 		mPosition.X += Position.X;
 		mPosition.Y += Position.Y;
+	}
+
+	FVector2 GetCenter() const
+	{
+		auto Bounds = GetWorldBounds();
+		return { Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f) };
 	}
 
 	void MoveToTile(int32_t X, int32_t Y);

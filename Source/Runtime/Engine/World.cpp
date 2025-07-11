@@ -55,12 +55,14 @@ PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 		if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
 		{
 			auto Bounds = Chunk->GetWorldBounds();
+			LogDebug("Chunk bounds: {}", Bounds.ToString().c_str());
 			if (Bounds.Contains(Position))
 			{
 				return Chunk;
 			}
 		}
 	}
+	LogError("No chunk found at: {}", Position.ToString().c_str());
 	return nullptr;
 }
 

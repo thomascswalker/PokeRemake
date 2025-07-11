@@ -35,12 +35,11 @@ public:
 		mPosition.Y = Data.Y * DOUBLE_TILE_SIZE;
 	}
 
-	FVector2 GetPosition() const override;
-	void	 Draw(const PRenderer* Renderer) const override;
-	void DebugDraw(const PRenderer* Renderer) const override;
-	PActor*	 GetActor() const;
-	bool	 IsWalkable() const;
-	bool	 Contains(const FVector2& Position) const;
+	void	Draw(const PRenderer* Renderer) const override;
+	void	DebugDraw(const PRenderer* Renderer) const override;
+	PActor* GetActor() const;
+	bool	IsWalkable() const;
+	bool	Contains(const FVector2& Position) const;
 
 	FRect GetLocalBounds() const override
 	{
@@ -48,10 +47,13 @@ public:
 	}
 	FRect GetWorldBounds() const override
 	{
-		auto P = GetPosition();
+		auto P = GetWorldPosition();
 		return FRect(P.X, P.Y, TILE_SIZE, TILE_SIZE);
 	}
 
+	FVector2 GetPosition() const override;
+
+	PTile*	 GetAdjacent(int32_t X, int32_t Y);
 	FVector2 GetQuadrant(const FVector2& Position) const;
 	int		 GetQuadrantIndex(const FVector2& Position) const;
 
