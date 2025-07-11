@@ -64,29 +64,7 @@ public:
 		return Actor.get();
 	}
 
-	void DestroyActor(const PActor* Actor)
-	{
-		if (!Actor)
-		{
-			return;
-		}
-
-		std::shared_ptr<PActor> SharedActor;
-		for (auto Ptr : mActors)
-		{
-			if (Ptr.get() == Actor)
-			{
-				SharedActor = Ptr;
-				break;
-			}
-		}
-		if (!SharedActor)
-		{
-			return;
-		}
-
-		mActors.erase(std::ranges::find(mActors, SharedActor));
-	}
+	void DestroyActor(const PActor* Actor);
 
 	template <typename T>
 	void RegisterActor(T* Actor)
@@ -102,15 +80,7 @@ public:
 		return Actor;
 	}
 
-	std::vector<PActor*> GetActors() const
-	{
-		std::vector<PActor*> Actors;
-		for (const auto& Actor : mActors)
-		{
-			Actors.push_back(Actor.get());
-		}
-		return Actors;
-	}
+	std::vector<PActor*> GetActors() const;
 
 	template <typename T>
 	std::vector<T*> GetActorsOfType() const
@@ -126,21 +96,7 @@ public:
 		return OutActors;
 	}
 
-	std::vector<PActor*> GetDrawables(EDrawPriority Priority) const
-	{
-		std::vector<PActor*> Drawables;
-		for (const auto& Actor : mActors)
-		{
-			if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
-			{
-				if (Drawable->GetPriority() == Priority)
-				{
-					Drawables.push_back(Actor.get());
-				}
-			}
-		}
-		return Drawables;
-	}
+	std::vector<PActor*> GetDrawables(EDrawPriority Priority) const;
 
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
@@ -151,15 +107,7 @@ public:
 		return Component.get();
 	}
 
-	std::vector<PComponent*> GetComponents() const
-	{
-		std::vector<PComponent*> Components;
-		for (const auto& Component : mComponents)
-		{
-			Components.push_back(Component.get());
-		}
-		return Components;
-	}
+	std::vector<PComponent*> GetComponents() const;
 
 	template <ENABLE_IF(PWidget), typename... ArgsType>
 	T* ConstructWidget(ArgsType&&... Args)
@@ -175,36 +123,13 @@ public:
 		mWidgets.push_back(ConstructObject<T>(Widget));
 	}
 
-	std::vector<PWidget*> GetWidgets() const
-	{
-		std::vector<PWidget*> Widgets;
-		for (const auto& Widget : mWidgets)
-		{
-			Widgets.push_back(Widget.get());
-		}
-		return Widgets;
-	}
+	std::vector<PWidget*> GetWidgets() const;
 
 	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
 	PWidget* GetRootWidget() const { return mRootWidget; }
 
 	PChunk* GetChunkAtPosition(const FVector2& Position) const;
-	PActor* GetCharacterAtPosition(const FVector2& Position) const
-	{
-		for (const auto& Actor : mActors)
-		{
-			// Skip actors that are not characters
-			if (!dynamic_cast<PCharacter*>(Actor.get()))
-			{
-				continue;
-			}
-			if (Actor->GetPosition() == Position)
-			{
-				return Actor.get();
-			}
-		}
-		return nullptr;
-	}
+	PActor* GetCharacterAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
 };

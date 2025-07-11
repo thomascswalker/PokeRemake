@@ -19,7 +19,7 @@ constexpr auto	WINDOW_TITLE_EDITOR = "PokeRemake Editor";
 constexpr float WINDOW_DEFAULT_WIDTH = TILE_SIZE * TILE_ROWS;
 constexpr float WINDOW_DEFAULT_HEIGHT = TILE_SIZE * TILE_COLUMNS;
 
-constexpr float GLOBAL_SPEED_MULTIPLIER = 2.0f;
+constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
 
 // Visual character offset to add some 'depth'
 constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
@@ -31,7 +31,7 @@ constexpr float DEFAULT_CHAR_SPEED = RENDER_SCALE / 4.0f * GLOBAL_SPEED_MULTIPLI
 // This is kind of arbitrary for now and is simply based on what looks best visually.
 constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE * 3.0f / GLOBAL_SPEED_MULTIPLIER;
 
-const std::string FONT_NAME = "pokemon";
+const std::string FONT_NAME = "Pokemon";
 constexpr int	  FONT_ATLAS_SIZE = 1024;
 constexpr int	  FONT_CHAR_COUNT = 96;			 // ASCII 32..126
 constexpr int	  FONT_CHAR_START = 32;			 // ASCII 32 is the first printable character

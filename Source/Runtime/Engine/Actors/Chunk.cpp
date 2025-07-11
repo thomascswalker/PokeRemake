@@ -90,7 +90,7 @@ FRect PChunk::GetLocalBounds() const
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position) const

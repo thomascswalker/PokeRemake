@@ -4,8 +4,6 @@
 #include "Engine/InputManager.h"
 #include "Interface/Layout.h"
 
-#include <ranges>
-
 void PWorld::Start()
 {
 	LogDebug("Starting world");
@@ -47,6 +45,71 @@ void PWorld::Tick(float DeltaTime)
 		}
 	}
 }
+void PWorld::DestroyActor(const PActor* Actor)
+{
+	if (!Actor)
+	{
+		return;
+	}
+
+	std::shared_ptr<PActor> SharedActor;
+	for (auto Ptr : mActors)
+	{
+		if (Ptr.get() == Actor)
+		{
+			SharedActor = Ptr;
+			break;
+		}
+	}
+	if (!SharedActor)
+	{
+		return;
+	}
+
+	mActors.erase(std::ranges::find(mActors, SharedActor));
+}
+std::vector<PActor*> PWorld::GetActors() const
+{
+	std::vector<PActor*> Actors;
+	for (const auto& Actor : mActors)
+	{
+		Actors.push_back(Actor.get());
+	}
+	return Actors;
+}
+std::vector<PActor*> PWorld::GetDrawables(EDrawPriority Priority) const
+{
+	std::vector<PActor*> Drawables;
+	for (const auto& Actor : mActors)
+	{
+		if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
+		{
+			if (Drawable->GetPriority() == Priority)
+			{
+				Drawables.push_back(Actor.get());
+			}
+		}
+	}
+	return Drawables;
+}
+std::vector<PComponent*> PWorld::GetComponents() const
+{
+	std::vector<PComponent*> Components;
+	for (const auto& Component : mComponents)
+	{
+		Components.push_back(Component.get());
+	}
+	return Components;
+}
+std::vector<PWidget*> PWorld::GetWidgets() const
+{
+	std::vector<PWidget*> Widgets;
+	for (const auto& Widget : mWidgets)
+	{
+		Widgets.push_back(Widget.get());
+	}
+	return Widgets;
+}
 
 PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 {
@@ -55,6 +118,8 @@ PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 		if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
 		{
 			auto Bounds = Chunk->GetWorldBounds();
+			Bounds.W *= 2.0f;
+			Bounds.H *= 2.0f;
 			LogDebug("Chunk bounds: {}", Bounds.ToString().c_str());
 			if (Bounds.Contains(Position))
 			{
@@ -63,6 +128,22 @@ PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 		}
 	}
 	LogError("No chunk found at: {}", Position.ToString().c_str());
+	return nullptr;
+}
+PActor* PWorld::GetCharacterAtPosition(const FVector2& Position) const
+{
+	for (const auto& Actor : mActors)
+	{
+		// Skip actors that are not characters
+		if (!dynamic_cast<PCharacter*>(Actor.get()))
+		{
+			continue;
+		}
+		if (Actor->GetPosition() == Position)
+		{
+			return Actor.get();
+		}
+	}
 	return nullptr;
 }
 
