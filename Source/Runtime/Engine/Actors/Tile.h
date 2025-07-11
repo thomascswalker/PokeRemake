@@ -37,6 +37,7 @@ public:
 
 	FVector2 GetPosition() const override;
 	void	 Draw(const PRenderer* Renderer) const override;
+	void DebugDraw(const PRenderer* Renderer) const override;
 	PActor*	 GetActor() const;
 	bool	 IsWalkable() const;
 	bool	 Contains(const FVector2& Position) const;

@@ -67,7 +67,7 @@ protected:
 	bool mMouseDown = false;
 
 	PButtonGroup* mButtonGroup = nullptr;
-	bool		  OnMouseEvent(SInputEvent* Event) override;
+	void		  OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	DButtonClicked Clicked;

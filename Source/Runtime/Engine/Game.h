@@ -4,7 +4,7 @@
 #include "Settings.h"
 #include "World.h"
 
-class PGame : public PObject
+class PGame : public PObject, public IInputHandler
 {
 protected:
 	/* Actors/Objects */
@@ -32,6 +32,7 @@ public:
 	void		 FindActiveCamera();
 	PCameraView* GetCameraView() const { return mActiveCameraView; }
 	PSettings*	 GetSettings() const { return mSettings.get(); }
+	void		 OnKeyUp(SInputEvent* Event) override;
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(Game)

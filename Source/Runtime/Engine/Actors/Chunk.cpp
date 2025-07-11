@@ -58,14 +58,11 @@ void PChunk::Start()
 #endif
 }
 
-void PChunk::Draw(const PRenderer* Renderer) const
+void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
-	if (!GetSettings()->DebugDraw)
-	{
-		return;
-	}
-
-	const FRect Dest = GetLocalBounds();
+	const FRect Dest = GetWorldBounds();
+	Renderer->SetDrawColor(PColor::Red);
+	Renderer->DrawRectAt(Dest, mPosition, 2.0f);
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
@@ -83,14 +80,11 @@ void PChunk::Draw(const PRenderer* Renderer) const
 		}
 	}
 #endif
-
-	Renderer->SetDrawColor(255, 50, 255, 255);
-	Renderer->DrawRectAt(Dest.Expanded(4.0f), mPosition - FVector2(2.0f, 2.0f));
 }
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
@@ -133,7 +127,7 @@ json PChunk::Serialize() const
 }
 
 #if _EDITOR
-bool PChunk::OnKeyUp(SInputEvent* Event)
+void PChunk::OnKeyUp(SInputEvent* Event)
 {
 	if (GetEditorGame()->GetCurrentChunk() == this && mSelected)
 	{
@@ -156,8 +150,7 @@ bool PChunk::OnKeyUp(SInputEvent* Event)
 				break;
 		}
 		AddPosition(Direction);
-		return true;
+		Event->Consume();
 	}
-	return false;
 }
 #endif

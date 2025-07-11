@@ -50,19 +50,17 @@ public:
 		mResizeModeH = RM_Grow;
 	}
 
-	bool OnMouseEvent(SInputEvent* Event) override
+	void OnMouseEvent(SInputEvent* Event) override
 	{
 		if (Event->Type != IET_MouseScroll)
 		{
-			return false;
+			return;
 		}
 		if (GetGeometry().Contains(Event->MousePosition))
 		{
 			SetScrollValue(Event->MouseScroll);
 			Event->Consume();
-			return true;
 		}
-		return false;
 	}
 
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward

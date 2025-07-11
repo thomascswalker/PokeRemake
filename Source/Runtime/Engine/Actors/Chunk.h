@@ -22,7 +22,7 @@ public:
 	PChunk(const json& JsonData);
 	~PChunk() override;
 	void				Start() override;
-	void				Draw(const PRenderer* Renderer) const override;
+	void				DebugDraw(const PRenderer* Renderer) const override;
 	FRect				GetLocalBounds() const override;
 	FRect				GetWorldBounds() const override;
 	PTile*				GetTileAtPosition(const FVector2& Position);
@@ -31,7 +31,7 @@ public:
 	json Serialize() const override;
 
 #if _EDITOR
-	bool OnKeyUp(SInputEvent* Event) override;
+	void OnKeyUp(SInputEvent* Event) override;
 #endif
 };
 

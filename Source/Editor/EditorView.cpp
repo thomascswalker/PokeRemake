@@ -52,7 +52,7 @@ void PEditorView::Tick(float DeltaTime)
 	}
 }
 
-bool PEditorView::OnKeyDown(SInputEvent* Event)
+void PEditorView::OnKeyDown(SInputEvent* Event)
 {
 	switch (Event->KeyDown)
 	{
@@ -73,13 +73,12 @@ bool PEditorView::OnKeyDown(SInputEvent* Event)
 			// Destination = { CameraSpeed, 0 };
 			break;
 		default:
-			return false;
+			break;
 	}
 	Event->Consume();
-	return true;
 }
 
-bool PEditorView::OnKeyUp(SInputEvent* Event)
+void PEditorView::OnKeyUp(SInputEvent* Event)
 {
 	switch (Event->KeyUp)
 	{
@@ -96,13 +95,12 @@ bool PEditorView::OnKeyUp(SInputEvent* Event)
 			mInputState[3] = false;
 			break;
 		default:
-			return false;
+			break;
 	}
 	Event->Consume();
-	return true;
 }
 
-bool PEditorView::OnMouseEvent(SInputEvent* Event)
+void PEditorView::OnMouseEvent(SInputEvent* Event)
 {
 	switch (Event->Type)
 	{
@@ -111,11 +109,9 @@ bool PEditorView::OnMouseEvent(SInputEvent* Event)
 			{
 				mCameraComponent->GetCameraView()->AddZoom(Event->MouseScroll);
 				Event->Consume();
-				return true;
 			}
 			break;
 		default:
 			break;
 	}
-	return false;
 }

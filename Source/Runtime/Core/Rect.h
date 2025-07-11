@@ -55,8 +55,8 @@ public:
 
 	void Expand(T Size)
 	{
-		X -= Size * 2;
-		Y -= Size * 2;
+		X -= Size;
+		Y -= Size;
 		W += Size * 2;
 		H += Size * 2;
 	}

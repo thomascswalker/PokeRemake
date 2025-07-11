@@ -19,7 +19,7 @@ public:
 	void Tick(float DeltaTime) override;
 	void Draw(const PRenderer* Renderer) const override {}
 
-	bool OnKeyDown(SInputEvent* Event) override;
-	bool OnKeyUp(SInputEvent* Event) override;
-	bool OnMouseEvent(SInputEvent* Event) override;
+	void OnKeyDown(SInputEvent* Event) override;
+	void OnKeyUp(SInputEvent* Event) override;
+	void OnMouseEvent(SInputEvent* Event) override;
 };

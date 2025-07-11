@@ -101,6 +101,8 @@ void PRenderer::Render() const
 	SetDrawColor(PColor::UIBackground);
 	SDL_RenderClear(mContext->Renderer);
 
+	bool DebugDraw = GetSettings()->DebugDraw;
+
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
 	{
@@ -111,6 +113,19 @@ void PRenderer::Render() const
 		for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
 		{
 			Drawable->Draw(this);
+		}
+
+		if (DebugDraw)
+		{
+			for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
+			{
+				Drawable->DebugDraw(this);
+			}
+
+			for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
+			{
+				Drawable->DebugDraw(this);
+			}
 		}
 
 		if (const auto Root = World->GetRootWidget())
@@ -204,9 +219,34 @@ void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 	SDL_RenderLine(mContext->Renderer, X1, Y1, X2, Y2);
 }
 
-void PRenderer::DrawRect(const FRect& Rect) const
+void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 {
-	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
+	SDL_FRect SRect;
+	if (Thickness)
+	{
+		auto Outer = Rect.Expanded(Thickness);
+
+		// Draw top edge
+		auto TopRect = FRect{ Outer.X, Outer.Y, Outer.W, Thickness };
+		DrawFillRect(TopRect);
+
+		// Draw bottom edge
+		auto BottomRect = FRect{ Outer.X, Outer.Y + Outer.H - Thickness, Outer.W, Thickness };
+		DrawFillRect(BottomRect);
+
+		// Draw left edge
+		auto LeftRect = FRect{ Outer.X, Outer.Y, Thickness, Outer.H };
+		DrawFillRect(LeftRect);
+
+		// Draw right edge
+		auto RightRect = FRect{ Outer.X + Outer.W - Thickness, Outer.Y, Thickness, Outer.H };
+		DrawFillRect(RightRect);
+	}
+	else
+	{
+		SRect = { Rect.X, Rect.Y, Rect.W, Rect.H };
+	}
+
 	SDL_RenderRect(mContext->Renderer, &SRect);
 }
 
@@ -304,13 +344,18 @@ void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 	}
 }
 
-void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position) const
+void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position, float Thickness) const
 {
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
 	const auto CameraView = GetCameraView();
-	DrawRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
-			   Rect.H * CameraView->GetZoom() });
+	DrawRect({
+				 ScreenPosition.X,
+				 ScreenPosition.Y,
+				 Rect.W * CameraView->GetZoom(),
+				 Rect.H * CameraView->GetZoom(),
+			 },
+			 Thickness);
 }
 
 void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const

@@ -52,13 +52,10 @@ void PTile::Draw(const PRenderer* Renderer) const
 			}
 		}
 	}
-
-	// If not in debug mode, return.
-	if (!GetSettings()->DebugDraw)
-	{
-		return;
-	}
-
+}
+void PTile::DebugDraw(const PRenderer* Renderer) const
+{
+	const FVector2 WorldPosition = GetPosition();
 	// Debug drawing
 	switch (Data.GetType())
 	{

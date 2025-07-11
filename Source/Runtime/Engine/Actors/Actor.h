@@ -24,7 +24,7 @@ protected:
 	bool					 mBlocking = true;
 	std::vector<PComponent*> mComponents;
 
-	bool OnMouseEvent(SInputEvent* Event) override;
+	void OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	FVector2	mMousePosition;
@@ -71,7 +71,7 @@ public:
 	void End() override {}
 
 	void	 Tick(float DeltaTime) override {}
-	void	 Draw(const PRenderer* Renderer) const override = 0;
+	void	 Draw(const PRenderer* Renderer) const override {};
 	FVector2 GetDrawPosition() const;
 
 	void					 AddComponent(PComponent* Component);

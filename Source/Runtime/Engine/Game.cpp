@@ -7,7 +7,7 @@
 PGame::PGame()
 {
 	mWorld = std::make_shared<PWorld>();
-	mSettings = mWorld->ConstructObject<PSettings>();
+	mSettings = std::make_shared<PSettings>();
 }
 
 void PGame::Start()
@@ -35,4 +35,17 @@ void PGame::FindActiveCamera()
 	}
 
 	LogError("No camera found");
+}
+
+void PGame::OnKeyUp(SInputEvent* Event)
+{
+	switch (Event->KeyUp)
+	{
+		case SDLK_F1:
+			mSettings->DebugDraw = !mSettings->DebugDraw;
+			Event->Consume();
+			break;
+		default:
+			break;
+	}
 }
