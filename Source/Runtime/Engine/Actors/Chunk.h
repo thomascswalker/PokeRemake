@@ -29,6 +29,10 @@ public:
 	std::vector<PTile*> GetTiles() const { return mTiles; }
 
 	json Serialize() const override;
+
+#if _EDITOR
+	bool OnKeyUp(SInputEvent* Event) override;
+#endif
 };
 
 REGISTER_CLASS(PChunk);

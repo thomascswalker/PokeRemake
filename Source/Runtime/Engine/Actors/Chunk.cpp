@@ -2,7 +2,7 @@
 
 #include "Chunk.h"
 
-#include "Core/Settings.h"
+#include "../Settings.h"
 #include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 #if _EDITOR
@@ -60,7 +60,7 @@ void PChunk::Start()
 
 void PChunk::Draw(const PRenderer* Renderer) const
 {
-	if (!GetSettings()->mDebugDraw)
+	if (!GetSettings()->DebugDraw)
 	{
 		return;
 	}
@@ -75,7 +75,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 		{
 			constexpr float ExpandSize = 2.0f;
 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
-								 mPosition - FVector2(ExpandSize, ExpandSize));
+								 mPosition - FVector2(ExpandSize * 2, ExpandSize * 2));
 		}
 		if (mSelected)
 		{
@@ -84,18 +84,18 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	}
 #endif
 
-	Renderer->SetDrawColor(255, 255, 255, 128);
-	Renderer->DrawRectAt(Dest, mPosition);
+	Renderer->SetDrawColor(255, 50, 255, 255);
+	Renderer->DrawRectAt(Dest.Expanded(4.0f), mPosition - FVector2(2.0f, 2.0f));
 }
 
 FRect PChunk::GetLocalBounds() const
 {
-	return { 0, 0, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 PTile* PChunk::GetTileAtPosition(const FVector2& Position)
@@ -131,3 +131,33 @@ json PChunk::Serialize() const
 	Result["Tiles"] = TileArray;
 	return Result;
 }
+
+#if _EDITOR
+bool PChunk::OnKeyUp(SInputEvent* Event)
+{
+	if (GetEditorGame()->GetCurrentChunk() == this && mSelected)
+	{
+		FVector2 Direction;
+		switch (Event->KeyUp)
+		{
+			case SDLK_UP:
+				Direction.Y = -TILE_SIZE;
+				break;
+			case SDLK_DOWN:
+				Direction.Y = TILE_SIZE;
+				break;
+			case SDLK_LEFT:
+				Direction.X = -TILE_SIZE;
+				break;
+			case SDLK_RIGHT:
+				Direction.X = TILE_SIZE;
+				break;
+			default:
+				break;
+		}
+		AddPosition(Direction);
+		return true;
+	}
+	return false;
+}
+#endif

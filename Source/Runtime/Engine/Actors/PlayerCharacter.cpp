@@ -1,8 +1,8 @@
 #include "PlayerCharacter.h"
 
+#include "../Settings.h"
 #include "Core/Constants.h"
 #include "Core/Logging.h"
-#include "Core/Settings.h"
 #include "Engine/ClassRegistry.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
@@ -50,7 +50,7 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 void PPlayerCharacter::Draw(const PRenderer* Renderer) const
 {
-	if (GetSettings()->mDebugDraw && mMovementComponent)
+	if (GetSettings()->DebugDraw && mMovementComponent)
 	{
 		// Draw current tile under the character
 		if (const auto& Tile = mMovementComponent->GetCurrentTile())

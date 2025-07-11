@@ -71,7 +71,6 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 	{
 		if (mRootWidget->ProcessEvents(Event))
 		{
-			LogDebug("Event consumed from {}", PWidget::GetSender()->GetInternalName().c_str());
 			return;
 		}
 	}
@@ -81,14 +80,12 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 	{
 		if (Actor->ProcessEvents(Event))
 		{
-			LogDebug("Event consumed from {}", Actor->GetInternalName().c_str());
 			return;
 		}
 		for (const auto& Component : Actor->GetComponents())
 		{
 			if (Component->ProcessEvents(Event))
 			{
-				LogDebug("Event consumed from {}", Component->GetInternalName().c_str());
 				return;
 			}
 		}

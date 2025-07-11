@@ -76,6 +76,7 @@ public:
 	void		  SetCurrentChunk(PChunk* Chunk);
 	void		  ConstructChunk(const json& JsonData);
 	void		  ActorSelected(PActor* Actor);
+	PChunk*		  GetCurrentChunk() const { return mCurrentChunk; }
 	STilesetItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 
 	template <typename T = PActor>
