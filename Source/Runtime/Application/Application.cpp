@@ -245,7 +245,14 @@ bool PApplication::OnEvent(void* Event)
 
 	// Handle all other events
 	SInputEvent InputEvent(SDLEvent);
+
+	// Process events on settings first prior to handling anything in the scene
+	auto Settings = GetSettings();
+	Settings->ProcessEvents(&InputEvent);
+
+	// Process all objects in the scene
 	GetWorld()->ProcessEvents(&InputEvent);
+
 	return true;
 }
 

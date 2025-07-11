@@ -16,5 +16,6 @@ protected:
 public:
 	virtual ~IDrawable() = default;
 	virtual void  Draw(const PRenderer* Renderer) const = 0;
+	virtual void  DebugDraw(const PRenderer* Renderer) const {}
 	EDrawPriority GetPriority() const { return mRenderPriority; }
 };

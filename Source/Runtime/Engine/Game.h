@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Components/CameraComponent.h"
-#include "Core/Settings.h"
+#include "Settings.h"
 #include "World.h"
 
 class PGame : public PObject

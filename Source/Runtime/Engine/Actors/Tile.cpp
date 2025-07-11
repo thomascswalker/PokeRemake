@@ -1,9 +1,9 @@
 #include "Tile.h"
 
 #include "../../../Editor/EditorGame.h"
+#include "../Settings.h"
 #include "../World.h"
 #include "Chunk.h"
-#include "Core/Settings.h"
 
 static FRect DoubleTileDest = { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
 static FRect FullTileDest = { 0, 0, TILE_SIZE, TILE_SIZE };
@@ -54,7 +54,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 	}
 
 	// If not in debug mode, return.
-	if (!GetSettings()->mDebugDraw)
+	if (!GetSettings()->DebugDraw)
 	{
 		return;
 	}

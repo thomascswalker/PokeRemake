@@ -26,7 +26,7 @@ PEditorGame* GetEditorGame()
 
 void PEditorGame::PreStart()
 {
-	GetSettings()->mDebugDraw = true;
+	GetSettings()->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();
 	if (!EditorView)

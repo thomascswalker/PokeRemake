@@ -39,8 +39,7 @@ set(SOURCES
         Core/Files.h
         Engine/Mesh.h
         Core/Constants.h
-        Core/Settings.h
-        Core/Settings.cpp
+        Engine/Settings.h
         Engine/Actors/Tile.h
         Engine/Sprite.h
         Engine/Components/CharacterMovementComponent.cpp
