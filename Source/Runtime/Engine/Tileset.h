@@ -33,12 +33,14 @@ enum ETileType
 	TT_Portal
 };
 
-static int32_t ToLinearIndex(const FVector2& Index, const int32_t Factor = gTilesetWidth)
+template <typename T>
+static int32_t ToLinearIndex(const TVector2<T>& Index, const int32_t Factor = gTilesetWidth)
 {
 	return Index.Y * Factor + Index.X;
 }
 
-static FVector2 ToCoordIndex(const int32_t Index, const int32_t Factor = gTilesetWidth)
+template <typename T>
+static TVector2<T> ToCoordIndex(const int32_t Index, const int32_t Factor = gTilesetWidth)
 {
 	return { static_cast<float>(Index % Factor), static_cast<float>(Index / Factor) };
 }
@@ -57,7 +59,7 @@ struct STilesetItem
 
 	FRect GetSourceRect()
 	{
-		auto CoordIndex = ToCoordIndex(LinearIndex);
+		auto CoordIndex = ToCoordIndex<float>(LinearIndex);
 		auto Factor = SizeType == TST_1X1 ? gTilesetItemHalfSize : gTilesetItemSize;
 		return {
 			CoordIndex * gTilesetItemHalfSize, { Factor, Factor }
@@ -66,7 +68,7 @@ struct STilesetItem
 
 	FRect GetDestRect()
 	{
-		auto	 CoordIndex = ToCoordIndex(LinearIndex);
+		auto	 CoordIndex = ToCoordIndex<float>(LinearIndex);
 		FVector2 Size;
 		switch (SizeType)
 		{
@@ -160,6 +162,17 @@ struct STileData
 			return {};
 		}
 		return Item->GetSourceRect();
+	}
+	void SetSubIndexes(const SubIndexType& InSubIndexes)
+	{
+		for (int32_t Index = 0; Index < 4; Index++)
+		{
+			if (InSubIndexes[Index] < 0)
+			{
+				continue;
+			}
+			SubIndexes[Index] = InSubIndexes[Index];
+		}
 	}
 };
 

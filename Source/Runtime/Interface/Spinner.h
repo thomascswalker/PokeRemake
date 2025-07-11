@@ -19,7 +19,10 @@ public:
 	DValueChanged ValueChanged;
 
 protected:
-	float		 mValue = 0.0f;
+	float mValue = 0.0f;
+	float mMinValue = std::numeric_limits<float>::min();
+	float mMaxValue = std::numeric_limits<float>::max();
+
 	ESpinnerMode mMode = SM_Integer;
 
 	PWidget mLayoutWidget;
@@ -34,12 +37,14 @@ protected:
 	void OnValueChangedUpInternal()
 	{
 		mValue += 1;
+		mValue = std::min(mValue, mMaxValue);
 		mText.SetText(std::format("{}", mValue));
 		ValueChanged.Broadcast(mValue);
 	}
 	void OnValueChangedDownInternal()
 	{
 		mValue -= 1;
+		mValue = std::max(mValue, mMinValue);
 		mText.SetText(std::format("{}", mValue));
 		ValueChanged.Broadcast(mValue);
 	}
@@ -83,5 +88,11 @@ public:
 		// Outline
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(GetGeometry());
+	}
+
+	void SetRange(float Min, float Max)
+	{
+		mMinValue = Min;
+		mMaxValue = Max;
 	}
 };

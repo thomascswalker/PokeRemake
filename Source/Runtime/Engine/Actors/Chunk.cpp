@@ -47,6 +47,7 @@ void PChunk::Start()
 		Tile->Data.SubIndexes = TileData.at("SubIndexes");
 		Tile->Chunk = this;
 		Tile->Data.Tileset = mTileset;
+		Tile->SetParent(this);
 		mTiles.emplace_back(Tile);
 	}
 
@@ -89,10 +90,10 @@ FRect PChunk::GetLocalBounds() const
 
 FRect PChunk::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return { mPosition.X, mPosition.Y, mSizeX * DOUBLE_TILE_SIZE, mSizeY * DOUBLE_TILE_SIZE };
 }
 
-PTile* PChunk::GetTileAtPosition(const FVector2& Position)
+PTile* PChunk::GetTileAtPosition(const FVector2& Position) const
 {
 	for (auto& Tile : mTiles)
 	{
@@ -103,6 +104,37 @@ PTile* PChunk::GetTileAtPosition(const FVector2& Position)
 		}
 	}
 	return nullptr; // No tile found at the given position
+}
+
+PTile* PChunk::GetTileAt(int X, int Y)
+{
+	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
+	{
+		return nullptr;
+	}
+	auto Index = Y * mSizeX + X;
+	return mTiles.at(Index);
+}
+
+std::vector<PTile*> PChunk::GetAdjacentTiles(const PTile* OriginTile, int32_t BrushSize) const
+{
+	std::vector<PTile*> Result = {};
+	auto				TileCenter = OriginTile->GetCenter();
+
+	for (int32_t Y = 0; Y < BrushSize + 1; Y++)
+	{
+		for (int32_t X = 0; X < BrushSize + 1; X++)
+		{
+			FVector2 TargetPosition = TileCenter + FVector2(X * TILE_SIZE, Y * TILE_SIZE);
+			auto	 Adjacent = GetTileAtPosition(TargetPosition);
+			if (Adjacent && Adjacent != OriginTile)
+			{
+				Result.push_back(Adjacent);
+			}
+		}
+	}
+
+	return Result;
 }
 
 json PChunk::Serialize() const

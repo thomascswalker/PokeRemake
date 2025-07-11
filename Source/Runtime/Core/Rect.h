@@ -24,6 +24,7 @@ public:
 	TVector4<T> ToVector4() const { return TVector4<T>(X, Y, W, H); }
 	TVector2<T> Min() const { return TVector2<T>(X, Y); }
 	TVector2<T> Max() const { return TVector2<T>(X + W, Y + H); }
+	TVector2<T> GetPosition() const { return TVector2<T>(X, Y); }
 	TVector2<T> GetSize() const { return TVector2<T>(W, H); }
 
 	bool Contains(const TVector2<T>& Point) const

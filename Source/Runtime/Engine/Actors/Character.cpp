@@ -56,7 +56,8 @@ FRect PCharacter::GetLocalBounds() const
 
 FRect PCharacter::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
+	auto WorldPosition = GetWorldPosition();
+	return { WorldPosition.X, WorldPosition.Y, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
 }
 
 void PCharacter::OnMovementStarted(EMovementDirection Direction)

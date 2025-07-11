@@ -9,22 +9,10 @@ static FRect DoubleTileDest = { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
 static FRect FullTileDest = { 0, 0, TILE_SIZE, TILE_SIZE };
 static FRect HalfTileDest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
 
-FVector2 PTile::GetPosition() const
-{
-	if (Chunk)
-	{
-		auto Position = Chunk->GetPosition();
-		Position.X += mPosition.X;
-		Position.Y += mPosition.Y;
-		return Position;
-	}
-	return mPosition;
-}
-
 void PTile::Draw(const PRenderer* Renderer) const
 {
 	// World position of this tile
-	const FVector2 WorldPosition = GetPosition();
+	const FVector2 WorldPosition = GetWorldPosition();
 
 	auto Texture = Data.GetTexture();
 
@@ -43,7 +31,7 @@ void PTile::Draw(const PRenderer* Renderer) const
 				FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
 				FVector2 Position = WorldPosition + LocalOffset;
 				int32_t	 SubIndex = Data.SubIndexes[Y * 2 + X];
-				FVector2 SubPosition = ToCoordIndex(SubIndex);
+				FVector2 SubPosition = ToCoordIndex<float>(SubIndex);
 				FVector2 SourcePosition = { SubPosition.X * gTilesetItemHalfSize,
 											SubPosition.Y * gTilesetItemHalfSize };
 				FVector2 SourceSize = { gTilesetItemHalfSize, gTilesetItemHalfSize };
@@ -53,9 +41,10 @@ void PTile::Draw(const PRenderer* Renderer) const
 		}
 	}
 }
+
 void PTile::DebugDraw(const PRenderer* Renderer) const
 {
-	const FVector2 WorldPosition = GetPosition();
+	const FVector2 WorldPosition = GetWorldPosition();
 	// Debug drawing
 	switch (Data.GetType())
 	{
@@ -91,16 +80,17 @@ void PTile::DebugDraw(const PRenderer* Renderer) const
 		{
 			return;
 		}
+		auto BrushSize = G->GetBrushSize();
 		Renderer->SetDrawColor(255, 0, 0, 255);
 		if (Item->SizeType == TST_1X1)
 		{
 			auto  HoverPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
-			FRect HoverRect = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
+			FRect HoverRect = { 0, 0, HALF_TILE_SIZE * BrushSize, HALF_TILE_SIZE * BrushSize };
 			Renderer->DrawRectAt(HoverRect, WorldPosition + HoverPosition);
 		}
 		else
 		{
-			FRect HoverRect = { 0, 0, TILE_SIZE, TILE_SIZE };
+			FRect HoverRect = { 0, 0, TILE_SIZE * BrushSize, TILE_SIZE * BrushSize };
 			Renderer->DrawRectAt(HoverRect, WorldPosition);
 		}
 	}
@@ -132,6 +122,27 @@ bool PTile::Contains(const FVector2& Position) const
 		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
 		   && Position.Y >= TilePosition.Y			   // Min Y
 		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
+}
+
+FVector2 PTile::GetPosition() const
+{
+	if (Chunk)
+	{
+		auto Position = Chunk->GetPosition();
+		Position.X += mPosition.X;
+		Position.Y += mPosition.Y;
+		return Position;
+	}
+	return mPosition;
+}
+PTile* PTile::GetAdjacent(int32_t X, int32_t Y)
+{
+	if (!Chunk)
+	{
+		return nullptr;
+	}
+
+	return Chunk->GetTileAt(Data.X + X, Data.Y + Y);
 }
 
 FVector2 PTile::GetQuadrant(const FVector2& Position) const
