@@ -246,11 +246,12 @@ bool PApplication::OnEvent(void* Event)
 	// Handle all other events
 	SInputEvent InputEvent(SDLEvent);
 
-	// Process events on settings first prior to handling anything in the scene
-	auto Settings = GetSettings();
-	Settings->ProcessEvents(&InputEvent);
-
-	// Process all objects in the scene
+	// Handle game-level events
+	if (GetGame()->ProcessEvents(&InputEvent))
+	{
+		return true;
+	}
+	// Handle world-level events
 	GetWorld()->ProcessEvents(&InputEvent);
 
 	return true;

@@ -193,24 +193,27 @@ public:
 			case IET_MouseUp:
 			case IET_MouseScroll:
 				{
-					return OnMouseEvent(Event);
+					OnMouseEvent(Event);
+					break;
 				}
 			case IET_KeyDown:
 				{
-					return OnKeyDown(Event);
+					OnKeyDown(Event);
+					break;
 				}
 			case IET_KeyUp:
 				{
-					return OnKeyUp(Event);
+					OnKeyUp(Event);
+					break;
 				}
 			default:
 				break;
 		}
-		return false;
+		return Event->Consumed;
 	}
 
 protected:
-	virtual bool OnMouseEvent(SInputEvent* Event) { return false; }
-	virtual bool OnKeyDown(SInputEvent* Event) { return false; }
-	virtual bool OnKeyUp(SInputEvent* Event) { return false; }
+	virtual void OnMouseEvent(SInputEvent* Event) {}
+	virtual void OnKeyDown(SInputEvent* Event) {}
+	virtual void OnKeyUp(SInputEvent* Event) {}
 };

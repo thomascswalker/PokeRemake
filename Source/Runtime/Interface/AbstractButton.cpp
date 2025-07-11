@@ -6,7 +6,7 @@ void PAbstractButton::SetButtonGroup(PButtonGroup* Group)
 	mButtonGroup = Group;
 }
 
-bool PAbstractButton::OnMouseEvent(SInputEvent* Event)
+void PAbstractButton::OnMouseEvent(SInputEvent* Event)
 {
 	// Are we inside the button?
 	mMouseOver = GetGeometry().Contains(Event->MousePosition);
@@ -18,7 +18,7 @@ bool PAbstractButton::OnMouseEvent(SInputEvent* Event)
 		{
 			mMouseDown = true;
 			Event->Consume();
-			return true;
+			return;
 		}
 		// Is it a release?
 		if (Event->Type == IET_MouseUp && !Event->LeftMouseDown && mMouseDown)
@@ -45,11 +45,12 @@ bool PAbstractButton::OnMouseEvent(SInputEvent* Event)
 			// Consume the event so that we don't pass the click down to widgets
 			// underneath this button.
 			Event->Consume();
-			return false;
+			return;
 		}
+
+		return;
 	}
+
 	// Are we outside the button?
 	mMouseDown = false; // Reset button state
-
-	return false;
 }

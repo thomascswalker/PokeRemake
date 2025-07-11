@@ -3,7 +3,7 @@
 #include "Engine/CameraView.h"
 #include "Engine/Components/Component.h"
 
-bool PActor::OnMouseEvent(SInputEvent* Event)
+void PActor::OnMouseEvent(SInputEvent* Event)
 {
 	const auto Renderer = GetRenderer();
 	mMousePosition = Event->MousePosition;
@@ -42,8 +42,6 @@ bool PActor::OnMouseEvent(SInputEvent* Event)
 		Clicked.Broadcast(this);
 		Event->Consume();
 	}
-
-	return Event->Consumed;
 }
 
 FVector2 PActor::GetDrawPosition() const

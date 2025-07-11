@@ -55,11 +55,12 @@ public:
 	void	ClearInputContext() { mInputContext = IC_None; }
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
+	void	OnKeyUp(SInputEvent* Event) override;
 	void	OnKeyUpSelect(uint32_t ScanCode);
-	void	OnKeyUpTile(uint32_t ScanCode);
 
 	// Interface
 
+	void OnNewButtonClicked();
 	void OnCreateButtonClicked();
 	void OnSizeXChanged(float Value) { mNewGridSizeX = Value; }
 	void OnSizeYChanged(float Value) { mNewGridSizeY = Value; }

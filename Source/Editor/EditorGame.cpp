@@ -52,10 +52,12 @@ void PEditorGame::SetupInterface()
 	MainPanel->SetFixedWidth(200);
 
 	// Files
+
 	const auto FileGroup = mWorld->ConstructWidget<PGroup>("File");
 	FileGroup->SetResizeModeH(RM_Fit);
 	FileGroup->SetLayoutMode(LM_Vertical);
 
+	const auto NewButton = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
 	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
@@ -65,6 +67,7 @@ void PEditorGame::SetupInterface()
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
 	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
+	FileGroup->AddChild(NewButton);
 	FileGroup->AddChild(CreateButton);
 	FileGroup->AddChild(SizeXSpinner);
 	FileGroup->AddChild(SizeYSpinner);
@@ -131,36 +134,35 @@ void PEditorGame::SetupInterface()
 void PEditorGame::AddInputContext(uint8_t InputContext)
 {
 	mInputContext |= InputContext;
-
-	const auto Input = GetInputManager();
-	switch (InputContext)
-	{
-		case IC_Select:
-			// mSelectDelegate = Input->KeyUp.AddRaw(this, &PEditorGame::OnKeyUpSelect);
-			break;
-		case IC_Tile:
-			break;
-		default:
-			break;
-	}
 }
 
 void PEditorGame::RemoveInputContext(uint8_t InputContext)
 {
 	mInputContext &= ~InputContext;
+}
 
-	const auto Input = GetInputManager();
-	switch (InputContext)
+void PEditorGame::OnKeyUp(SInputEvent* Event)
+{
+	PGame::OnKeyUp(Event);
+	if (Event->Consumed)
 	{
-		case IC_Select:
-			// Input->KeyUp.Remove(mSelectDelegate);
+		return;
+	}
+
+	switch (Event->KeyUp)
+	{
+		case SDLK_DELETE:
+			// ReSharper disable once CppDFAConstantConditions
 			if (mCurrentChunk)
 			{
-				mCurrentChunk->SetSelected(false);
+				// Remove the chunk from the list of chunks
+				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
+				// Destroy the chunk actor
+				GetWorld()->DestroyActor(mCurrentChunk);
+				// Set the current chunk to null
+				mCurrentChunk = nullptr;
+				Event->Consume();
 			}
-			break;
-		case IC_Tile:
-			break;
 		default:
 			break;
 	}
@@ -258,22 +260,21 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
 	auto R = GetRenderer();
 
-	LogDebug("Selected: {}", ClickedActor->GetInternalName().c_str());
-	LogDebug("Input Context: {}", mInputContext);
 	switch (mInputContext)
 	{
 		case IC_Select:
-			if (dynamic_cast<PChunk*>(ClickedActor))
+			if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 			{
-				ClickedActor->ToggleSelected();
+				Chunk->ToggleSelected();
 				for (auto Actor : GetWorld()->GetActors())
 				{
-					if (ClickedActor->GetInternalName() == Actor->GetInternalName())
+					if (Chunk->GetInternalName() == Actor->GetInternalName())
 					{
 						continue;
 					}
 					Actor->SetSelected(false);
 				}
+				mCurrentChunk = Chunk;
 			}
 			break;
 		case IC_Tile:
@@ -303,43 +304,14 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 	}
 }
 
-void PEditorGame::OnKeyUpSelect(uint32_t ScanCode)
+void PEditorGame::OnNewButtonClicked()
 {
-	if (!mCurrentChunk)
+	for (auto Chunk : mChunks)
 	{
-		return;
+		mWorld->DestroyActor(Chunk);
 	}
-	FVector2 Offset;
-	switch (ScanCode)
-	{
-		case SDLK_UP:
-			Offset = FVector2(0, DOUBLE_TILE_SIZE);
-			break;
-		case SDLK_DOWN:
-			Offset = FVector2(0, -DOUBLE_TILE_SIZE);
-			break;
-		case SDLK_LEFT:
-			Offset = FVector2(DOUBLE_TILE_SIZE, 0);
-			break;
-		case SDLK_RIGHT:
-			Offset = FVector2(-DOUBLE_TILE_SIZE, 0);
-			break;
-		case SDLK_DELETE:
-			// ReSharper disable once CppDFAConstantConditions
-			if (mCurrentChunk)
-			{
-				// Remove the chunk from the list of chunks
-				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
-				// Destroy the chunk actor
-				GetWorld()->DestroyActor(mCurrentChunk);
-				// Set the current chunk to null
-				mCurrentChunk = nullptr;
-			}
-			return;
-		default:
-			break;
-	}
-	mCurrentChunk->SetPosition(mCurrentChunk->GetPosition() - Offset);
+	mChunks.clear();
+	mCurrentChunk = nullptr;
 }
 
 void PEditorGame::AddChunk(PChunk* Chunk)
