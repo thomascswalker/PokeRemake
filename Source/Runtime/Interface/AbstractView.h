@@ -58,7 +58,7 @@ public:
 		}
 		if (GetGeometry().Contains(Event->MousePosition))
 		{
-			SetScrollValue(Event->MouseScroll);
+			AddScrollValue(Event->MouseScroll);
 			Event->Consume();
 		}
 	}
@@ -96,14 +96,8 @@ public:
 		return std::max(0.0f, MaximumScrollValue - H);
 	}
 
-	void SetScrollValue(float Value)
+	void AddScrollValue(float Value)
 	{
-		// Only update when the mouse is over this widget.
-		if (!mMouseOver)
-		{
-			return;
-		}
-
 		// Value comes in as +1 for a forwards scroll, -1 for a backwards scroll. Invert this
 		// so a forwards scroll will scroll up, and a backwards scroll will scroll down.
 		mScrollValue += -Value * mScrollSpeed;

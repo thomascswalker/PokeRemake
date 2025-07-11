@@ -93,6 +93,15 @@ void PEditorGame::SetupInterface()
 
 	// Tiles
 
+	const auto BrushSizeLabel = mWorld->ConstructWidget<PText>("Brush Sz");
+	BrushSizeLabel->SetResizeModeW(RM_Fixed);
+	BrushSizeLabel->SetFixedWidth(50);
+	const auto BrushSizeSpinner = mWorld->ConstructWidget<PSpinner>(1);
+	const auto BrushSizeBox = mWorld->ConstructWidget<PBox>();
+	BrushSizeBox->SetResizeModeH(RM_Fit);
+	BrushSizeBox->AddChild(BrushSizeLabel);
+	BrushSizeBox->AddChild(BrushSizeSpinner);
+
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
@@ -121,8 +130,11 @@ void PEditorGame::SetupInterface()
 	}
 
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
+	TileGroup->SetLayoutMode(LM_Vertical);
 	TileGroup->SetVisible(false);
+	TileGroup->AddChild(BrushSizeBox);
 	TileGroup->AddChild(ItemView);
+
 	MainPanel->AddChild(TileGroup);
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();

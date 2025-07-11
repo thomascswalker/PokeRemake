@@ -63,7 +63,6 @@ set(SOURCES
         Core/Bitmask.h
         Engine/InputContext.h
         Interface/AbstractView.h
-        Interface/AbstractView.cpp
         Interface/ClipArea.h
         Interface/AbstractButton.cpp
         Interface/Image.h
