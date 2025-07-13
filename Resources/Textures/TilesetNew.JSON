@@ -1,0 +1,289 @@
+{
+  "Width": 16,
+  "Height": 8,
+  "Scale": 8,
+  "Tiles": [
+    {
+      "Name": "Grass 1",
+      "Coord": [0, 0],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Grass 2",
+      "Coord": [1, 0],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Grass 3",
+      "Coord": [0, 1],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Grass 4",
+      "Coord": [1, 1],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Plant 1",
+      "Coord": [2, 0],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Plant 2",
+      "Coord": [2, 1],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Dirt",
+      "Coord": [3, 0],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Flower",
+      "Coord": [4, 0],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "BushLeft",
+      "Coord": [3, 1],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "BushRight",
+      "Coord": [4, 1],
+      "Type": 0,
+      "Size": 0
+    },
+    {
+      "Name": "Sign 1",
+      "Coord": [0, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Sign 2",
+      "Coord": [2, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Rock",
+      "Coord": [4, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Pylons",
+      "Coord": [6, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Boulder 1",
+      "Coord": [8, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Boulder 2",
+      "Coord": [10, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Boulder 3",
+      "Coord": [12, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Tree (Cuttable)",
+      "Coord": [14, 2],
+      "Type": 1,
+      "Size": 1
+    },
+    {
+      "Name": "Roof Top -2",
+      "Coord": [0, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Top -1",
+      "Coord": [1, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Top +0",
+      "Coord": [2, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Top +1",
+      "Coord": [3, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Top +2",
+      "Coord": [4, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Left",
+      "Coord": [0, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Right",
+      "Coord": [4, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom -3",
+      "Coord": [0, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom -2",
+      "Coord": [1, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom -1",
+      "Coord": [1, 5],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom +0",
+      "Coord": [2, 5],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom +1",
+      "Coord": [3, 5],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom +2",
+      "Coord": [3, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Bottom +3",
+      "Coord": [4, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Bottom -1",
+      "Coord": [0, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Bottom +0",
+      "Coord": [1, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Bottom +1",
+      "Coord": [4, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Left",
+      "Coord": [7, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Right",
+      "Coord": [7, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Trim -1",
+      "Coord": [5, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Trim",
+      "Coord": [6, 7],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Trim +1",
+      "Coord": [6, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Brick",
+      "Coord": [2, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Window",
+      "Coord": [7, 2],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "House Wall",
+      "Coord": [7, 3],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof",
+      "Coord": [5, 4],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Metal Top",
+      "Coord": [5, 5],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Roof Metal",
+      "Coord": [5, 6],
+      "Type": 1,
+      "Size": 0
+    },
+    {
+      "Name": "Door",
+      "Coord": [6, 4],
+      "Type": 1,
+      "Size": 1
+    }
+  ]
+}

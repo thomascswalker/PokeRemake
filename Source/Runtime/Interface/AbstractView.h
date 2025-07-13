@@ -86,6 +86,10 @@ public:
 	 */
 	float GetMaximumScrollValue() const
 	{
+		if (mChildren.size() == 0)
+		{
+			return 0.0f;
+		}
 		float MaximumScrollValue = 0.0f;
 		for (auto Child : mChildren)
 		{

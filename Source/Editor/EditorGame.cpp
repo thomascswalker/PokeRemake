@@ -12,7 +12,9 @@
 #include "Interface/Panel.h"
 #include "Interface/Spinner.h"
 
-static PGroup* TileGroup = nullptr;
+static std::string gTilesetBaseName = "TilesetNew";
+static STileset*   gCurrentTileset = nullptr;
+static PGroup*	   TileGroup = nullptr;
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
@@ -33,7 +35,9 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	LoadTileset("Tileset1");
+	auto Mgr = PTilesetManager::GetInstance();
+	Mgr->Load(gTilesetBaseName);
+	gCurrentTileset = Mgr->Get(gTilesetBaseName);
 	SetupInterface();
 }
 
@@ -95,17 +99,14 @@ void PEditorGame::SetupInterface()
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
-
-	for (auto& Item : GetTileset("Tileset1"))
+	auto	   TilesetTexture = gCurrentTileset->Texture;
+	for (auto& Item : gCurrentTileset->Items)
 	{
 		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
-
 		auto Button = NewItem->GetWidget<PButton>();
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
-
 		ItemViewButtonGroup->AddButton(Button);
 
 		// 16x6
@@ -192,10 +193,10 @@ void PEditorGame::OnCreateButtonClicked()
 	LogDebug("Creating new chunk: [{}, {}]", mNewGridSizeX, mNewGridSizeY);
 
 	json JsonData = {
-		{ "Position", { 0, 0 }	   },
-		{ "SizeX",	   mNewGridSizeX },
-		{ "SizeY",	   mNewGridSizeY },
-		{ "Tileset",	 "Tileset1"	}
+		{ "Position", { 0, 0 }		   },
+		{ "SizeX",	   mNewGridSizeX	 },
+		{ "SizeY",	   mNewGridSizeY	 },
+		{ "Tileset",	 gTilesetBaseName }
 	};
 	for (int X = 0; X < mNewGridSizeX; ++X)
 	{
@@ -312,8 +313,8 @@ void PEditorGame::UpdateTile(PTile* Tile)
 		case TST_2X2:
 			SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
 			SubIndexes[1] = mCurrentTilesetItem->LinearIndex + 1;
-			SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gTilesetWidth;
-			SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gTilesetWidth + 1;
+			SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gCurrentTileset->Width;
+			SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gCurrentTileset->Width + 1;
 			break;
 	}
 

@@ -36,7 +36,15 @@ void PChunk::Start()
 	mSizeX = mData.at("SizeX").get<int>();
 	mSizeY = mData.at("SizeY").get<int>();
 
-	mTileset = &GetTileset(mData.at("Tileset"));
+	auto TilesetName = mData.at("Tileset").get<std::string>();
+	LogDebug("Getting tileset '{}' for new chunk.", TilesetName.c_str());
+	mTileset = PTilesetManager::GetInstance()->Get(TilesetName);
+
+	if (!mTileset)
+	{
+		LogError("Tileset {} not found. Unable to construct chunk.", TilesetName.c_str());
+		return;
+	}
 
 	for (const auto& TileData : mData.at("Tiles"))
 	{

@@ -1,0 +1,48 @@
+{
+  "title": "Tileset",
+  "type": "object",
+  "required": ["Width", "Height", "Scale", "Tiles"],
+  "properties": {
+    "Width": {
+      "type": "integer"
+    },
+    "Height": {
+      "type": "integer"
+    },
+    "Scale": {
+      "type": "integer"
+    },
+    "Tiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Coord": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "Type": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "Size": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "Name",
+          "Coord",
+          "Type",
+          "Size"
+        ]
+      }
+    }
+  }
+}

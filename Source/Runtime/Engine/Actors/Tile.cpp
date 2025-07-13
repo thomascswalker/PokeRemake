@@ -135,14 +135,14 @@ FVector2 PTile::GetPosition() const
 	}
 	return mPosition;
 }
-PTile* PTile::GetAdjacent(int32_t X, int32_t Y)
+PTile* PTile::GetAdjacent(int32_t InX, int32_t InY)
 {
 	if (!Chunk)
 	{
 		return nullptr;
 	}
 
-	return Chunk->GetTileAt(Data.X + X, Data.Y + Y);
+	return Chunk->GetTileAt(X + InX, Y + InY);
 }
 
 FVector2 PTile::GetQuadrant(const FVector2& Position) const
@@ -168,7 +168,7 @@ json PTile::Serialize() const
 	json Result;
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
-	Result["Position"] = { Data.X, Data.Y };
+	Result["Position"] = { X, Y };
 	Result["SubIndexes"] = Data.SubIndexes;
 	return Result;
 }

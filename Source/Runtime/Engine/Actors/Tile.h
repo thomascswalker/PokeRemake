@@ -11,28 +11,21 @@ class PChunk;
 class PTile : public PActor
 {
 public:
-	STileData Data;
+	STileData Data{};
 	PChunk*	  Chunk = nullptr;
+	int32_t	  X;
+	int32_t	  Y;
 
 	PTile() = default;
-	PTile(int32_t inX, int32_t inY)
+	PTile(int32_t InX, int32_t InY)
 	{
-		Data.X = inX;
-		Data.Y = inY;
+		X = InX;
+		Y = InY;
 		mRenderPriority = DP_BACKGROUND;
 		bSerializable = false;
 		mBlocking = false;
-		mPosition.X = inX * DOUBLE_TILE_SIZE;
-		mPosition.Y = inY * DOUBLE_TILE_SIZE;
-	}
-	PTile(const STileData& Data)
-		: Data(Data)
-	{
-		mRenderPriority = DP_BACKGROUND;
-		bSerializable = false;
-		mBlocking = false;
-		mPosition.X = Data.X * DOUBLE_TILE_SIZE;
-		mPosition.Y = Data.Y * DOUBLE_TILE_SIZE;
+		mPosition.X = InX * DOUBLE_TILE_SIZE;
+		mPosition.Y = InY * DOUBLE_TILE_SIZE;
 	}
 
 	void	Draw(const PRenderer* Renderer) const override;
@@ -53,7 +46,7 @@ public:
 
 	FVector2 GetPosition() const override;
 
-	PTile*	 GetAdjacent(int32_t X, int32_t Y);
+	PTile*	 GetAdjacent(int32_t InX, int32_t InY);
 	FVector2 GetQuadrant(const FVector2& Position) const;
 	int		 GetQuadrantIndex(const FVector2& Position) const;
 

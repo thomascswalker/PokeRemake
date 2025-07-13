@@ -1,15 +1,17 @@
 #pragma once
 
+#include "Core/Files.h"
+#include "Core/Json.h"
+#include "Core/Rect.h"
 #include "Core/Vector.h"
+#include "Engine/Texture.h"
 
 #include <map>
 #include <string>
 #include <vector>
 
-constexpr float gTilesetItemSize = 32.0f;
+constexpr float gTilesetItemSize = 16.0f;
 constexpr float gTilesetItemHalfSize = gTilesetItemSize / 2.0f;
-constexpr int	gTilesetWidth = 16;
-constexpr int	gTilesetHeight = 6;
 
 #define TILE_HALF { gTilesetItemHalfSize, gTilesetItemHalfSize }
 #define TILE_FULL { gTilesetItemSize, gTilesetItemSize }
@@ -34,13 +36,13 @@ enum ETileType
 };
 
 template <typename T>
-static int32_t ToLinearIndex(const TVector2<T>& Index, const int32_t Factor = gTilesetWidth)
+static int32_t ToLinearIndex(const TVector2<T>& Index, const int32_t Factor = 16)
 {
 	return Index.Y * Factor + Index.X;
 }
 
 template <typename T>
-static TVector2<T> ToCoordIndex(const int32_t Index, const int32_t Factor = gTilesetWidth)
+static TVector2<T> ToCoordIndex(const int32_t Index, const int32_t Factor = 16)
 {
 	return { static_cast<float>(Index % Factor), static_cast<float>(Index / Factor) };
 }
@@ -52,6 +54,7 @@ struct STilesetItem
 	ETileType	  Type = TT_Normal;
 	ETileSizeType SizeType = TST_2X2;
 
+	STilesetItem() = default;
 	STilesetItem(const std::string& InName, const FVector2& InIndex, ETileType InType, ETileSizeType InSizeType)
 		: Name(InName), LinearIndex(ToLinearIndex(InIndex)), Type(InType), SizeType(InSizeType)
 	{
@@ -91,6 +94,9 @@ struct STileset
 	std::string				  Name{};
 	std::vector<STilesetItem> Items;
 	PTexture*				  Texture = nullptr;
+	int32_t					  Scale = 8;
+	int32_t					  Width = 0;
+	int32_t					  Height = 0;
 
 	STileset() = default;
 	STileset(const std::string& InName)
@@ -137,8 +143,6 @@ struct STileData
 {
 	using SubIndexType = std::array<int32_t, 4>;
 
-	int32_t		 X;
-	int32_t		 Y;
 	STileset*	 Tileset;
 	SubIndexType SubIndexes = { 0, 0, 0, 0 };
 
@@ -146,12 +150,17 @@ struct STileData
 	{
 		return Tileset->GetItemByLinearIndex(SubIndexes[Index]);
 	}
+
 	ETileType GetType() const
 	{
 		return GetItemBySubIndex(0)->Type;
 	}
 	PTexture* GetTexture() const
 	{
+		if (!Tileset || !Tileset->Texture)
+		{
+			return nullptr;
+		}
 		return Tileset->Texture;
 	}
 	FRect GetSourceRect(int Index = 0) const
@@ -176,77 +185,88 @@ struct STileData
 	}
 };
 
-static std::map<std::string, STileset> gTilesets = {
-	{
-		"Tileset1",
-		{
-			"Tileset1",
-			{
-				{ "Grass 1", { 0, 0 }, TT_Normal, TST_1X1 },
-				{ "Grass 2", { 9, 3 }, TT_Normal, TST_1X1 },
-				{ "Grass 3", { 12, 2 }, TT_Normal, TST_1X1 },
-				{ "Rock Light", { 10, 2 }, TT_Obstacle, TST_2X2 },
-				{ "Rock Dark", { 0, 4 }, TT_Obstacle, TST_2X2 },
-				{ "Roof", { 8, 3 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Top-Left", { 5, 0 }, TT_Obstacle, TST_2X2 },
-				{ "Roof Bottom-Left 1", { 5, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Bottom-Left 2", { 6, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 1", { 2, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 2", { 3, 5 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 3", { 7, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 4", { 7, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Top-Right", { 8, 0 }, TT_Obstacle, TST_2X2 },
-				{ "Roof Bottom-Right 1", { 8, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Bottom-Right 2", { 9, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Left 1", { 5, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Left 2", { 6, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Right 1", { 8, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Right 2", { 9, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Wall", { 2, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Left", { 15, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Right", { 15, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Left Corner", { 14, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Right Corner", { 15, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Bottom", { 10, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Window", { 10, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Brick", { 11, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Sign", { 6, 4 }, TT_Obstacle, TST_2X2 },
-				{ "Door", { 11, 0 }, TT_Normal, TST_2X2 },
-				{ "Fence Bottom", { 5, 5 }, TT_Obstacle, TST_1X1 },
-				{ "Fence Top", { 14, 0 }, TT_Obstacle, TST_1X1 },
-			},
-		},
-	 }
-};
-
-static void LoadTileset(const std::string& Name)
+class PTilesetManager
 {
-	auto Tileset = &gTilesets.at(Name);
-	auto FileName = Name + ".png";
-	auto Tex = PTextureManager::Get(FileName);
-	if (!Tex)
+	std::map<std::string, STileset> mTilesets{};
+	static PTilesetManager*			mInstance;
+
+public:
+	static PTilesetManager* GetInstance()
 	{
-		Tex = PTextureManager::Load(FileName);
-		if (!Tex)
+		if (!mInstance)
 		{
-			LogError("Failed to load tileset {}", Name.c_str());
+			mInstance = new PTilesetManager();
+		}
+		return mInstance;
+	}
+
+	void Load(const std::string& Name)
+	{
+		LogDebug("Loading tileset {}", Name.c_str());
+		auto TilesetJSONFile = Files::FindFile(Name + ".JSON");
+
+		if (TilesetJSONFile.empty())
+		{
+			LogWarning("Tileset JSON {} not found", Name.c_str());
 			return;
 		}
-	}
-	Tileset->Texture = Tex;
-}
+		LogDebug("Found tileset JSON file: {}", TilesetJSONFile.c_str());
+		std::string JsonData;
+		Files::ReadFile(TilesetJSONFile, JsonData);
+		auto TilesetData = JSON::parse(JsonData);
 
-static STileset& GetTileset(const std::string& Name)
-{
-	if (!gTilesets.contains(Name))
-	{
-		LoadTileset(Name);
+		auto TextureName = Name + ".png";
+		auto Tex = PTextureManager::Get(TextureName);
+		if (!Tex)
+		{
+			Tex = PTextureManager::Load(TextureName);
+			if (!Tex)
+			{
+				LogError("Failed to load tileset texture {}", TextureName.c_str());
+				return;
+			}
+		}
+
+		STileset NewTileset;
+		NewTileset.Name = TextureName;
+		NewTileset.Texture = Tex;
+		NewTileset.Scale = TilesetData.at("Scale").get<int32_t>();
+		NewTileset.Width = TilesetData.at("Width").get<int32_t>();
+		NewTileset.Height = TilesetData.at("Height").get<int32_t>();
+
+		for (const auto& Tiles : TilesetData.at("Tiles"))
+		{
+			STilesetItem Item;
+			Item.Name = Tiles.at("Name").get<std::string>();
+			FVector2 ItemIndex;
+			ItemIndex.X = Tiles.at("Coord").at(0).get<int32_t>();
+			ItemIndex.Y = Tiles.at("Coord").at(1).get<int32_t>();
+			Item.LinearIndex = ToLinearIndex(ItemIndex, NewTileset.Width);
+			Item.Type = Tiles.at("Type").get<ETileType>();
+			Item.SizeType = Tiles.at("Size").get<ETileSizeType>();
+			NewTileset.Items.emplace_back(Item);
+		}
+
+		mTilesets[Name] = NewTileset;
 	}
-	// ReSharper disable once CppDFAUnusedValue
-	auto Tileset = &gTilesets.at(Name);
-	if (!Tileset->Texture)
+
+	STileset* Get(const std::string& Name)
 	{
-		LoadTileset(Name);
+		if (!mTilesets.contains(Name))
+		{
+			LogError("Tileset {} not found. Perhaps it's not loaded?", Name.c_str());
+			LogError("Available tilesets:");
+			for (const auto& val : mTilesets | std::views::values)
+			{
+				LogError("\t{}", val.Name.c_str());
+			}
+			return nullptr;
+		}
+		auto Tileset = &mTilesets.at(Name);
+		if (!Tileset->Texture)
+		{
+			Load(Name);
+		}
+		return Tileset;
 	}
-	return *Tileset;
-}
+};
