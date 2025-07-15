@@ -107,8 +107,8 @@ public:
 		return { Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f) };
 	}
 
-	void MoveToTile(int32_t X, int32_t Y);
-	bool IsBlocking() const { return mBlocking; }
+	void		 MoveToTile(int32_t X, int32_t Y);
+	virtual bool IsBlocking() const { return mBlocking; }
 
 	// Mouse events
 

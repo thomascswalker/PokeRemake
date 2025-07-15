@@ -5,71 +5,42 @@
 #include "../World.h"
 #include "Chunk.h"
 
-static FRect DoubleTileDest = { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
-static FRect FullTileDest = { 0, 0, TILE_SIZE, TILE_SIZE };
-static FRect HalfTileDest = { 0, 0, HALF_TILE_SIZE, HALF_TILE_SIZE };
-
 void PTile::Draw(const PRenderer* Renderer) const
 {
-	// World position of this tile
+	// World position of this tile.
 	const FVector2 WorldPosition = GetWorldPosition();
+	FRect		   DestRect = {
+		 WorldPosition, { TILE_SIZE, TILE_SIZE }
+	};
 
-	auto Texture = Data.GetTexture();
-
-	// Draw the debug color indicating the texture is invalid
-	if (!Texture)
+	// Draw the debug color indicating the texture is invalid.
+	if (!Tileset || !Tileset->Texture)
 	{
 		Renderer->SetDrawColor(PColor::UIDebug1);
-		Renderer->DrawFillRectAt(DoubleTileDest, WorldPosition);
+		Renderer->DrawFillRectAt(DestRect);
+		return;
 	}
-	else
-	{
-		for (int X = 0; X < 2; X++)
-		{
-			for (int Y = 0; Y < 2; Y++)
-			{
-				FVector2 LocalOffset = { X * TILE_SIZE, Y * TILE_SIZE };
-				FVector2 Position = WorldPosition + LocalOffset;
-				int32_t	 SubIndex = Data.SubIndexes[Y * 2 + X];
-				FVector2 SubPosition = ToCoordIndex<float>(SubIndex);
-				FVector2 SourcePosition = { SubPosition.X * gTilesetItemHalfSize,
-											SubPosition.Y * gTilesetItemHalfSize };
-				FVector2 SourceSize = { gTilesetItemHalfSize, gTilesetItemHalfSize };
-				FRect	 SourceRect = { SourcePosition, SourceSize };
-				Renderer->DrawTextureAt(Texture, SourceRect, HalfTileDest, Position);
-			}
-		}
-	}
+
+	float TilesetX = TilesetIndex % Tileset->Width;
+	float TilesetY = TilesetIndex / Tileset->Width;
+	FRect SourceRect = { TilesetX * gTilesetItemSize, TilesetY * gTilesetItemSize, gTilesetItemSize, gTilesetItemSize };
+	Renderer->DrawTextureAt(Tileset->Texture, SourceRect, DestRect);
 }
 
 void PTile::DebugDraw(const PRenderer* Renderer) const
 {
 	const FVector2 WorldPosition = GetWorldPosition();
-	// Debug drawing
-	switch (Data.GetType())
+	FRect		   DestRect = {
+		 WorldPosition, { TILE_SIZE, TILE_SIZE }
+	};
+	if (IsBlocking())
 	{
-		case TT_Normal:
-			break;
-		case TT_Obstacle:
-			Renderer->SetDrawColor(255, 0, 0, 128);
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
-			break;
-		case TT_Water:
-			Renderer->SetDrawColor(0, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
-			break;
-		case TT_Grass:
-		case TT_Cave:
-			Renderer->SetDrawColor(0, 255, 0, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
-			break;
-		case TT_Portal:
-			Renderer->SetDrawColor(255, 0, 255, 128); // Red for non-walkable tiles
-			Renderer->DrawFillRectAt(FullTileDest, WorldPosition);
+		Renderer->SetDrawColor(255, 0, 0, 128);
+		Renderer->DrawFillRectAt(DestRect);
 	}
 
 	Renderer->SetDrawColor(200, 200, 200, 128); // Light gray outline for walkable tiles
-	Renderer->DrawRectAt(FullTileDest, WorldPosition);
+	Renderer->DrawRectAt(DestRect);
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
@@ -82,17 +53,8 @@ void PTile::DebugDraw(const PRenderer* Renderer) const
 		}
 		auto BrushSize = G->GetBrushSize();
 		Renderer->SetDrawColor(255, 0, 0, 255);
-		if (Item->SizeType == TST_1X1)
-		{
-			auto  HoverPosition = GetQuadrant(Renderer->GetMouseWorldPosition()) * TILE_SIZE;
-			FRect HoverRect = { 0, 0, HALF_TILE_SIZE * BrushSize, HALF_TILE_SIZE * BrushSize };
-			Renderer->DrawRectAt(HoverRect, WorldPosition + HoverPosition);
-		}
-		else
-		{
-			FRect HoverRect = { 0, 0, TILE_SIZE * BrushSize, TILE_SIZE * BrushSize };
-			Renderer->DrawRectAt(HoverRect, WorldPosition);
-		}
+		FRect HoverRect = { WorldPosition.X, WorldPosition.Y, TILE_SIZE * BrushSize, TILE_SIZE * BrushSize };
+		Renderer->DrawRectAt(HoverRect);
 	}
 #endif
 }
@@ -111,17 +73,16 @@ PActor* PTile::GetActor() const
 
 bool PTile::IsWalkable() const
 {
-	auto Type = Data.GetType();
-	return Type != TT_Obstacle && Type != TT_Water;
+	return !IsBlocking();
 }
 
 bool PTile::Contains(const FVector2& Position) const
 {
-	auto TilePosition = GetPosition();
-	return Position.X >= TilePosition.X				   // Min X
-		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
-		   && Position.Y >= TilePosition.Y			   // Min Y
-		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
+	auto BlockPosition = GetPosition();
+	return Position.X >= BlockPosition.X				 // Min X
+		   && Position.X < BlockPosition.X + BLOCK_SIZE	 // Max X
+		   && Position.Y >= BlockPosition.Y				 // Min Y
+		   && Position.Y < BlockPosition.Y + BLOCK_SIZE; // Max Y
 }
 
 FVector2 PTile::GetPosition() const
@@ -135,32 +96,15 @@ FVector2 PTile::GetPosition() const
 	}
 	return mPosition;
 }
-PTile* PTile::GetAdjacent(int32_t X, int32_t Y)
+
+PTile* PTile::GetAdjacent(int32_t InX, int32_t InY)
 {
 	if (!Chunk)
 	{
 		return nullptr;
 	}
 
-	return Chunk->GetTileAt(Data.X + X, Data.Y + Y);
-}
-
-FVector2 PTile::GetQuadrant(const FVector2& Position) const
-{
-	auto	 TilePosition = GetPosition();
-	FVector2 TileCenter = { TilePosition.X + TILE_SIZE, TilePosition.Y + TILE_SIZE };
-
-	float X = Position.X > TileCenter.X ? 1.0f : 0.0f;
-	float Y = Position.Y > TileCenter.Y ? 1.0f : 0.0f;
-
-	return { X, Y };
-}
-
-int PTile::GetQuadrantIndex(const FVector2& Position) const
-{
-	auto Q = GetQuadrant(Position);
-	auto I = ToLinearIndex(Q, 2);
-	return I;
+	return Chunk->GetBlockAt(X + InX, Y + InY);
 }
 
 json PTile::Serialize() const
@@ -168,8 +112,8 @@ json PTile::Serialize() const
 	json Result;
 	Result["Name"] = GetInternalName();
 	Result["Class"] = GetClassName();
-	Result["Position"] = { Data.X, Data.Y };
-	Result["SubIndexes"] = Data.SubIndexes;
+	Result["Position"] = { X, Y };
+	Result["Index"] = TilesetIndex;
 	return Result;
 }
 

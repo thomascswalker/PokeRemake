@@ -46,18 +46,18 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	{
 		Index = CurrentAnim->GetCurrentIndex();
 	}
-	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetLocalBounds(), GetDrawPosition(), Index);
+	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetWorldBounds(), Index);
 }
 
 FRect PCharacter::GetLocalBounds() const
 {
-	return { 0, 0, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
+	return { 0, 0, BLOCK_SIZE, BLOCK_SIZE };
 }
 
 FRect PCharacter::GetWorldBounds() const
 {
 	auto WorldPosition = GetWorldPosition();
-	return { WorldPosition.X, WorldPosition.Y, DOUBLE_TILE_SIZE, DOUBLE_TILE_SIZE };
+	return { WorldPosition.X, WorldPosition.Y, BLOCK_SIZE, BLOCK_SIZE };
 }
 
 void PCharacter::OnMovementStarted(EMovementDirection Direction)

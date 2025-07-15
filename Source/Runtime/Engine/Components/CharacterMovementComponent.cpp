@@ -84,8 +84,10 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
 	// Compute the target position
 	const auto NewPosition = Velocity + mOwner->GetWorldPosition();
+
 	// Convert velocity to a movement direction
 	mMovementDirection = VectorToDirection(Velocity);
+
 	// Allow changing direction even if the character doesn't move
 	MovementDirectionChanged.Broadcast(mMovementDirection);
 
@@ -104,7 +106,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	}
 
 	// Check if the new position is walkable
-	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
+	const auto Tile = mCurrentChunk->GetBlockAtPosition(NewPosition);
 	if (!Tile || !Tile->IsWalkable())
 	{
 		return false;
@@ -130,7 +132,7 @@ PTile* PCharacterMovementComponent::GetCurrentTile() const
 	{
 		return nullptr;
 	}
-	return mCurrentChunk->GetTileAtPosition(mOwner->GetWorldPosition());
+	return mCurrentChunk->GetBlockAtPosition(mOwner->GetWorldPosition());
 }
 
 PTile* PCharacterMovementComponent::GetTargetTile() const
@@ -140,5 +142,5 @@ PTile* PCharacterMovementComponent::GetTargetTile() const
 	{
 		return nullptr;
 	}
-	return Chunk->GetTileAtPosition(mTargetPosition);
+	return Chunk->GetBlockAtPosition(mTargetPosition);
 }

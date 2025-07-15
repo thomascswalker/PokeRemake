@@ -26,8 +26,8 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
-	float mNewGridSizeX = 8.0f;
-	float mNewGridSizeY = 8.0f;
+	float mNewGridSizeX = 16.0f;
+	float mNewGridSizeY = 16.0f;
 
 	uint8_t mInputContext;
 
@@ -38,7 +38,7 @@ class PEditorGame : public PGame
 	PChunk*				 mCurrentChunk;
 	int					 mBrushSize = 1;
 
-	STilesetItem* mCurrentTilesetItem;
+	STile* mCurrentTilesetItem;
 
 public:
 	// Init
@@ -68,19 +68,18 @@ public:
 	void OnTileButtonChecked(bool State);
 	void OnTilesetButtonChecked(bool State);
 	void UpdateSelection(PActor* ClickedActor);
-	void UpdateTile(PTile* Tile);
 	void OnActorClicked(PActor* ClickedActor);
 	void SetBrushSize(float Value) { mBrushSize = Value; }
 	int	 GetBrushSize() { return mBrushSize; }
 
 	// Scene
-	void		  AddChunk(PChunk* Chunk);
-	size_t		  GetChunkCount() const { return mChunks.size(); }
-	void		  SetCurrentChunk(PChunk* Chunk);
-	void		  ConstructChunk(const json& JsonData);
-	void		  ActorSelected(PActor* Actor);
-	PChunk*		  GetCurrentChunk() const { return mCurrentChunk; }
-	STilesetItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
+	void	AddChunk(PChunk* Chunk);
+	size_t	GetChunkCount() const { return mChunks.size(); }
+	void	SetCurrentChunk(PChunk* Chunk);
+	void	ConstructChunk(const json& JsonData);
+	void	ActorSelected(PActor* Actor);
+	PChunk* GetCurrentChunk() const { return mCurrentChunk; }
+	STile*	GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

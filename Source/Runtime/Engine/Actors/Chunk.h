@@ -25,13 +25,13 @@ public:
 	void				DebugDraw(const PRenderer* Renderer) const override;
 	FRect				GetLocalBounds() const override;
 	FRect				GetWorldBounds() const override;
-	PTile*				GetTileAtPosition(const FVector2& Position) const;
-	PTile*				GetTileAt(int X, int Y);
+	PTile*				GetBlockAtPosition(const FVector2& Position) const;
+	PTile*				GetBlockAt(int X, int Y);
 	std::vector<PTile*> GetTiles() const { return mTiles; }
 	int					GetSizeX() const { return mSizeX; }
 	int					GetSizeY() const { return mSizeY; }
 	IVector2			GetSize() const { return { mSizeX, mSizeY }; }
-	std::vector<PTile*> GetAdjacentTiles(const PTile* OriginTile, int32_t BrushSize) const;
+	std::vector<PTile*> GetAdjacentBlocks(const PTile* OriginBlock, int32_t BrushSize) const;
 
 	json Serialize() const override;
 
