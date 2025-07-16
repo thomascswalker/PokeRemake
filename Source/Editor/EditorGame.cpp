@@ -58,9 +58,9 @@ void PEditorGame::SetupInterface()
 
 	const auto NewButton = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewGridSizeX);
 	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(5);
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewGridSizeY);
 	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
@@ -95,13 +95,16 @@ void PEditorGame::SetupInterface()
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
-	for (auto& Item : GetTileset("Tileset1"))
+	auto Tileset = GetTileset("Tileset1");
+	auto TilesetTexture = Tileset->Texture;
+
+	for (auto& Item : Tileset->Items)
 	{
-		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
-
+		auto NewItem = ItemView->AddItem<PButton>();
 		auto Button = NewItem->GetWidget<PButton>();
+		Button->SetResizeMode(RM_Fixed, RM_Fixed);
+		Button->SetFixedSize(32, 32);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
@@ -111,7 +114,7 @@ void PEditorGame::SetupInterface()
 		// 16x6
 		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
 		Button->AddChild(Img);
-		Img->SetFixedSize({ 24, 24 });
+		Img->SetFixedSize({ 30, 30 });
 		Img->SetResizeMode(RM_Fixed, RM_Fixed);
 		Img->SetUseSourceRect(true);
 
@@ -202,9 +205,10 @@ void PEditorGame::OnCreateButtonClicked()
 		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position",	  { X, Y }	   },
-				{ "SubIndexes", { 0, 0, 0, 0 } },
-			});
+				{ "Position", { X, Y }   },
+				{ "Tileset",	 "Tileset1" },
+				{ "Index",	   0			 }
+			   });
 		}
 	}
 	ConstructChunk(JsonData);
@@ -267,7 +271,7 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	auto Sender = PWidget::GetSender<PButton>();
 	if (State)
 	{
-		mCurrentTilesetItem = Sender->GetCustomData<STilesetItem>();
+		mCurrentTilesetItem = Sender->GetCustomData<STile>();
 	}
 	else
 	{
@@ -292,45 +296,6 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 	}
 }
 
-void PEditorGame::UpdateTile(PTile* Tile)
-{
-	auto R = GetRenderer();
-
-	std::array SubIndexes = { -1, -1, -1, -1 };
-	switch (mCurrentTilesetItem->SizeType)
-	{
-		case TST_1X1:
-			if (mBrushSize == 1)
-			{
-				SubIndexes[Tile->GetQuadrantIndex(R->GetMouseWorldPosition())] = mCurrentTilesetItem->LinearIndex;
-			}
-			else
-			{
-				SubIndexes.fill(mCurrentTilesetItem->LinearIndex);
-			}
-			break;
-		case TST_2X2:
-			SubIndexes[0] = mCurrentTilesetItem->LinearIndex;
-			SubIndexes[1] = mCurrentTilesetItem->LinearIndex + 1;
-			SubIndexes[2] = mCurrentTilesetItem->LinearIndex + gTilesetWidth;
-			SubIndexes[3] = mCurrentTilesetItem->LinearIndex + gTilesetWidth + 1;
-			break;
-	}
-
-	// Set the subindexes of the target tile
-	Tile->Data.SetSubIndexes(SubIndexes);
-
-	// If we're painting a 2X2 item or greater, and the brush size is greater than 1, find all
-	// possible overlapping tiles and set their subindexes.
-	if (mCurrentTilesetItem->SizeType != TST_1X1 && mBrushSize > 1)
-	{
-		auto Tiles = mCurrentChunk->GetAdjacentTiles(Tile, mBrushSize);
-		for (const auto T : Tiles)
-		{
-			T->Data.SetSubIndexes(SubIndexes);
-		}
-	}
-}
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
 	if (HasInputContext(IC_Select))
@@ -346,7 +311,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		}
 		if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
 		{
-			UpdateTile(Tile);
+			Tile->TilesetIndex = mCurrentTilesetItem->Index;
 		}
 	}
 }

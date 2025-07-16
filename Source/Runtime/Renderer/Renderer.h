@@ -78,12 +78,11 @@ public:
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;
-	void DrawRectAt(const FRect& Rect, const FVector2& Position, float Thickness = 0.0f) const;
-	void DrawFillRectAt(const FRect& Rect, const FVector2& Position) const;
+	void DrawRectAt(const FRect& Rect, float Thickness = 0.0f) const;
+	void DrawFillRectAt(const FRect& Rect) const;
 	void DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
-	void DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
-					   const FVector2& Position) const;
-	void DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
+	void DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
+	void DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 					  int32_t Index) const;
 };
 

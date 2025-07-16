@@ -1,27 +1,21 @@
 #pragma once
 
+#include "Core/Logging.h"
+#include "Core/Rect.h"
 #include "Core/Vector.h"
+#include "Texture.h"
 
 #include <map>
 #include <string>
 #include <vector>
 
-constexpr float gTilesetItemSize = 32.0f;
-constexpr float gTilesetItemHalfSize = gTilesetItemSize / 2.0f;
+constexpr float gTilesetItemSize = 8.0f;
 constexpr int	gTilesetWidth = 16;
 constexpr int	gTilesetHeight = 6;
 
-#define TILE_HALF { gTilesetItemHalfSize, gTilesetItemHalfSize }
-#define TILE_FULL { gTilesetItemSize, gTilesetItemSize }
-
+struct STile;
+struct SBlock;
 struct STileset;
-struct STilesetItem;
-
-enum ETileSizeType
-{
-	TST_1X1,
-	TST_2X2,
-};
 
 enum ETileType
 {
@@ -33,90 +27,43 @@ enum ETileType
 	TT_Portal
 };
 
-template <typename T>
-static int32_t ToLinearIndex(const TVector2<T>& Index, const int32_t Factor = gTilesetWidth)
+struct STile
 {
-	return Index.Y * Factor + Index.X;
-}
+	STileset* Tileset = nullptr;
+	int32_t	  Index;
 
-template <typename T>
-static TVector2<T> ToCoordIndex(const int32_t Index, const int32_t Factor = gTilesetWidth)
-{
-	return { static_cast<float>(Index % Factor), static_cast<float>(Index / Factor) };
-}
-
-struct STilesetItem
-{
-	std::string	  Name;
-	int32_t		  LinearIndex;
-	ETileType	  Type = TT_Normal;
-	ETileSizeType SizeType = TST_2X2;
-
-	STilesetItem(const std::string& InName, const FVector2& InIndex, ETileType InType, ETileSizeType InSizeType)
-		: Name(InName), LinearIndex(ToLinearIndex(InIndex)), Type(InType), SizeType(InSizeType)
+	STile(const int32_t InIndex)
+		: Index(InIndex)
 	{
 	}
-
-	FRect GetSourceRect()
-	{
-		auto CoordIndex = ToCoordIndex<float>(LinearIndex);
-		auto Factor = SizeType == TST_1X1 ? gTilesetItemHalfSize : gTilesetItemSize;
-		return {
-			CoordIndex * gTilesetItemHalfSize, { Factor, Factor }
-		};
-	}
-
-	FRect GetDestRect()
-	{
-		auto	 CoordIndex = ToCoordIndex<float>(LinearIndex);
-		FVector2 Size;
-		switch (SizeType)
-		{
-			case TST_1X1:
-				Size = { HALF_TILE_SIZE,
-						 HALF_TILE_SIZE };
-				break;
-			case TST_2X2:
-				Size = { TILE_SIZE,
-						 TILE_SIZE };
-				break;
-		}
-
-		return { CoordIndex * HALF_TILE_SIZE, Size };
-	}
+	FRect GetSourceRect();
 };
 
 struct STileset
 {
-	std::string				  Name{};
-	std::vector<STilesetItem> Items;
-	PTexture*				  Texture = nullptr;
+	std::string		   Name{};
+	std::vector<STile> Items;
+	std::vector<int>   Blocking;
+	int32_t			   Width = 0;
+	int32_t			   Height = 0;
+	PTexture*		   Texture = nullptr;
 
 	STileset() = default;
-	STileset(const std::string& InName)
-		: Name(InName) {}
-	STileset(const std::string& InName, const std::initializer_list<STilesetItem>& InItems)
-		: Name(InName)
+	STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<int>& InBlocking)
+		: Name(InName), Width(InWidth), Height(InHeight)
 	{
-		for (auto Iter = InItems.begin(); Iter != InItems.end(); Iter++)
+		for (auto Iter = InBlocking.begin(); Iter != InBlocking.end(); Iter++)
 		{
-			Items.push_back(*Iter);
+			Blocking.push_back(*Iter);
+		}
+
+		for (int32_t Index = 0; Index < InWidth * InHeight; Index++)
+		{
+			Items.push_back(STile(Index));
 		}
 	}
 
-	STilesetItem* GetItemByLinearIndex(int LinearIndex)
-	{
-		for (auto& Item : Items)
-		{
-			if (Item.LinearIndex == LinearIndex)
-			{
-				return &Item;
-			}
-		}
-		return nullptr;
-	}
-
-	int32_t IndexOf(const STilesetItem* Ptr)
+	int32_t IndexOf(const STile* Ptr)
 	{
 		for (int32_t Index = 0; Index < Items.size(); Index++)
 		{
@@ -133,88 +80,15 @@ struct STileset
 	auto end() { return Items.end(); }
 };
 
-struct STileData
-{
-	using SubIndexType = std::array<int32_t, 4>;
-
-	int32_t		 X;
-	int32_t		 Y;
-	STileset*	 Tileset;
-	SubIndexType SubIndexes = { 0, 0, 0, 0 };
-
-	STilesetItem* GetItemBySubIndex(int Index = 0) const
-	{
-		return Tileset->GetItemByLinearIndex(SubIndexes[Index]);
-	}
-	ETileType GetType() const
-	{
-		return GetItemBySubIndex(0)->Type;
-	}
-	PTexture* GetTexture() const
-	{
-		return Tileset->Texture;
-	}
-	FRect GetSourceRect(int Index = 0) const
-	{
-		auto Item = GetItemBySubIndex(Index);
-		if (!Item)
-		{
-			return {};
-		}
-		return Item->GetSourceRect();
-	}
-	void SetSubIndexes(const SubIndexType& InSubIndexes)
-	{
-		for (int32_t Index = 0; Index < 4; Index++)
-		{
-			if (InSubIndexes[Index] < 0)
-			{
-				continue;
-			}
-			SubIndexes[Index] = InSubIndexes[Index];
-		}
-	}
-};
-
 static std::map<std::string, STileset> gTilesets = {
 	{
 		"Tileset1",
-		{
-			"Tileset1",
-			{
-				{ "Grass 1", { 0, 0 }, TT_Normal, TST_1X1 },
-				{ "Grass 2", { 9, 3 }, TT_Normal, TST_1X1 },
-				{ "Grass 3", { 12, 2 }, TT_Normal, TST_1X1 },
-				{ "Rock", { 10, 2 }, TT_Obstacle, TST_2X2 },
-				{ "Roof", { 8, 3 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Top-Left", { 5, 0 }, TT_Obstacle, TST_2X2 },
-				{ "Roof Bottom-Left 1", { 5, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Bottom-Left 2", { 6, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 1", { 2, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 2", { 3, 5 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 3", { 7, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Center 4", { 7, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Top-Right", { 8, 0 }, TT_Obstacle, TST_2X2 },
-				{ "Roof Bottom-Right 1", { 8, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Bottom-Right 2", { 9, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Left 1", { 5, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Left 2", { 6, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Right 1", { 8, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Roof Right 2", { 9, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Wall", { 2, 2 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Left", { 15, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Right", { 15, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Left Corner", { 14, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Right Corner", { 15, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Wall Bottom", { 10, 1 }, TT_Obstacle, TST_1X1 },
-				{ "Window", { 10, 0 }, TT_Obstacle, TST_1X1 },
-				{ "Brick", { 11, 4 }, TT_Obstacle, TST_1X1 },
-				{ "Sign", { 6, 4 }, TT_Obstacle, TST_2X2 },
-				{ "Door", { 11, 0 }, TT_Normal, TST_2X2 },
-				{ "Fence Bottom", { 5, 5 }, TT_Obstacle, TST_1X1 },
-				{ "Fence Top", { 14, 0 }, TT_Obstacle, TST_1X1 },
-			},
-		},
+		{ "Tileset1", // Name
+		  16,		  // Width
+		  6,		  // Height
+		  {
+			  42, 43, 58, 59, // Rock
+		  } },
 	 }
 };
 
@@ -232,10 +106,14 @@ static void LoadTileset(const std::string& Name)
 			return;
 		}
 	}
+	for (auto& Item : Tileset->Items)
+	{
+		Item.Tileset = Tileset;
+	}
 	Tileset->Texture = Tex;
 }
 
-static STileset& GetTileset(const std::string& Name)
+static STileset* GetTileset(const std::string& Name)
 {
 	if (!gTilesets.contains(Name))
 	{
@@ -247,5 +125,5 @@ static STileset& GetTileset(const std::string& Name)
 	{
 		LoadTileset(Name);
 	}
-	return *Tileset;
+	return Tileset;
 }

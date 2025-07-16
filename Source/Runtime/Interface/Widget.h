@@ -207,6 +207,7 @@ public:
 	}
 
 	FVector2 GetFixedSize() const { return mFixedSize; }
+	void	 SetFixedSize(float Width, float Height) { mFixedSize = FVector2(Width, Height); }
 	void	 SetFixedSize(const FVector2& Size) { mFixedSize = Size; }
 	void	 SetFixedWidth(float W) { mFixedSize.X = W; }
 	void	 SetFixedHeight(float H) { mFixedSize.Y = H; }

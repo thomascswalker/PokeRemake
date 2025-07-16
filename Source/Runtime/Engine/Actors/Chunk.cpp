@@ -36,19 +36,20 @@ void PChunk::Start()
 	mSizeX = mData.at("SizeX").get<int>();
 	mSizeY = mData.at("SizeY").get<int>();
 
-	mTileset = &GetTileset(mData.at("Tileset"));
+	mTileset = GetTileset(mData.at("Tileset"));
 
-	for (const auto& TileData : mData.at("Tiles"))
+	for (const auto& Tile : mData.at("Tiles"))
 	{
-		auto Pos = TileData.at("Position");
+		auto Pos = Tile.at("Position");
 		auto X = Pos[0].get<int>();
 		auto Y = Pos[1].get<int>();
-		auto Tile = W->ConstructActor<PTile>(X, Y);
-		Tile->Data.SubIndexes = TileData.at("SubIndexes");
-		Tile->Chunk = this;
-		Tile->Data.Tileset = mTileset;
-		Tile->SetParent(this);
-		mTiles.emplace_back(Tile);
+		auto TileActor = W->ConstructActor<PTile>(X, Y);
+		auto Index = Tile.at("Index").get<int>();
+		TileActor->TilesetIndex = Index;
+		TileActor->Chunk = this;
+		TileActor->Tileset = mTileset;
+		TileActor->SetParent(this);
+		mTiles.push_back(TileActor);
 	}
 
 #if _EDITOR
@@ -61,9 +62,35 @@ void PChunk::Start()
 
 void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
+	auto WorldPosition = GetWorldPosition();
+	auto BlockSize = FVector2(BLOCK_SIZE, BLOCK_SIZE);
+	for (int Index = 0; Index < mTiles.size(); Index++)
+	{
+		int X = Index % mSizeX;
+		int Y = Index / mSizeX;
+
+		// Only draw on even [X, Y] indexes
+		if (X % 2 || Y % 2)
+		{
+			continue;
+		}
+
+		auto Tile = GetTileAt(X, Y);
+		if (!Tile)
+		{
+			continue;
+		}
+		FRect BlockRect = {
+			Tile->GetWorldPosition(), { BLOCK_SIZE, BLOCK_SIZE }
+		};
+
+		Renderer->SetDrawColor(PColor::Black);
+		Renderer->DrawRectAt(BlockRect, 2.0f);
+	}
+
 	const FRect Dest = GetWorldBounds();
 	Renderer->SetDrawColor(PColor::Red);
-	Renderer->DrawRectAt(Dest, mPosition, 2.0f);
+	Renderer->DrawRectAt(Dest, 2.0f);
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
@@ -72,12 +99,11 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 		if (mMouseOver)
 		{
 			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(Dest.Expanded(ExpandSize),
-								 mPosition - FVector2(ExpandSize * 2, ExpandSize * 2));
+			Renderer->DrawRectAt(Dest.Expanded(ExpandSize));
 		}
 		if (mSelected)
 		{
-			Renderer->DrawFillRectAt(Dest, mPosition);
+			Renderer->DrawFillRectAt(Dest);
 		}
 	}
 #endif
@@ -106,7 +132,37 @@ PTile* PChunk::GetTileAtPosition(const FVector2& Position) const
 	return nullptr; // No tile found at the given position
 }
 
-PTile* PChunk::GetTileAt(int X, int Y)
+SBlock PChunk::GetBlockAtPosition(const FVector2& Position) const
+{
+	SBlock Block;
+
+	if (!GetWorldBounds().Contains(Position))
+	{
+		return Block;
+	}
+
+	// Round the position to the nearest block/tile
+	FVector2 LocalPosition = Position - mPosition;
+	int32_t	 TileX = std::floor(LocalPosition.X / TILE_SIZE) + 2;
+	int32_t	 TileY = std::floor(LocalPosition.Y / TILE_SIZE) + 2;
+	int32_t	 TileIndex = (TileY * mSizeX + TileX);
+
+	Block.Tiles[0] = mTiles[TileIndex];
+	Block.Tiles[1] = mTiles[TileIndex + 1];
+	Block.Tiles[2] = mTiles[TileIndex + mSizeX];
+	Block.Tiles[3] = mTiles[TileIndex + mSizeX + 1];
+
+	for (auto Tile : Block.Tiles)
+	{
+		if (!Tile)
+		{
+			continue;
+		}
+	}
+	return Block;
+}
+
+PTile* PChunk::GetTileAt(int X, int Y) const
 {
 	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
 	{
@@ -115,24 +171,32 @@ PTile* PChunk::GetTileAt(int X, int Y)
 	auto Index = Y * mSizeX + X;
 	return mTiles.at(Index);
 }
+PTile* PChunk::GetTile(int Index)
+{
+	if (Index < 0 || Index >= mTiles.size())
+	{
+		return nullptr;
+	}
+	return mTiles[Index];
+}
 
-std::vector<PTile*> PChunk::GetAdjacentTiles(const PTile* OriginTile, int32_t BrushSize) const
+std::vector<PTile*> PChunk::GetAdjacentBlocks(const PTile* OriginBlock, int32_t BrushSize) const
 {
 	std::vector<PTile*> Result = {};
-	auto				TileCenter = OriginTile->GetCenter();
+	auto				BlockCenter = OriginBlock->GetCenter();
 
-	for (int32_t Y = 0; Y < BrushSize + 1; Y++)
-	{
-		for (int32_t X = 0; X < BrushSize + 1; X++)
-		{
-			FVector2 TargetPosition = TileCenter + FVector2(X * TILE_SIZE, Y * TILE_SIZE);
-			auto	 Adjacent = GetTileAtPosition(TargetPosition);
-			if (Adjacent && Adjacent != OriginTile)
-			{
-				Result.push_back(Adjacent);
-			}
-		}
-	}
+	// for (int32_t Y = 0; Y < BrushSize + 1; Y++)
+	// {
+	// 	for (int32_t X = 0; X < BrushSize + 1; X++)
+	// 	{
+	// 		FVector2 TargetPosition = BlockCenter + FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
+	// 		auto	 Adjacent = GetBlockAtPosition(TargetPosition);
+	// 		if (Adjacent && Adjacent != OriginBlock)
+	// 		{
+	// 			Result.push_back(Adjacent);
+	// 		}
+	// 	}
+	// }
 
 	return Result;
 }
@@ -167,16 +231,16 @@ void PChunk::OnKeyUp(SInputEvent* Event)
 		switch (Event->KeyUp)
 		{
 			case SDLK_UP:
-				Direction.Y = -TILE_SIZE;
+				Direction.Y = -BLOCK_SIZE;
 				break;
 			case SDLK_DOWN:
-				Direction.Y = TILE_SIZE;
+				Direction.Y = BLOCK_SIZE;
 				break;
 			case SDLK_LEFT:
-				Direction.X = -TILE_SIZE;
+				Direction.X = -BLOCK_SIZE;
 				break;
 			case SDLK_RIGHT:
-				Direction.X = TILE_SIZE;
+				Direction.X = BLOCK_SIZE;
 				break;
 			default:
 				break;

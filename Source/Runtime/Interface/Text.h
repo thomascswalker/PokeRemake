@@ -8,6 +8,7 @@ class PText : public PWidget
 	float		mFontSize;
 
 public:
+	PText() = default;
 	explicit PText(const std::string& Text, float FontSize = 14.0f)
 		: mText(Text), mFontSize(FontSize)
 	{

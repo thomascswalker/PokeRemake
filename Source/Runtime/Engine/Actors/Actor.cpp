@@ -44,11 +44,6 @@ void PActor::OnMouseEvent(SInputEvent* Event)
 	}
 }
 
-FVector2 PActor::GetDrawPosition() const
-{
-	return mPosition - FVector2(0, CHARACTER_OFFSET);
-}
-
 void PActor::AddComponent(PComponent* Component)
 {
 	Component->SetOwner(this);
@@ -57,5 +52,5 @@ void PActor::AddComponent(PComponent* Component)
 
 void PActor::MoveToTile(int32_t X, int32_t Y)
 {
-	mPosition = FVector2(X * DOUBLE_TILE_SIZE, Y * DOUBLE_TILE_SIZE);
+	mPosition = FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
 }

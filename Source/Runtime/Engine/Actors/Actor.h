@@ -71,9 +71,8 @@ public:
 	void Start() override {}
 	void End() override {}
 
-	void	 Tick(float DeltaTime) override {}
-	void	 Draw(const PRenderer* Renderer) const override {};
-	FVector2 GetDrawPosition() const;
+	void Tick(float DeltaTime) override {}
+	void Draw(const PRenderer* Renderer) const override {};
 
 	PActor* GetParent() const { return mParent; }
 	void	SetParent(PActor* Parent) { mParent = Parent; }
@@ -107,8 +106,8 @@ public:
 		return { Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f) };
 	}
 
-	void MoveToTile(int32_t X, int32_t Y);
-	bool IsBlocking() const { return mBlocking; }
+	void		 MoveToTile(int32_t X, int32_t Y);
+	virtual bool IsBlocking() const { return mBlocking; }
 
 	// Mouse events
 

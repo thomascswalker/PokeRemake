@@ -23,19 +23,19 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (mInputState[0])
 		{
-			mMovementComponent->Move({ DOUBLE_TILE_SIZE, 0 });
+			mMovementComponent->Move({ BLOCK_SIZE * 2, 0 });
 		}
 		else if (mInputState[1])
 		{
-			mMovementComponent->Move({ -DOUBLE_TILE_SIZE, 0 });
+			mMovementComponent->Move({ -BLOCK_SIZE * 2, 0 });
 		}
 		else if (mInputState[2])
 		{
-			mMovementComponent->Move({ 0, DOUBLE_TILE_SIZE });
+			mMovementComponent->Move({ 0, BLOCK_SIZE * 2 });
 		}
 		else if (mInputState[3])
 		{
-			mMovementComponent->Move({ 0, -DOUBLE_TILE_SIZE });
+			mMovementComponent->Move({ 0, -BLOCK_SIZE * 2 });
 		}
 	}
 }
@@ -45,27 +45,21 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 	PCharacter::DebugDraw(Renderer);
 
 	// Draw current tile under the character
-	if (const auto& Tile = mMovementComponent->GetCurrentTile())
-	{
-		Renderer->SetDrawColor(255, 0, 0, 50);
-		Renderer->DrawFillRectAt({ 0, 0, TILE_SIZE, TILE_SIZE },
-								 Tile->GetPosition());
-	}
+	Renderer->SetDrawColor(255, 0, 0, 50);
+	Renderer->DrawFillRectAt(GetWorldBounds());
+
+	auto TargetPosition = mMovementComponent->GetTargetPosition();
 
 	// Draw target tile
-	if (const auto& Tile = mMovementComponent->GetCurrentTile())
-	{
-		Renderer->SetDrawColor(0, 255, 0, 50);
-		Renderer->DrawFillRectAt({ 0, 0, TILE_SIZE, TILE_SIZE },
-								 Tile->GetPosition());
-	}
+	Renderer->SetDrawColor(0, 255, 0, 50);
+	Renderer->DrawFillRectAt({ TargetPosition.X, TargetPosition.Y, BLOCK_SIZE, BLOCK_SIZE });
 
 	// Draw target position
 	if (mMovementComponent->IsMoving())
 	{
 		Renderer->SetDrawColor(255, 0, 128, 255);
-		auto Offset = FVector2(TILE_SIZE, TILE_SIZE);
-		Renderer->DrawPointAt(mMovementComponent->GetTargetPosition() + Offset, 4);
+		auto Offset = FVector2(BLOCK_SIZE, BLOCK_SIZE);
+		Renderer->DrawPointAt(TargetPosition + Offset, 4);
 	}
 }
 

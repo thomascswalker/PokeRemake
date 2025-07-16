@@ -70,6 +70,7 @@ set(SOURCES
         Engine/Actors/ISelectable.h
         Core/Containers.h
         Interface/Panel.h
+        Engine/Tileset.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

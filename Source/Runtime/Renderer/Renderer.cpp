@@ -149,7 +149,7 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
 
-		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f * RENDER_SCALE;
 		return true;
 	}
 	return false;
@@ -161,7 +161,7 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 
 	if (const auto CameraView = GetCameraView())
 	{
-		auto Offset = (ScreenPosition * 2.0f) - ScreenSize;
+		auto Offset = (ScreenPosition / RENDER_SCALE / 0.5f) - ScreenSize;
 		auto Position2D = Offset / CameraView->GetZoom();
 
 		const auto ViewPosition = CameraView->GetPosition();
@@ -190,11 +190,13 @@ void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
 }
+
 void PRenderer::SetClipRect(const FRect& ClipRect) const
 {
 	SDL_Rect Clip = ClipRect.ToSDL_Rect();
 	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
 }
+
 void PRenderer::ReleaseClipRect() const
 {
 	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
@@ -345,10 +347,10 @@ void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 	}
 }
 
-void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position, float Thickness) const
+void PRenderer::DrawRectAt(const FRect& Rect, float Thickness) const
 {
 	FVector2 ScreenPosition;
-	WorldToScreen(Position, &ScreenPosition);
+	WorldToScreen(Rect.GetPosition(), &ScreenPosition);
 	const auto CameraView = GetCameraView();
 	DrawRect({
 				 ScreenPosition.X,
@@ -359,10 +361,10 @@ void PRenderer::DrawRectAt(const FRect& Rect, const FVector2& Position, float Th
 			 Thickness);
 }
 
-void PRenderer::DrawFillRectAt(const FRect& Rect, const FVector2& Position) const
+void PRenderer::DrawFillRectAt(const FRect& Rect) const
 {
 	FVector2 ScreenPosition;
-	WorldToScreen(Position, &ScreenPosition);
+	WorldToScreen(Rect.GetPosition(), &ScreenPosition);
 	const auto CameraView = GetCameraView();
 	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
 				   Rect.H * CameraView->GetZoom() });
@@ -380,8 +382,7 @@ void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
 
-void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest,
-							  const FVector2& Position) const
+void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
 {
 	if (!Texture)
 	{
@@ -390,43 +391,26 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
 	FVector2 ScreenPosition;
-	WorldToScreen(Position, &ScreenPosition);
-	const auto		Min = Dest.Min() + ScreenPosition;
-	const auto		Max = Dest.Max() + ScreenPosition;
+	WorldToScreen(Dest.GetPosition(), &ScreenPosition);
 	const auto		CameraView = GetCameraView();
-	const SDL_FRect Source2 = { Source.X, Source.Y, Source.W, Source.H };
-	const SDL_FRect Dest2 = { Min.X, Min.Y, (Max.X - Min.X) * CameraView->GetZoom(),
-							  (Max.Y - Min.Y) * CameraView->GetZoom() };
+	const SDL_FRect Source2 = Source.ToSDL_FRect();
+	auto			DestSize = Dest.GetSize() * CameraView->GetZoom();
+	const SDL_FRect Dest2 = { ScreenPosition.X, ScreenPosition.Y, DestSize.X, DestSize.Y };
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
 
-void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Rect, const FVector2& Position,
+void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 							 int32_t Index) const
 {
 	if (!Texture)
 	{
 		return;
 	}
-	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	const auto ViewPosition = GetCameraView()->GetPosition();
-	const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-	const auto Offset = Position - ViewPosition2D;
-	const auto ScreenSize = GetScreenSize();
-
-	auto Min = Rect.Min() + Offset;
-	auto Max = Rect.Max() + Offset;
-
-	// Camera position
-	Min = (Min + ScreenSize) * 0.5f;
-	Max = (Max + ScreenSize) * 0.5f;
-
-	const float		SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
-	const SDL_FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
-	const SDL_FRect Dest = { Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y };
-
-	SDL_RenderTexture(mContext->Renderer, Tex, &Source, &Dest);
+	const float SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
+	const FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
+	DrawTextureAt(Texture, Source, Dest);
 }
 
 float PRenderer::GetTextWidth(const std::string& Text) const
