@@ -190,11 +190,13 @@ void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
 }
+
 void PRenderer::SetClipRect(const FRect& ClipRect) const
 {
 	SDL_Rect Clip = ClipRect.ToSDL_Rect();
 	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
 }
+
 void PRenderer::ReleaseClipRect() const
 {
 	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };

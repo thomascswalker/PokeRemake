@@ -126,13 +126,13 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	return true;
 }
 
-SBlock PCharacterMovementComponent::GetCurrentBlock() const
+PTile* PCharacterMovementComponent::GetCurrentTile() const
 {
 	if (!mCurrentChunk)
 	{
 		return {};
 	}
-	return mCurrentChunk->GetBlockAtPosition(mOwner->GetWorldPosition());
+	return mCurrentChunk->GetTileAtPosition(mOwner->GetWorldPosition());
 }
 
 SBlock PCharacterMovementComponent::GetTargetTile() const

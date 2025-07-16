@@ -71,9 +71,8 @@ public:
 	void Start() override {}
 	void End() override {}
 
-	void	 Tick(float DeltaTime) override {}
-	void	 Draw(const PRenderer* Renderer) const override {};
-	FVector2 GetDrawPosition() const;
+	void Tick(float DeltaTime) override {}
+	void Draw(const PRenderer* Renderer) const override {};
 
 	PActor* GetParent() const { return mParent; }
 	void	SetParent(PActor* Parent) { mParent = Parent; }

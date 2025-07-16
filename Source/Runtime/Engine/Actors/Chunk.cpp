@@ -62,34 +62,31 @@ void PChunk::Start()
 
 void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
-	// auto WorldPosition = GetWorldPosition();
-	// auto BlockSize = FVector2(BLOCK_SIZE, BLOCK_SIZE);
-	//
-	// for (int Index = 0; Index < mTiles.size(); Index++)
-	// {
-	// 	int X = Index % mSizeX;
-	// 	int Y = Index / mSizeX;
-	//
-	// 	// Only draw on even [X, Y] indexes
-	// 	if (X % 2 || Y % 2)
-	// 	{
-	// 		continue;
-	// 	}
-	//
-	// 	LogDebug("Drawing [{}, {}]", X, Y);
-	// 	auto Tile = GetTileAt(X, Y);
-	// 	if (!Tile)
-	// 	{
-	// 		continue;
-	// 	}
-	// 	auto Block = Tile->GetBlock();
-	// 	if (Block.IsValid() && Block.IsBlocking())
-	// 	{
-	// 		FVector2 BlockPosition = Block.Tiles[0]->GetPosition();
-	// 		Renderer->SetDrawColor(PColor::Red);
-	// 		Renderer->DrawFillRectAt({ BlockPosition + WorldPosition, BlockSize });
-	// 	}
-	// }
+	auto WorldPosition = GetWorldPosition();
+	auto BlockSize = FVector2(BLOCK_SIZE, BLOCK_SIZE);
+	for (int Index = 0; Index < mTiles.size(); Index++)
+	{
+		int X = Index % mSizeX;
+		int Y = Index / mSizeX;
+
+		// Only draw on even [X, Y] indexes
+		if (X % 2 || Y % 2)
+		{
+			continue;
+		}
+
+		auto Tile = GetTileAt(X, Y);
+		if (!Tile)
+		{
+			continue;
+		}
+		FRect BlockRect = {
+			Tile->GetWorldPosition(), { BLOCK_SIZE, BLOCK_SIZE }
+		};
+
+		Renderer->SetDrawColor(PColor::Black);
+		Renderer->DrawRectAt(BlockRect, 2.0f);
+	}
 
 	const FRect Dest = GetWorldBounds();
 	Renderer->SetDrawColor(PColor::Red);
@@ -128,7 +125,6 @@ PTile* PChunk::GetTileAtPosition(const FVector2& Position) const
 	{
 		if (Tile->Contains(Position))
 		{
-			LogDebug("{}", Position.ToString().c_str());
 			// Return a pointer to the tile
 			return Tile;
 		}
@@ -160,10 +156,8 @@ SBlock PChunk::GetBlockAtPosition(const FVector2& Position) const
 	{
 		if (!Tile)
 		{
-			LogWarning("No tile found");
 			continue;
 		}
-		LogDebug("Tile {}: {}", Tile->GetPosition().ToString().c_str(), Tile->IsBlocking());
 	}
 	return Block;
 }

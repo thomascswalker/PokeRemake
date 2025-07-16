@@ -46,7 +46,10 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	{
 		Index = CurrentAnim->GetCurrentIndex();
 	}
-	Renderer->DrawSpriteAt(mSprite.GetTexture(), GetWorldBounds(), Index);
+
+	auto Bounds = GetWorldBounds();
+	Bounds.Y -= CHARACTER_OFFSET;
+	Renderer->DrawSpriteAt(mSprite.GetTexture(), Bounds, Index);
 }
 
 FRect PCharacter::GetLocalBounds() const

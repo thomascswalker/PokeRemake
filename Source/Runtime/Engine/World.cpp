@@ -120,14 +120,12 @@ PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 			auto Bounds = Chunk->GetWorldBounds();
 			Bounds.W *= 2.0f;
 			Bounds.H *= 2.0f;
-			LogDebug("Chunk bounds: {}", Bounds.ToString().c_str());
 			if (Bounds.Contains(Position))
 			{
 				return Chunk;
 			}
 		}
 	}
-	LogError("No chunk found at: {}", Position.ToString().c_str());
 	return nullptr;
 }
 PActor* PWorld::GetCharacterAtPosition(const FVector2& Position) const

@@ -44,11 +44,6 @@ void PActor::OnMouseEvent(SInputEvent* Event)
 	}
 }
 
-FVector2 PActor::GetDrawPosition() const
-{
-	return mPosition - FVector2(0, CHARACTER_OFFSET);
-}
-
 void PActor::AddComponent(PComponent* Component)
 {
 	Component->SetOwner(this);
