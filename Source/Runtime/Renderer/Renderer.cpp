@@ -146,10 +146,9 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 	if (CameraView)
 	{
 		const auto ViewPosition = CameraView->GetPosition();
-		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
+		const auto Offset = (WorldPosition - ViewPosition) * CameraView->GetZoom() * RENDER_SCALE;
 
-		*ScreenPosition = (Offset + ScreenSize) * 0.5f * RENDER_SCALE;
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
 	}
 	return false;
@@ -378,7 +377,7 @@ void PRenderer::DrawFillRectAt(const FRect& Rect) const
 {
 	FRect ScreenRect;
 	WorldToScreen(Rect, &ScreenRect);
-	DrawRect(ScreenRect);
+	DrawFillRect(ScreenRect);
 }
 void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize) const
 {

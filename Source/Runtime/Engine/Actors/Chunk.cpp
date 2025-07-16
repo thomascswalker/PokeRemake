@@ -86,7 +86,15 @@ void PChunk::Draw(const PRenderer* Renderer) const
 
 void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
-	// Draw each tile outline
+	Renderer->SetDrawColor(255, 0, 0, 128);
+	for (const auto& Tile : mTiles)
+	{
+		if (Tile.IsBlocking())
+		{
+			Renderer->DrawFillRectAt(Tile.GetDestRect());
+		}
+	}
+
 	Renderer->SetDrawColor(200, 200, 200, 255);
 	FVector2 Max = GetWorldBounds().Max();
 	for (int X = 0; X < mSizeX; X++)
