@@ -46,8 +46,10 @@ class PAbstractView : public PWidget
 public:
 	PAbstractView()
 	{
-		mLayoutMode = LM_Vertical;
+		mLayoutMode = LM_Grid;
 		mResizeModeH = RM_Grow;
+		mGridWidth = 3;
+		Padding = { 0 };
 	}
 
 	void OnMouseEvent(SInputEvent* Event) override

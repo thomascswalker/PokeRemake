@@ -140,6 +140,8 @@ namespace Layout
 						Widget->H = SumH + Padding;
 					}
 					break;
+				case LM_Grid:
+					break;
 			}
 		}
 
@@ -221,6 +223,15 @@ namespace Layout
 					break;
 				case LM_Vertical:
 					DY += Child->H + Padding;
+					break;
+				case LM_Grid:
+					DX += Child->W + Padding;
+					// Move to next row
+					if (DX >= Rect.W)
+					{
+						DY += Child->H + Padding;
+						DX = Padding;
+					}
 					break;
 			}
 		}

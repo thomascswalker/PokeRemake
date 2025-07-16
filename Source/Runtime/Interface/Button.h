@@ -3,6 +3,7 @@
 #include "AbstractButton.h"
 #include "Core/Color.h"
 #include "Core/Delegate.h"
+#include "Image.h"
 #include "Text.h"
 #include "Widget.h"
 
@@ -10,12 +11,22 @@ constexpr float gButtonTextSize = 16.0f;
 
 class PButton : public PAbstractButton
 {
-	PText mText;
+	PText  mText{};
+	PImage mImage{};
 
 public:
-	PButton()
-		: mText()
+	PButton() = default;
+
+	template <typename T>
+	PButton(T* Sender, void (T::*Delegate)())
 	{
+		Clicked.AddRaw(Sender, Delegate);
+	}
+
+	template <typename T>
+	PButton(T* Sender, void (T::*Delegate)(bool))
+	{
+		Checked.AddRaw(Sender, Delegate);
 	}
 
 	PButton(const std::string& Label)
@@ -71,6 +82,20 @@ public:
 		// Border
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(R);
+	}
+
+	void DrawChildren(const PRenderer* Renderer) const override
+	{
+		PWidget::DrawChildren(Renderer);
+
+		if (mChecked)
+		{
+			Renderer->SetDrawColor(PColor::UISecondary.WithAlpha(128));
+			for (auto Child : mChildren)
+			{
+				Renderer->DrawFillRect(Child->GetGeometry());
+			}
+		}
 	}
 
 	float GetFontSize() const { return mText.GetFontSize(); }

@@ -8,6 +8,7 @@ class PImage : public PWidget
 	bool	  mUseSourceRect;
 
 public:
+	PImage() = default;
 	PImage(PTexture* Texture)
 		: mTexture(Texture), mUseSourceRect(false) {}
 	PImage(const std::string& Name)
