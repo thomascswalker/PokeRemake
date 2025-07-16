@@ -48,7 +48,7 @@ void PEditorGame::SetupInterface()
 	const auto MainPanel = mWorld->ConstructWidget<PPanel>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
-	MainPanel->SetFixedWidth(200);
+	MainPanel->SetFixedWidth(340);
 
 	// Files
 
@@ -93,6 +93,7 @@ void PEditorGame::SetupInterface()
 	// Tiles
 
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
+	ItemView->SetGridWidth(16);
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
@@ -101,25 +102,29 @@ void PEditorGame::SetupInterface()
 
 	for (auto& Item : Tileset->Items)
 	{
+		const int ItemSize = 20;
+
+		// Create the image for this button
+		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
+		Img->SetFixedSize(ItemSize);
+		Img->SetResizeMode(RM_Fixed, RM_Fixed);
+		Img->SetUseSourceRect(true);
+		Img->Padding = { 0 };
+		FRect SourceRect = Item.GetSourceRect();
+		Img->SetSourceRect(SourceRect);
+
+		// Create the button item
 		auto NewItem = ItemView->AddItem<PButton>();
 		auto Button = NewItem->GetWidget<PButton>();
+		Button->AddChild(Img);
+		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
-		Button->SetFixedSize(32, 32);
+		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
 		ItemViewButtonGroup->AddButton(Button);
-
-		// 16x6
-		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
-		Button->AddChild(Img);
-		Img->SetFixedSize({ 30, 30 });
-		Img->SetResizeMode(RM_Fixed, RM_Fixed);
-		Img->SetUseSourceRect(true);
-
-		FRect SourceRect = Item.GetSourceRect();
-		Img->SetSourceRect(SourceRect);
 	}
 
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
@@ -207,8 +212,9 @@ void PEditorGame::OnCreateButtonClicked()
 		for (int Y = 0; Y < TileCountY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position", { X, Y } },
-				{ "Index",	   0		 }
+				{ "X",	   X },
+				{ "Y",	   Y },
+				{ "Index", 0 }
 			   });
 		}
 	}

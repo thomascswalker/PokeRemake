@@ -23,6 +23,7 @@ enum ELayoutMode
 {
 	LM_Horizontal,
 	LM_Vertical,
+	LM_Grid,
 };
 
 enum EResizeMode
@@ -75,6 +76,7 @@ protected:
 	FVector2 mFixedSize = { 0.0f, 0.0f };
 	FVector2 mOffset = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	int		 mGridWidth = 1;
 
 	bool mMouseOver = false;
 	bool mVisible = true;
@@ -207,10 +209,14 @@ public:
 	}
 
 	FVector2 GetFixedSize() const { return mFixedSize; }
-	void	 SetFixedSize(float Width, float Height) { mFixedSize = FVector2(Width, Height); }
 	void	 SetFixedSize(const FVector2& Size) { mFixedSize = Size; }
+	void	 SetFixedSize(float Width, float Height) { mFixedSize = FVector2(Width, Height); }
+	void	 SetFixedSize(float Value) { mFixedSize = FVector2(Value, Value); }
 	void	 SetFixedWidth(float W) { mFixedSize.X = W; }
 	void	 SetFixedHeight(float H) { mFixedSize.Y = H; }
+
+	int	 GetGridWidth() const { return mGridWidth; }
+	void SetGridWidth(int Size) { mGridWidth = Size; }
 
 	FVector2 GetMaxSize() const { return mMaxSize; }
 	void	 SetMaxSize(const FVector2& MaxSize) { mMaxSize = MaxSize; }

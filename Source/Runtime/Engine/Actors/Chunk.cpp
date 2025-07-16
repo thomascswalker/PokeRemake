@@ -129,6 +129,7 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
 	{
+		auto Dest = GetWorldBounds();
 		Renderer->SetDrawColor(255, 200, 0, 150);
 		if (mMouseOver)
 		{

@@ -42,6 +42,11 @@ struct PColor
 		A = 255;
 	}
 
+	PColor WithAlpha(uint8_t Alpha)
+	{
+		return PColor(R, G, B, Alpha);
+	}
+
 	// Standard colors
 
 	static PColor Red;
