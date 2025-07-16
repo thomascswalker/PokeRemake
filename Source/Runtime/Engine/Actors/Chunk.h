@@ -48,7 +48,7 @@ public:
 
 	STile* GetTile(int Index);
 	STile* GetTileAt(int X, int Y) const;
-	STile* GetTileAtPosition(const FVector2& Position);
+	STile* GetTileAtPosition(const FVector2& Position) const;
 
 	int		 GetSizeX() const { return mSizeX; }
 	int		 GetSizeY() const { return mSizeY; }

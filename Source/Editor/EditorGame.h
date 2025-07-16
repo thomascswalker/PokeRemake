@@ -26,8 +26,8 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
-	float mNewGridSizeX = 16.0f;
-	float mNewGridSizeY = 16.0f;
+	float mNewChunkSizeX = 16.0f;
+	float mNewChunkSizeY = 16.0f;
 
 	uint8_t mInputContext;
 
@@ -60,8 +60,8 @@ public:
 
 	void OnNewButtonClicked();
 	void OnCreateButtonClicked();
-	void OnSizeXChanged(float Value) { mNewGridSizeX = Value; }
-	void OnSizeYChanged(float Value) { mNewGridSizeY = Value; }
+	void OnSizeXChanged(float Value) { mNewChunkSizeX = Value; }
+	void OnSizeYChanged(float Value) { mNewChunkSizeY = Value; }
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
 	void OnSelectButtonChecked(bool State);

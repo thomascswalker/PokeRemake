@@ -88,11 +88,27 @@ void PChunk::Draw(const PRenderer* Renderer) const
 void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
 	// Draw each tile outline
-	Renderer->SetDrawColor(128, 128, 128, 255);
+	Renderer->SetDrawColor(200, 200, 200, 255);
 	for (const auto& Tile : mTiles)
 	{
 		// World position of this tile.
 		Renderer->DrawRectAt(Tile.GetDestRect());
+	}
+
+	// Draw the outline of each block
+	Renderer->SetDrawColor(0, 0, 0, 255);
+	for (const auto& Tile : mTiles)
+	{
+		// Only draw on the top left of a 2x2 tile area.
+		if (Tile.X % 2 || Tile.Y % 2)
+		{
+			continue;
+		}
+		// World position of this block.
+		Renderer->DrawRectAt({
+			Tile.GetPosition(),
+			{ BLOCK_SIZE, BLOCK_SIZE },
+		});
 	}
 
 	// Draw the chunk outline
@@ -110,6 +126,16 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 		if (mSelected)
 		{
 			Renderer->DrawFillRectAt(Dest);
+		}
+	}
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
+	{
+		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
+		auto Tile = GetTileAtPosition(MouseWorldPos);
+		if (Tile)
+		{
+			Renderer->SetDrawColor(PColor::Red);
+			Renderer->DrawRectAt(Tile->GetDestRect());
 		}
 	}
 #endif
@@ -134,14 +160,14 @@ STile* PChunk::GetTile(int Index)
 	return &mTiles[Index];
 }
 
-STile* PChunk::GetTileAtPosition(const FVector2& Position)
+STile* PChunk::GetTileAtPosition(const FVector2& Position) const
 {
 	for (auto& Tile : mTiles)
 	{
 		if (Tile.GetDestRect().Contains(Position))
 		{
 			// Return a pointer to the tile
-			return &Tile;
+			return const_cast<STile*>(&Tile);
 		}
 	}
 	return nullptr; // No tile found at the given position

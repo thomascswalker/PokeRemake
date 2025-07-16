@@ -40,6 +40,7 @@ public:
 	float		  GetScreenWidth() const;
 	float		  GetScreenHeight() const;
 	FVector2	  GetScreenSize() const;
+	FRect		  GetScreenRect() const;
 	FRect		  GetViewport() const;
 	FVector2	  GetMousePosition() const;
 	FVector2	  GetMouseWorldPosition() const;

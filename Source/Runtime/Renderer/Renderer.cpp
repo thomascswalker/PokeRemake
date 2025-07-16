@@ -236,6 +236,10 @@ void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 
 void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 {
+	if (!Rect.Overlaps(GetScreenRect()))
+	{
+		return;
+	}
 	SDL_FRect SRect;
 	if (Thickness)
 	{
@@ -267,6 +271,10 @@ void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 
 void PRenderer::DrawFillRect(const FRect& Rect) const
 {
+	if (!Rect.Overlaps(GetScreenRect()))
+	{
+		return;
+	}
 	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
 	SDL_RenderFillRect(mContext->Renderer, &SRect);
 }
@@ -385,6 +393,10 @@ void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const 
 	{
 		return;
 	}
+	if (!Dest.Overlaps(GetScreenRect()))
+	{
+		return;
+	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 	auto		 Source2 = Source.ToSDL_FRect();
 	auto		 Dest2 = Dest.ToSDL_FRect();
@@ -436,22 +448,30 @@ float PRenderer::GetTextWidth(const std::string& Text) const
 float PRenderer::GetScreenWidth() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return Width;
 }
 
 float PRenderer::GetScreenHeight() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return Height;
 }
 
 FVector2 PRenderer::GetScreenSize() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return { static_cast<float>(Width), static_cast<float>(Height) };
+}
+
+FRect PRenderer::GetScreenRect() const
+{
+	return {
+		{ 0, 0 },
+		GetScreenSize()
+	};
 }
 
 FRect PRenderer::GetViewport() const
