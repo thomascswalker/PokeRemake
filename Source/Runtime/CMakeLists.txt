@@ -40,10 +40,8 @@ set(SOURCES
         Engine/Mesh.h
         Core/Constants.h
         Engine/Settings.h
-        Engine/Actors/Tile.h
         Engine/Sprite.h
         Engine/Components/CharacterMovementComponent.cpp
-        Engine/Actors/Tile.cpp
         Interface/Widget.h
         Interface/Button.h
         Interface/Spinner.h

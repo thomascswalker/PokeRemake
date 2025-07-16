@@ -9,6 +9,38 @@
 #include "../../../Editor/EditorGame.h"
 #endif
 
+bool STile::IsBlocking() const
+{
+	return Containers::Contains(Tileset->Blocking, Index);
+}
+
+FVector2 STile::GetPosition() const
+{
+	auto Position = Chunk->GetWorldPosition();
+	Position.X += X * TILE_SIZE;
+	Position.Y += Y * TILE_SIZE;
+	return Position;
+}
+
+FRect STile::GetSourceRect() const
+{
+	float TilesetX = Index % Tileset->Width;
+	float TilesetY = Index / Tileset->Width;
+	return {
+		TilesetX * Tileset->ItemSize, // X
+		TilesetY * Tileset->ItemSize, // Y
+		Tileset->ItemSize,			  // Width
+		Tileset->ItemSize,			  // Height
+	};
+}
+
+FRect STile::GetDestRect() const
+{
+	return {
+		GetPosition(), { TILE_SIZE, TILE_SIZE }
+	};
+}
+
 PChunk::PChunk(const json& JsonData)
 {
 	LogDebug("Constructing Chunk from JSON data");
@@ -17,19 +49,8 @@ PChunk::PChunk(const json& JsonData)
 	mData = JsonData;
 }
 
-PChunk::~PChunk()
-{
-	auto W = GetWorld();
-	for (auto Tile : mTiles)
-	{
-		W->DestroyActor(Tile);
-	}
-}
-
 void PChunk::Start()
 {
-	auto W = GetWorld();
-
 	auto Position = mData.at("Position");
 	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
 
@@ -40,16 +61,10 @@ void PChunk::Start()
 
 	for (const auto& Tile : mData.at("Tiles"))
 	{
-		auto Pos = Tile.at("Position");
-		auto X = Pos[0].get<int>();
-		auto Y = Pos[1].get<int>();
-		auto TileActor = W->ConstructActor<PTile>(X, Y);
+		auto X = Tile.at("X").get<int>();
+		auto Y = Tile.at("Y").get<int>();
 		auto Index = Tile.at("Index").get<int>();
-		TileActor->TilesetIndex = Index;
-		TileActor->Chunk = this;
-		TileActor->Tileset = mTileset;
-		TileActor->SetParent(this);
-		mTiles.push_back(TileActor);
+		mTiles.push_back({ mTileset, this, Index, X, Y });
 	}
 
 #if _EDITOR
@@ -60,37 +75,56 @@ void PChunk::Start()
 #endif
 }
 
+void PChunk::Draw(const PRenderer* Renderer) const
+{
+	// Draw each tile
+	for (const auto& Tile : mTiles)
+	{
+		Renderer->DrawTextureAt(mTileset->Texture, Tile.GetSourceRect(), Tile.GetDestRect());
+	}
+}
+
 void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
-	auto WorldPosition = GetWorldPosition();
-	auto BlockSize = FVector2(BLOCK_SIZE, BLOCK_SIZE);
-	for (int Index = 0; Index < mTiles.size(); Index++)
+	Renderer->SetDrawColor(255, 0, 0, 128);
+	for (const auto& Tile : mTiles)
 	{
-		int X = Index % mSizeX;
-		int Y = Index / mSizeX;
-
-		// Only draw on even [X, Y] indexes
-		if (X % 2 || Y % 2)
+		if (Tile.IsBlocking())
 		{
-			continue;
+			Renderer->DrawFillRectAt(Tile.GetDestRect());
 		}
-
-		auto Tile = GetTileAt(X, Y);
-		if (!Tile)
-		{
-			continue;
-		}
-		FRect BlockRect = {
-			Tile->GetWorldPosition(), { BLOCK_SIZE, BLOCK_SIZE }
-		};
-
-		Renderer->SetDrawColor(PColor::Black);
-		Renderer->DrawRectAt(BlockRect, 2.0f);
 	}
 
-	const FRect Dest = GetWorldBounds();
-	Renderer->SetDrawColor(PColor::Red);
-	Renderer->DrawRectAt(Dest, 2.0f);
+	Renderer->SetDrawColor(200, 200, 200, 255);
+	FVector2 Max = GetWorldBounds().Max();
+	for (int X = 0; X < mSizeX; X++)
+	{
+		// Draw tile line
+		if (X % 2)
+		{
+			Renderer->SetDrawColor(200, 200, 200, 255);
+		}
+		// Draw block line
+		else
+		{
+			Renderer->SetDrawColor(0, 0, 0, 255);
+		}
+		Renderer->DrawLineAt({ X * TILE_SIZE, 0 }, { X * TILE_SIZE, Max.Y });
+	}
+	for (int Y = 0; Y < mSizeY; Y++)
+	{
+		// Draw tile line
+		if (Y % 2)
+		{
+			Renderer->SetDrawColor(200, 200, 200, 255);
+		}
+		// Draw block line
+		else
+		{
+			Renderer->SetDrawColor(0, 0, 0, 255);
+		}
+		Renderer->DrawLineAt({ 0, Y * TILE_SIZE }, { Max.X, Y * TILE_SIZE });
+	}
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
@@ -106,6 +140,16 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 			Renderer->DrawFillRectAt(Dest);
 		}
 	}
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
+	{
+		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
+		auto Tile = GetTileAtPosition(MouseWorldPos);
+		if (Tile)
+		{
+			Renderer->SetDrawColor(PColor::Red);
+			Renderer->DrawRectAt(Tile->GetDestRect());
+		}
+	}
 #endif
 }
 
@@ -119,86 +163,38 @@ FRect PChunk::GetWorldBounds() const
 	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
-PTile* PChunk::GetTileAtPosition(const FVector2& Position) const
-{
-	for (auto& Tile : mTiles)
-	{
-		if (Tile->Contains(Position))
-		{
-			// Return a pointer to the tile
-			return Tile;
-		}
-	}
-	return nullptr; // No tile found at the given position
-}
-
-SBlock PChunk::GetBlockAtPosition(const FVector2& Position) const
-{
-	SBlock Block;
-
-	if (!GetWorldBounds().Contains(Position))
-	{
-		return Block;
-	}
-
-	// Round the position to the nearest block/tile
-	FVector2 LocalPosition = Position - mPosition;
-	int32_t	 TileX = std::floor(LocalPosition.X / TILE_SIZE) + 2;
-	int32_t	 TileY = std::floor(LocalPosition.Y / TILE_SIZE) + 2;
-	int32_t	 TileIndex = (TileY * mSizeX + TileX);
-
-	Block.Tiles[0] = mTiles[TileIndex];
-	Block.Tiles[1] = mTiles[TileIndex + 1];
-	Block.Tiles[2] = mTiles[TileIndex + mSizeX];
-	Block.Tiles[3] = mTiles[TileIndex + mSizeX + 1];
-
-	for (auto Tile : Block.Tiles)
-	{
-		if (!Tile)
-		{
-			continue;
-		}
-	}
-	return Block;
-}
-
-PTile* PChunk::GetTileAt(int X, int Y) const
-{
-	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
-	{
-		return nullptr;
-	}
-	auto Index = Y * mSizeX + X;
-	return mTiles.at(Index);
-}
-PTile* PChunk::GetTile(int Index)
+STile* PChunk::GetTile(int Index)
 {
 	if (Index < 0 || Index >= mTiles.size())
 	{
 		return nullptr;
 	}
-	return mTiles[Index];
+	return &mTiles[Index];
 }
 
-std::vector<PTile*> PChunk::GetAdjacentBlocks(const PTile* OriginBlock, int32_t BrushSize) const
+STile* PChunk::GetTileAtPosition(const FVector2& Position) const
 {
-	std::vector<PTile*> Result = {};
-	auto				BlockCenter = OriginBlock->GetCenter();
+	for (auto& Tile : mTiles)
+	{
+		if (Tile.GetDestRect().Contains(Position))
+		{
+			// Return a pointer to the tile
+			return const_cast<STile*>(&Tile);
+		}
+	}
+	return nullptr; // No tile found at the given position
+}
 
-	// for (int32_t Y = 0; Y < BrushSize + 1; Y++)
-	// {
-	// 	for (int32_t X = 0; X < BrushSize + 1; X++)
-	// 	{
-	// 		FVector2 TargetPosition = BlockCenter + FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
-	// 		auto	 Adjacent = GetBlockAtPosition(TargetPosition);
-	// 		if (Adjacent && Adjacent != OriginBlock)
-	// 		{
-	// 			Result.push_back(Adjacent);
-	// 		}
-	// 	}
-	// }
+STile* PChunk::GetTileAt(int X, int Y) const
+{
+	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
+	{
+		return nullptr;
+	}
+	auto		 Index = Y * mSizeX + X;
+	const STile* Tile = &mTiles[Index];
 
-	return Result;
+	return const_cast<STile*>(Tile);
 }
 
 json PChunk::Serialize() const
@@ -214,9 +210,13 @@ json PChunk::Serialize() const
 	Result["Tileset"] = mTileset->Name;
 
 	auto TileArray = json::array();
-	for (const auto& Tile : GetTiles())
+	for (const auto& Tile : mTiles)
 	{
-		TileArray.push_back(Tile->Serialize());
+		json TileResult;
+		TileResult["X"] = Tile.X;
+		TileResult["Y"] = Tile.Y;
+		TileResult["Index"] = Tile.Index;
+		TileArray.push_back(TileResult);
 	}
 	Result["Tiles"] = TileArray;
 	return Result;

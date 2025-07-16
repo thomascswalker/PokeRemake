@@ -23,19 +23,19 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (mInputState[0])
 		{
-			mMovementComponent->Move({ BLOCK_SIZE * 2, 0 });
+			mMovementComponent->Move({ BLOCK_SIZE, 0 });
 		}
 		else if (mInputState[1])
 		{
-			mMovementComponent->Move({ -BLOCK_SIZE * 2, 0 });
+			mMovementComponent->Move({ -BLOCK_SIZE, 0 });
 		}
 		else if (mInputState[2])
 		{
-			mMovementComponent->Move({ 0, BLOCK_SIZE * 2 });
+			mMovementComponent->Move({ 0, BLOCK_SIZE });
 		}
 		else if (mInputState[3])
 		{
-			mMovementComponent->Move({ 0, -BLOCK_SIZE * 2 });
+			mMovementComponent->Move({ 0, -BLOCK_SIZE });
 		}
 	}
 }
@@ -44,13 +44,13 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 {
 	PCharacter::DebugDraw(Renderer);
 
-	// Draw current tile under the character
+	// Draw current block under the character
 	Renderer->SetDrawColor(255, 0, 0, 50);
 	Renderer->DrawFillRectAt(GetWorldBounds());
 
 	auto TargetPosition = mMovementComponent->GetTargetPosition();
 
-	// Draw target tile
+	// Draw target block
 	Renderer->SetDrawColor(0, 255, 0, 50);
 	Renderer->DrawFillRectAt({ TargetPosition.X, TargetPosition.Y, BLOCK_SIZE, BLOCK_SIZE });
 

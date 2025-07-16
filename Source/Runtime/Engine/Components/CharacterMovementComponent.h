@@ -76,6 +76,6 @@ public:
 	bool	 IsMoving() const;
 	bool	 Move(const FVector2& Velocity);
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
-	PTile*	 GetCurrentTile() const;
-	SBlock	 GetTargetTile() const;
+	STile*	 GetCurrentTile() const;
+	STile*	 GetTargetTile() const;
 };

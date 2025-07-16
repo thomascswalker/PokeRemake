@@ -58,9 +58,9 @@ void PEditorGame::SetupInterface()
 
 	const auto NewButton = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewGridSizeX);
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewChunkSizeX);
 	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewGridSizeY);
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewChunkSizeY);
 	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
@@ -192,22 +192,23 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 
 void PEditorGame::OnCreateButtonClicked()
 {
-	LogDebug("Creating new chunk: [{}, {}]", mNewGridSizeX, mNewGridSizeY);
+	int TileCountX = mNewChunkSizeX * 2;
+	int TileCountY = mNewChunkSizeY * 2;
+	LogDebug("Creating new chunk: [{}, {}]", TileCountX, TileCountY);
 
 	json JsonData = {
-		{ "Position", { 0, 0 }	   },
-		{ "SizeX",	   mNewGridSizeX },
-		{ "SizeY",	   mNewGridSizeY },
-		{ "Tileset",	 "Tileset1"	}
+		{ "Position", { 0, 0 }   },
+		{ "SizeX",	   TileCountX },
+		{ "SizeY",	   TileCountY },
+		{ "Tileset",	 "Tileset1" }
 	};
-	for (int X = 0; X < mNewGridSizeX; ++X)
+	for (int X = 0; X < TileCountX; ++X)
 	{
-		for (int Y = 0; Y < mNewGridSizeY; ++Y)
+		for (int Y = 0; Y < TileCountY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position", { X, Y }   },
-				{ "Tileset",	 "Tileset1" },
-				{ "Index",	   0			 }
+				{ "Position", { X, Y } },
+				{ "Index",	   0		 }
 			   });
 		}
 	}
@@ -271,7 +272,7 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	auto Sender = PWidget::GetSender<PButton>();
 	if (State)
 	{
-		mCurrentTilesetItem = Sender->GetCustomData<STile>();
+		mCurrentTilesetItem = Sender->GetCustomData<STileItem>();
 	}
 	else
 	{
@@ -309,9 +310,16 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No tileset item selected.");
 			return;
 		}
-		if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
+		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 		{
-			Tile->TilesetIndex = mCurrentTilesetItem->Index;
+			auto Position = GetRenderer()->GetMouseWorldPosition();
+			auto Tile = Chunk->GetTileAtPosition(Position);
+			if (!Tile)
+			{
+				LogError("Invalid tile at {}", Position.ToString().c_str());
+				return;
+			}
+			Tile->Index = mCurrentTilesetItem->Index;
 		}
 	}
 }

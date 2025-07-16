@@ -146,13 +146,24 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 	if (CameraView)
 	{
 		const auto ViewPosition = CameraView->GetPosition();
-		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
-		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
+		const auto Offset = (WorldPosition - ViewPosition) * CameraView->GetZoom() * RENDER_SCALE;
 
-		*ScreenPosition = (Offset + ScreenSize) * 0.5f * RENDER_SCALE;
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
 	}
 	return false;
+}
+
+bool PRenderer::WorldToScreen(const FRect& WorldRect, FRect* ScreenRect) const
+{
+	FVector2 ScreenPosition, ScreenMax;
+	WorldToScreen(WorldRect.GetPosition(), &ScreenPosition);
+	WorldToScreen(WorldRect.Max(), &ScreenMax);
+	ScreenRect->X = ScreenPosition.X;
+	ScreenRect->Y = ScreenPosition.Y;
+	ScreenRect->W = ScreenMax.X - ScreenPosition.X;
+	ScreenRect->H = ScreenMax.Y - ScreenPosition.Y;
+	return true;
 }
 
 bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const
@@ -224,6 +235,10 @@ void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 
 void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 {
+	if (!Rect.Overlaps(GetScreenRect()))
+	{
+		return;
+	}
 	SDL_FRect SRect;
 	if (Thickness)
 	{
@@ -255,6 +270,10 @@ void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 
 void PRenderer::DrawFillRect(const FRect& Rect) const
 {
+	if (!Rect.Overlaps(GetScreenRect()))
+	{
+		return;
+	}
 	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
 	SDL_RenderFillRect(mContext->Renderer, &SRect);
 }
@@ -349,30 +368,31 @@ void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 
 void PRenderer::DrawRectAt(const FRect& Rect, float Thickness) const
 {
-	FVector2 ScreenPosition;
-	WorldToScreen(Rect.GetPosition(), &ScreenPosition);
-	const auto CameraView = GetCameraView();
-	DrawRect({
-				 ScreenPosition.X,
-				 ScreenPosition.Y,
-				 Rect.W * CameraView->GetZoom(),
-				 Rect.H * CameraView->GetZoom(),
-			 },
-			 Thickness);
+	FRect ScreenRect;
+	WorldToScreen(Rect, &ScreenRect);
+	DrawRect(ScreenRect, Thickness);
 }
 
 void PRenderer::DrawFillRectAt(const FRect& Rect) const
 {
+	FRect ScreenRect;
+	WorldToScreen(Rect, &ScreenRect);
+	DrawFillRect(ScreenRect);
+}
+void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize) const
+{
 	FVector2 ScreenPosition;
-	WorldToScreen(Rect.GetPosition(), &ScreenPosition);
-	const auto CameraView = GetCameraView();
-	DrawFillRect({ ScreenPosition.X, ScreenPosition.Y, Rect.W * CameraView->GetZoom(),
-				   Rect.H * CameraView->GetZoom() });
+	WorldToScreen(Position, &ScreenPosition);
+	DrawText(Text, ScreenPosition, FontSize);
 }
 
 void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
 {
 	if (!Texture)
+	{
+		return;
+	}
+	if (!Dest.Overlaps(GetScreenRect()))
 	{
 		return;
 	}
@@ -390,14 +410,13 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 
-	FVector2 ScreenPosition;
-	WorldToScreen(Dest.GetPosition(), &ScreenPosition);
-	const auto		CameraView = GetCameraView();
-	const SDL_FRect Source2 = Source.ToSDL_FRect();
-	auto			DestSize = Dest.GetSize() * CameraView->GetZoom();
-	const SDL_FRect Dest2 = { ScreenPosition.X, ScreenPosition.Y, DestSize.X, DestSize.Y };
+	FRect ScreenRect;
+	WorldToScreen(Dest, &ScreenRect);
 
-	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
+	const SDL_FRect SDLSource = Source.ToSDL_FRect();
+	const SDL_FRect SDLDest = ScreenRect.ToSDL_FRect();
+
+	SDL_RenderTexture(mContext->Renderer, Tex, &SDLSource, &SDLDest);
 }
 
 void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
@@ -428,22 +447,30 @@ float PRenderer::GetTextWidth(const std::string& Text) const
 float PRenderer::GetScreenWidth() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return Width;
 }
 
 float PRenderer::GetScreenHeight() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return Height;
 }
 
 FVector2 PRenderer::GetScreenSize() const
 {
 	int32_t Width, Height;
-	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
+	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
 	return { static_cast<float>(Width), static_cast<float>(Height) };
+}
+
+FRect PRenderer::GetScreenRect() const
+{
+	return {
+		{ 0, 0 },
+		GetScreenSize()
+	};
 }
 
 FRect PRenderer::GetViewport() const
