@@ -29,13 +29,11 @@ enum ETileType
 
 struct STile
 {
-	STileset*	Tileset = nullptr;
-	std::string Name;
-	int32_t		Index;
-	bool		Blocking = false;
+	STileset* Tileset = nullptr;
+	int32_t	  Index;
 
-	STile(const std::string& InName, const int32_t InIndex, bool InBlocking)
-		: Name(InName), Index(InIndex), Blocking(InBlocking)
+	STile(const int32_t InIndex)
+		: Index(InIndex)
 	{
 	}
 	FRect GetSourceRect();
@@ -51,16 +49,17 @@ struct STileset
 	PTexture*		   Texture = nullptr;
 
 	STileset() = default;
-	STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<STile>& InItems, const std::initializer_list<int>& InBlocking)
+	STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<int>& InBlocking)
 		: Name(InName), Width(InWidth), Height(InHeight)
 	{
-		for (auto Iter = InItems.begin(); Iter != InItems.end(); Iter++)
-		{
-			Items.push_back(*Iter);
-		}
 		for (auto Iter = InBlocking.begin(); Iter != InBlocking.end(); Iter++)
 		{
 			Blocking.push_back(*Iter);
+		}
+
+		for (int32_t Index = 0; Index < InWidth * InHeight; Index++)
+		{
+			Items.push_back(STile(Index));
 		}
 	}
 
@@ -88,40 +87,8 @@ static std::map<std::string, STileset> gTilesets = {
 		  16,		  // Width
 		  6,		  // Height
 		  {
-			  // Name, Coord, Blocking
-			  { "Grass 1", 0, false },
-			  { "Grass 2", 57, false },
-			  { "Grass 3", 44, false },
-			  { "Rock", 42, true },
-			  // { "Roof", { 8, 3 }, TT_Obstacle },
-			  // { "Roof Top-Left", { 5, 0 }, TT_Obstacle },
-			  // { "Roof Bottom-Left 1", { 5, 2 }, TT_Obstacle },
-			  // { "Roof Bottom-Left 2", { 6, 2 }, TT_Obstacle },
-			  // { "Roof Center 1", { 2, 1 }, TT_Obstacle },
-			  // { "Roof Center 2", { 3, 5 }, TT_Obstacle },
-			  // { "Roof Center 3", { 7, 0 }, TT_Obstacle },
-			  // { "Roof Center 4", { 7, 1 }, TT_Obstacle },
-			  // { "Roof Top-Right", { 8, 0 }, TT_Obstacle },
-			  // { "Roof Bottom-Right 1", { 8, 2 }, TT_Obstacle },
-			  // { "Roof Bottom-Right 2", { 9, 2 }, TT_Obstacle },
-			  // { "Roof Left 1", { 5, 1 }, TT_Obstacle },
-			  // { "Roof Left 2", { 6, 1 }, TT_Obstacle },
-			  // { "Roof Right 1", { 8, 1 }, TT_Obstacle },
-			  // { "Roof Right 2", { 9, 1 }, TT_Obstacle },
-			  // { "Wall", { 2, 2 }, TT_Obstacle },
-			  // { "Wall Left", { 15, 0 }, TT_Obstacle },
-			  // { "Wall Right", { 15, 1 }, TT_Obstacle },
-			  // { "Wall Left Corner", { 14, 4 }, TT_Obstacle },
-			  // { "Wall Right Corner", { 15, 4 }, TT_Obstacle },
-			  // { "Wall Bottom", { 10, 1 }, TT_Obstacle },
-			  // { "Window", { 10, 0 }, TT_Obstacle },
-			  // { "Brick", { 11, 4 }, TT_Obstacle },
-			  // { "Sign", { 6, 4 }, TT_Obstacle },
-			  // { "Door", { 11, 0 }, TT_Normal },
-			  // { "Fence Bottom", { 5, 5 }, TT_Obstacle },
-			  // { "Fence Top", { 14, 0 }, TT_Obstacle },
-		  },
-		  { 42 } },
+			  42, 43, 58, 59, // Rock
+		  } },
 	 }
 };
 

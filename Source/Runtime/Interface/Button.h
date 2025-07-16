@@ -13,6 +13,11 @@ class PButton : public PAbstractButton
 	PText mText;
 
 public:
+	PButton()
+		: mText()
+	{
+	}
+
 	PButton(const std::string& Label)
 		: mText(Label)
 	{

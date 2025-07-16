@@ -149,7 +149,7 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 		const auto Offset = (WorldPosition - ViewPosition2D) * CameraView->GetZoom();
 
-		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
+		*ScreenPosition = (Offset + ScreenSize) * 0.5f * RENDER_SCALE;
 		return true;
 	}
 	return false;
@@ -161,7 +161,7 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 
 	if (const auto CameraView = GetCameraView())
 	{
-		auto Offset = (ScreenPosition * 2.0f) - ScreenSize;
+		auto Offset = (ScreenPosition / RENDER_SCALE / 0.5f) - ScreenSize;
 		auto Position2D = Offset / CameraView->GetZoom();
 
 		const auto ViewPosition = CameraView->GetPosition();

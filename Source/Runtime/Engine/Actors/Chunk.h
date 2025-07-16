@@ -13,9 +13,11 @@ class PChunk : public PActor
 	std::vector<PTile*> mTiles;
 	IRect				mGeometry;
 	std::string			mTextureName;
-	int					mSizeX = 0;
-	int					mSizeY = 0;
-	STileset*			mTileset = nullptr;
+	// Width of this chunk in tiles
+	int mSizeX = 0;
+	// Height of this chunk in tiles
+	int		  mSizeY = 0;
+	STileset* mTileset = nullptr;
 
 public:
 	PChunk() {}
@@ -25,9 +27,11 @@ public:
 	void				DebugDraw(const PRenderer* Renderer) const override;
 	FRect				GetLocalBounds() const override;
 	FRect				GetWorldBounds() const override;
-	PTile*				GetBlockAtPosition(const FVector2& Position) const;
-	PTile*				GetBlockAt(int X, int Y);
+	PTile*				GetTileAtPosition(const FVector2& Position) const;
+	SBlock				GetBlockAtPosition(const FVector2& Position) const;
+	PTile*				GetTileAt(int X, int Y) const;
 	std::vector<PTile*> GetTiles() const { return mTiles; }
+	PTile*				GetTile(int Index);
 	int					GetSizeX() const { return mSizeX; }
 	int					GetSizeY() const { return mSizeY; }
 	IVector2			GetSize() const { return { mSizeX, mSizeY }; }

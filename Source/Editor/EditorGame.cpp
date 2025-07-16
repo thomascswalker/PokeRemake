@@ -95,13 +95,16 @@ void PEditorGame::SetupInterface()
 	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
 	ItemView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	auto	   TilesetTexture = gTilesets["Tileset1"].Texture;
 
-	for (auto& Item : GetTileset("Tileset1")->Items)
+	auto Tileset = GetTileset("Tileset1");
+	auto TilesetTexture = Tileset->Texture;
+
+	for (auto& Item : Tileset->Items)
 	{
-		auto NewItem = ItemView->AddItem<PButton>(Item.Name);
-
+		auto NewItem = ItemView->AddItem<PButton>();
 		auto Button = NewItem->GetWidget<PButton>();
+		Button->SetResizeMode(RM_Fixed, RM_Fixed);
+		Button->SetFixedSize(32, 32);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
@@ -111,7 +114,7 @@ void PEditorGame::SetupInterface()
 		// 16x6
 		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
 		Button->AddChild(Img);
-		Img->SetFixedSize({ 24, 24 });
+		Img->SetFixedSize({ 30, 30 });
 		Img->SetResizeMode(RM_Fixed, RM_Fixed);
 		Img->SetUseSourceRect(true);
 

@@ -3,6 +3,8 @@
 #include "Actor.h"
 #include "Engine/Tileset.h"
 #include "Renderer/Renderer.h"
+#include <algorithm>
+#include <complex>
 
 constexpr int CHUNK_SIZE = 20;
 
@@ -49,14 +51,47 @@ public:
 
 	FVector2 GetPosition() const override;
 
+	SBlock GetBlock() const;
 	PTile* GetAdjacent(int32_t InX, int32_t InY);
 
-	// Only checks the bottom-left tile
-	bool IsBlocking() const override
-	{
-		return std::ranges::find(Tileset->Blocking, TilesetIndex) != Tileset->Blocking.end();
-	}
+	bool IsBlocking() const override;
 
 	json Serialize() const override;
 	void Deserialize(const json& Data) override;
+};
+
+struct SBlock
+{
+	std::array<PTile*, 4> Tiles;
+
+	SBlock()
+		: Tiles({ nullptr, nullptr, nullptr, nullptr }) {}
+
+	bool IsValid() const
+	{
+		for (auto Tile : Tiles)
+		{
+			if (!Tile)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bool IsBlocking() const
+	{
+		for (auto Tile : Tiles)
+		{
+			if (!Tile)
+			{
+				continue;
+			}
+			if (Tile->IsBlocking())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 };

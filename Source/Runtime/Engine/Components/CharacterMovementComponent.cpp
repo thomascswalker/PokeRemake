@@ -106,8 +106,8 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	}
 
 	// Check if the new position is walkable
-	const auto Tile = mCurrentChunk->GetBlockAtPosition(NewPosition);
-	if (!Tile || !Tile->IsWalkable())
+	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
+	if (Tile->IsBlocking())
 	{
 		return false;
 	}
@@ -126,21 +126,21 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	return true;
 }
 
-PTile* PCharacterMovementComponent::GetCurrentTile() const
+SBlock PCharacterMovementComponent::GetCurrentBlock() const
 {
 	if (!mCurrentChunk)
 	{
-		return nullptr;
+		return {};
 	}
 	return mCurrentChunk->GetBlockAtPosition(mOwner->GetWorldPosition());
 }
 
-PTile* PCharacterMovementComponent::GetTargetTile() const
+SBlock PCharacterMovementComponent::GetTargetTile() const
 {
 	auto Chunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
 	if (!Chunk)
 	{
-		return nullptr;
+		return {};
 	}
 	return Chunk->GetBlockAtPosition(mTargetPosition);
 }

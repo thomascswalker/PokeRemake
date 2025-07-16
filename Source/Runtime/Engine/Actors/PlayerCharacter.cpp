@@ -45,7 +45,7 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 	PCharacter::DebugDraw(Renderer);
 
 	// Draw current tile under the character
-	if (mMovementComponent->GetCurrentTile())
+	if (mMovementComponent->GetCurrentBlock().IsValid())
 	{
 		Renderer->SetDrawColor(255, 0, 0, 50);
 		Renderer->DrawFillRectAt(GetWorldBounds());
@@ -54,7 +54,7 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 	auto TargetPosition = mMovementComponent->GetTargetPosition();
 
 	// Draw target tile
-	if (mMovementComponent->GetCurrentTile())
+	if (mMovementComponent->GetCurrentBlock().IsValid())
 	{
 		Renderer->SetDrawColor(0, 255, 0, 50);
 		Renderer->DrawFillRectAt({ TargetPosition.X, TargetPosition.Y, BLOCK_SIZE, BLOCK_SIZE });

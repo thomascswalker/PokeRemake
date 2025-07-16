@@ -33,6 +33,7 @@ void PTile::DebugDraw(const PRenderer* Renderer) const
 	FRect		   DestRect = {
 		 WorldPosition, { TILE_SIZE, TILE_SIZE }
 	};
+
 	if (IsBlocking())
 	{
 		Renderer->SetDrawColor(255, 0, 0, 128);
@@ -53,7 +54,7 @@ void PTile::DebugDraw(const PRenderer* Renderer) const
 		}
 		auto BrushSize = G->GetBrushSize();
 		Renderer->SetDrawColor(255, 0, 0, 255);
-		FRect HoverRect = { WorldPosition.X, WorldPosition.Y, TILE_SIZE * BrushSize, TILE_SIZE * BrushSize };
+		FRect HoverRect = { WorldPosition.X, WorldPosition.Y, TILE_SIZE, TILE_SIZE };
 		Renderer->DrawRectAt(HoverRect);
 	}
 #endif
@@ -78,11 +79,11 @@ bool PTile::IsWalkable() const
 
 bool PTile::Contains(const FVector2& Position) const
 {
-	auto BlockPosition = GetPosition();
-	return Position.X >= BlockPosition.X				 // Min X
-		   && Position.X < BlockPosition.X + BLOCK_SIZE	 // Max X
-		   && Position.Y >= BlockPosition.Y				 // Min Y
-		   && Position.Y < BlockPosition.Y + BLOCK_SIZE; // Max Y
+	auto TilePosition = GetPosition();
+	return Position.X >= TilePosition.X				   // Min X
+		   && Position.X < TilePosition.X + TILE_SIZE  // Max X
+		   && Position.Y >= TilePosition.Y			   // Min Y
+		   && Position.Y < TilePosition.Y + TILE_SIZE; // Max Y
 }
 
 FVector2 PTile::GetPosition() const
@@ -97,6 +98,22 @@ FVector2 PTile::GetPosition() const
 	return mPosition;
 }
 
+SBlock PTile::GetBlock() const
+{
+	SBlock Block;
+	int	   CountX = Chunk->GetSizeX() / 2;
+	int	   BlockX = (X / 2) * 2;
+	int	   BlockY = (Y / 2) * 2;
+	int	   BlockIndex = BlockY * CountX + BlockX;
+
+	Block.Tiles[0] = Chunk->GetTile(BlockIndex);
+	Block.Tiles[1] = Chunk->GetTile(BlockIndex + 1);
+	Block.Tiles[2] = Chunk->GetTile(BlockIndex + CountX);
+	Block.Tiles[3] = Chunk->GetTile(BlockIndex + CountX + 1);
+
+	return Block;
+}
+
 PTile* PTile::GetAdjacent(int32_t InX, int32_t InY)
 {
 	if (!Chunk)
@@ -104,7 +121,19 @@ PTile* PTile::GetAdjacent(int32_t InX, int32_t InY)
 		return nullptr;
 	}
 
-	return Chunk->GetBlockAt(X + InX, Y + InY);
+	return Chunk->GetTileAt(X + InX, Y + InY);
+}
+
+bool PTile::IsBlocking() const
+{
+	for (auto Index : Tileset->Blocking)
+	{
+		if (Index == TilesetIndex)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 json PTile::Serialize() const
