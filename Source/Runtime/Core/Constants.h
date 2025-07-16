@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define OFFSET_CAMERA
 
 constexpr float EPSILON = 0.000000000001f;

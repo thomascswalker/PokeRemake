@@ -137,6 +137,10 @@ void PRenderer::Render() const
 
 	SDL_RenderPresent(mContext->Renderer);
 }
+void PRenderer::SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const
+{
+	SDL_SetRenderDrawBlendMode(mContext->Renderer, BlendMode);
+}
 
 bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const
 {
@@ -200,6 +204,13 @@ void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 void PRenderer::SetDrawColor(const PColor& Color) const
 {
 	SetDrawColor(Color.R, Color.G, Color.B, Color.A);
+}
+
+void PRenderer::SetDrawAlpha(uint8_t Alpha) const
+{
+	uint8_t R, G, B, A;
+	SDL_GetRenderDrawColor(mContext->Renderer, &R, &G, &B, &A);
+	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, Alpha);
 }
 
 void PRenderer::SetClipRect(const FRect& ClipRect) const

@@ -104,24 +104,16 @@ void PEditorGame::SetupInterface()
 	{
 		const int ItemSize = 20;
 
-		// Create the image for this button
-		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
-		Img->SetFixedSize(ItemSize);
-		Img->SetResizeMode(RM_Fixed, RM_Fixed);
-		Img->SetUseSourceRect(true);
-		Img->Padding = { 0 };
-		FRect SourceRect = Item.GetSourceRect();
-		Img->SetSourceRect(SourceRect);
-
 		// Create the button item
-		auto NewItem = ItemView->AddItem<PButton>();
+		auto NewItem = ItemView->AddItem<PButton>(TilesetTexture);
 		auto Button = NewItem->GetWidget<PButton>();
-		Button->AddChild(Img);
 		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
+		Button->SetUseSourceRect(true);
+		Button->SetSourceRect(Item.GetSourceRect());
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
 		ItemViewButtonGroup->AddButton(Button);

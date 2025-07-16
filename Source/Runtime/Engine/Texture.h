@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Rect.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -30,6 +32,7 @@ public:
 	int32_t		 GetHeight() const { return mHeight; }
 	int32_t		 GetChannels() const { return mChannels; }
 	int32_t		 GetPitch() const { return mWidth * sizeof(uint32_t); }
+	FRect		 GetRect() const { return { 0, 0, (float)mWidth, (float)mHeight }; }
 	uint8_t*	 GetData() const { return mData; }
 	std::string	 GetName() const { return mName; }
 	SDL_Texture* GetSDLTexture() const { return mSDLTexture; }
