@@ -9,11 +9,7 @@
 #include <string>
 #include <vector>
 
-constexpr float gTilesetItemSize = 8.0f;
-constexpr int	gTilesetWidth = 16;
-constexpr int	gTilesetHeight = 6;
-
-struct STile;
+struct STileItem;
 struct SBlock;
 struct STileset;
 
@@ -27,12 +23,12 @@ enum ETileType
 	TT_Portal
 };
 
-struct STile
+struct STileItem
 {
 	STileset* Tileset = nullptr;
 	int32_t	  Index;
 
-	STile(const int32_t InIndex)
+	STileItem(const int32_t InIndex)
 		: Index(InIndex)
 	{
 	}
@@ -41,12 +37,13 @@ struct STile
 
 struct STileset
 {
-	std::string		   Name{};
-	std::vector<STile> Items;
-	std::vector<int>   Blocking;
-	int32_t			   Width = 0;
-	int32_t			   Height = 0;
-	PTexture*		   Texture = nullptr;
+	std::string			   Name{};
+	std::vector<STileItem> Items;
+	std::vector<int>	   Blocking;
+	float				   ItemSize = 8.0f;
+	int32_t				   Width = 16;
+	int32_t				   Height = 6;
+	PTexture*			   Texture = nullptr;
 
 	STileset() = default;
 	STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<int>& InBlocking)
@@ -59,11 +56,11 @@ struct STileset
 
 		for (int32_t Index = 0; Index < InWidth * InHeight; Index++)
 		{
-			Items.push_back(STile(Index));
+			Items.push_back(STileItem(Index));
 		}
 	}
 
-	int32_t IndexOf(const STile* Ptr)
+	int32_t IndexOf(const STileItem* Ptr)
 	{
 		for (int32_t Index = 0; Index < Items.size(); Index++)
 		{

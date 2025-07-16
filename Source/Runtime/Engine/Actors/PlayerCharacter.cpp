@@ -44,13 +44,13 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 {
 	PCharacter::DebugDraw(Renderer);
 
-	// Draw current tile under the character
+	// Draw current block under the character
 	Renderer->SetDrawColor(255, 0, 0, 50);
 	Renderer->DrawFillRectAt(GetWorldBounds());
 
 	auto TargetPosition = mMovementComponent->GetTargetPosition();
 
-	// Draw target tile
+	// Draw target block
 	Renderer->SetDrawColor(0, 255, 0, 50);
 	Renderer->DrawFillRectAt({ TargetPosition.X, TargetPosition.Y, BLOCK_SIZE, BLOCK_SIZE });
 

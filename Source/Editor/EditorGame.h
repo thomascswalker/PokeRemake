@@ -38,7 +38,7 @@ class PEditorGame : public PGame
 	PChunk*				 mCurrentChunk;
 	int					 mBrushSize = 1;
 
-	STile* mCurrentTilesetItem;
+	STileItem* mCurrentTilesetItem;
 
 public:
 	// Init
@@ -79,7 +79,7 @@ public:
 	void	ConstructChunk(const json& JsonData);
 	void	ActorSelected(PActor* Actor);
 	PChunk* GetCurrentChunk() const { return mCurrentChunk; }
-	STile*	GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
+	STileItem*	GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

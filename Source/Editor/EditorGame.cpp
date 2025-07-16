@@ -205,9 +205,8 @@ void PEditorGame::OnCreateButtonClicked()
 		for (int Y = 0; Y < mNewGridSizeY; ++Y)
 		{
 			JsonData["Tiles"].push_back({
-				{ "Position", { X, Y }   },
-				{ "Tileset",	 "Tileset1" },
-				{ "Index",	   0			 }
+				{ "Position", { X, Y } },
+				{ "Index",	   0		 }
 			   });
 		}
 	}
@@ -271,7 +270,7 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	auto Sender = PWidget::GetSender<PButton>();
 	if (State)
 	{
-		mCurrentTilesetItem = Sender->GetCustomData<STile>();
+		mCurrentTilesetItem = Sender->GetCustomData<STileItem>();
 	}
 	else
 	{
@@ -309,9 +308,16 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No tileset item selected.");
 			return;
 		}
-		if (auto Tile = dynamic_cast<PTile*>(ClickedActor))
+		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 		{
-			Tile->TilesetIndex = mCurrentTilesetItem->Index;
+			auto Position = GetRenderer()->GetMouseWorldPosition();
+			auto Tile = Chunk->GetTileAtPosition(Position);
+			if (!Tile)
+			{
+				LogError("Invalid tile at {}", Position.ToString().c_str());
+				return;
+			}
+			Tile->Index = mCurrentTilesetItem->Index;
 		}
 	}
 }

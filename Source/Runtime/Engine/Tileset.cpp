@@ -1,11 +1,13 @@
 #include "Tileset.h"
 
-FRect STile::GetSourceRect()
+FRect STileItem::GetSourceRect()
 {
-	auto	 X = Index % Tileset->Width;
-	auto	 Y = Index / Tileset->Width;
-	FVector2 CoordIndex(X, Y);
+	auto X = Index % Tileset->Width;
+	auto Y = Index / Tileset->Width;
 	return {
-		CoordIndex * gTilesetItemSize, { gTilesetItemSize, gTilesetItemSize }
+		X * Tileset->ItemSize,
+		Y * Tileset->ItemSize,
+		Tileset->ItemSize,
+		Tileset->ItemSize,
 	};
 }

@@ -10,4 +10,10 @@ namespace Containers
 		std::copy_if(Container.begin(), Container.end(), std::back_inserter(Result), Predicate);
 		return Result;
 	}
+
+	template <typename C, typename T>
+	bool Contains(const C& Container, const T& Element)
+	{
+		return std::find(Container.begin(), Container.end(), Element) != Container.end();
+	}
 } // namespace Containers

@@ -5,7 +5,7 @@
 #include "Core/Matrix.h"
 
 constexpr float gMinZoom = 0.1f;
-constexpr float gMaxZoom = 2.0f;
+constexpr float gMaxZoom = 4.0f;
 
 enum EViewMode
 {
