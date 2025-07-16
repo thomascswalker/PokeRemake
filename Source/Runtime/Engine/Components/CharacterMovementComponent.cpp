@@ -107,7 +107,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 
 	// Check if the new position is walkable
 	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
-	if (Tile->IsBlocking())
+	if (!Tile || Tile->IsBlocking())
 	{
 		return false;
 	}

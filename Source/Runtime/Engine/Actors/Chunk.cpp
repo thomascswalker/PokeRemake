@@ -61,9 +61,8 @@ void PChunk::Start()
 
 	for (const auto& Tile : mData.at("Tiles"))
 	{
-		auto Pos = Tile.at("Position");
-		auto X = Pos[0].get<int>();
-		auto Y = Pos[1].get<int>();
+		auto X = Tile.at("X").get<int>();
+		auto Y = Tile.at("Y").get<int>();
 		auto Index = Tile.at("Index").get<int>();
 		mTiles.push_back({ mTileset, this, Index, X, Y });
 	}
@@ -89,30 +88,35 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 {
 	// Draw each tile outline
 	Renderer->SetDrawColor(200, 200, 200, 255);
-	for (const auto& Tile : mTiles)
+	FVector2 Max = GetWorldBounds().Max();
+	for (int X = 0; X < mSizeX; X++)
 	{
-		// World position of this tile.
-		Renderer->DrawRectAt(Tile.GetDestRect());
-	}
-
-	// Draw the outline of each block
-	Renderer->SetDrawColor(0, 0, 0, 255);
-	for (const auto& Tile : mTiles)
-	{
-		// Only draw on the top left of a 2x2 tile area.
-		if (Tile.X % 2 || Tile.Y % 2)
+		// Draw tile line
+		if (X % 2)
 		{
-			continue;
+			Renderer->SetDrawColor(200, 200, 200, 255);
 		}
-		// World position of this block.
-		Renderer->DrawRectAt({
-			Tile.GetPosition(),
-			{ BLOCK_SIZE, BLOCK_SIZE },
-		});
+		// Draw block line
+		else
+		{
+			Renderer->SetDrawColor(0, 0, 0, 255);
+		}
+		Renderer->DrawLineAt({ X * TILE_SIZE, 0 }, { X * TILE_SIZE, Max.Y });
 	}
-
-	// Draw the chunk outline
-	const FRect Dest = GetWorldBounds();
+	for (int Y = 0; Y < mSizeY; Y++)
+	{
+		// Draw tile line
+		if (Y % 2)
+		{
+			Renderer->SetDrawColor(200, 200, 200, 255);
+		}
+		// Draw block line
+		else
+		{
+			Renderer->SetDrawColor(0, 0, 0, 255);
+		}
+		Renderer->DrawLineAt({ 0, Y * TILE_SIZE }, { Max.X, Y * TILE_SIZE });
+	}
 
 #if _EDITOR
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))

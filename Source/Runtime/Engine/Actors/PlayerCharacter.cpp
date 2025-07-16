@@ -23,19 +23,19 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (mInputState[0])
 		{
-			mMovementComponent->Move({ BLOCK_SIZE * 2, 0 });
+			mMovementComponent->Move({ BLOCK_SIZE, 0 });
 		}
 		else if (mInputState[1])
 		{
-			mMovementComponent->Move({ -BLOCK_SIZE * 2, 0 });
+			mMovementComponent->Move({ -BLOCK_SIZE, 0 });
 		}
 		else if (mInputState[2])
 		{
-			mMovementComponent->Move({ 0, BLOCK_SIZE * 2 });
+			mMovementComponent->Move({ 0, BLOCK_SIZE });
 		}
 		else if (mInputState[3])
 		{
-			mMovementComponent->Move({ 0, -BLOCK_SIZE * 2 });
+			mMovementComponent->Move({ 0, -BLOCK_SIZE });
 		}
 	}
 }

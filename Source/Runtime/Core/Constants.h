@@ -20,7 +20,7 @@ constexpr float WINDOW_DEFAULT_HEIGHT = BLOCK_SIZE * TILE_COLUMNS;
 constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
 
 // Visual character offset to add some 'depth'
-constexpr float CHARACTER_OFFSET = TILE_SIZE;
+constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
 
 // Tiles per second
 constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER;
