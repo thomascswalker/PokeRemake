@@ -143,12 +143,18 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 	}
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
 	{
+		auto EditorGame = GetEditorGame();
+		auto BrushSize = EditorGame->GetBrushSize();
+
 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
 		auto Tile = GetTileAtPosition(MouseWorldPos);
 		if (Tile)
 		{
 			Renderer->SetDrawColor(PColor::Red);
-			Renderer->DrawRectAt(Tile->GetDestRect());
+			auto HoverRect = Tile->GetDestRect();
+			HoverRect.W *= BrushSize;
+			HoverRect.H *= BrushSize;
+			Renderer->DrawRectAt(HoverRect);
 		}
 	}
 #endif

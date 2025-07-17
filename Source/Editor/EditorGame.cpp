@@ -173,13 +173,7 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 		case SDLK_DOWN:
 			if (HasInputContext(IC_Tile))
 			{
-				mBrushSize = std::clamp(
-					Event->KeyUp == SDLK_UP
-						? mBrushSize + 1
-						: mBrushSize - 1,
-					1,
-					3);
-				;
+				mBrushSize = Event->KeyUp == SDLK_UP ? 2 : 1;
 			}
 			break;
 		default:
@@ -311,13 +305,38 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 		{
 			auto Position = GetRenderer()->GetMouseWorldPosition();
-			auto Tile = Chunk->GetTileAtPosition(Position);
-			if (!Tile)
+			auto Tile1 = Chunk->GetTileAtPosition(Position);
+			if (!Tile1)
 			{
 				LogError("Invalid tile at {}", Position.ToString().c_str());
 				return;
 			}
-			Tile->Index = mCurrentTilesetItem->Index;
+			if (mBrushSize == 1)
+			{
+				Tile1->Index = mCurrentTilesetItem->Index;
+			}
+			else
+			{
+				// TODO: Clean this up
+				auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0));
+				auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE));
+				auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE));
+
+				Tile1->Index = mCurrentTilesetItem->Index;
+				auto Width = Tile1->Tileset->Width;
+				if (Tile2)
+				{
+					Tile2->Index = mCurrentTilesetItem->Index + 1;
+				}
+				if (Tile3)
+				{
+					Tile3->Index = mCurrentTilesetItem->Index + Width;
+				}
+				if (Tile4)
+				{
+					Tile4->Index = mCurrentTilesetItem->Index + Width + 1;
+				}
+			}
 		}
 	}
 }
