@@ -49,6 +49,8 @@ void PDropdownView::OnItemClicked()
 PDropdown::PDropdown(const std::vector<std::string>& InItems)
 	: PButton(this, &PDropdown::ShowDropdownView), mCurrentIndex(0)
 {
+	mCheckable = true;
+
 	for (auto& Item : InItems)
 	{
 		mItems.emplace_back(Item);
@@ -69,6 +71,30 @@ PDropdown::PDropdown(const std::vector<std::string>& InItems)
 	ItemClicked.AddRaw(this, &PDropdown::OnItemClicked);
 }
 
+void PDropdown::Draw(const PRenderer* Renderer) const
+{
+	PButton::Draw(Renderer);
+
+	float	 TriangleSize = 10.0f;
+	auto	 Pos = GetGeometry().GetPosition();
+	auto	 Size = GetGeometry().GetSize();
+	FVector2 Offset = Pos + Size;
+	Offset.Y -= ((Size.Y / 2) + (TriangleSize / 2));
+	Offset.X -= 20;
+
+	std::vector TriangleVerts = //
+		{
+			FVector2{ 0.0f,				0.0f		 }
+				+ Offset, //
+			FVector2{ TriangleSize / 2.0f, TriangleSize }
+				+ Offset, //
+			FVector2{ TriangleSize,		0.0f		 }
+				+ Offset	 //
+	};
+	Renderer->SetDrawColor(PColor::OffWhite);
+	Renderer->DrawPolygon(TriangleVerts, { 0, 1, 2 });
+}
+
 void PDropdown::OnItemClicked(SDropdownItemData* Data)
 {
 	mCurrentIndex = Data->Index;
@@ -76,7 +102,7 @@ void PDropdown::OnItemClicked(SDropdownItemData* Data)
 	HideDropdownView();
 }
 
-void PDropdown::ShowDropdownView()
+void PDropdown::ShowDropdownView(bool State)
 {
 	mDropdownView->SetVisible(true);
 	PWidget::AddChild(mDropdownView);
@@ -87,5 +113,5 @@ void PDropdown::HideDropdownView()
 {
 	mDropdownView->SetVisible(false);
 	PWidget::RemoveChild(mDropdownView);
-	// mDropdownView->HoverEnd.Remove(mHideDelegate);
+	mChecked = false;
 }

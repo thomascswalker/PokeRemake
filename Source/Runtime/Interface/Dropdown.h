@@ -36,7 +36,8 @@ public:
 	PDropdown() = default;
 	PDropdown(const std::vector<std::string>& InItems);
 
+	void Draw(const PRenderer* Renderer) const override;
 	void OnItemClicked(SDropdownItemData* Data);
-	void ShowDropdownView();
+	void ShowDropdownView(bool State);
 	void HideDropdownView();
 };

@@ -70,17 +70,12 @@ void PEditorGame::SetupInterface()
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
 
-	std::vector<std::string> DropdownItems = { "Test1", "Test2", "Test3" };
-	PDropdown*				 Dropdown = mWorld->ConstructWidget<PDropdown>(DropdownItems);
-	Dropdown->ItemClicked.AddRaw(this, &PEditorGame::OnDropdownClicked);
-
 	FileGroup->AddChild(NewButton);
 	FileGroup->AddChild(CreateButton);
 	FileGroup->AddChild(SizeXSpinner);
 	FileGroup->AddChild(SizeYSpinner);
 	FileGroup->AddChild(SaveButton);
 	FileGroup->AddChild(LoadButton);
-	FileGroup->AddChild(Dropdown);
 
 	// Edit
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
@@ -100,6 +95,10 @@ void PEditorGame::SetupInterface()
 	MainPanel->AddChild(EditGroup);
 
 	// Tiles
+
+	std::vector<std::string> TilesetDropdownItems = { "Overworld", "Interiors" };
+	PDropdown*				 TilesetDropdown = mWorld->ConstructWidget<PDropdown>(TilesetDropdownItems);
+	TilesetDropdown->ItemClicked.AddRaw(this, &PEditorGame::OnDropdownClicked);
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
 	GridView->SetGridWidth(16);
@@ -131,6 +130,7 @@ void PEditorGame::SetupInterface()
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
 	TileGroup->SetVisible(false);
+	TileGroup->AddChild(TilesetDropdown);
 	TileGroup->AddChild(GridView);
 
 	MainPanel->AddChild(TileGroup);

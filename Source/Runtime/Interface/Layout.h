@@ -212,7 +212,7 @@ namespace Layout
 			if (Child->GetFloating())
 			{
 				Child->X = Rect.X;
-				Child->Y = Rect.Y;
+				Child->Y = Rect.Y + Rect.H;
 				Position(Child);
 				continue;
 			}
