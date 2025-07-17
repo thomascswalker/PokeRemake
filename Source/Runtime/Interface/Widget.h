@@ -33,6 +33,12 @@ enum EResizeMode
 	RM_Grow,
 };
 
+enum EZDepth
+{
+	ZD_Floating,
+	ZD_Default
+};
+
 template <typename T>
 struct TPadding
 {
@@ -81,13 +87,20 @@ protected:
 	bool mMouseOver = false;
 	bool mVisible = true;
 
+	// Floating widgets
+
+	bool	mFloating = false;
+	EZDepth mDepth = ZD_Default;
+
 public:
 	float X = 0.0f;
 	float Y = 0.0f;
 	float W = 0.0f;
 	float H = 0.0f;
 
-	FPadding Padding;
+	FPadding	Padding;
+	DHoverBegin HoverBegin;
+	DHoverEnd	HoverEnd;
 
 	PWidget()
 		: Padding(5.0f) { GenerateInternalName(); }
@@ -113,6 +126,9 @@ public:
 	void SetVisible(bool State) { mVisible = State; }
 	void ToggleVisible() { SetVisible(!mVisible); }
 
+	bool GetFloating() const { return mFloating; }
+	void SetFloating(bool State) { mFloating = State; }
+
 	// Drawing
 
 	virtual void DrawChildren(const PRenderer* Renderer) const
@@ -126,6 +142,11 @@ public:
 			if (!Child->GetVisible())
 			{
 				return;
+			}
+			// Defer drawing floating children until after the main drawing loop
+			if (Child->GetFloating())
+			{
+				continue;
 			}
 			// Draw this widget
 			Child->PreDraw(Renderer);

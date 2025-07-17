@@ -208,6 +208,15 @@ namespace Layout
 			{
 				continue;
 			}
+
+			if (Child->GetFloating())
+			{
+				Child->X = Rect.X;
+				Child->Y = Rect.Y;
+				Position(Child);
+				continue;
+			}
+
 			// Child position is at the origin plus the current change in X/Y
 			Child->X = Origin.X + DX;
 			Child->Y = Origin.Y + DY;

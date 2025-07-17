@@ -133,6 +133,18 @@ void PRenderer::Render() const
 			// Recursively draw all widgets, but not the root widget
 			Root->DrawChildren(this);
 		}
+
+		for (auto W : GetWorld()->GetWidgets())
+		{
+			if (!W->GetFloating() || !W->GetVisible())
+			{
+				continue;
+			}
+			W->PreDraw(this);
+			W->Draw(this);
+			W->PostDraw(this);
+			W->DrawChildren(this);
+		}
 	}
 
 	SDL_RenderPresent(mContext->Renderer);

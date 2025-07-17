@@ -8,6 +8,16 @@ void PAbstractButton::SetButtonGroup(PButtonGroup* Group)
 
 void PAbstractButton::OnMouseEvent(SInputEvent* Event)
 {
+	// Hover begin/end events
+	if (!mMouseOver && GetGeometry().Contains(Event->MousePosition))
+	{
+		HoverBegin.Broadcast();
+	}
+	else if (mMouseOver && !GetGeometry().Contains(Event->MousePosition))
+	{
+		HoverEnd.Broadcast();
+	}
+
 	// Are we inside the button?
 	mMouseOver = GetGeometry().Contains(Event->MousePosition);
 
