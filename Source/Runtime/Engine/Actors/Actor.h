@@ -11,8 +11,6 @@
 class PActor;
 class PComponent;
 
-DECLARE_MULTICAST_DELEGATE(DHoverBegin);
-DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler

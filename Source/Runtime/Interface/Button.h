@@ -11,8 +11,9 @@ constexpr float gButtonTextSize = 16.0f;
 
 class PButton : public PAbstractButton
 {
-	PText	  mText{};
-	PTexture* mTexture = nullptr;
+protected:
+	std::string mText;
+	PTexture*	mTexture = nullptr;
 
 	FRect mSourceRect;
 	bool  mUseSourceRect = false;
@@ -35,29 +36,25 @@ public:
 	PButton(const std::string& Label)
 		: mText(Label)
 	{
-		PWidget::AddChild(&mText);
 	}
 
 	PButton(const std::string& Label, void (*Delegate)())
-		: mText(Label, gButtonTextSize)
+		: mText(Label)
 	{
-		PWidget::AddChild(&mText);
 		Clicked.AddStatic(Delegate);
 	}
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)())
-		: mText(Label, gButtonTextSize)
+		: mText(Label)
 	{
-		PWidget::AddChild(&mText);
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)(bool))
-		: mText(Label, gButtonTextSize)
+		: mText(Label)
 	{
-		PWidget::AddChild(&mText);
 		Checked.AddRaw(Sender, Delegate);
 	}
 
@@ -134,13 +131,16 @@ public:
 		Renderer->DrawFillRect(R);
 		Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_NONE);
 
+		// Draw text
+		if (!mText.empty())
+		{
+			Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), gButtonTextSize);
+		}
+
 		// Border
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(R);
 	}
-
-	float GetFontSize() const { return mText.GetFontSize(); }
-	void  SetFontSize(float Size) { mText.SetFontSize(Size); }
 
 	void  SetUseSourceRect(bool State) { mUseSourceRect = State; }
 	bool  GetUseSourceRect() const { return mUseSourceRect; }

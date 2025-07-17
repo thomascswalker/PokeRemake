@@ -5,8 +5,9 @@
 #include "EditorView.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
-#include "Interface/AbstractView.h"
 #include "Interface/Canvas.h"
+#include "Interface/Dropdown.h"
+#include "Interface/GridView.h"
 #include "Interface/Group.h"
 #include "Interface/Panel.h"
 #include "Interface/Spinner.h"
@@ -42,6 +43,11 @@ void PEditorGame::Start()
 	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 }
 
+void PEditorGame::OnDropdownClicked(SDropdownItemData* Data) const
+{
+	LogDebug("Item clicked: {}", Data->Index);
+}
+
 void PEditorGame::SetupInterface()
 {
 	const auto MainPanel = mWorld->ConstructWidget<PPanel>();
@@ -62,9 +68,8 @@ void PEditorGame::SetupInterface()
 	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewChunkSizeY);
 	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
-	SaveButton->SetFontSize(WIDGET_FONT_SIZE);
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
-	LoadButton->SetFontSize(WIDGET_FONT_SIZE);
+
 	FileGroup->AddChild(NewButton);
 	FileGroup->AddChild(CreateButton);
 	FileGroup->AddChild(SizeXSpinner);
@@ -91,9 +96,13 @@ void PEditorGame::SetupInterface()
 
 	// Tiles
 
-	PAbstractView* ItemView = mWorld->ConstructWidget<PAbstractView>();
-	ItemView->SetGridWidth(16);
-	ItemView->SetVisible(true);
+	std::vector<std::string> TilesetDropdownItems = { "Overworld", "Interiors" };
+	PDropdown*				 TilesetDropdown = mWorld->ConstructWidget<PDropdown>(TilesetDropdownItems);
+	TilesetDropdown->ItemClicked.AddRaw(this, &PEditorGame::OnDropdownClicked);
+
+	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
+	GridView->SetGridWidth(16);
+	GridView->SetVisible(true);
 	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
 	auto Tileset = GetTileset("Tileset1");
@@ -104,8 +113,8 @@ void PEditorGame::SetupInterface()
 		const int ItemSize = 20;
 
 		// Create the button item
-		auto NewItem = ItemView->AddItem<PButton>(TilesetTexture);
-		auto Button = NewItem->GetWidget<PButton>();
+		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
+		auto Button = GridItem->GetWidget<PButton>();
 		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
@@ -121,7 +130,8 @@ void PEditorGame::SetupInterface()
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
 	TileGroup->SetVisible(false);
-	TileGroup->AddChild(ItemView);
+	TileGroup->AddChild(TilesetDropdown);
+	TileGroup->AddChild(GridView);
 
 	MainPanel->AddChild(TileGroup);
 

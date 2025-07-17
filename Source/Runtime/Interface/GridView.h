@@ -2,49 +2,18 @@
 
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
+#include "ItemView.h"
 #include "Widget.h"
 
-// An item wrapper around some arbitrary data and its corresponding display widget.
-class PAbstractItem
+class PGridView : public PWidget
 {
-	PWidget* mWidget;
-	void*	 mData;
-
-public:
-	PAbstractItem() = default;
-	PAbstractItem(PWidget* Widget)
-		: mWidget(Widget), mData(nullptr) {}
-
-	template <typename T>
-	T* GetWidget() const
-	{
-		return dynamic_cast<T*>(mWidget);
-	}
-
-	template <typename T>
-	T* GetData() const
-	{
-		return dynamic_cast<T*>(mData);
-	}
-
-	template <typename T>
-	void SetData(T* Data)
-	{
-		auto Size = sizeof(T);
-		mData = std::malloc(Size);
-		std::memcpy(mData, Data, Size);
-	}
-};
-
-class PAbstractView : public PWidget
-{
-	std::vector<PAbstractItem> mItems;
+	std::vector<SViewItem> mItems;
 
 	float mScrollValue = 0.0f;
 	float mScrollSpeed = 20.0f;
 
 public:
-	PAbstractView()
+	PGridView()
 	{
 		mLayoutMode = LM_Grid;
 		mResizeModeH = RM_Grow;
@@ -68,10 +37,10 @@ public:
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward
 	// its constructor arguments, and add that widget as a child of this widget.
 	template <typename T, typename... ArgsType>
-	PAbstractItem* AddItem(ArgsType&&... Args)
+	SViewItem* AddItem(ArgsType&&... Args)
 	{
-		T*			   Widget = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
-		PAbstractItem* Item = &mItems.emplace_back(Widget);
+		T*		   Widget = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+		SViewItem* Item = &mItems.emplace_back(Widget);
 		this->AddChild(Item->GetWidget<T>());
 		return Item;
 	}

@@ -18,7 +18,7 @@ public:
 	{
 		// Consume clicks and scrolls so they don't carry over
 		// into scene objects.
-		if (GetGeometry().Contains(Event->MousePosition))
+		if (Event->LeftMouseDown && GetGeometry().Contains(Event->MousePosition))
 		{
 			Event->Consume();
 		}

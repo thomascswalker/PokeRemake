@@ -4,6 +4,7 @@
 #include "Engine/Game.h"
 #include "Interface/Button.h"
 #include "Interface/ButtonGroup.h"
+#include "Interface/Dropdown.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -58,6 +59,7 @@ public:
 	PEditorGame() = default;
 	void PreStart() override;
 	void Start() override;
+	void OnDropdownClicked(SDropdownItemData* Data) const;
 	void SetupInterface();
 
 	// Input
