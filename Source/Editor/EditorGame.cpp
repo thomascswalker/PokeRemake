@@ -8,7 +8,6 @@
 #include "Interface/AbstractView.h"
 #include "Interface/Canvas.h"
 #include "Interface/Group.h"
-#include "Interface/Image.h"
 #include "Interface/Panel.h"
 #include "Interface/Spinner.h"
 
@@ -146,6 +145,24 @@ bool PEditorGame::HasInputContext(uint8_t InputContext)
 	return (mInputContext & InputContext) == InputContext;
 }
 
+void PEditorGame::OnKeyDown(SInputEvent* Event)
+{
+	PGame::OnKeyDown(Event);
+	if (Event->Consumed)
+	{
+		return;
+	}
+
+	switch (Event->KeyDown)
+	{
+		case SDLK_LSHIFT:
+			mBrushMode = BM_Copy;
+			break;
+		default:
+			break;
+	}
+}
+
 void PEditorGame::OnKeyUp(SInputEvent* Event)
 {
 	PGame::OnKeyUp(Event);
@@ -173,8 +190,11 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 		case SDLK_DOWN:
 			if (HasInputContext(IC_Tile))
 			{
-				mBrushSize = Event->KeyUp == SDLK_UP ? 2 : 1;
+				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
 			}
+			break;
+		case SDLK_LSHIFT:
+			mBrushMode = BM_Default;
 			break;
 		default:
 			break;
@@ -311,30 +331,26 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 				LogError("Invalid tile at {}", Position.ToString().c_str());
 				return;
 			}
-			if (mBrushSize == 1)
+			if (mBrushSize == BS_Small)
 			{
 				Tile1->Index = mCurrentTilesetItem->Index;
 			}
 			else
 			{
 				// TODO: Clean this up
-				auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0));
-				auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE));
-				auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE));
 
 				Tile1->Index = mCurrentTilesetItem->Index;
-				auto Width = Tile1->Tileset->Width;
-				if (Tile2)
+				if (auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0)))
 				{
-					Tile2->Index = mCurrentTilesetItem->Index + 1;
+					Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 				}
-				if (Tile3)
+				if (auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE)))
 				{
-					Tile3->Index = mCurrentTilesetItem->Index + Width;
+					Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width : mCurrentTilesetItem->Index;
 				}
-				if (Tile4)
+				if (auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE)))
 				{
-					Tile4->Index = mCurrentTilesetItem->Index + Width + 1;
+					Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width + 1 : mCurrentTilesetItem->Index;
 				}
 			}
 		}

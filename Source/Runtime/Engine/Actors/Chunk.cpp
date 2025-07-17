@@ -147,13 +147,15 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 		auto BrushSize = EditorGame->GetBrushSize();
 
 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
-		auto Tile = GetTileAtPosition(MouseWorldPos);
-		if (Tile)
+		if (auto Tile = GetTileAtPosition(MouseWorldPos))
 		{
 			Renderer->SetDrawColor(PColor::Red);
 			auto HoverRect = Tile->GetDestRect();
-			HoverRect.W *= BrushSize;
-			HoverRect.H *= BrushSize;
+			if (BrushSize == BS_Large)
+			{
+				HoverRect.W *= 2.0f;
+				HoverRect.H *= 2.0f;
+			}
 			Renderer->DrawRectAt(HoverRect);
 		}
 	}
