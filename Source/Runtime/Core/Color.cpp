@@ -5,6 +5,7 @@ PColor PColor::Green = PColor("00FF00");
 PColor PColor::Blue = PColor("0000FF");
 PColor PColor::White = PColor("FFFFFF");
 PColor PColor::Black = PColor("000000");
+PColor PColor::OffWhite = PColor("EEEEEE");
 
 PColor PColor::UIPrimary = PColor("575757");
 PColor PColor::UIPrimaryHover = PColor("8B8B8B");

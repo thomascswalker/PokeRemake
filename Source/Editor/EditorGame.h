@@ -22,6 +22,18 @@ enum EEditMode
 	EM_Tile
 };
 
+enum EBrushSize
+{
+	BS_Small, // 1X1
+	BS_Large  // 2X2
+};
+
+enum EBrushMode
+{
+	BM_Default, // Paint from the source tile into all four quadrants.
+	BM_Copy		// Paint from the source tile the three adjacent tiles, where the source tile is the top left.
+};
+
 DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
@@ -36,7 +48,8 @@ class PEditorGame : public PGame
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
-	int					 mBrushSize = 1;
+	EBrushSize			 mBrushSize = BS_Small;
+	EBrushMode			 mBrushMode = BM_Default;
 
 	STileItem* mCurrentTilesetItem;
 
@@ -54,7 +67,9 @@ public:
 	void	AddInputContext(uint8_t InputContext);
 	void	RemoveInputContext(uint8_t InputContext);
 	bool	HasInputContext(uint8_t InputContext);
-	void	OnKeyUp(SInputEvent* Event) override;
+
+	void OnKeyDown(SInputEvent* Event) override;
+	void OnKeyUp(SInputEvent* Event) override;
 
 	// Interface
 
@@ -69,17 +84,17 @@ public:
 	void OnTilesetButtonChecked(bool State);
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
-	void SetBrushSize(float Value) { mBrushSize = Value; }
-	int	 GetBrushSize() { return mBrushSize; }
+
+	EBrushSize GetBrushSize() { return mBrushSize; }
 
 	// Scene
-	void	AddChunk(PChunk* Chunk);
-	size_t	GetChunkCount() const { return mChunks.size(); }
-	void	SetCurrentChunk(PChunk* Chunk);
-	void	ConstructChunk(const json& JsonData);
-	void	ActorSelected(PActor* Actor);
-	PChunk* GetCurrentChunk() const { return mCurrentChunk; }
-	STileItem*	GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
+	void	   AddChunk(PChunk* Chunk);
+	size_t	   GetChunkCount() const { return mChunks.size(); }
+	void	   SetCurrentChunk(PChunk* Chunk);
+	void	   ConstructChunk(const json& JsonData);
+	void	   ActorSelected(PActor* Actor);
+	PChunk*	   GetCurrentChunk() const { return mCurrentChunk; }
+	STileItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

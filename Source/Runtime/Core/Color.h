@@ -54,6 +54,7 @@ struct PColor
 	static PColor Blue;
 	static PColor White;
 	static PColor Black;
+	static PColor OffWhite;
 
 	// Interface colors
 

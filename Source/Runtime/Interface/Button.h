@@ -11,8 +11,11 @@ constexpr float gButtonTextSize = 16.0f;
 
 class PButton : public PAbstractButton
 {
-	PText  mText{};
-	PImage mImage{};
+	PText	  mText{};
+	PTexture* mTexture = nullptr;
+
+	FRect mSourceRect;
+	bool  mUseSourceRect = false;
 
 public:
 	PButton() = default;
@@ -58,46 +61,89 @@ public:
 		Checked.AddRaw(Sender, Delegate);
 	}
 
+	PButton(PTexture* Texture)
+		: mTexture(Texture)
+	{
+	}
+
+	PButton(PTexture* Texture, void (*Delegate)())
+		: mTexture(Texture)
+	{
+		Clicked.AddStatic(Delegate);
+	}
+
+	template <typename T>
+	PButton(PTexture* Texture, T* Sender, void (T::*Delegate)())
+		: mTexture(Texture)
+	{
+		Clicked.AddRaw(Sender, Delegate);
+	}
+
+	template <typename T>
+	PButton(PTexture* Texture, T* Sender, void (T::*Delegate)(bool))
+		: mTexture(Texture)
+	{
+		Checked.AddRaw(Sender, Delegate);
+	}
+
 	void Draw(const PRenderer* Renderer) const override
 	{
 		const FRect R = GetGeometry();
 
 		// Clicked and hovered
-		if (mMouseDown && mMouseOver)
+		PColor Color;
+		if (mTexture)
 		{
-			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
+			auto TextureRect = mUseSourceRect ? mSourceRect : mTexture->GetRect();
+			Renderer->DrawTexture(mTexture, TextureRect, R);
+			if (mMouseDown && mMouseOver)
+			{
+				Color = (mChecked ? PColor::UISecondaryClicked.WithAlpha(128) : PColor::Black.WithAlpha(100));
+			}
+			// Hovered and not clicked
+			else if (mMouseOver)
+			{
+				Color = (mChecked ? PColor::UISecondaryHover.WithAlpha(128) : PColor::Black.WithAlpha(50));
+			}
+			// Not hovered and not clicked
+			else
+			{
+				Color = (mChecked ? PColor::UISecondary.WithAlpha(128) : PColor::Black.WithAlpha(0));
+			}
+			Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_BLEND);
 		}
-		// Hovered and not clicked
-		else if (mMouseOver)
-		{
-			Renderer->SetDrawColor(mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
-		}
-		// Not hovered and not clicked
 		else
 		{
-			Renderer->SetDrawColor(mChecked ? PColor::UISecondary : PColor::UIPrimary);
+			if (mMouseDown && mMouseOver)
+			{
+				Color = (mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
+			}
+			// Hovered and not clicked
+			else if (mMouseOver)
+			{
+				Color = (mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
+			}
+			// Not hovered and not clicked
+			else
+			{
+				Color = (mChecked ? PColor::UISecondary : PColor::UIPrimary);
+			}
 		}
+
+		Renderer->SetDrawColor(Color);
 		Renderer->DrawFillRect(R);
+		Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_NONE);
 
 		// Border
 		Renderer->SetDrawColor(PColor::UIBorder);
 		Renderer->DrawRect(R);
 	}
 
-	void DrawChildren(const PRenderer* Renderer) const override
-	{
-		PWidget::DrawChildren(Renderer);
-
-		if (mChecked)
-		{
-			Renderer->SetDrawColor(PColor::UISecondary.WithAlpha(128));
-			for (auto Child : mChildren)
-			{
-				Renderer->DrawFillRect(Child->GetGeometry());
-			}
-		}
-	}
-
 	float GetFontSize() const { return mText.GetFontSize(); }
 	void  SetFontSize(float Size) { mText.SetFontSize(Size); }
+
+	void  SetUseSourceRect(bool State) { mUseSourceRect = State; }
+	bool  GetUseSourceRect() const { return mUseSourceRect; }
+	void  SetSourceRect(const FRect& SourceRect) { mSourceRect = SourceRect; }
+	FRect GetSourceRect() const { return mSourceRect; }
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define OFFSET_CAMERA
 
 constexpr float EPSILON = 0.000000000001f;
@@ -17,17 +19,17 @@ constexpr auto	WINDOW_TITLE_EDITOR = "PokeRemake Editor";
 constexpr float WINDOW_DEFAULT_WIDTH = BLOCK_SIZE * TILE_ROWS;
 constexpr float WINDOW_DEFAULT_HEIGHT = BLOCK_SIZE * TILE_COLUMNS;
 
-constexpr float GLOBAL_SPEED_MULTIPLIER = 0.5f;
+constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
 
 // Visual character offset to add some 'depth'
 constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
 
 // Tiles per second
-constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER;
+constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f;
 
 // How often a sprite animation will move to the next frame (in milliseconds)
 // This is kind of arbitrary for now and is simply based on what looks best visually.
-constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / GLOBAL_SPEED_MULTIPLIER;
+constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f;
 
 const std::string FONT_NAME = "Pokemon";
 constexpr int	  FONT_ATLAS_SIZE = 1024;

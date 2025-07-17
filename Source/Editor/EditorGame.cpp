@@ -8,7 +8,6 @@
 #include "Interface/AbstractView.h"
 #include "Interface/Canvas.h"
 #include "Interface/Group.h"
-#include "Interface/Image.h"
 #include "Interface/Panel.h"
 #include "Interface/Spinner.h"
 
@@ -104,24 +103,16 @@ void PEditorGame::SetupInterface()
 	{
 		const int ItemSize = 20;
 
-		// Create the image for this button
-		PImage* Img = ItemView->AddItem<PImage>(TilesetTexture)->GetWidget<PImage>();
-		Img->SetFixedSize(ItemSize);
-		Img->SetResizeMode(RM_Fixed, RM_Fixed);
-		Img->SetUseSourceRect(true);
-		Img->Padding = { 0 };
-		FRect SourceRect = Item.GetSourceRect();
-		Img->SetSourceRect(SourceRect);
-
 		// Create the button item
-		auto NewItem = ItemView->AddItem<PButton>();
+		auto NewItem = ItemView->AddItem<PButton>(TilesetTexture);
 		auto Button = NewItem->GetWidget<PButton>();
-		Button->AddChild(Img);
 		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
+		Button->SetUseSourceRect(true);
+		Button->SetSourceRect(Item.GetSourceRect());
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
 		ItemViewButtonGroup->AddButton(Button);
@@ -154,6 +145,24 @@ bool PEditorGame::HasInputContext(uint8_t InputContext)
 	return (mInputContext & InputContext) == InputContext;
 }
 
+void PEditorGame::OnKeyDown(SInputEvent* Event)
+{
+	PGame::OnKeyDown(Event);
+	if (Event->Consumed)
+	{
+		return;
+	}
+
+	switch (Event->KeyDown)
+	{
+		case SDLK_LSHIFT:
+			mBrushMode = BM_Copy;
+			break;
+		default:
+			break;
+	}
+}
+
 void PEditorGame::OnKeyUp(SInputEvent* Event)
 {
 	PGame::OnKeyUp(Event);
@@ -181,14 +190,11 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 		case SDLK_DOWN:
 			if (HasInputContext(IC_Tile))
 			{
-				mBrushSize = std::clamp(
-					Event->KeyUp == SDLK_UP
-						? mBrushSize + 1
-						: mBrushSize - 1,
-					1,
-					3);
-				;
+				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
 			}
+			break;
+		case SDLK_LSHIFT:
+			mBrushMode = BM_Default;
 			break;
 		default:
 			break;
@@ -319,13 +325,34 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 		{
 			auto Position = GetRenderer()->GetMouseWorldPosition();
-			auto Tile = Chunk->GetTileAtPosition(Position);
-			if (!Tile)
+			auto Tile1 = Chunk->GetTileAtPosition(Position);
+			if (!Tile1)
 			{
 				LogError("Invalid tile at {}", Position.ToString().c_str());
 				return;
 			}
-			Tile->Index = mCurrentTilesetItem->Index;
+			if (mBrushSize == BS_Small)
+			{
+				Tile1->Index = mCurrentTilesetItem->Index;
+			}
+			else
+			{
+				// TODO: Clean this up
+
+				Tile1->Index = mCurrentTilesetItem->Index;
+				if (auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0)))
+				{
+					Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
+				}
+				if (auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE)))
+				{
+					Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width : mCurrentTilesetItem->Index;
+				}
+				if (auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE)))
+				{
+					Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width + 1 : mCurrentTilesetItem->Index;
+				}
+			}
 		}
 	}
 }

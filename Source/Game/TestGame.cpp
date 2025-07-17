@@ -18,7 +18,7 @@ void TestGame::PreStart()
 	// Load the map from JSON
 	LogDebug("PreStart: Loading map.");
 	std::string Data;
-	auto		FileName = Files::FindFile("LargeMap.JSON");
+	auto		FileName = Files::FindFile("Overworld.JSON");
 	if (!Files::ReadFile(FileName, Data))
 	{
 		return;
