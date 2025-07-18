@@ -79,6 +79,7 @@ void PEditorGame::SetupInterface()
 	FileGroup->AddChild(LoadButton);
 
 	// Edit
+
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetResizeModeH(RM_Fit);
 	EditGroup->SetLayoutMode(LM_Vertical);
@@ -92,10 +93,8 @@ void PEditorGame::SetupInterface()
 	EditGroup->AddChild(EditModeSelect);
 	EditGroup->AddChild(EditModeTile);
 
-	MainPanel->AddChild(FileGroup);
-	MainPanel->AddChild(EditGroup);
-
 	// Tiles
+
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
 	TileGroup->SetVisible(false);
@@ -103,23 +102,23 @@ void PEditorGame::SetupInterface()
 	auto ScrollArea = mWorld->ConstructWidget<PScrollArea>();
 	TileGroup->AddChild(ScrollArea);
 
-	std::vector<std::string> TilesetDropdownItems;
-	for (const auto& Tileset : gTilesets | std::views::values)
-	{
-		TilesetDropdownItems.push_back(Tileset.Name);
-	}
-
 	mTilesetViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
-	for (const auto& Item : TilesetDropdownItems)
+	for (const auto& Name : gTilesets | std::views::keys)
 	{
-		auto Tileset = GetTileset(Item);
+		auto Tileset = GetTileset(Name);
 		auto View = ConstructTilesetView(Tileset);
 		ScrollArea->AddChild(View);
-		mTilesetViews[Tileset->Name] = View;
+		mTilesetViews[Name] = View;
 	}
 
+	// Main panel
+
+	MainPanel->AddChild(FileGroup);
+	MainPanel->AddChild(EditGroup);
 	MainPanel->AddChild(TileGroup);
+
+	// Main canvas
 
 	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
 	MainCanvas->AddChild(MainPanel);
@@ -130,12 +129,14 @@ void PEditorGame::SetupInterface()
 PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 {
 	const int ItemSize = 20;
+	const int ViewWidth = Tileset->Width * ItemSize;
 	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
 	GridView->SetGridWidth(Tileset->Width);
 	GridView->SetVisible(true);
-	GridView->SetResizeModeH(RM_Fixed);
+	GridView->SetFixedWidth(ViewWidth);
+	GridView->SetResizeMode(RM_Fixed, RM_Fixed);
 	GridView->SetFixedHeight(ViewHeight);
 
 	auto TilesetTexture = Tileset->Texture;
