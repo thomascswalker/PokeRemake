@@ -80,7 +80,7 @@ void PChunk::Draw(const PRenderer* Renderer) const
 	// Draw each tile
 	for (const auto& Tile : mTiles)
 	{
-		Renderer->DrawTextureAt(mTileset->Texture, Tile.GetSourceRect(), Tile.GetDestRect());
+		Renderer->DrawTextureAt(Tile.Tileset->Texture, Tile.GetSourceRect(), Tile.GetDestRect());
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "Interface/Button.h"
 #include "Interface/ButtonGroup.h"
 #include "Interface/Dropdown.h"
+#include "Interface/GridView.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -49,18 +50,23 @@ class PEditorGame : public PGame
 
 	std::vector<PChunk*> mChunks;
 	PChunk*				 mCurrentChunk;
-	EBrushSize			 mBrushSize = BS_Small;
-	EBrushMode			 mBrushMode = BM_Default;
 
-	STileItem* mCurrentTilesetItem;
+	std::map<std::string, PGridView*> mTilesetViews;
+
+	PButtonGroup* mTilesetViewButtonGroup;
+	STileset*	  mCurrentTileset = nullptr;
+	STileItem*	  mCurrentTilesetItem = nullptr;
+
+	EBrushSize mBrushSize = BS_Small;
+	EBrushMode mBrushMode = BM_Default;
 
 public:
 	// Init
 	PEditorGame() = default;
-	void PreStart() override;
-	void Start() override;
-	void OnDropdownClicked(SDropdownItemData* Data) const;
-	void SetupInterface();
+	void	   PreStart() override;
+	void	   Start() override;
+	void	   SetupInterface();
+	PGridView* ConstructTilesetView(STileset* Tileset);
 
 	// Input
 
@@ -86,6 +92,7 @@ public:
 	void OnTilesetButtonChecked(bool State);
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
+	void OnDropdownClicked(SDropdownItemData* Data) const;
 
 	EBrushSize GetBrushSize() { return mBrushSize; }
 

@@ -61,7 +61,6 @@ set(SOURCES
         Core/Bitmask.h
         Engine/InputContext.h
         Interface/GridView.h
-        Interface/ClipArea.h
         Interface/AbstractButton.cpp
         Interface/Image.h
         Engine/Tileset.h
@@ -72,6 +71,7 @@ set(SOURCES
         Interface/Dropdown.h
         Interface/ItemView.h
         Interface/Dropdown.cpp
+        Interface/ScrollArea.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

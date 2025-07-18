@@ -10,6 +10,7 @@
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
 #include "Interface/Panel.h"
+#include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
 
 static PGroup* TileGroup = nullptr;
@@ -33,7 +34,7 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	LoadTileset("Tileset1");
+	LoadAllTilesets();
 	SetupInterface();
 }
 
@@ -95,23 +96,52 @@ void PEditorGame::SetupInterface()
 	MainPanel->AddChild(EditGroup);
 
 	// Tiles
+	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
+	TileGroup->SetLayoutMode(LM_Vertical);
+	TileGroup->SetVisible(false);
 
-	std::vector<std::string> TilesetDropdownItems = { "Overworld", "Interiors" };
-	PDropdown*				 TilesetDropdown = mWorld->ConstructWidget<PDropdown>(TilesetDropdownItems);
-	TilesetDropdown->ItemClicked.AddRaw(this, &PEditorGame::OnDropdownClicked);
+	auto ScrollArea = mWorld->ConstructWidget<PScrollArea>();
+	TileGroup->AddChild(ScrollArea);
+
+	std::vector<std::string> TilesetDropdownItems;
+	for (const auto& Tileset : gTilesets | std::views::values)
+	{
+		TilesetDropdownItems.push_back(Tileset.Name);
+	}
+
+	mTilesetViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+
+	for (const auto& Item : TilesetDropdownItems)
+	{
+		auto Tileset = GetTileset(Item);
+		auto View = ConstructTilesetView(Tileset);
+		ScrollArea->AddChild(View);
+		mTilesetViews[Tileset->Name] = View;
+	}
+
+	MainPanel->AddChild(TileGroup);
+
+	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
+	MainCanvas->AddChild(MainPanel);
+
+	mWorld->SetRootWidget(MainCanvas);
+}
+
+PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
+{
+	const int ItemSize = 20;
+	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
-	GridView->SetGridWidth(16);
+	GridView->SetGridWidth(Tileset->Width);
 	GridView->SetVisible(true);
-	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	GridView->SetResizeModeH(RM_Fixed);
+	GridView->SetFixedHeight(ViewHeight);
 
-	auto Tileset = GetTileset("Tileset1");
 	auto TilesetTexture = Tileset->Texture;
 
 	for (auto& Item : Tileset->Items)
 	{
-		const int ItemSize = 20;
-
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
 		auto Button = GridItem->GetWidget<PButton>();
@@ -124,21 +154,10 @@ void PEditorGame::SetupInterface()
 		Button->SetSourceRect(Item.GetSourceRect());
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
-		ItemViewButtonGroup->AddButton(Button);
+		mTilesetViewButtonGroup->AddButton(Button);
 	}
 
-	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
-	TileGroup->SetLayoutMode(LM_Vertical);
-	TileGroup->SetVisible(false);
-	TileGroup->AddChild(TilesetDropdown);
-	TileGroup->AddChild(GridView);
-
-	MainPanel->AddChild(TileGroup);
-
-	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
-	MainCanvas->AddChild(MainPanel);
-
-	mWorld->SetRootWidget(MainCanvas);
+	return GridView;
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -292,14 +311,19 @@ void PEditorGame::OnTileButtonChecked(bool State)
 void PEditorGame::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
+	auto Item = Sender->GetCustomData<STileItem>();
+
+	mCurrentTileset = Item->Tileset;
+	LogDebug("Set new tileset: {}", mCurrentTileset->Name);
 	if (State)
 	{
-		mCurrentTilesetItem = Sender->GetCustomData<STileItem>();
+		mCurrentTilesetItem = Item;
 	}
 	else
 	{
 		mCurrentTilesetItem = nullptr;
 	}
+	LogDebug("Set new tileset item: {}", mCurrentTilesetItem ? mCurrentTilesetItem->Index : -1);
 }
 
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
@@ -341,25 +365,25 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 				LogError("Invalid tile at {}", Position.ToString().c_str());
 				return;
 			}
-			if (mBrushSize == BS_Small)
-			{
-				Tile1->Index = mCurrentTilesetItem->Index;
-			}
-			else
+
+			Tile1->Tileset = mCurrentTileset;
+			Tile1->Index = mCurrentTilesetItem->Index;
+			if (mBrushSize == BS_Large)
 			{
 				// TODO: Clean this up
-
-				Tile1->Index = mCurrentTilesetItem->Index;
 				if (auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0)))
 				{
+					Tile2->Tileset = mCurrentTileset;
 					Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 				}
 				if (auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE)))
 				{
+					Tile3->Tileset = mCurrentTileset;
 					Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width : mCurrentTilesetItem->Index;
 				}
 				if (auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE)))
 				{
+					Tile4->Tileset = mCurrentTileset;
 					Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width + 1 : mCurrentTilesetItem->Index;
 				}
 			}
