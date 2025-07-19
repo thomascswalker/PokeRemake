@@ -17,7 +17,6 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
-	void Draw(const PRenderer* Renderer) const override {}
 
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;

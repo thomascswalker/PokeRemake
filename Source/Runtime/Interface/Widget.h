@@ -131,17 +131,17 @@ public:
 
 	// Drawing
 
-	virtual void DrawChildren(const PRenderer* Renderer) const
+	virtual bool DrawChildren(const PRenderer* Renderer) const
 	{
 		if (!mVisible)
 		{
-			return;
+			return true;
 		}
 		for (const auto& Child : mChildren)
 		{
 			if (!Child->GetVisible())
 			{
-				return;
+				return true;
 			}
 			// Defer drawing floating children until after the main drawing loop
 			if (Child->GetFloating())
@@ -156,6 +156,7 @@ public:
 			// Draw its children
 			Child->DrawChildren(Renderer);
 		}
+		return true;
 	}
 	virtual void PreDraw(const PRenderer* Renderer) {}
 	virtual void Draw(const PRenderer* Renderer) const {}

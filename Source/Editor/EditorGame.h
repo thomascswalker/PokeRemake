@@ -63,7 +63,7 @@ class PEditorGame : public PGame
 public:
 	// Init
 	PEditorGame() = default;
-	void	   PreStart() override;
+	bool	   PreStart() override;
 	void	   Start() override;
 	void	   SetupInterface();
 	PGridView* ConstructTilesetView(STileset* Tileset);

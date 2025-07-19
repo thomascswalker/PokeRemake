@@ -72,6 +72,7 @@ set(SOURCES
         Interface/ItemView.h
         Interface/Dropdown.cpp
         Interface/ScrollArea.h
+        Core/Macros.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

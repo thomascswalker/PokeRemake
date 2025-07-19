@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Macros.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 #include "ItemView.h"
@@ -79,10 +80,12 @@ public:
 		Renderer->DrawRect(GetGeometry());
 	}
 
-	void DrawChildren(const PRenderer* Renderer) const override
+	bool DrawChildren(const PRenderer* Renderer) const override
 	{
 		Renderer->SetClipRect(GetGeometry());
-		PWidget::DrawChildren(Renderer);
+		VALIDATE(PWidget::DrawChildren(Renderer));
 		Renderer->ReleaseClipRect();
+
+		return true;
 	}
 };

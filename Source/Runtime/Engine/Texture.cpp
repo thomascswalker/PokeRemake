@@ -5,13 +5,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG // generate user friendly error messages
 
+#include "Core/Containers.h"
 #include "Renderer/Renderer.h"
 #include "stb/stb_image.h"
 
 #include <cstring>
 #include <map>
 
-std::map<std::string, std::shared_ptr<PTexture>> gTextures;
+TextureMap PTextureManager::sTextures = {};
 
 uint32_t gNextTextureID = 0;
 
@@ -82,7 +83,7 @@ bool PTextureManager::LoadSDL(PTexture* Texture)
 void PTextureManager::UnloadSDL()
 {
 	LogDebug("Destroying all SDL textures");
-	for (const auto& [K, V] : GetTextures())
+	for (const auto& V : GetTextures() | std::views::values)
 	{
 		SDL_DestroyTexture(V->GetSDLTexture());
 	}
@@ -90,31 +91,31 @@ void PTextureManager::UnloadSDL()
 
 PTexture* PTextureManager::Get(const std::string& Name)
 {
-	for (const auto& [K, V] : GetTextures())
+	for (auto K : GetTextures() | std::views::keys)
 	{
-		if (V->GetName().ends_with(Name))
+		if (K == Name)
 		{
-			return V.get();
+			return sTextures.at(Name).get();
 		}
 	}
 	return nullptr;
 }
 
-PTexture* PTextureManager::Create(const std::string& Name, float Width, float Height, int Channels, void* Data)
+PTexture* PTextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
 {
 	PTexture   Tex;
 	const auto DataSize = Width * Height * Channels;
 	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
-	LogDebug("Copying texture data into new texture {}", Name.c_str());
+	LogDebug("Copying texture data into new texture {}", FileName.c_str());
 	memcpy(Tex.mData, Data, DataSize);
 
 	if (!Tex.mData)
 	{
-		LogError("Unable to allocate memory for texture: {}", Name.c_str());
+		LogError("Unable to allocate memory for texture: {}", FileName.c_str());
 		return nullptr;
 	}
 
-	Tex.mName = Name;
+	Tex.mName = FileName;
 	Tex.mWidth = Width;
 	Tex.mHeight = Height;
 	Tex.mChannels = Channels;
@@ -124,16 +125,17 @@ PTexture* PTextureManager::Create(const std::string& Name, float Width, float He
 		return nullptr;
 	}
 	free(Data);
-	gTextures[Name] = std::make_shared<PTexture>(Tex);
-	return gTextures[Name].get();
+	auto BaseName = std::filesystem::path(FileName).stem().string();
+	sTextures[BaseName] = std::make_shared<PTexture>(Tex);
+	return sTextures[BaseName].get();
 }
 
 void PTextureManager::Destroy(const PTexture* Texture)
 {
-	auto Iter = gTextures.find(Texture->GetName());
-	if (Iter != gTextures.end())
+	auto Iter = sTextures.find(Texture->GetName());
+	if (Iter != sTextures.end())
 	{
-		gTextures.erase(Iter);
+		sTextures.erase(Iter);
 	}
 	else
 	{
@@ -141,7 +143,7 @@ void PTextureManager::Destroy(const PTexture* Texture)
 	}
 }
 
-std::map<std::string, std::shared_ptr<PTexture>> PTextureManager::GetTextures()
+TextureMap& PTextureManager::GetTextures()
 {
-	return gTextures;
+	return sTextures;
 }

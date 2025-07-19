@@ -8,6 +8,6 @@ class TestGame : public PGame
 public:
 	TestGame() = default;
 	~TestGame() override {}
-	void PreStart() override;
+	bool PreStart() override;
 	void Start() override;
 };

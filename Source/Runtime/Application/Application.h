@@ -52,26 +52,39 @@ public:
 	void Uninitialize() const;
 
 	template <typename GameType>
-	void Start() const
+	bool Start() const
 	{
 		if (mEngine)
 		{
 			mEngine->StartGame<GameType>();
 			if (PGame* Game = mEngine->GetGame())
 			{
-				Game->PreStart();
+				if (!Game->PreStart())
+				{
+					return false;
+				}
 				Game->Start();
 				mRenderer->PostInitialize();
 			}
+			else
+			{
+				return false;
+			}
 		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
-	void Loop();
+	bool Loop();
 
 	/* Events */
 
 	bool OnEvent(void* Event);
-	void OnDraw() const;
+	bool OnDraw() const;
 
 	/* Properties */
 

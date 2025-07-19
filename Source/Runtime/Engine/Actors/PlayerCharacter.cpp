@@ -40,7 +40,7 @@ void PPlayerCharacter::Tick(float DeltaTime)
 	}
 }
 
-void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
+bool PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 {
 	PCharacter::DebugDraw(Renderer);
 
@@ -61,6 +61,8 @@ void PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 		auto Offset = FVector2(BLOCK_SIZE, BLOCK_SIZE);
 		Renderer->DrawPointAt(TargetPosition + Offset, 4);
 	}
+
+	return true;
 }
 
 void PPlayerCharacter::OnKeyDown(SInputEvent* Event)

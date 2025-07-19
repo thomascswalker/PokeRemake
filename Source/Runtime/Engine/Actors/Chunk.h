@@ -28,7 +28,6 @@ struct STile
 class PChunk : public PActor
 {
 	JSON			   mData;
-	STileset*		   mTileset = nullptr;
 	std::vector<STile> mTiles;
 
 	// Width of this chunk in tiles
@@ -41,8 +40,8 @@ public:
 	PChunk(const json& JsonData);
 
 	void  Start() override;
-	void  Draw(const PRenderer* Renderer) const override;
-	void  DebugDraw(const PRenderer* Renderer) const override;
+	bool  Draw(const PRenderer* Renderer) const override;
+	bool  DebugDraw(const PRenderer* Renderer) const override;
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
 

@@ -24,7 +24,7 @@ PEditorGame* GetEditorGame()
 	return dynamic_cast<PEditorGame*>(GetGame());
 }
 
-void PEditorGame::PreStart()
+bool PEditorGame::PreStart()
 {
 	GetSettings()->DebugDraw = true;
 
@@ -34,8 +34,13 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	LoadAllTilesets();
+	if (!LoadAllTilesets())
+	{
+		return false;
+	}
 	SetupInterface();
+
+	return true;
 }
 
 void PEditorGame::Start()
@@ -104,12 +109,11 @@ void PEditorGame::SetupInterface()
 
 	mTilesetViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
-	for (const auto& Name : gTilesets | std::views::keys)
+	for (const auto Tileset : GetTilesets())
 	{
-		auto Tileset = GetTileset(Name);
 		auto View = ConstructTilesetView(Tileset);
 		ScrollArea->AddChild(View);
-		mTilesetViews[Name] = View;
+		mTilesetViews[Tileset->Name] = View;
 	}
 
 	// Main panel
@@ -141,7 +145,7 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 
 	auto TilesetTexture = Tileset->Texture;
 
-	for (auto& Item : Tileset->Items)
+	for (auto& Item : Tileset->Tiles)
 	{
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
@@ -241,16 +245,15 @@ void PEditorGame::OnCreateButtonClicked()
 		{ "Position", { 0, 0 }   },
 		{ "SizeX",	   TileCountX },
 		{ "SizeY",	   TileCountY },
-		{ "Tileset",	 "Tileset1" }
 	};
 	for (int X = 0; X < TileCountX; ++X)
 	{
 		for (int Y = 0; Y < TileCountY; ++Y)
 		{
+			auto Tileset = mCurrentTileset ? mCurrentTileset->Name : "Tileset1";
 			JsonData["Tiles"].push_back({
-				{ "X",	   X },
-				{ "Y",	   Y },
-				{ "Index", 0 }
+				{ "Index",   0		 },
+				{ "Tileset", Tileset }
 			   });
 		}
 	}

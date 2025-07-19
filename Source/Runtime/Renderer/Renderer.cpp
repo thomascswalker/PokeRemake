@@ -5,6 +5,7 @@
 
 #include "Core/Files.h"
 #include "Core/Logging.h"
+#include "Core/Macros.h"
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
 #include "Engine/World.h"
@@ -96,7 +97,7 @@ void PRenderer::LoadFont(const std::string& Name) const
 
 void PRenderer::UnloadFonts() {}
 
-void PRenderer::Render() const
+bool PRenderer::Render() const
 {
 	SetDrawColor(PColor::UIBackground);
 	SDL_RenderClear(mContext->Renderer);
@@ -108,30 +109,30 @@ void PRenderer::Render() const
 	{
 		for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
 		{
-			Drawable->Draw(this);
+			VALIDATE(Drawable->Draw(this));
 		}
 		for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
 		{
-			Drawable->Draw(this);
+			VALIDATE(Drawable->Draw(this));
 		}
 
 		if (DebugDraw)
 		{
 			for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
 			{
-				Drawable->DebugDraw(this);
+				VALIDATE(Drawable->DebugDraw(this));
 			}
 
 			for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
 			{
-				Drawable->DebugDraw(this);
+				VALIDATE(Drawable->DebugDraw(this));
 			}
 		}
 
 		if (const auto Root = World->GetRootWidget())
 		{
 			// Recursively draw all widgets, but not the root widget
-			Root->DrawChildren(this);
+			VALIDATE(Root->DrawChildren(this));
 		}
 
 		for (auto W : GetWorld()->GetWidgets())
@@ -143,11 +144,12 @@ void PRenderer::Render() const
 			W->PreDraw(this);
 			W->Draw(this);
 			W->PostDraw(this);
-			W->DrawChildren(this);
+			VALIDATE(W->DrawChildren(this));
 		}
 	}
 
 	SDL_RenderPresent(mContext->Renderer);
+	return true;
 }
 void PRenderer::SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const
 {

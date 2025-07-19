@@ -3,6 +3,7 @@
 #include "Chunk.h"
 
 #include "../Settings.h"
+#include "Core/Macros.h"
 #include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 #if _EDITOR
@@ -57,14 +58,15 @@ void PChunk::Start()
 	mSizeX = mData.at("SizeX").get<int>();
 	mSizeY = mData.at("SizeY").get<int>();
 
-	mTileset = GetTileset(mData.at("Tileset"));
-
-	for (const auto& Tile : mData.at("Tiles"))
+	auto TileData = mData.at("Tiles");
+	for (int32_t I = 0; I < TileData.size(); I++)
 	{
-		auto X = Tile.at("X").get<int>();
-		auto Y = Tile.at("Y").get<int>();
+		auto Tile = TileData[I];
+		auto X = I % mSizeX;
+		auto Y = I / mSizeX;
 		auto Index = Tile.at("Index").get<int>();
-		mTiles.push_back({ mTileset, this, Index, X, Y });
+		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
+		mTiles.push_back({ Tileset, this, Index, X, Y });
 	}
 
 #if _EDITOR
@@ -75,16 +77,19 @@ void PChunk::Start()
 #endif
 }
 
-void PChunk::Draw(const PRenderer* Renderer) const
+bool PChunk::Draw(const PRenderer* Renderer) const
 {
 	// Draw each tile
 	for (const auto& Tile : mTiles)
 	{
+		VALIDATE(Tile.Tileset);
+		VALIDATE(Tile.Tileset->Texture);
 		Renderer->DrawTextureAt(Tile.Tileset->Texture, Tile.GetSourceRect(), Tile.GetDestRect());
 	}
+	return true;
 }
 
-void PChunk::DebugDraw(const PRenderer* Renderer) const
+bool PChunk::DebugDraw(const PRenderer* Renderer) const
 {
 	Renderer->SetDrawColor(255, 0, 0, 128);
 	for (const auto& Tile : mTiles)
@@ -160,6 +165,8 @@ void PChunk::DebugDraw(const PRenderer* Renderer) const
 		}
 	}
 #endif
+
+	return true;
 }
 
 FRect PChunk::GetLocalBounds() const
@@ -216,14 +223,11 @@ json PChunk::Serialize() const
 	Result["SizeX"] = mSizeX;
 	Result["SizeY"] = mSizeY;
 
-	Result["Tileset"] = mTileset->Name;
-
 	auto TileArray = json::array();
 	for (const auto& Tile : mTiles)
 	{
 		json TileResult;
-		TileResult["X"] = Tile.X;
-		TileResult["Y"] = Tile.Y;
+		TileResult["Tileset"] = Tile.Tileset->Name;
 		TileResult["Index"] = Tile.Index;
 		TileArray.push_back(TileResult);
 	}

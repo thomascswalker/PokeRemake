@@ -6,7 +6,7 @@
 #include "Engine/Serializer.h"
 #include "Engine/Texture.h"
 
-void TestGame::PreStart()
+bool TestGame::PreStart()
 {
 	LogDebug("PreStart: Loading textures.");
 	PTextureManager::Load("Ash.png");
@@ -21,7 +21,7 @@ void TestGame::PreStart()
 	auto		FileName = Files::FindFile("Overworld.JSON");
 	if (!Files::ReadFile(FileName, Data))
 	{
-		return;
+		return false;
 	}
 	json		JsonData = json::parse(Data.data());
 	PSerializer Serializer;
@@ -33,6 +33,8 @@ void TestGame::PreStart()
 		W->ConstructActor<PCharacter>()->MoveToTile(10, 6);
 		W->ConstructActor<PPlayerCharacter>()->MoveToTile(8, 8);
 	}
+
+	return true;
 }
 
 void TestGame::Start()
