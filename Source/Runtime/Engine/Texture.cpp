@@ -55,6 +55,15 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	return NewTexture;
 }
 
+void PTextureManager::LoadAllTextures()
+{
+	const auto Textures = Files::GetFilesInDirectory("Resources/Textures");
+	for (const auto& Texture : Textures)
+	{
+		Load(Texture);
+	}
+}
+
 bool PTextureManager::LoadSDL(PTexture* Texture)
 {
 	const auto Renderer = GetRenderer()->GetSDLRenderer();

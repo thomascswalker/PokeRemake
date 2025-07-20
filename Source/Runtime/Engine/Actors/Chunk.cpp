@@ -179,6 +179,16 @@ FRect PChunk::GetWorldBounds() const
 	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
+std::vector<STile*> PChunk::GetTiles()
+{
+	std::vector<STile*> Tiles;
+	for (auto& Tile : mTiles)
+	{
+		Tiles.push_back(&Tile);
+	}
+	return Tiles;
+}
+
 STile* PChunk::GetTile(int Index)
 {
 	if (Index < 0 || Index >= mTiles.size())
@@ -199,6 +209,11 @@ STile* PChunk::GetTileAtPosition(const FVector2& Position) const
 		}
 	}
 	return nullptr; // No tile found at the given position
+}
+
+STile* PChunk::GetTileUnderMouse() const
+{
+	return GetTileAtPosition(GetRenderer()->GetMouseWorldPosition());
 }
 
 STile* PChunk::GetTileAt(int X, int Y) const

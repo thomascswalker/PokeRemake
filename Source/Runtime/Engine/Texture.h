@@ -8,8 +8,8 @@
 
 #include "SDL3/SDL.h"
 
-#define TEXTURE_ASH "Ash.png"
-#define TEXTURE_GARY "Gary.png"
+#define TEXTURE_ASH "Ash"
+#define TEXTURE_GARY "Gary"
 
 class PTexture
 {
@@ -51,6 +51,7 @@ public:
 	static TextureMap& GetTextures();
 
 	static PTexture* Load(const std::string& FileName);
+	static void		 LoadAllTextures();
 	static bool		 LoadSDL(PTexture* Texture);
 	static void		 UnloadSDL();
 	static PTexture* Get(const std::string& Name);

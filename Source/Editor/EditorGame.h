@@ -27,13 +27,14 @@ enum EEditMode
 enum EBrushSize
 {
 	BS_Small, // 1X1
-	BS_Large  // 2X2
+	BS_Large, // 2X2
 };
 
 enum EBrushMode
 {
 	BM_Default, // Paint from the source tile into all four quadrants.
-	BM_Copy		// Paint from the source tile the three adjacent tiles, where the source tile is the top left.
+	BM_Copy,	// Paint from the source tile the three adjacent tiles, where the source tile is the top left.
+	BM_Fill		// Fills the entire chunk with the tile
 };
 
 DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
@@ -104,6 +105,7 @@ public:
 	void	   ActorSelected(PActor* Actor);
 	PChunk*	   GetCurrentChunk() const { return mCurrentChunk; }
 	STileItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
+	void	   PaintTile(STile* Tile);
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

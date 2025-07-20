@@ -62,6 +62,7 @@ FRect STileItem::GetSourceRect()
 		Tileset->ItemSize,
 	};
 }
+
 STileset::STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<int>& InBlocking)
 	: Name(InName), Width(InWidth), Height(InHeight)
 {
@@ -75,6 +76,7 @@ STileset::STileset(const std::string& InName, const int32_t InWidth, const int32
 		Tiles.push_back(STileItem(Index));
 	}
 }
+
 int32_t STileset::IndexOf(const STileItem* Ptr)
 {
 	for (int32_t Index = 0; Index < Tiles.size(); Index++)
@@ -87,6 +89,7 @@ int32_t STileset::IndexOf(const STileItem* Ptr)
 	}
 	return -1;
 }
+
 bool LoadTileset(const std::string& Name)
 {
 	auto Tileset = &gTilesets.at(Name);
@@ -113,6 +116,7 @@ bool LoadTileset(const std::string& Name)
 	Tileset->Texture = Tex;
 	return true;
 }
+
 STileset* GetTileset(const std::string& Name)
 {
 	auto Tileset = &gTilesets.at(Name);
@@ -144,6 +148,7 @@ STileset* GetDefaultTileset()
 {
 	return &gTilesets.at("Tileset1");
 }
+
 bool LoadAllTilesets()
 {
 	for (const auto& Tileset : gTilesets | std::views::values)
@@ -155,6 +160,7 @@ bool LoadAllTilesets()
 	}
 	return true;
 }
+
 std::vector<std::string> GetTilesetNames()
 {
 	std::vector<std::string> Names;

@@ -45,9 +45,11 @@ public:
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
 
-	STile* GetTile(int Index);
-	STile* GetTileAt(int X, int Y) const;
-	STile* GetTileAtPosition(const FVector2& Position) const;
+	std::vector<STile*> GetTiles();
+	STile*				GetTile(int Index);
+	STile*				GetTileAt(int X, int Y) const;
+	STile*				GetTileAtPosition(const FVector2& Position) const;
+	STile*				GetTileUnderMouse() const;
 
 	int		 GetSizeX() const { return mSizeX; }
 	int		 GetSizeY() const { return mSizeY; }
