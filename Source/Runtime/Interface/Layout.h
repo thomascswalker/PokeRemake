@@ -8,7 +8,7 @@ namespace Layout
 {
 
 	// Grow this widget's children to fit the space of this widget
-	inline void GrowChildren(const PWidget* Widget)
+	inline void Grow(const PWidget* Widget)
 	{
 		if (!Widget->GetVisible())
 		{
@@ -28,13 +28,16 @@ namespace Layout
 			{
 				continue;
 			}
-			if (LayoutMode == LM_Horizontal)
+			switch (LayoutMode)
 			{
-				RemainingWidth -= Child->W;
-			}
-			else
-			{
-				RemainingHeight -= Child->H;
+				case LM_Horizontal:
+					RemainingWidth -= Child->W;
+					break;
+				case LM_Vertical:
+					RemainingHeight -= Child->H;
+					break;
+				case LM_Grid:
+					break;
 			}
 		}
 		if (LayoutMode == LM_Horizontal)
@@ -46,35 +49,49 @@ namespace Layout
 			RemainingHeight -= (Widget->GetChildCount() - 1) * ChildGap;
 		}
 
+		const int	GridCount = Widget->GetGridCount();
+		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Widget->GetGridCount()) : 0;
+
 		for (auto Child : Widget->GetChildren())
 		{
 			if (!Child->GetVisible())
 			{
 				continue;
 			}
-			if (LayoutMode == LM_Horizontal)
+			switch (LayoutMode)
 			{
-				if (Child->GetResizeModeW() == RM_Grow)
-				{
-					Child->W += RemainingWidth;
-				}
-				if (Child->GetResizeModeH() == RM_Grow)
-				{
-					Child->H += (RemainingHeight - Child->H);
-				}
+				case LM_Horizontal:
+					if (Child->GetResizeModeW() == RM_Grow)
+					{
+						Child->W += RemainingWidth;
+					}
+					if (Child->GetResizeModeH() == RM_Grow)
+					{
+						Child->H += (RemainingHeight - Child->H);
+					}
+					break;
+				case LM_Vertical:
+					if (Child->GetResizeModeH() == RM_Grow)
+					{
+						Child->H += RemainingHeight;
+					}
+					if (Child->GetResizeModeW() == RM_Grow)
+					{
+						Child->W += (RemainingWidth - Child->W);
+					}
+					break;
+				case LM_Grid:
+					if (Child->GetResizeModeH() == RM_Grow)
+					{
+						Child->H += GridWidth;
+					}
+					if (Child->GetResizeModeW() == RM_Grow)
+					{
+						Child->W += GridWidth;
+					}
+					break;
 			}
-			else
-			{
-				if (Child->GetResizeModeH() == RM_Grow)
-				{
-					Child->H += RemainingHeight;
-				}
-				if (Child->GetResizeModeW() == RM_Grow)
-				{
-					Child->W += (RemainingWidth - Child->W);
-				}
-			}
-			GrowChildren(Child);
+			Grow(Child);
 		}
 	}
 
@@ -234,7 +251,7 @@ namespace Layout
 					DY += Child->H + Padding;
 					break;
 				case LM_Grid:
-					DX += Child->W + Padding;
+					DX += Child->W;
 					// Move to next row
 					if (DX >= Rect.W)
 					{
@@ -277,7 +294,7 @@ namespace Layout
 
 		Fixed(Widget);
 		Fit(Widget);
-		GrowChildren(Widget);
+		Grow(Widget);
 		Position(Widget);
 		Offset(Widget);
 

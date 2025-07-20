@@ -82,7 +82,7 @@ protected:
 	FVector2 mFixedSize = { 0.0f, 0.0f };
 	FVector2 mOffset = { 0.0f, 0.0f };
 	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
-	int		 mGridWidth = 1;
+	int		 mGridCount = 1;
 
 	bool mMouseOver = false;
 	bool mVisible = true;
@@ -237,8 +237,8 @@ public:
 	void	 SetFixedWidth(float W) { mFixedSize.X = W; }
 	void	 SetFixedHeight(float H) { mFixedSize.Y = H; }
 
-	int	 GetGridWidth() const { return mGridWidth; }
-	void SetGridWidth(int Size) { mGridWidth = Size; }
+	int	 GetGridCount() const { return mGridCount; }
+	void SetGridCount(int Size) { mGridCount = Size; }
 
 	FVector2 GetMaxSize() const { return mMaxSize; }
 	void	 SetMaxSize(const FVector2& MaxSize) { mMaxSize = MaxSize; }

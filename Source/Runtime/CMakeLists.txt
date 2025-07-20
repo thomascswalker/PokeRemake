@@ -73,6 +73,7 @@ set(SOURCES
         Interface/Dropdown.cpp
         Interface/ScrollArea.h
         Core/Macros.h
+        Engine/Actors/Portal.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

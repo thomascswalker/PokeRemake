@@ -13,7 +13,21 @@
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
 
-static PGroup* TileGroup = nullptr;
+static PPanel* MainPanel;
+
+static std::vector<std::string> EditModeStrings = {
+	"Select",
+	"Tiles",
+	"Actors",
+};
+static PGroup*					TileGroup;
+static PGroup*					ActorGroup;
+static std::vector<std::string> PlaceableActors = {
+	"Portal",
+	"Hill",
+	"Sign",
+	"Water",
+};
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "json", "JSON" },
@@ -56,7 +70,7 @@ void PEditorGame::OnDropdownClicked(SDropdownItemData* Data) const
 
 void PEditorGame::SetupInterface()
 {
-	const auto MainPanel = mWorld->ConstructWidget<PPanel>();
+	MainPanel = mWorld->ConstructWidget<PPanel>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
@@ -88,39 +102,44 @@ void PEditorGame::SetupInterface()
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetResizeModeH(RM_Fit);
 	EditGroup->SetLayoutMode(LM_Vertical);
-	const auto EditModeSelect = mWorld->ConstructWidget<PButton>("Select", this, &PEditorGame::OnSelectButtonChecked);
-	EditModeSelect->SetCheckable(true);
-	const auto EditModeTile = mWorld->ConstructWidget<PButton>("Tile", this, &PEditorGame::OnTileButtonChecked);
-	EditModeTile->SetCheckable(true);
-	const auto EditModeButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
-	EditModeButtonGroup->AddButton(EditModeSelect);
-	EditModeButtonGroup->AddButton(EditModeTile);
-	EditGroup->AddChild(EditModeSelect);
-	EditGroup->AddChild(EditModeTile);
+
+	const auto EditMode = mWorld->ConstructWidget<PDropdown>(EditModeStrings);
+	EditGroup->AddChild(EditMode);
+	EditMode->SetResizeModeH(RM_Fixed);
+	EditMode->SetFixedHeight(20);
+	EditMode->ItemClicked.AddRaw(this, &PEditorGame::OnEditModeClicked);
 
 	// Tiles
 
 	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
-	TileGroup->SetVisible(false);
 
 	auto ScrollArea = mWorld->ConstructWidget<PScrollArea>();
 	TileGroup->AddChild(ScrollArea);
 
+	// Create a button group for all tiles across all tilesets
 	mTilesetViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
 
+	// Construct each widget for each tile in each tileset
 	for (const auto Tileset : GetTilesets())
 	{
-		auto View = ConstructTilesetView(Tileset);
-		ScrollArea->AddChild(View);
-		mTilesetViews[Tileset->Name] = View;
+		auto TilesetView = ConstructTilesetView(Tileset);
+		ScrollArea->AddChild(TilesetView);
+		mTilesetViews[Tileset->Name] = TilesetView;
 	}
+
+	// Actors
+
+	ActorGroup = mWorld->ConstructWidget<PGroup>("Actors");
+	ActorGroup->SetLayoutMode(LM_Vertical);
+
+	auto ActorView = ConstructActorView();
+	ActorGroup->AddChild(ActorView);
 
 	// Main panel
 
 	MainPanel->AddChild(FileGroup);
 	MainPanel->AddChild(EditGroup);
-	MainPanel->AddChild(TileGroup);
 
 	// Main canvas
 
@@ -137,8 +156,7 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
-	GridView->SetGridWidth(Tileset->Width);
-	GridView->SetVisible(true);
+	GridView->SetGridCount(Tileset->Width);
 	GridView->SetFixedWidth(ViewWidth);
 	GridView->SetResizeMode(RM_Fixed, RM_Fixed);
 	GridView->SetFixedHeight(ViewHeight);
@@ -160,6 +178,31 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
 		mTilesetViewButtonGroup->AddButton(Button);
+	}
+
+	return GridView;
+}
+
+PGridView* PEditorGame::ConstructActorView()
+{
+	const int ItemSize = 40;
+
+	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
+	GridView->Padding = { 5 };
+	GridView->SetGridCount(2);
+
+	for (auto& Item : PlaceableActors)
+	{
+		// Create the button item
+		auto GridItem = GridView->AddItem<PButton>(Item);
+		auto Button = GridItem->GetWidget<PButton>();
+		Button->SetResizeMode(RM_Grow, RM_Fixed);
+		Button->SetFixedHeight(ItemSize);
+		Button->SetCheckable(true);
+		Button->SetCustomData(&Item);
+		// Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
+
+		// mTilesetViewButtonGroup->AddButton(Button);
 	}
 
 	return GridView;
@@ -309,20 +352,30 @@ void PEditorGame::OnLoadButtonClicked()
 	Serializer.Deserialize(JsonData);
 }
 
-void PEditorGame::OnSelectButtonChecked(bool State)
+void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 {
-	RemoveInputContext(IC_Tile);
-	State ? AddInputContext(IC_Select) : RemoveInputContext(IC_Select);
-
-	TileGroup->SetVisible(false);
-}
-
-void PEditorGame::OnTileButtonChecked(bool State)
-{
-	RemoveInputContext(IC_Select);
-	State ? AddInputContext(IC_Tile) : RemoveInputContext(IC_Tile);
-
-	TileGroup->SetVisible(State);
+	mInputContext = 0;
+	switch (DropdownItemData->Index)
+	{
+		case 0: // IC_Select
+			AddInputContext(IC_Select);
+			MainPanel->RemoveChild(TileGroup);
+			MainPanel->RemoveChild(ActorGroup);
+			break;
+		case 1: // IC_Tile
+			AddInputContext(IC_Tile);
+			MainPanel->AddChild(TileGroup);
+			MainPanel->RemoveChild(ActorGroup);
+			break;
+		case 2: // IC_Actor
+			AddInputContext(IC_Actor);
+			MainPanel->RemoveChild(TileGroup);
+			MainPanel->AddChild(ActorGroup);
+			break;
+		default:
+			LogError("Invalid dropdown item: {}", DropdownItemData->Index);
+			break;
+	}
 }
 
 void PEditorGame::OnTilesetButtonChecked(bool State)

@@ -79,8 +79,12 @@ public:
 	std::vector<PComponent*> GetComponents() const { return mComponents; }
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
-	virtual FRect GetWorldBounds() const { return FRect(); }
-	virtual bool  IsMouseOver() const { return mMouseOver; }
+	virtual FRect GetWorldBounds() const
+	{
+		auto Local = GetLocalBounds();
+		return { mPosition.X, mPosition.Y, Local.W, Local.H };
+	}
+	virtual bool IsMouseOver() const { return mMouseOver; }
 
 	virtual FVector2 GetPosition() const { return mPosition; }
 	virtual FVector2 GetWorldPosition() const

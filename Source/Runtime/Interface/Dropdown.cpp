@@ -1,6 +1,6 @@
 #include "Dropdown.h"
 
-PDropdownView::PDropdownView(const std::vector<std::string>& InItems)
+PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 {
 	mLayoutMode = LM_Vertical;
 	mResizeModeW = RM_Grow;
@@ -8,9 +8,9 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InItems)
 	mFloating = true;
 
 	// Add each item to the view
-	for (int32_t Index = 0; Index < InItems.size(); Index++)
+	for (int32_t Index = 0; Index < InStrings.size(); Index++)
 	{
-		auto	 Item = InItems[Index];
+		auto	 Item = InStrings[Index];
 		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item);
 		Button->SetResizeModeW(RM_Grow);
 		Button->SetResizeModeH(RM_Fixed);
@@ -22,12 +22,12 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InItems)
 		PWidget::AddChild(Button);
 	}
 }
-
 void PDropdownView::OnMouseEvent(SInputEvent* Event)
 {
 	bool OldMouseOver = mMouseOver;
 	mMouseOver = GetGeometry().Contains(Event->MousePosition);
-	if (OldMouseOver && !GetGeometry().Contains(Event->MousePosition))
+	bool ParentOver = mDropdown->GetGeometry().Contains(Event->MousePosition);
+	if (OldMouseOver && !mMouseOver && !ParentOver)
 	{
 		HoverEnd.Broadcast();
 	}
@@ -44,6 +44,18 @@ void PDropdownView::OnItemClicked()
 		return;
 	}
 	Dropdown->ItemClicked.Broadcast(Sender->GetCustomData<SDropdownItemData>());
+}
+
+PDropdown::PDropdown()
+	: PButton(this, &PDropdown::ShowDropdownView), mCurrentIndex(0)
+{
+	mText = "";
+	mCheckable = true;
+
+	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
+	mDropdownView->SetVisible(false);
+
+	ItemClicked.AddRaw(this, &PDropdown::OnItemClicked);
 }
 
 PDropdown::PDropdown(const std::vector<std::string>& InItems)
@@ -67,6 +79,7 @@ PDropdown::PDropdown(const std::vector<std::string>& InItems)
 
 	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
 	mDropdownView->SetVisible(false);
+	mDropdownView->mDropdown = this;
 
 	ItemClicked.AddRaw(this, &PDropdown::OnItemClicked);
 }
@@ -93,6 +106,11 @@ void PDropdown::Draw(const PRenderer* Renderer) const
 	};
 	Renderer->SetDrawColor(PColor::OffWhite);
 	Renderer->DrawPolygon(TriangleVerts, { 0, 1, 2 });
+}
+
+void PDropdown::AddItem(const std::string& Item)
+{
+	mItems.emplace_back(Item);
 }
 
 void PDropdown::OnItemClicked(SDropdownItemData* Data)
