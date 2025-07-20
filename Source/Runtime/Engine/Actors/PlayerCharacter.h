@@ -14,7 +14,7 @@ class PPlayerCharacter : public PCharacter
 public:
 	void Start() override;
 	void Tick(float DeltaTime) override;
-	void DebugDraw(const PRenderer* Renderer) const override;
+	bool DebugDraw(const PRenderer* Renderer) const override;
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
 

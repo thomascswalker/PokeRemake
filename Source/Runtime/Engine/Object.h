@@ -19,7 +19,7 @@ public:
 	virtual ~PObject() = default;
 
 	// Called before the game begins
-	virtual void PreStart() {}
+	virtual bool PreStart() { return true; }
 	// Called when the game begins
 	virtual void Start() {}
 	// Called when the game ends

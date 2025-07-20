@@ -10,6 +10,7 @@
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
 #include "Interface/Panel.h"
+#include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
 
 static PGroup* TileGroup = nullptr;
@@ -23,7 +24,7 @@ PEditorGame* GetEditorGame()
 	return dynamic_cast<PEditorGame*>(GetGame());
 }
 
-void PEditorGame::PreStart()
+bool PEditorGame::PreStart()
 {
 	GetSettings()->DebugDraw = true;
 
@@ -33,8 +34,13 @@ void PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	LoadTileset("Tileset1");
+	if (!LoadAllTilesets())
+	{
+		return false;
+	}
 	SetupInterface();
+
+	return true;
 }
 
 void PEditorGame::Start()
@@ -78,6 +84,7 @@ void PEditorGame::SetupInterface()
 	FileGroup->AddChild(LoadButton);
 
 	// Edit
+
 	const auto EditGroup = mWorld->ConstructWidget<PGroup>("Edit");
 	EditGroup->SetResizeModeH(RM_Fit);
 	EditGroup->SetLayoutMode(LM_Vertical);
@@ -91,27 +98,55 @@ void PEditorGame::SetupInterface()
 	EditGroup->AddChild(EditModeSelect);
 	EditGroup->AddChild(EditModeTile);
 
-	MainPanel->AddChild(FileGroup);
-	MainPanel->AddChild(EditGroup);
-
 	// Tiles
 
-	std::vector<std::string> TilesetDropdownItems = { "Overworld", "Interiors" };
-	PDropdown*				 TilesetDropdown = mWorld->ConstructWidget<PDropdown>(TilesetDropdownItems);
-	TilesetDropdown->ItemClicked.AddRaw(this, &PEditorGame::OnDropdownClicked);
+	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
+	TileGroup->SetLayoutMode(LM_Vertical);
+	TileGroup->SetVisible(false);
+
+	auto ScrollArea = mWorld->ConstructWidget<PScrollArea>();
+	TileGroup->AddChild(ScrollArea);
+
+	mTilesetViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+
+	for (const auto Tileset : GetTilesets())
+	{
+		auto View = ConstructTilesetView(Tileset);
+		ScrollArea->AddChild(View);
+		mTilesetViews[Tileset->Name] = View;
+	}
+
+	// Main panel
+
+	MainPanel->AddChild(FileGroup);
+	MainPanel->AddChild(EditGroup);
+	MainPanel->AddChild(TileGroup);
+
+	// Main canvas
+
+	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
+	MainCanvas->AddChild(MainPanel);
+
+	mWorld->SetRootWidget(MainCanvas);
+}
+
+PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
+{
+	const int ItemSize = 20;
+	const int ViewWidth = Tileset->Width * ItemSize;
+	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
-	GridView->SetGridWidth(16);
+	GridView->SetGridWidth(Tileset->Width);
 	GridView->SetVisible(true);
-	const auto ItemViewButtonGroup = mWorld->ConstructWidget<PButtonGroup>();
+	GridView->SetFixedWidth(ViewWidth);
+	GridView->SetResizeMode(RM_Fixed, RM_Fixed);
+	GridView->SetFixedHeight(ViewHeight);
 
-	auto Tileset = GetTileset("Tileset1");
 	auto TilesetTexture = Tileset->Texture;
 
-	for (auto& Item : Tileset->Items)
+	for (auto& Item : Tileset->Tiles)
 	{
-		const int ItemSize = 20;
-
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
 		auto Button = GridItem->GetWidget<PButton>();
@@ -124,21 +159,10 @@ void PEditorGame::SetupInterface()
 		Button->SetSourceRect(Item.GetSourceRect());
 		Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
 
-		ItemViewButtonGroup->AddButton(Button);
+		mTilesetViewButtonGroup->AddButton(Button);
 	}
 
-	TileGroup = mWorld->ConstructWidget<PGroup>("Tiles");
-	TileGroup->SetLayoutMode(LM_Vertical);
-	TileGroup->SetVisible(false);
-	TileGroup->AddChild(TilesetDropdown);
-	TileGroup->AddChild(GridView);
-
-	MainPanel->AddChild(TileGroup);
-
-	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
-	MainCanvas->AddChild(MainPanel);
-
-	mWorld->SetRootWidget(MainCanvas);
+	return GridView;
 }
 
 void PEditorGame::AddInputContext(uint8_t InputContext)
@@ -166,7 +190,16 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 	switch (Event->KeyDown)
 	{
 		case SDLK_LSHIFT:
-			mBrushMode = BM_Copy;
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushMode = BM_Copy;
+			}
+			break;
+		case SDLK_LCTRL:
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushMode = BM_Fill;
+			}
 			break;
 		default:
 			break;
@@ -204,7 +237,11 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 			}
 			break;
 		case SDLK_LSHIFT:
-			mBrushMode = BM_Default;
+		case SDLK_LCTRL:
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushMode = BM_Default;
+			}
 			break;
 		default:
 			break;
@@ -221,16 +258,15 @@ void PEditorGame::OnCreateButtonClicked()
 		{ "Position", { 0, 0 }   },
 		{ "SizeX",	   TileCountX },
 		{ "SizeY",	   TileCountY },
-		{ "Tileset",	 "Tileset1" }
 	};
 	for (int X = 0; X < TileCountX; ++X)
 	{
 		for (int Y = 0; Y < TileCountY; ++Y)
 		{
+			auto Tileset = mCurrentTileset ? mCurrentTileset->Name : "Tileset1";
 			JsonData["Tiles"].push_back({
-				{ "X",	   X },
-				{ "Y",	   Y },
-				{ "Index", 0 }
+				{ "Index",   0		 },
+				{ "Tileset", Tileset }
 			   });
 		}
 	}
@@ -292,14 +328,19 @@ void PEditorGame::OnTileButtonChecked(bool State)
 void PEditorGame::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
+	auto Item = Sender->GetCustomData<STileItem>();
+
+	mCurrentTileset = Item->Tileset;
+	LogDebug("Set new tileset: {}", mCurrentTileset->Name);
 	if (State)
 	{
-		mCurrentTilesetItem = Sender->GetCustomData<STileItem>();
+		mCurrentTilesetItem = Item;
 	}
 	else
 	{
 		mCurrentTilesetItem = nullptr;
 	}
+	LogDebug("Set new tileset item: {}", mCurrentTilesetItem ? mCurrentTilesetItem->Index : -1);
 }
 
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
@@ -334,34 +375,19 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		}
 		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
 		{
-			auto Position = GetRenderer()->GetMouseWorldPosition();
-			auto Tile1 = Chunk->GetTileAtPosition(Position);
-			if (!Tile1)
+			switch (mBrushMode)
 			{
-				LogError("Invalid tile at {}", Position.ToString().c_str());
-				return;
-			}
-			if (mBrushSize == BS_Small)
-			{
-				Tile1->Index = mCurrentTilesetItem->Index;
-			}
-			else
-			{
-				// TODO: Clean this up
-
-				Tile1->Index = mCurrentTilesetItem->Index;
-				if (auto Tile2 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, 0)))
-				{
-					Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
-				}
-				if (auto Tile3 = Chunk->GetTileAtPosition(Position + FVector2(0, TILE_SIZE)))
-				{
-					Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width : mCurrentTilesetItem->Index;
-				}
-				if (auto Tile4 = Chunk->GetTileAtPosition(Position + FVector2(TILE_SIZE, TILE_SIZE)))
-				{
-					Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile1->Tileset->Width + 1 : mCurrentTilesetItem->Index;
-				}
+				case BM_Default:
+				case BM_Copy:
+					PaintTile(Chunk->GetTileUnderMouse());
+					break;
+				case BM_Fill:
+					for (auto Tile : Chunk->GetTiles())
+					{
+						Tile->Index = mCurrentTilesetItem->Index;
+						Tile->Tileset = mCurrentTileset;
+					}
+					break;
 			}
 		}
 	}
@@ -415,5 +441,43 @@ void PEditorGame::ActorSelected(PActor* Actor)
 		}
 
 		Chunk->GetSelected() ? SetCurrentChunk(Chunk) : SetCurrentChunk(nullptr);
+	}
+}
+
+void PEditorGame::PaintTile(STile* Tile)
+{
+	if (!Tile)
+	{
+		return;
+	}
+
+	// Fill all tiles
+	PChunk* Chunk = Tile->Chunk;
+
+	// Set hit tile
+	Tile->Tileset = mCurrentTileset;
+	Tile->Index = mCurrentTilesetItem->Index;
+
+	// Set adjacent tiles
+	if (mBrushSize == BS_Large)
+	{
+		auto MousePosition = GetRenderer()->GetMouseWorldPosition();
+
+		// TODO: Clean this up
+		if (auto Tile2 = Chunk->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
+		{
+			Tile2->Tileset = mCurrentTileset;
+			Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
+		}
+		if (auto Tile3 = Chunk->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
+		{
+			Tile3->Tileset = mCurrentTileset;
+			Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width : mCurrentTilesetItem->Index;
+		}
+		if (auto Tile4 = Chunk->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
+		{
+			Tile4->Tileset = mCurrentTileset;
+			Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1 : mCurrentTilesetItem->Index;
+		}
 	}
 }

@@ -70,7 +70,7 @@ public:
 	void End() override {}
 
 	void Tick(float DeltaTime) override {}
-	void Draw(const PRenderer* Renderer) const override {};
+	bool Draw(const PRenderer* Renderer) const override { return true; }
 
 	PActor* GetParent() const { return mParent; }
 	void	SetParent(PActor* Parent) { mParent = Parent; }

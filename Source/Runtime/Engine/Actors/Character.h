@@ -37,7 +37,7 @@ public:
 	void Start() override;
 	void End() override {}
 	void Tick(float DeltaTime) override;
-	void Draw(const PRenderer* Renderer) const override;
+	bool Draw(const PRenderer* Renderer) const override;
 
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;

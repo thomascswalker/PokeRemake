@@ -193,7 +193,7 @@ void PApplication::Uninitialize() const
 	LogDebug("Destroying {} Application", bIsEditor ? "Editor" : "Game");
 }
 
-void PApplication::Loop()
+bool PApplication::Loop()
 {
 
 	// Tick the engine
@@ -209,12 +209,17 @@ void PApplication::Loop()
 	{
 		if (!OnEvent(&Event))
 		{
-			return;
+			return true;
 		}
 	}
 
 	// Draw to the screen
-	OnDraw();
+	if (!OnDraw())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool PApplication::OnEvent(void* Event)
@@ -257,10 +262,14 @@ bool PApplication::OnEvent(void* Event)
 	return true;
 }
 
-void PApplication::OnDraw() const
+bool PApplication::OnDraw() const
 {
-	mRenderer->Render();
+	if (!mRenderer->Render())
+	{
+		return false;
+	}
 	SDL_GL_SwapWindow(mContext->Window);
+	return true;
 }
 
 bool PApplication::IsRunning() const

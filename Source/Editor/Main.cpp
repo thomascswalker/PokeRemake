@@ -9,10 +9,16 @@ int main(int argc, char** argv)
 
 	if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor))
 	{
-		App->Start<PEditorGame>();
+		if (!App->Start<PEditorGame>())
+		{
+			return 1;
+		}
 		while (App->IsRunning())
 		{
-			App->Loop();
+			if (!App->Loop())
+			{
+				break;
+			}
 		}
 	}
 	else

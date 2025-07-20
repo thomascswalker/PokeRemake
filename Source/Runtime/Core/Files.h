@@ -123,7 +123,6 @@ namespace Files
 
 		Buffer.resize(Size);
 
-		LogDebug("Reading file: {} ({} bytes)", FileName.c_str(), Size);
 		File.read(Buffer.data(), Size);
 		if (!File)
 		{
@@ -133,5 +132,18 @@ namespace Files
 		File.close();
 
 		return true;
+	}
+
+	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory)
+	{
+		std::vector<std::string> OutFiles;
+
+		auto Path = GetRootPath() / std::filesystem::path(Directory);
+		for (const auto& Entry : std::filesystem::directory_iterator(Path))
+		{
+			OutFiles.push_back(Entry.path().string());
+		}
+
+		return OutFiles;
 	}
 } // namespace Files

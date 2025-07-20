@@ -13,7 +13,10 @@ int main(int argc, char** argv)
 		App->Start<TestGame>();
 		while (App->IsRunning())
 		{
-			App->Loop();
+			if (!App->Loop())
+			{
+				break;
+			}
 		}
 	}
 	else

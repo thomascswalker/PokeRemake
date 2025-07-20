@@ -39,7 +39,7 @@ void PCharacter::Tick(float DeltaTime)
 	mSprite.Tick(DeltaTime);
 }
 
-void PCharacter::Draw(const PRenderer* Renderer) const
+bool PCharacter::Draw(const PRenderer* Renderer) const
 {
 	int32_t Index = 0;
 	if (auto CurrentAnim = mSprite.GetCurrentAnimation())
@@ -50,6 +50,7 @@ void PCharacter::Draw(const PRenderer* Renderer) const
 	auto Bounds = GetWorldBounds();
 	Bounds.Y -= CHARACTER_OFFSET;
 	Renderer->DrawSpriteAt(mSprite.GetTexture(), Bounds, Index);
+	return true;
 }
 
 FRect PCharacter::GetLocalBounds() const
