@@ -5,6 +5,8 @@
 
 class PCameraComponent : public PComponent
 {
+
+
 protected:
 	FVector3	mTargetPosition;
 	PCameraView mCameraView;

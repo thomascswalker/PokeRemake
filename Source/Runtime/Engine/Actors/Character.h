@@ -21,7 +21,7 @@ enum ESpriteIndex
 class PCharacter : public PActor
 {
 protected:
-	PCharacterMovementComponent* mMovementComponent;
+	PCharacterMovementComponent* mMovementComponent = nullptr;
 
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection = MD_Down;
@@ -31,7 +31,6 @@ protected:
 	float mDistanceTraveled = 0.0f;
 
 public:
-	PCharacter() = default;
 	~PCharacter() override = default;
 
 	void Start() override;

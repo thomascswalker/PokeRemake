@@ -50,7 +50,6 @@ set(SOURCES
         Interface/Layout.h
         Interface/Text.h
         Engine/Serializer.cpp
-        Engine/ClassRegistry.h
         Core/Json.h
         Core/CoreFwd.h
         Interface/Box.h
@@ -74,6 +73,8 @@ set(SOURCES
         Interface/ScrollArea.h
         Core/Macros.h
         Engine/Actors/Portal.h
+        Core/Meta.h
+        Core/Meta.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

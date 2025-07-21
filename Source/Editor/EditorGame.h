@@ -66,6 +66,9 @@ class PEditorGame : public PGame
 	STileset*	  mCurrentTileset = nullptr;
 	STileItem*	  mCurrentTilesetItem = nullptr;
 
+	PButtonGroup* mActorViewButtonGroup;
+	SActorItem*	  mCurrentActorItem = nullptr;
+
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
@@ -100,6 +103,7 @@ public:
 	void OnLoadButtonClicked();
 	void OnEditModeClicked(SDropdownItemData* DropdownItemData);
 	void OnTilesetButtonChecked(bool State);
+	void OnActorButtonChecked(bool State);
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
 	void OnDropdownClicked(SDropdownItemData* Data) const;

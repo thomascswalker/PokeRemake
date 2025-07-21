@@ -1,94 +1,93 @@
 {
   "Objects": [
-    null,
     {
       "Class": "PChunk",
-      "Name": "6PChunk_626",
+      "Name": "PChunk_648",
       "Position": [
         0.0,
         0.0
       ],
-      "SizeX": 40,
-      "SizeY": 36,
+      "SizeX": 32,
+      "SizeY": 32,
       "Tiles": [
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -108,147 +107,147 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -268,147 +267,147 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -428,147 +427,147 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -588,83 +587,83 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -796,35 +795,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -956,35 +955,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1004,35 +1003,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 5,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 6,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 8,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 9,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1068,35 +1067,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 5,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 6,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 7,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 8,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 9,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1116,35 +1115,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1164,35 +1163,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 21,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 22,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 24,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 25,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1228,35 +1227,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 21,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 22,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 24,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 25,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1276,83 +1275,83 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 37,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 38,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 40,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 41,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1372,51 +1371,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 37,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 38,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 40,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 41,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1436,83 +1435,83 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 92,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 93,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1532,51 +1531,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 92,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 35,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 93,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1596,83 +1595,83 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 70,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 71,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 15,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 11,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 12,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 31,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1692,51 +1691,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 70,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 71,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 15,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 11,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 12,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 34,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 31,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1756,83 +1755,83 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 86,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 87,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 78,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 27,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 28,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 79,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1852,51 +1851,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 86,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 87,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 78,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 27,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 28,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 79,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -1916,35 +1915,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2076,35 +2075,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2236,35 +2235,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2396,35 +2395,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2556,35 +2555,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2604,35 +2603,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2652,51 +2651,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 5,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 6,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 83,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 8,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 9,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2716,35 +2715,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2764,35 +2763,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2812,51 +2811,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 21,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 56,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 56,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 25,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2876,35 +2875,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2924,35 +2923,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 70,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 71,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -2972,51 +2971,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 21,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 56,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 18,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 56,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 25,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3036,35 +3035,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3084,35 +3083,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 85,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 86,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 87,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3132,51 +3131,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 21,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 22,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 23,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 24,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 25,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3196,35 +3195,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3244,35 +3243,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3292,51 +3291,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 37,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 38,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 75,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 75,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 10,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 40,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 41,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3356,35 +3355,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3404,38 +3403,14 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
           "Index": 0,
           "Tileset": "Tileset1"
         },
@@ -3449,57 +3424,9 @@
         },
         {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 15,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 34,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 34,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 34,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 75,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 75,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 31,
-          "Tileset": "Tileset1"
-        },
-        {
           "Index": 0,
           "Tileset": "Tileset1"
         },
@@ -3513,41 +3440,9 @@
         },
         {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
           "Index": 0,
           "Tileset": "Tileset1"
         },
@@ -3561,41 +3456,9 @@
         },
         {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
           "Index": 0,
           "Tileset": "Tileset1"
         },
@@ -3609,54 +3472,6 @@
         },
         {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 15,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 11,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 12,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 10,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 31,
           "Tileset": "Tileset1"
         },
         {
@@ -3673,38 +3488,6 @@
         },
         {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
           "Tileset": "Tileset1"
         },
         {
@@ -3724,35 +3507,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3772,51 +3555,51 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 78,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 27,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 28,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 26,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 79,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3836,35 +3619,35 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -3932,99 +3715,99 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -4092,99 +3875,99 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 58,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 59,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 42,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 43,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
@@ -4252,1526 +4035,128 @@
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 70,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 71,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 14,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 57,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
+          "Index": 0,
           "Tileset": "Tileset1"
         },
         {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
           "Index": 0,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 86,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 87,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 85,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 51,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 57,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 42,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 43,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 44,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 20,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 50,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 58,
-          "Tileset": "Tileset1"
-        },
-        {
-          "Index": 59,
           "Tileset": "Tileset1"
         }
       ]
+    },
+    {
+      "Class": "PPortal",
+      "Position": [
+        600.0,
+        450.0
+      ],
+      "SourceIndex": -1,
+      "TargetMap": "",
+      "TargetPosition": -1
+    },
+    {
+      "Class": "PPortal",
+      "Position": [
+        200.0,
+        250.0
+      ],
+      "SourceIndex": -1,
+      "TargetMap": "",
+      "TargetPosition": -1
+    },
+    {
+      "Class": "PPortal",
+      "Position": [
+        750.0,
+        150.0
+      ],
+      "SourceIndex": -1,
+      "TargetMap": "",
+      "TargetPosition": -1
+    },
+    {
+      "Class": "PPortal",
+      "Position": [
+        650.0,
+        750.0
+      ],
+      "SourceIndex": -1,
+      "TargetMap": "",
+      "TargetPosition": -1
+    },
+    {
+      "Class": "PPortal",
+      "Position": [
+        200.0,
+        700.0
+      ],
+      "SourceIndex": -1,
+      "TargetMap": "",
+      "TargetPosition": -1
     }
   ]
 }

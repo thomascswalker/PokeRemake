@@ -5,6 +5,7 @@
 
 class PComponent : public PObject, public IInputHandler
 {
+
 protected:
 	PActor* mOwner = nullptr;
 
@@ -14,7 +15,7 @@ public:
 		: mOwner(Owner) {}
 	~PComponent() override = default;
 
-	PActor* GetOwner() const { return mOwner; }
+	PActor*	 GetOwner() const { return mOwner; }
 	void	 SetOwner(PActor* Owner);
 	void	 Tick(float DeltaTime) override {}
 	FVector2 GetPosition() const;

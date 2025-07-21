@@ -2,7 +2,6 @@
 
 #include "Actor.h"
 #include "Core/Json.h"
-#include "Engine/ClassRegistry.h"
 
 class PChunk;
 
@@ -27,7 +26,6 @@ struct STile
 
 class PChunk : public PActor
 {
-	JSON			   mData;
 	std::vector<STile> mTiles;
 
 	// Width of this chunk in tiles
@@ -36,9 +34,6 @@ class PChunk : public PActor
 	int mSizeY = 0;
 
 public:
-	PChunk() {}
-	PChunk(const json& JsonData);
-
 	void  Start() override;
 	bool  Draw(const PRenderer* Renderer) const override;
 	bool  DebugDraw(const PRenderer* Renderer) const override;
@@ -56,10 +51,9 @@ public:
 	IVector2 GetSize() const { return { mSizeX, mSizeY }; }
 
 	json Serialize() const override;
+	void Deserialize(const json& JsonData) override;
 
 #if _EDITOR
 	void OnKeyUp(SInputEvent* Event) override;
 #endif
 };
-
-REGISTER_CLASS(PChunk);

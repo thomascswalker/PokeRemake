@@ -1,6 +1,6 @@
 #include "Serializer.h"
 
-#include "ClassRegistry.h"
+#include "Actors/Portal.h"
 #include "World.h"
 
 void PSerializer::Serialize(const PObject* Object)
@@ -22,10 +22,21 @@ void PSerializer::Deserialize(const json& JsonData)
 			continue; // Skip null objects
 		}
 
-		auto ClassName = ObjectData["Class"].get<std::string>();
-		if (ClassName.find("PChunk") != std::string::npos)
+		auto	ClassName = ObjectData["Class"].get<std::string>();
+		PActor* NewActor = nullptr;
+		if (ClassName == "PChunk")
 		{
-			World->SpawnActor<PChunk>(ObjectData);
+			NewActor = World->SpawnActor<PChunk>();
 		}
+		else if (ClassName == "PPortal")
+		{
+			NewActor = World->SpawnActor<PPortal>();
+		}
+		if (!NewActor)
+		{
+			LogWarning("Deserialization of actor {} not supported.", ClassName.c_str());
+			continue;
+		}
+		NewActor->Deserialize(ObjectData);
 	}
 }

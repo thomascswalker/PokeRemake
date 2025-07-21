@@ -1,21 +1,20 @@
 #pragma once
-#include "nlohmann/json.hpp"
 
-#include <format>
+#include "Core/Logging.h"
+
 #include <string>
 
-using namespace nlohmann;
+#include "Core/Meta.h"
 
 // Non-drawable and position-independent Object
 class PObject
 {
 protected:
 	std::string mInternalName;
-	bool		bSerializable = true;
+	bool		mSerializable = true;
 
 public:
 	PObject() = default;
-	PObject(const json& JsonData) {}
 	virtual ~PObject() = default;
 
 	// Called before the game begins
@@ -28,17 +27,15 @@ public:
 	virtual void PostEnd() {}
 	virtual void Tick(float DeltaTime) = 0;
 
-	std::string GetClassName() const { return typeid(*this).name(); }
+	std::string GetClassName() const;
 	std::string GetInternalName() const { return mInternalName; }
 	void		SetInternalName(const std::string& Name) { mInternalName = Name; }
-	void		GenerateInternalName()
-	{
-		auto	   Name = typeid(*this).name();
-		static int Count = 0;
-		mInternalName = std::format("{}_{}", Name, Count++);
-	}
+	void		GenerateInternalName();
 
 	virtual json Serialize() const { return json(); }
-	virtual void Deserialize(const json& Data) {}
-	bool		 IsSerializable() const { return bSerializable; }
+	virtual void Deserialize(const json& Data)
+	{
+		LogDebug("Deserializing {}", GetClassName().c_str());
+	}
+	bool IsSerializable() const { return mSerializable; }
 };

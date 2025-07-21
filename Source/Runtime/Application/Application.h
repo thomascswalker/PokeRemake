@@ -56,7 +56,7 @@ public:
 	{
 		if (mEngine)
 		{
-			mEngine->StartGame<GameType>();
+			mEngine->Start<GameType>();
 			if (PGame* Game = mEngine->GetGame())
 			{
 				if (!Game->PreStart())

@@ -3,6 +3,7 @@
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
 #include "EditorView.h"
+#include "Engine/Actors/Portal.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serializer.h"
 #include "Interface/Canvas.h"
@@ -20,13 +21,16 @@ static std::vector<std::string> EditModeStrings = {
 	"Tiles",
 	"Actors",
 };
-static PGroup*					TileGroup;
-static PGroup*					ActorGroup;
-static std::vector<std::string> PlaceableActors = {
-	"Portal",
-	"Hill",
-	"Sign",
-	"Water",
+static PGroup* TileGroup;
+static PGroup* ActorGroup;
+
+static std::vector<SActorItem> PlaceableActors = {
+	{ "Portal" },
+	{ "Hill (South)" },
+	{ "Hill (West)" },
+	{ "Hill (East)" },
+	{ "Sign" },
+	{ "Water" },
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
@@ -130,6 +134,7 @@ void PEditorGame::SetupInterface()
 
 	// Actors
 
+	mActorViewButtonGroup = ConstructWidget<PButtonGroup>();
 	ActorGroup = mWorld->ConstructWidget<PGroup>("Actors");
 	ActorGroup->SetLayoutMode(LM_Vertical);
 
@@ -185,7 +190,6 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 
 PGridView* PEditorGame::ConstructActorView()
 {
-	const int ItemSize = 40;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
 	GridView->Padding = { 5 };
@@ -193,16 +197,17 @@ PGridView* PEditorGame::ConstructActorView()
 
 	for (auto& Item : PlaceableActors)
 	{
+		const int ItemSize = 40;
 		// Create the button item
-		auto GridItem = GridView->AddItem<PButton>(Item);
+		auto GridItem = GridView->AddItem<PButton>(Item.Name);
 		auto Button = GridItem->GetWidget<PButton>();
 		Button->SetResizeMode(RM_Grow, RM_Fixed);
 		Button->SetFixedHeight(ItemSize);
 		Button->SetCheckable(true);
 		Button->SetCustomData(&Item);
-		// Button->Checked.AddRaw(this, &PEditorGame::OnTilesetButtonChecked);
+		Button->Checked.AddRaw(this, &PEditorGame::OnActorButtonChecked);
 
-		// mTilesetViewButtonGroup->AddButton(Button);
+		mActorViewButtonGroup->AddButton(Button);
 	}
 
 	return GridView;
@@ -396,6 +401,21 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 	LogDebug("Set new tileset item: {}", mCurrentTilesetItem ? mCurrentTilesetItem->Index : -1);
 }
 
+void PEditorGame::OnActorButtonChecked(bool State)
+{
+	auto Sender = PWidget::GetSender<PButton>();
+	auto Item = Sender->GetCustomData<SActorItem>();
+	if (State)
+	{
+		mCurrentActorItem = Item;
+	}
+	else
+	{
+		mCurrentActorItem = nullptr;
+	}
+	LogDebug("Set new actor item: {}", mCurrentActorItem ? mCurrentActorItem->Name.c_str() : "None");
+}
+
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
 {
 	if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
@@ -415,18 +435,19 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
+	auto Chunk = GetCurrentChunk();
 	if (HasInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
 	}
-	if (HasInputContext(IC_Tile))
+	else if (HasInputContext(IC_Tile))
 	{
 		if (!mCurrentTilesetItem)
 		{
 			LogWarning("No tileset item selected.");
 			return;
 		}
-		if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
+		if (Chunk)
 		{
 			switch (mBrushMode)
 			{
@@ -444,13 +465,36 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			}
 		}
 	}
+	else if (HasInputContext(IC_Actor))
+	{
+		if (!mCurrentActorItem)
+		{
+			LogWarning("No actor item selected.");
+			return;
+		}
+		if (mCurrentActorItem->Name == "Portal")
+		{
+			auto Position = Chunk->GetTileUnderMouse()->GetPosition();
+			auto Actors = mWorld->GetActorsAtPosition(Position);
+			if (Actors.size() == 0)
+			{
+				LogDebug("Placing {}", mCurrentActorItem->Name.c_str());
+				auto Actor = SpawnActor<PPortal>();
+				Actor->SetPosition(Position);
+			}
+			else
+			{
+				LogWarning("Actor at clicked position.");
+			}
+		}
+	}
 }
 
 void PEditorGame::OnNewButtonClicked()
 {
-	for (auto Chunk : mChunks)
+	for (auto Actor : mWorld->GetActors())
 	{
-		mWorld->DestroyActor(Chunk);
+		mWorld->DestroyActor(Actor);
 	}
 	mChunks.clear();
 	mCurrentChunk = nullptr;
@@ -470,7 +514,7 @@ void PEditorGame::SetCurrentChunk(PChunk* Chunk)
 void PEditorGame::ConstructChunk(const json& JsonData)
 {
 	// Create the chunk
-	const auto Chunk = mWorld->SpawnActor<PChunk>(JsonData);
+	const auto Chunk = SpawnActor<PChunk>(JsonData);
 	if (!Chunk)
 	{
 		LogError("Failed to create chunk");

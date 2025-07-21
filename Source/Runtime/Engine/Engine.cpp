@@ -1,10 +1,14 @@
 #include "Engine.h"
 
-PEngine::PEngine() : bIsRunning(true), mGame(nullptr) {}
+#include "Actors/PlayerCharacter.h"
+#include "Actors/Portal.h"
+
+PEngine::PEngine()
+	: mIsRunning(true), mGame(nullptr) {}
 
 void PEngine::Stop()
 {
-	bIsRunning = false;
+	mIsRunning = false;
 }
 
 void PEngine::Tick(float DeltaTime) const

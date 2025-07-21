@@ -4,12 +4,9 @@
 #include <vector>
 
 #include "Actors/Actor.h"
-#include "Actors/Character.h"
 #include "Actors/Chunk.h"
 #include "Components/Component.h"
 #include "Interface/Widget.h"
-
-#define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
 
 #if _EDITOR
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
@@ -17,6 +14,8 @@ DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 
 class PWorld : public PObject
 {
+	// META(PWorld)
+
 	// Chunks
 	std::map<std::string, PChunk*> mChunks;
 
@@ -128,10 +127,53 @@ public:
 	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
 	PWidget* GetRootWidget() const { return mRootWidget; }
 
-	PChunk* GetChunkAtPosition(const FVector2& Position) const;
-	PActor* GetCharacterAtPosition(const FVector2& Position) const;
+	PChunk*				 GetChunkAtPosition(const FVector2& Position) const;
+	PActor*				 GetActorAtPosition(const FVector2& Position) const;
+	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)
+
+template <typename T, typename... ArgsType>
+T* ConstructActor(ArgsType&&... Args)
+{
+	return GetWorld()->ConstructActor<T>(std::forward<ArgsType>(Args)...);
+}
+
+template <typename T>
+T* ConstructActor(const json& Json)
+{
+	auto Actor = ConstructActor<T>();
+	Actor->Deserialize(Json);
+	return Actor;
+}
+
+template <typename T, typename... ArgsType>
+T* SpawnActor(ArgsType&&... Args)
+{
+	auto Actor = ConstructActor<T>(std::forward<ArgsType>(Args)...);
+	Actor->Start();
+	return Actor;
+}
+
+template <typename T>
+T* SpawnActor(const json& Json)
+{
+	auto Actor = ConstructActor<T>(Json);
+	Actor->Start();
+	return Actor;
+}
+
+template <typename T, typename... ArgsType>
+T* ConstructComponent(ArgsType&&... Args)
+{
+	return GetWorld()->ConstructComponent<T>(std::forward<ArgsType>(Args)...);
+}
+
+template <typename T, typename... ArgsType>
+T* ConstructWidget(ArgsType&&... Args)
+{
+	return GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+}

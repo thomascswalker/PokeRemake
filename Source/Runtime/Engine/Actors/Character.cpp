@@ -2,7 +2,6 @@
 
 #include "Core/Constants.h"
 #include "Core/Logging.h"
-#include "Engine/ClassRegistry.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 

@@ -113,7 +113,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	}
 
 	// Check if the tile contains an actor that blocks movement
-	const auto Actor = GetWorld()->GetCharacterAtPosition(NewPosition);
+	const auto Actor = GetWorld()->GetActorAtPosition(NewPosition);
 	if (Actor && Actor->IsBlocking())
 	{
 		return false;

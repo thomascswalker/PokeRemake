@@ -1,5 +1,6 @@
 #include "World.h"
 
+#include "Actors/Character.h"
 #include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Interface/Layout.h"
@@ -128,12 +129,12 @@ PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
 	}
 	return nullptr;
 }
-PActor* PWorld::GetCharacterAtPosition(const FVector2& Position) const
+PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (!dynamic_cast<PCharacter*>(Actor.get()))
+		if (dynamic_cast<PChunk*>(Actor.get()))
 		{
 			continue;
 		}
@@ -143,6 +144,23 @@ PActor* PWorld::GetCharacterAtPosition(const FVector2& Position) const
 		}
 	}
 	return nullptr;
+}
+
+std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
+{
+	std::vector<PActor*> OutActors;
+	for (auto Actor : mActors)
+	{
+		if (dynamic_cast<PChunk*>(Actor.get()))
+		{
+			continue;
+		}
+		if (Actor->GetWorldBounds().Contains(Position))
+		{
+			OutActors.push_back(Actor.get());
+		}
+	}
+	return OutActors;
 }
 
 void PWorld::ProcessEvents(SInputEvent* Event)

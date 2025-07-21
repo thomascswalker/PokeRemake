@@ -7,6 +7,7 @@
 
 class PPlayerCharacter : public PCharacter
 {
+
 	PCameraComponent* mCameraComponent = nullptr;
 	std::bitset<4>	  mInputState; // Left, Right, Down, Up
 	bool			  bInputAllowed = true;

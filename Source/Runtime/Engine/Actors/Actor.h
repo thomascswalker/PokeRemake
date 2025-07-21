@@ -1,17 +1,24 @@
 #pragma once
 
 #include "Core/Delegate.h"
+#include "Core/Meta.h"
 #include "Core/Vector.h"
 #include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
 #include "ISelectable.h"
+#include "Interface/Layout.h"
 #include "Renderer/IDrawable.h"
 
 class PActor;
 class PComponent;
 
 DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
+
+struct SActorItem
+{
+	std::string Name;
+};
 
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
 {
@@ -34,8 +41,6 @@ public:
 	DClicked	Clicked;
 
 	PActor() = default;
-	~PActor() override = default;
-	PActor(const json& JsonData) {}
 	PActor(const PActor& other)
 		: PObject{ other }, IDrawable{ other }, mPosition{ other.mPosition }, mSize{ other.mSize }
 	{
@@ -110,6 +115,28 @@ public:
 
 	void		 MoveToTile(int32_t X, int32_t Y);
 	virtual bool IsBlocking() const { return mBlocking; }
+
+	json Serialize() const override
+	{
+		return {
+			{ "Class",	   GetClassName()				  },
+			{ "Position", { mPosition.X, mPosition.Y } },
+		};
+	}
+
+	void Deserialize(const json& Data) override
+	{
+		PObject::Deserialize(Data);
+
+		if (!Data.contains("Position"))
+		{
+			LogError("[{}]: Missing key: Position", GetClassName().c_str());
+			return;
+		}
+		auto Position = Data["Position"];
+		mPosition.X = Position[0].get<int32_t>();
+		mPosition.Y = Position[1].get<int32_t>();
+	}
 
 	// Mouse events
 

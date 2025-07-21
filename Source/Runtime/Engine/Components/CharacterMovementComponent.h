@@ -57,6 +57,8 @@ DECLARE_MULTICAST_DELEGATE(DMovementDirectionChanged, EMovementDirection);
 
 class PCharacterMovementComponent : public PComponent
 {
+
+
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection;
 	FVector2		   mVelocity;
