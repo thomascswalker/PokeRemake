@@ -18,7 +18,7 @@ set(SOURCES
         Core/Vector.h
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
-        Engine/Actors/Chunk.cpp
+        Engine/Actors/Map.cpp
         Engine/CameraView.h
         Engine/Engine.cpp
         Engine/Game.cpp
@@ -33,7 +33,6 @@ set(SOURCES
         Renderer/Shader.cpp
         Engine/Components/Component.cpp
         Engine/Components/CameraComponent.cpp
-        Engine/Actors/Dummy.h
         Engine/Actors/PlayerCharacter.cpp
         Engine/Texture.cpp
         Core/Files.h
@@ -80,6 +79,7 @@ set(SOURCES
         Engine/Components/CollisionComponent.cpp
         Core/Time.h
         Engine/Actors/Portal.cpp
+        Engine/MapManager.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

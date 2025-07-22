@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Json.h"
 #include "Core/Logging.h"
 
 #include <string>
@@ -36,6 +37,7 @@ public:
 	virtual void Deserialize(const json& Data)
 	{
 		LogDebug("Deserializing {}", GetClassName().c_str());
+		LOAD_PROPERTY(Data, InternalName, std::string);
 	}
 	bool IsSerializable() const { return mSerializable; }
 };

@@ -87,9 +87,9 @@ void PEditorGame::SetupInterface()
 
 	const auto NewButton = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
-	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewChunkSizeX);
+	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewMapSizeX);
 	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
-	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewChunkSizeY);
+	const auto SizeYSpinner = mWorld->ConstructWidget<PSpinner>(mNewMapSizeY);
 	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeYChanged);
 	const auto SaveButton = mWorld->ConstructWidget<PButton>("Save", this, &PEditorGame::OnSaveButtonClicked);
 	const auto LoadButton = mWorld->ConstructWidget<PButton>("Load", this, &PEditorGame::OnLoadButtonClicked);
@@ -266,14 +266,14 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_DELETE:
 			// ReSharper disable once CppDFAConstantConditions
-			if (HasInputContext(IC_Select) && mCurrentChunk)
+			if (HasInputContext(IC_Select) && mCurrentMap)
 			{
-				// Remove the chunk from the list of chunks
-				mChunks.erase(std::ranges::remove(mChunks, mCurrentChunk).begin());
-				// Destroy the chunk actor
-				GetWorld()->DestroyActor(mCurrentChunk);
-				// Set the current chunk to null
-				mCurrentChunk = nullptr;
+				// Remove the map from the list of maps
+				mMaps.erase(std::ranges::remove(mMaps, mCurrentMap).begin());
+				// Destroy the map actor
+				GetWorld()->DestroyActor(mCurrentMap);
+				// Set the current map to null
+				mCurrentMap = nullptr;
 				Event->Consume();
 			}
 			break;
@@ -298,11 +298,12 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 
 void PEditorGame::OnCreateButtonClicked()
 {
-	int TileCountX = mNewChunkSizeX * 2;
-	int TileCountY = mNewChunkSizeY * 2;
-	LogDebug("Creating new chunk: [{}, {}]", TileCountX, TileCountY);
+	int TileCountX = mNewMapSizeX * 2;
+	int TileCountY = mNewMapSizeY * 2;
+	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
 
 	json JsonData = {
+		{ "MapName",	 "NewMap"	  },
 		{ "Position", { 0, 0 }   },
 		{ "SizeX",	   TileCountX },
 		{ "SizeY",	   TileCountY },
@@ -318,28 +319,31 @@ void PEditorGame::OnCreateButtonClicked()
 			   });
 		}
 	}
-	ConstructChunk(JsonData);
+	ConstructMap(JsonData);
 }
 
 void PEditorGame::OnSaveButtonClicked()
 {
-	PSerializer Serializer;
+	json Json;
 
 	for (const auto Actor : mWorld->GetActors())
 	{
-		Serializer.Serialize(Actor);
+		if (auto Map = dynamic_cast<PMap*>(Actor))
+		{
+			Json = Map->Serialize();
+			break;
+		}
 	}
 
 	std::string FileName;
 	if (Files::GetSaveFileName(&FileName, gDefaultFilters))
 	{
 		LogDebug("Saving to file: {}", FileName);
-		Files::WriteFile(FileName, Serializer.GetSerializedData().dump(4));
+		Files::WriteFile(FileName, Json.dump(4));
 	}
 }
 void PEditorGame::OnLoadButtonClicked()
 {
-	PSerializer Serializer;
 	std::string FileName;
 
 	if (!Files::GetOpenFileName(&FileName, gDefaultFilters))
@@ -354,7 +358,7 @@ void PEditorGame::OnLoadButtonClicked()
 	}
 
 	const json JsonData = json::parse(Data.data());
-	Serializer.Deserialize(JsonData);
+	PSerializer::Deserialize(JsonData);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
@@ -418,24 +422,24 @@ void PEditorGame::OnActorButtonChecked(bool State)
 
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
 {
-	if (auto Chunk = dynamic_cast<PChunk*>(ClickedActor))
+	if (auto Map = dynamic_cast<PMap*>(ClickedActor))
 	{
-		Chunk->ToggleSelected();
+		Map->ToggleSelected();
 		for (auto Actor : GetWorld()->GetActors())
 		{
-			if (Chunk->GetInternalName() == Actor->GetInternalName())
+			if (Map->GetInternalName() == Actor->GetInternalName())
 			{
 				continue;
 			}
 			Actor->SetSelected(false);
 		}
-		mCurrentChunk = Chunk;
+		mCurrentMap = Map;
 	}
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
-	auto Chunk = GetCurrentChunk();
+	auto Map = GetCurrentMap();
 	if (HasInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
@@ -447,16 +451,16 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No tileset item selected.");
 			return;
 		}
-		if (Chunk)
+		if (Map)
 		{
 			switch (mBrushMode)
 			{
 				case BM_Default:
 				case BM_Copy:
-					PaintTile(Chunk->GetTileUnderMouse());
+					PaintTile(Map->GetTileUnderMouse());
 					break;
 				case BM_Fill:
-					for (auto Tile : Chunk->GetTiles())
+					for (auto Tile : Map->GetTiles())
 					{
 						Tile->Index = mCurrentTilesetItem->Index;
 						Tile->Tileset = mCurrentTileset;
@@ -474,7 +478,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		}
 		if (mCurrentActorItem->Name == "Portal")
 		{
-			auto Position = Chunk->GetTileUnderMouse()->GetPosition();
+			auto Position = Map->GetTileUnderMouse()->GetPosition();
 			auto Actors = mWorld->GetActorsAtPosition(Position);
 			if (Actors.size() == 0)
 			{
@@ -496,48 +500,48 @@ void PEditorGame::OnNewButtonClicked()
 	{
 		mWorld->DestroyActor(Actor);
 	}
-	mChunks.clear();
-	mCurrentChunk = nullptr;
+	mMaps.clear();
+	mCurrentMap = nullptr;
 }
 
-void PEditorGame::AddChunk(PChunk* Chunk)
+void PEditorGame::AddMap(PMap* Map)
 {
-	mChunks.emplace_back(Chunk);
-	SetCurrentChunk(Chunk);
+	mMaps.emplace_back(Map);
+	SetCurrentMap(Map);
 }
 
-void PEditorGame::SetCurrentChunk(PChunk* Chunk)
+void PEditorGame::SetCurrentMap(PMap* Map)
 {
-	mCurrentChunk = Chunk;
+	mCurrentMap = Map;
 }
 
-void PEditorGame::ConstructChunk(const json& JsonData)
+void PEditorGame::ConstructMap(const json& JsonData)
 {
-	// Create the chunk
-	const auto Chunk = SpawnActor<PChunk>(JsonData);
-	if (!Chunk)
+	// Create the map
+	const auto Map = SpawnActor<PMap>(JsonData);
+	if (!Map)
 	{
-		LogError("Failed to create chunk");
+		LogError("Failed to create map");
 		return;
 	}
-	AddChunk(Chunk);
+	AddMap(Map);
 }
 
 void PEditorGame::ActorSelected(PActor* Actor)
 {
-	if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
+	if (const auto Map = dynamic_cast<PMap*>(Actor))
 	{
-		// Deselect all other chunks
-		for (const auto C : mWorld->GetActorsOfType<PChunk>())
+		// Deselect all other maps
+		for (const auto C : mWorld->GetActorsOfType<PMap>())
 		{
-			if (C == Chunk)
+			if (C == Map)
 			{
-				continue; // Skip the currently selected chunk
+				continue; // Skip the currently selected map
 			}
 			C->SetSelected(false);
 		}
 
-		Chunk->GetSelected() ? SetCurrentChunk(Chunk) : SetCurrentChunk(nullptr);
+		Map->GetSelected() ? SetCurrentMap(Map) : SetCurrentMap(nullptr);
 	}
 }
 
@@ -549,7 +553,7 @@ void PEditorGame::PaintTile(STile* Tile)
 	}
 
 	// Fill all tiles
-	PChunk* Chunk = Tile->Chunk;
+	PMap* Map = Tile->Map;
 
 	// Set hit tile
 	Tile->Tileset = mCurrentTileset;
@@ -561,17 +565,17 @@ void PEditorGame::PaintTile(STile* Tile)
 		auto MousePosition = GetRenderer()->GetMouseWorldPosition();
 
 		// TODO: Clean this up
-		if (auto Tile2 = Chunk->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
+		if (auto Tile2 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
 		{
 			Tile2->Tileset = mCurrentTileset;
 			Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 		}
-		if (auto Tile3 = Chunk->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
+		if (auto Tile3 = Map->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
 		{
 			Tile3->Tileset = mCurrentTileset;
 			Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width : mCurrentTilesetItem->Index;
 		}
-		if (auto Tile4 = Chunk->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
+		if (auto Tile4 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
 		{
 			Tile4->Tileset = mCurrentTileset;
 			Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1 : mCurrentTilesetItem->Index;

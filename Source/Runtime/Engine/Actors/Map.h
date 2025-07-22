@@ -3,19 +3,19 @@
 #include "Actor.h"
 #include "Core/Json.h"
 
-class PChunk;
+class PMap;
 
 struct STile
 {
 	// The tileset this tile is associated with.
 	STileset* Tileset;
-	// The chunk this tile belongs to.
-	PChunk* Chunk = nullptr;
+	// The map this tile belongs to.
+	PMap* Map = nullptr;
 	// The index within the tileset this tile will render.
 	int32_t Index;
-	// The X coordinate within the chunk.
+	// The X coordinate within the map.
 	int32_t X;
-	// The Y coordinate within the chunk.
+	// The Y coordinate within the map.
 	int32_t Y;
 
 	bool	 IsBlocking() const;
@@ -24,13 +24,14 @@ struct STile
 	FRect	 GetDestRect() const;
 };
 
-class PChunk : public PActor
+class PMap : public PActor
 {
+	std::string		   mMapName;
 	std::vector<STile> mTiles;
 
-	// Width of this chunk in tiles
+	// Width of this map in tiles
 	int mSizeX = 0;
-	// Height of this chunk in tiles
+	// Height of this map in tiles
 	int mSizeY = 0;
 
 public:
@@ -49,6 +50,9 @@ public:
 	int		 GetSizeX() const { return mSizeX; }
 	int		 GetSizeY() const { return mSizeY; }
 	IVector2 GetSize() const { return { mSizeX, mSizeY }; }
+
+	std::string GetMapName() const { return mMapName; }
+	void		SetMapName(const std::string& MapName) { mMapName = MapName; }
 
 	json Serialize() const override;
 	void Deserialize(const json& JsonData) override;

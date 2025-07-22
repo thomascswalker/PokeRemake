@@ -5,6 +5,7 @@
 #include <vector>
 
 class PActor;
+
 DECLARE_MULTICAST_DELEGATE(DOverlapBegin, PActor*);
 DECLARE_MULTICAST_DELEGATE(DOverlapEnd, PActor*);
 
@@ -16,4 +17,7 @@ protected:
 public:
 	DOverlapBegin OverlapBegin;
 	DOverlapEnd	  OverlapEnd;
+
+	virtual ~ICollider() = default;
+	virtual void ProcessCollision() = 0;
 };

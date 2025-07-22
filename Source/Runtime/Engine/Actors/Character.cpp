@@ -118,4 +118,20 @@ void PCharacter::OnMovementEnded(EMovementDirection Direction)
 		default:
 			break;
 	}
+
+	// Collision
+	for (auto Actor : GetWorld()->GetActorsAtPosition(mPosition))
+	{
+		if (Actor == this)
+		{
+			continue;
+		}
+		for (auto Comp : Actor->GetComponents())
+		{
+			if (auto Coll = dynamic_cast<ICollider*>(Comp))
+			{
+				Coll->ProcessCollision();
+			}
+		}
+	}
 }

@@ -1,16 +1,17 @@
 #pragma once
 
+#include "Collider.h"
 #include "Core/Delegate.h"
 #include "Core/Json.h"
 #include "Core/Meta.h"
 #include "Core/Vector.h"
 #include "Engine/InputManager.h"
 #include "Engine/Object.h"
+#include "Engine/Serializer.h"
 #include "Engine/Sprite.h"
-#include "ICollider.h"
-#include "ISelectable.h"
 #include "Interface/Layout.h"
-#include "Renderer/IDrawable.h"
+#include "Renderer/Drawable.h"
+#include "Selectable.h"
 
 class PActor;
 class PComponent;
@@ -30,6 +31,7 @@ protected:
 	FVector2				 mSize;
 	PSprite					 mSprite{};
 	bool					 mBlocking = true;
+	std::vector<PActor*>	 mChildren;
 	std::vector<PComponent*> mComponents;
 
 	void OnMouseEvent(SInputEvent* Event) override;
@@ -83,6 +85,24 @@ public:
 	PActor* GetParent() const { return mParent; }
 	void	SetParent(PActor* Parent) { mParent = Parent; }
 
+	void AddChild(PActor* Child)
+	{
+		if (Child->GetParent() == this)
+		{
+			return;
+		}
+		Child->SetParent(this);
+		Containers::Add(mChildren, Child);
+	}
+	void RemoveChild(PActor* Child)
+	{
+		if (Containers::Contains(mChildren, Child))
+		{
+			Containers::Remove(mChildren, Child);
+		}
+	}
+	std::vector<PActor*> GetChildren() const { return mChildren; }
+
 	void					 AddComponent(PComponent* Component);
 	std::vector<PComponent*> GetComponents() const { return mComponents; }
 
@@ -119,23 +139,9 @@ public:
 	void		 MoveToTile(int32_t X, int32_t Y);
 	virtual bool IsBlocking() const { return mBlocking; }
 
-	json Serialize() const override
-	{
-		return {
-			{ "Class",	   GetClassName()				  },
-			{ "Position", { mPosition.X, mPosition.Y } },
-		};
-	}
+	json Serialize() const override;
 
-	void Deserialize(const json& Data) override
-	{
-		PObject::Deserialize(Data);
-
-		CHECK_PROPERTY(Data, Position);
-		auto Position = Data["Position"];
-		mPosition.X = Position[0].get<int32_t>();
-		mPosition.Y = Position[1].get<int32_t>();
-	}
+	void Deserialize(const json& Data) override;
 
 	// Overlap
 	virtual void OnOverlapBegin(PActor* Actor) {}

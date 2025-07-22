@@ -48,7 +48,17 @@ void PWorld::Tick(float DeltaTime)
 		Actor->Tick(DeltaTime);
 	}
 }
-void PWorld::DestroyActor(const PActor* Actor)
+
+void PWorld::DestroyActor(PActor* Actor)
+{
+	mDestroyableActors.emplace_back(Actor);
+	for (auto Child : Actor->GetChildren())
+	{
+		DestroyActor(Child);
+	}
+}
+
+void PWorld::DestroyActorInternal(const PActor* Actor)
 {
 	if (!Actor)
 	{
@@ -69,7 +79,31 @@ void PWorld::DestroyActor(const PActor* Actor)
 		return;
 	}
 
+	for (auto Component : Actor->GetComponents())
+	{
+		DestroyComponentInternal(Component);
+	}
+
 	mActors.erase(std::ranges::find(mActors, SharedActor));
+}
+
+void PWorld::DestroyComponentInternal(const PComponent* Component)
+{
+	std::shared_ptr<PComponent> SharedComponent;
+	for (auto Ptr : mComponents)
+	{
+		if (Ptr.get() == Component)
+		{
+			SharedComponent = Ptr;
+			break;
+		}
+	}
+	if (!SharedComponent)
+	{
+		return;
+	}
+
+	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
 }
 std::vector<PActor*> PWorld::GetActors() const
 {
@@ -114,18 +148,28 @@ std::vector<PWidget*> PWorld::GetWidgets() const
 	return Widgets;
 }
 
-PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
+PPlayerCharacter* PWorld::GetPlayerCharacter() const
+{
+	return mPlayerCharacter;
+}
+
+void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
+{
+	mPlayerCharacter = PlayerCharacter;
+}
+
+PMap* PWorld::GetMapAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : GetActors())
 	{
-		if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
+		if (const auto Map = dynamic_cast<PMap*>(Actor))
 		{
-			auto Bounds = Chunk->GetWorldBounds();
+			auto Bounds = Map->GetWorldBounds();
 			Bounds.W *= 2.0f;
 			Bounds.H *= 2.0f;
 			if (Bounds.Contains(Position))
 			{
-				return Chunk;
+				return Map;
 			}
 		}
 	}
@@ -136,7 +180,7 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (dynamic_cast<PChunk*>(Actor.get()))
+		if (dynamic_cast<PMap*>(Actor.get()))
 		{
 			continue;
 		}
@@ -153,7 +197,7 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 	std::vector<PActor*> OutActors;
 	for (auto Actor : mActors)
 	{
-		if (dynamic_cast<PChunk*>(Actor.get()))
+		if (dynamic_cast<PMap*>(Actor.get()))
 		{
 			continue;
 		}
@@ -191,4 +235,13 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 			}
 		}
 	}
+}
+void PWorld::Cleanup()
+{
+	for (auto Actor : mDestroyableActors)
+	{
+		DestroyActorInternal(Actor);
+		Actor = nullptr;
+	}
+	mDestroyableActors.clear();
 }

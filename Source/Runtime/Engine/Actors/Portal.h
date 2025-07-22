@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Actor.h"
-#include "Chunk.h"
+#include "Map.h"
 #include "Core/Time.h"
 #include "Engine/Components/CollisionComponent.h"
 #include "Engine/World.h"
@@ -9,9 +9,8 @@
 
 class PPortal : public PActor
 {
-	int32_t		mSourceIndex = -1;
 	std::string mTargetMap = "";
-	int32_t		mTargetIndex = -1;
+	IVector2	mTargetPosition = { -1, -1 };
 
 	PCollisionComponent* mCollisionComponent = nullptr;
 

@@ -1,5 +1,7 @@
 #include "Portal.h"
 
+#include "Engine/MapManager.h"
+
 PPortal::PPortal()
 {
 	mBlocking = false;
@@ -21,7 +23,19 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 		else
 		{
 			LogDebug("Loading {}", mTargetMap.c_str());
-			LogDebug("Moving player {} to {}", Player->GetInternalName().c_str(), mTargetIndex);
+			LogDebug("Moving player {} to {}", Player->GetInternalName().c_str(), mTargetPosition.ToString().c_str());
+			if (!mParent)
+			{
+				LogWarning("Invalid parent.");
+				return;
+			}
+			auto Map = static_cast<PMap*>(mParent);
+			if (!Map)
+			{
+				LogWarning("Parent is not map");
+				return;
+			}
+			PMapManager::SwitchMap(Map->GetMapName(), mTargetMap, mTargetPosition);
 		}
 	}
 }
@@ -43,13 +57,14 @@ json PPortal::Serialize() const
 {
 	json Result = PActor::Serialize();
 	SAVE_PROPERTY(Result, TargetMap);
-	SAVE_PROPERTY(Result, TargetIndex);
+	Result["TargetPosition"] = { mTargetPosition.X, mTargetPosition.Y };
 	return Result;
 }
 
 void PPortal::Deserialize(const json& Data)
 {
 	PActor::Deserialize(Data);
-	LOAD_PROPERTY(Data, TargetIndex, int32_t);
+	mTargetPosition.X = Data.at("TargetPosition")[0].get<int>();
+	mTargetPosition.Y = Data.at("TargetPosition")[1].get<int>();
 	LOAD_PROPERTY(Data, TargetMap, std::string);
 }

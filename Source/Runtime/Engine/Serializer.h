@@ -3,16 +3,13 @@
 #include "Object.h"
 #include "nlohmann/json.hpp"
 
+class PActor;
+
 using namespace nlohmann;
 
 class PSerializer
 {
-	json mSerializedData;
-
 public:
-	PSerializer() { mSerializedData["Objects"] = json::array(); }
-	void Serialize(const PObject* Object);
-	json GetSerializedData() const { return mSerializedData; }
-	void Clear() { mSerializedData.clear(); }
-	void Deserialize(const json& JsonData);
+	static json	   Serialize(const PObject* Object);
+	static PActor* Deserialize(const json& JsonData);
 };
