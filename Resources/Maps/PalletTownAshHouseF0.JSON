@@ -8,7 +8,21 @@
   ],
   "SizeX": 16,
   "SizeY": 16,
-  "Children": [],
+  "Children": [
+    {
+      "Class": "PPortal",
+      "InternalName": "AshHouse",
+      "Position": [
+        200.0,
+        700.0
+      ],
+      "TargetMap": "PalletTown",
+      "TargetPosition": [
+        10,
+        12
+      ]
+    }
+  ],
   "Tiles": [
     {
       "Index": 38,
