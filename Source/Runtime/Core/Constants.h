@@ -16,8 +16,8 @@ constexpr int	TILE_COLUMNS = 9;
 
 constexpr auto	WINDOW_TITLE = "PokeRemake";
 constexpr auto	WINDOW_TITLE_EDITOR = "PokeRemake Editor";
-constexpr float WINDOW_DEFAULT_WIDTH = BLOCK_SIZE * TILE_ROWS;
-constexpr float WINDOW_DEFAULT_HEIGHT = BLOCK_SIZE * TILE_COLUMNS;
+constexpr float WINDOW_DEFAULT_WIDTH = 640;
+constexpr float WINDOW_DEFAULT_HEIGHT = 480;
 
 constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
 

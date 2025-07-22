@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Collider.h"
 #include "Core/Delegate.h"
 #include "Core/Json.h"
 #include "Core/Meta.h"
@@ -8,10 +9,9 @@
 #include "Engine/Object.h"
 #include "Engine/Serializer.h"
 #include "Engine/Sprite.h"
-#include "ICollider.h"
-#include "ISelectable.h"
 #include "Interface/Layout.h"
-#include "Renderer/IDrawable.h"
+#include "Renderer/Drawable.h"
+#include "Selectable.h"
 
 class PActor;
 class PComponent;
