@@ -8,10 +8,10 @@ void PCharacterMovementComponent::Start()
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
 	mTargetPosition = mOwner->GetWorldPosition();
-	mCurrentChunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
-	if (!mCurrentChunk)
+	mCurrentMap = GetWorld()->GetMapAtPosition(mTargetPosition);
+	if (!mCurrentMap)
 	{
-		LogError("No valid chunks in the world.");
+		LogError("No valid maps in the world.");
 	}
 }
 
@@ -91,22 +91,22 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	// Allow changing direction even if the character doesn't move
 	MovementDirectionChanged.Broadcast(mMovementDirection);
 
-	// If the new position is not within the same chunk as the current chunk we're in,
-	// set the current chunk to the chunk at the new position.
-	if (!mCurrentChunk->GetWorldBounds().Contains(NewPosition))
+	// If the new position is not within the same map as the current map we're in,
+	// set the current map to the map at the new position.
+	if (!mCurrentMap->GetWorldBounds().Contains(NewPosition))
 	{
-		PChunk* NewChunk = GetWorld()->GetChunkAtPosition(NewPosition);
+		PMap* NewMap = GetWorld()->GetMapAtPosition(NewPosition);
 
-		// If no chunk is found at the new position, return false.
-		if (!NewChunk)
+		// If no map is found at the new position, return false.
+		if (!NewMap)
 		{
-			return false; // No chunk at the new position
+			return false; // No map at the new position
 		}
-		mCurrentChunk = NewChunk;
+		mCurrentMap = NewMap;
 	}
 
 	// Check if the new position is walkable
-	const auto Tile = mCurrentChunk->GetTileAtPosition(NewPosition);
+	const auto Tile = mCurrentMap->GetTileAtPosition(NewPosition);
 	if (!Tile || Tile->IsBlocking())
 	{
 		return false;
@@ -128,26 +128,26 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 
 STile* PCharacterMovementComponent::GetCurrentTile() const
 {
-	if (!mCurrentChunk)
+	if (!mCurrentMap)
 	{
 		return {};
 	}
-	return mCurrentChunk->GetTileAtPosition(mOwner->GetWorldPosition());
+	return mCurrentMap->GetTileAtPosition(mOwner->GetWorldPosition());
 }
 
 STile* PCharacterMovementComponent::GetTargetTile() const
 {
-	auto Chunk = GetWorld()->GetChunkAtPosition(mTargetPosition);
-	if (!Chunk)
+	auto Map = GetWorld()->GetMapAtPosition(mTargetPosition);
+	if (!Map)
 	{
 		return {};
 	}
-	return mCurrentChunk->GetTileAtPosition(mTargetPosition);
+	return mCurrentMap->GetTileAtPosition(mTargetPosition);
 }
 
 void PCharacterMovementComponent::SnapToTile(const IVector2& Position)
 {
-	auto Tile = mCurrentChunk->GetTileAt(Position.X, Position.Y);
+	auto Tile = mCurrentMap->GetTileAt(Position.X, Position.Y);
 	if (!Tile)
 	{
 		LogError("No tile found at: {}", Position.ToString().c_str());

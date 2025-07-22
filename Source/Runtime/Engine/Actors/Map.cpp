@@ -1,6 +1,6 @@
 // ReSharper disable CppDFAUnreachableCode
 
-#include "Chunk.h"
+#include "Map.h"
 
 #include "../Settings.h"
 #include "Core/Macros.h"
@@ -16,7 +16,7 @@ bool STile::IsBlocking() const
 
 FVector2 STile::GetPosition() const
 {
-	auto Position = Chunk->GetWorldPosition();
+	auto Position = Map->GetWorldPosition();
 	Position.X += X * TILE_SIZE;
 	Position.Y += Y * TILE_SIZE;
 	return Position;
@@ -41,17 +41,17 @@ FRect STile::GetDestRect() const
 	};
 }
 
-void PChunk::Start()
+void PMap::Start()
 {
 #if _EDITOR
 	if (const auto EditorGame = GetEditorGame())
 	{
-		EditorGame->AddChunk(this);
+		EditorGame->AddMap(this);
 	}
 #endif
 }
 
-bool PChunk::Draw(const PRenderer* Renderer) const
+bool PMap::Draw(const PRenderer* Renderer) const
 {
 	// Draw each tile
 	for (const auto& Tile : mTiles)
@@ -63,7 +63,7 @@ bool PChunk::Draw(const PRenderer* Renderer) const
 	return true;
 }
 
-bool PChunk::DebugDraw(const PRenderer* Renderer) const
+bool PMap::DebugDraw(const PRenderer* Renderer) const
 {
 	Renderer->SetDrawColor(255, 0, 0, 128);
 	for (const auto& Tile : mTiles)
@@ -155,17 +155,17 @@ bool PChunk::DebugDraw(const PRenderer* Renderer) const
 	return true;
 }
 
-FRect PChunk::GetLocalBounds() const
+FRect PMap::GetLocalBounds() const
 {
 	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
-FRect PChunk::GetWorldBounds() const
+FRect PMap::GetWorldBounds() const
 {
 	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
-std::vector<STile*> PChunk::GetTiles()
+std::vector<STile*> PMap::GetTiles()
 {
 	std::vector<STile*> Tiles;
 	for (auto& Tile : mTiles)
@@ -175,7 +175,7 @@ std::vector<STile*> PChunk::GetTiles()
 	return Tiles;
 }
 
-STile* PChunk::GetTile(int Index)
+STile* PMap::GetTile(int Index)
 {
 	if (Index < 0 || Index >= mTiles.size())
 	{
@@ -184,7 +184,7 @@ STile* PChunk::GetTile(int Index)
 	return &mTiles[Index];
 }
 
-STile* PChunk::GetTileAtPosition(const FVector2& Position) const
+STile* PMap::GetTileAtPosition(const FVector2& Position) const
 {
 	for (auto& Tile : mTiles)
 	{
@@ -197,12 +197,12 @@ STile* PChunk::GetTileAtPosition(const FVector2& Position) const
 	return nullptr; // No tile found at the given position
 }
 
-STile* PChunk::GetTileUnderMouse() const
+STile* PMap::GetTileUnderMouse() const
 {
 	return GetTileAtPosition(GetRenderer()->GetMouseWorldPosition());
 }
 
-STile* PChunk::GetTileAt(int X, int Y) const
+STile* PMap::GetTileAt(int X, int Y) const
 {
 	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
 	{
@@ -214,7 +214,7 @@ STile* PChunk::GetTileAt(int X, int Y) const
 	return const_cast<STile*>(Tile);
 }
 
-json PChunk::Serialize() const
+json PMap::Serialize() const
 {
 	json Result;
 	Result["Name"] = GetMapName();
@@ -236,7 +236,7 @@ json PChunk::Serialize() const
 	return Result;
 }
 
-void PChunk::Deserialize(const json& JsonData)
+void PMap::Deserialize(const json& JsonData)
 {
 	PActor::Deserialize(JsonData);
 	mRenderPriority = DP_BACKGROUND;
@@ -263,9 +263,9 @@ void PChunk::Deserialize(const json& JsonData)
 }
 
 #if _EDITOR
-void PChunk::OnKeyUp(SInputEvent* Event)
+void PMap::OnKeyUp(SInputEvent* Event)
 {
-	if (GetEditorGame()->GetCurrentChunk() == this && mSelected)
+	if (GetEditorGame()->GetCurrentMap() == this && mSelected)
 	{
 		FVector2 Direction;
 		switch (Event->KeyUp)

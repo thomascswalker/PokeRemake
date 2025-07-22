@@ -1,5 +1,5 @@
 #pragma once
-#include "Actors/Chunk.h"
+#include "Actors/Map.h"
 
 #include <string>
 
@@ -11,8 +11,8 @@
 class PMapManager
 {
 public:
-	static PChunk* GetMapInWorld(const std::string& Name);
-	static PChunk* LoadMap(const std::string& Name);
+	static PMap* GetMapInWorld(const std::string& Name);
+	static PMap* LoadMap(const std::string& Name);
 	static bool	   UnloadMap(const std::string& Name);
 	static bool	   SwitchMap(const std::string& OldMap, const std::string& NewMap, const IVector2& NewPosition);
 };

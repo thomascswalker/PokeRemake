@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Actor.h"
-#include "Chunk.h"
+#include "Map.h"
 #include "Core/Time.h"
 #include "Engine/Components/CollisionComponent.h"
 #include "Engine/World.h"

@@ -36,7 +36,7 @@ enum EBrushMode
 {
 	BM_Default, // Paint from the source tile into all four quadrants.
 	BM_Copy,	// Paint from the source tile the three adjacent tiles, where the source tile is the top left.
-	BM_Fill		// Fills the entire chunk with the tile
+	BM_Fill		// Fills the entire map with the tile
 };
 
 struct SInputModeData
@@ -49,16 +49,16 @@ DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
-	float mNewChunkSizeX = 16.0f;
-	float mNewChunkSizeY = 16.0f;
+	float mNewMapSizeX = 16.0f;
+	float mNewMapSizeY = 16.0f;
 
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
 	EEditMode		 mEditMode = EM_None;
 
-	std::vector<PChunk*> mChunks;
-	PChunk*				 mCurrentChunk;
+	std::vector<PMap*> mMaps;
+	PMap*				 mCurrentMap;
 
 	std::map<std::string, PGridView*> mTilesetViews;
 
@@ -97,8 +97,8 @@ public:
 
 	void OnNewButtonClicked();
 	void OnCreateButtonClicked();
-	void OnSizeXChanged(float Value) { mNewChunkSizeX = Value; }
-	void OnSizeYChanged(float Value) { mNewChunkSizeY = Value; }
+	void OnSizeXChanged(float Value) { mNewMapSizeX = Value; }
+	void OnSizeYChanged(float Value) { mNewMapSizeY = Value; }
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
 	void OnEditModeClicked(SDropdownItemData* DropdownItemData);
@@ -111,12 +111,12 @@ public:
 	EBrushSize GetBrushSize() { return mBrushSize; }
 
 	// Scene
-	void	   AddChunk(PChunk* Chunk);
-	size_t	   GetChunkCount() const { return mChunks.size(); }
-	void	   SetCurrentChunk(PChunk* Chunk);
-	void	   ConstructChunk(const json& JsonData);
+	void	   AddMap(PMap* Map);
+	size_t	   GetMapCount() const { return mMaps.size(); }
+	void	   SetCurrentMap(PMap* Map);
+	void	   ConstructMap(const json& JsonData);
 	void	   ActorSelected(PActor* Actor);
-	PChunk*	   GetCurrentChunk() const { return mCurrentChunk; }
+	PMap*	   GetCurrentMap() const { return mCurrentMap; }
 	STileItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
 	void	   PaintTile(STile* Tile);
 

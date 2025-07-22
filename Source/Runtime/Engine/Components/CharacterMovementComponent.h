@@ -2,7 +2,7 @@
 
 #include "Component.h"
 #include "Core/Delegate.h"
-#include "Engine/Actors/Chunk.h"
+#include "Engine/Actors/Map.h"
 
 enum EMovementDirection
 {
@@ -62,7 +62,7 @@ class PCharacterMovementComponent : public PComponent
 	EMovementDirection mMovementDirection;
 	FVector2		   mVelocity;
 	float			   mDistanceTraveled = 0.0f;
-	PChunk*			   mCurrentChunk = nullptr;
+	PMap*			   mCurrentMap = nullptr;
 
 public:
 	DDestinationReached		  DestinationReached;
@@ -79,6 +79,6 @@ public:
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
 	STile*	 GetCurrentTile() const;
 	STile*	 GetTargetTile() const;
-	void	 SetCurrentChunk(PChunk* Chunk) { mCurrentChunk = Chunk; }
+	void	 SetCurrentMap(PMap* Map) { mCurrentMap = Map; }
 	void	 SnapToTile(const IVector2& Position);
 };

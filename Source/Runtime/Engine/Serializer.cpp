@@ -22,9 +22,9 @@ PActor* PSerializer::Deserialize(const json& JsonData)
 	}
 
 	auto ClassName = JsonData.at("Class").get<std::string>();
-	if (ClassName == "PChunk")
+	if (ClassName == "PMap")
 	{
-		return SpawnActor<PChunk>(JsonData);
+		return SpawnActor<PMap>(JsonData);
 	}
 	if (ClassName == "PPortal")
 	{

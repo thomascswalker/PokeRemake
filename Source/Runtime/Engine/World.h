@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Actors/Actor.h"
-#include "Actors/Chunk.h"
+#include "Actors/Map.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
 #include "Interface/Widget.h"
@@ -15,7 +15,7 @@ DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 
 class PWorld : public PObject
 {
-	std::map<std::string, PChunk*> mChunks;
+	std::map<std::string, PMap*> mMaps;
 
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
@@ -133,7 +133,7 @@ public:
 
 	PPlayerCharacter*	 GetPlayerCharacter() const;
 	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
-	PChunk*				 GetChunkAtPosition(const FVector2& Position) const;
+	PMap*				 GetMapAtPosition(const FVector2& Position) const;
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 

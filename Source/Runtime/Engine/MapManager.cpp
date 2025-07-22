@@ -1,26 +1,26 @@
-#include "Map.h"
+#include "MapManager.h"
 
 #include "Actors/PlayerCharacter.h"
 #include "Core/Files.h"
 #include "Serializer.h"
 #include "World.h"
 
-PChunk* PMapManager::GetMapInWorld(const std::string& Name)
+PMap* PMapManager::GetMapInWorld(const std::string& Name)
 {
 	for (auto Actor : GetWorld()->GetActors())
 	{
-		if (auto Chunk = dynamic_cast<PChunk*>(Actor))
+		if (auto Map = dynamic_cast<PMap*>(Actor))
 		{
-			if (Chunk->GetMapName() == Name)
+			if (Map->GetMapName() == Name)
 			{
-				return Chunk;
+				return Map;
 			}
 		}
 	}
 	return nullptr;
 }
 
-PChunk* PMapManager::LoadMap(const std::string& Name)
+PMap* PMapManager::LoadMap(const std::string& Name)
 {
 	LogDebug("Loading map: {}", Name.c_str());
 	std::string Data;
@@ -33,9 +33,9 @@ PChunk* PMapManager::LoadMap(const std::string& Name)
 
 	const json JsonData = json::parse(Data.data());
 
-	if (JsonData.at("Class") != "PChunk")
+	if (JsonData.at("Class") != "PMap")
 	{
-		LogError("Invalid class at root level of map file. Must be 'PChunk'.");
+		LogError("Invalid class at root level of map file. Must be 'PMap'.");
 		return nullptr;
 	}
 	PSerializer::Deserialize(JsonData);
@@ -61,13 +61,13 @@ bool PMapManager::UnloadMap(const std::string& Name)
 bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const IVector2& NewPosition)
 {
 	UnloadMap(OldMap);
-	if (auto Chunk = LoadMap(NewMap))
+	if (auto Map = LoadMap(NewMap))
 	{
 		LogDebug("Switched to map: {}", NewMap.c_str());
 
 		if (auto Player = GetWorld()->GetPlayerCharacter())
 		{
-			Player->GetMovementComponent()->SetCurrentChunk(Chunk);
+			Player->GetMovementComponent()->SetCurrentMap(Map);
 			Player->GetMovementComponent()->SnapToTile(NewPosition);
 		}
 	}

@@ -18,7 +18,7 @@ set(SOURCES
         Core/Vector.h
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
-        Engine/Actors/Chunk.cpp
+        Engine/Actors/Map.cpp
         Engine/CameraView.h
         Engine/Engine.cpp
         Engine/Game.cpp
@@ -79,7 +79,7 @@ set(SOURCES
         Engine/Components/CollisionComponent.cpp
         Core/Time.h
         Engine/Actors/Portal.cpp
-        Engine/Map.cpp
+        Engine/MapManager.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

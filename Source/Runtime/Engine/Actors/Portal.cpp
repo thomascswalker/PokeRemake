@@ -1,6 +1,6 @@
 #include "Portal.h"
 
-#include "Engine/Map.h"
+#include "Engine/MapManager.h"
 
 PPortal::PPortal()
 {
@@ -29,13 +29,13 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Invalid parent.");
 				return;
 			}
-			auto Chunk = static_cast<PChunk*>(mParent);
-			if (!Chunk)
+			auto Map = static_cast<PMap*>(mParent);
+			if (!Map)
 			{
-				LogWarning("Parent is not chunk");
+				LogWarning("Parent is not map");
 				return;
 			}
-			PMapManager::SwitchMap(Chunk->GetMapName(), mTargetMap, mTargetPosition);
+			PMapManager::SwitchMap(Map->GetMapName(), mTargetMap, mTargetPosition);
 		}
 	}
 }

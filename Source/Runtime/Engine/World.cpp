@@ -158,18 +158,18 @@ void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
 	mPlayerCharacter = PlayerCharacter;
 }
 
-PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
+PMap* PWorld::GetMapAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : GetActors())
 	{
-		if (const auto Chunk = dynamic_cast<PChunk*>(Actor))
+		if (const auto Map = dynamic_cast<PMap*>(Actor))
 		{
-			auto Bounds = Chunk->GetWorldBounds();
+			auto Bounds = Map->GetWorldBounds();
 			Bounds.W *= 2.0f;
 			Bounds.H *= 2.0f;
 			if (Bounds.Contains(Position))
 			{
-				return Chunk;
+				return Map;
 			}
 		}
 	}
@@ -180,7 +180,7 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (dynamic_cast<PChunk*>(Actor.get()))
+		if (dynamic_cast<PMap*>(Actor.get()))
 		{
 			continue;
 		}
@@ -197,7 +197,7 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 	std::vector<PActor*> OutActors;
 	for (auto Actor : mActors)
 	{
-		if (dynamic_cast<PChunk*>(Actor.get()))
+		if (dynamic_cast<PMap*>(Actor.get()))
 		{
 			continue;
 		}
