@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Core/Delegate.h"
+#include "Core/Json.h"
 #include "Core/Meta.h"
 #include "Core/Vector.h"
 #include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
+#include "ICollider.h"
 #include "ISelectable.h"
 #include "Interface/Layout.h"
 #include "Renderer/IDrawable.h"
@@ -33,9 +35,10 @@ protected:
 	void OnMouseEvent(SInputEvent* Event) override;
 
 public:
-	FVector2	mMousePosition;
-	bool		mMouseOver = false;
-	bool		mMouseDown = false;
+	FVector2 mMousePosition;
+	bool	 mMouseOver = false;
+	bool	 mMouseDown = false;
+
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 	DClicked	Clicked;
@@ -128,15 +131,15 @@ public:
 	{
 		PObject::Deserialize(Data);
 
-		if (!Data.contains("Position"))
-		{
-			LogError("[{}]: Missing key: Position", GetClassName().c_str());
-			return;
-		}
+		CHECK_PROPERTY(Data, Position);
 		auto Position = Data["Position"];
 		mPosition.X = Position[0].get<int32_t>();
 		mPosition.Y = Position[1].get<int32_t>();
 	}
+
+	// Overlap
+	virtual void OnOverlapBegin(PActor* Actor) {}
+	virtual void OnOverlapEnd(PActor* Actor) {}
 
 	// Mouse events
 

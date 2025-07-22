@@ -37,13 +37,15 @@ void PWorld::Tick(float DeltaTime)
 		Layout::Layout(mRootWidget);
 	}
 
+	auto Comps = GetComponents();
+	for (auto& Component : GetComponents())
+	{
+		Component->Tick(DeltaTime);
+	}
+
 	for (auto& Actor : GetActors())
 	{
 		Actor->Tick(DeltaTime);
-		for (auto& Component : Actor->GetComponents())
-		{
-			Component->Tick(DeltaTime);
-		}
 	}
 }
 void PWorld::DestroyActor(const PActor* Actor)

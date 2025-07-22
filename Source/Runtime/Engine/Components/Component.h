@@ -11,8 +11,6 @@ protected:
 
 public:
 	PComponent() = default;
-	PComponent(PActor* Owner)
-		: mOwner(Owner) {}
 	~PComponent() override = default;
 
 	PActor*	 GetOwner() const { return mOwner; }

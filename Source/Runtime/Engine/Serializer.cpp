@@ -14,7 +14,6 @@ void PSerializer::Serialize(const PObject* Object)
 
 void PSerializer::Deserialize(const json& JsonData)
 {
-	auto World = GetWorld();
 	for (const auto& ObjectData : JsonData["Objects"])
 	{
 		if (ObjectData.is_null())
@@ -22,21 +21,18 @@ void PSerializer::Deserialize(const json& JsonData)
 			continue; // Skip null objects
 		}
 
-		auto	ClassName = ObjectData["Class"].get<std::string>();
-		PActor* NewActor = nullptr;
+		auto ClassName = ObjectData["Class"].get<std::string>();
 		if (ClassName == "PChunk")
 		{
-			NewActor = World->SpawnActor<PChunk>();
+			SpawnActor<PChunk>(ObjectData);
 		}
 		else if (ClassName == "PPortal")
 		{
-			NewActor = World->SpawnActor<PPortal>();
+			SpawnActor<PPortal>(ObjectData);
 		}
-		if (!NewActor)
+		else
 		{
 			LogWarning("Deserialization of actor {} not supported.", ClassName.c_str());
-			continue;
 		}
-		NewActor->Deserialize(ObjectData);
 	}
 }

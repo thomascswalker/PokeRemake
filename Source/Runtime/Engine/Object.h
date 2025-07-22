@@ -25,7 +25,7 @@ public:
 	virtual void End() {}
 	// Called after the game ends
 	virtual void PostEnd() {}
-	virtual void Tick(float DeltaTime) = 0;
+	virtual void Tick(float DeltaTime) {};
 
 	std::string GetClassName() const;
 	std::string GetInternalName() const { return mInternalName; }

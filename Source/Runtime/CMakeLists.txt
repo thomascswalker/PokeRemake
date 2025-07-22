@@ -75,6 +75,11 @@ set(SOURCES
         Engine/Actors/Portal.h
         Core/Meta.h
         Core/Meta.cpp
+        Engine/Actors/ICollider.h
+        Engine/Components/CollisionComponent.h
+        Engine/Components/CollisionComponent.cpp
+        Core/Time.h
+        Engine/Actors/Portal.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

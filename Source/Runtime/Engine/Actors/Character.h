@@ -31,9 +31,9 @@ protected:
 	float mDistanceTraveled = 0.0f;
 
 public:
+	PCharacter();
 	~PCharacter() override = default;
 
-	void Start() override;
 	void End() override {}
 	void Tick(float DeltaTime) override;
 	bool Draw(const PRenderer* Renderer) const override;

@@ -16,7 +16,7 @@ bool TestGame::PreStart()
 	// Load the map from JSON
 	LogDebug("PreStart: Loading map.");
 	std::string Data;
-	auto		FileName = Files::FindFile("Temp.JSON");
+	auto		FileName = Files::FindFile("PalletTown.JSON");
 	if (!Files::ReadFile(FileName, Data))
 	{
 		return false;

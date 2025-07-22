@@ -167,13 +167,29 @@ T* SpawnActor(const json& Json)
 }
 
 template <typename T, typename... ArgsType>
-T* ConstructComponent(ArgsType&&... Args)
+T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 {
-	return GetWorld()->ConstructComponent<T>(std::forward<ArgsType>(Args)...);
+	return GetWorld()->ConstructComponent<T>(Owner, std::forward<ArgsType>(Args)...);
+}
+
+template <typename T>
+T* ConstructComponent(PActor* Owner, const json& Json)
+{
+	auto Component = ConstructComponent<T>(Owner);
+	Component->Deserialize(Json);
+	return Component;
 }
 
 template <typename T, typename... ArgsType>
 T* ConstructWidget(ArgsType&&... Args)
 {
 	return GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+}
+
+template <typename T>
+T* ConstructWidget(const json& Json)
+{
+	auto Widget = ConstructWidget<T>();
+	Widget->Deserialize(Json);
+	return Widget;
 }

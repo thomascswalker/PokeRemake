@@ -8,9 +8,8 @@
 
 #define PLAYER_SPEED 1.0f
 
-void PPlayerCharacter::Start()
+PPlayerCharacter::PPlayerCharacter()
 {
-	PCharacter::Start();
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }

@@ -5,7 +5,7 @@
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 
-void PCharacter::Start()
+PCharacter::PCharacter()
 {
 	mRenderPriority = DP_FOREGROUND;
 
@@ -23,7 +23,7 @@ void PCharacter::Start()
 	// Default to idle down animation
 	mSprite.SetCurrentAnimation("IdleDown");
 
-	mMovementComponent = GetWorld()->ConstructComponent<PCharacterMovementComponent>(this);
+	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
 	{
 		mMovementComponent->MovementStarted.AddRaw(this, &PCharacter::OnMovementStarted);
