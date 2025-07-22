@@ -7,7 +7,18 @@
 void PCollisionComponent::Tick(float DeltaTime)
 {
 	auto W = GetWorld();
-	auto Actors = W->GetActorsAtPosition(mOwner->GetPosition());
+	if (!W)
+	{
+		LogError("World is invalid.");
+		return;
+	}
+	if (!mOwner)
+	{
+		LogError("Owner is invalid.");
+		return;
+	}
+	auto OwnerPosition = mOwner->GetPosition();
+	auto Actors = W->GetActorsAtPosition(OwnerPosition);
 
 	// Loop through all actors at the current position and if they're
 	// not currently in our overlapping actors array, add them and broadcast

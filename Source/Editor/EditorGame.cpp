@@ -303,6 +303,7 @@ void PEditorGame::OnCreateButtonClicked()
 	LogDebug("Creating new chunk: [{}, {}]", TileCountX, TileCountY);
 
 	json JsonData = {
+		{ "MapName",	 "NewMap"	  },
 		{ "Position", { 0, 0 }   },
 		{ "SizeX",	   TileCountX },
 		{ "SizeY",	   TileCountY },
@@ -323,23 +324,26 @@ void PEditorGame::OnCreateButtonClicked()
 
 void PEditorGame::OnSaveButtonClicked()
 {
-	PSerializer Serializer;
+	json Json;
 
 	for (const auto Actor : mWorld->GetActors())
 	{
-		Serializer.Serialize(Actor);
+		if (auto Chunk = dynamic_cast<PChunk*>(Actor))
+		{
+			Json = Chunk->Serialize();
+			break;
+		}
 	}
 
 	std::string FileName;
 	if (Files::GetSaveFileName(&FileName, gDefaultFilters))
 	{
 		LogDebug("Saving to file: {}", FileName);
-		Files::WriteFile(FileName, Serializer.GetSerializedData().dump(4));
+		Files::WriteFile(FileName, Json.dump(4));
 	}
 }
 void PEditorGame::OnLoadButtonClicked()
 {
-	PSerializer Serializer;
 	std::string FileName;
 
 	if (!Files::GetOpenFileName(&FileName, gDefaultFilters))
@@ -354,7 +358,7 @@ void PEditorGame::OnLoadButtonClicked()
 	}
 
 	const json JsonData = json::parse(Data.data());
-	Serializer.Deserialize(JsonData);
+	PSerializer::Deserialize(JsonData);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)

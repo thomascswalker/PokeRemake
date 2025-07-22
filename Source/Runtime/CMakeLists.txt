@@ -80,6 +80,7 @@ set(SOURCES
         Engine/Components/CollisionComponent.cpp
         Core/Time.h
         Engine/Actors/Portal.cpp
+        Engine/Map.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

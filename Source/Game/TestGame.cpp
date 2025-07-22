@@ -3,6 +3,7 @@
 #include "Core/Files.h"
 #include "Core/Logging.h"
 #include "Engine/Actors/PlayerCharacter.h"
+#include "Engine/Map.h"
 #include "Engine/Serializer.h"
 #include "Engine/Texture.h"
 
@@ -14,20 +15,12 @@ bool TestGame::PreStart()
 	LoadAllTilesets();
 
 	// Load the map from JSON
-	LogDebug("PreStart: Loading map.");
-	std::string Data;
-	auto		FileName = Files::FindFile("PalletTown.JSON");
-	if (!Files::ReadFile(FileName, Data))
-	{
-		return false;
-	}
-	json		JsonData = json::parse(Data.data());
-	PSerializer Serializer;
-	Serializer.Deserialize(JsonData);
+	PMapManager::LoadMap(MAP_PALLET_TOWN);
 
 	LogDebug("PreStart: Constructing actors.");
-	ConstructActor<PCharacter>()->MoveToTile(10, 6);
-	ConstructActor<PPlayerCharacter>()->MoveToTile(8, 8);
+	auto Player = ConstructActor<PPlayerCharacter>();
+	GetWorld()->SetPlayerCharacter(Player);
+	Player->MoveToTile(8, 8);
 
 	return true;
 }

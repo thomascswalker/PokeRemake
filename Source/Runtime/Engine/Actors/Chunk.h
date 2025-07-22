@@ -26,6 +26,7 @@ struct STile
 
 class PChunk : public PActor
 {
+	std::string		   mMapName;
 	std::vector<STile> mTiles;
 
 	// Width of this chunk in tiles
@@ -49,6 +50,9 @@ public:
 	int		 GetSizeX() const { return mSizeX; }
 	int		 GetSizeY() const { return mSizeY; }
 	IVector2 GetSize() const { return { mSizeX, mSizeY }; }
+
+	std::string GetMapName() const { return mMapName; }
+	void		SetMapName(const std::string& MapName) { mMapName = MapName; }
 
 	json Serialize() const override;
 	void Deserialize(const json& JsonData) override;

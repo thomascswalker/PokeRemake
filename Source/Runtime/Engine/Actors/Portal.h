@@ -9,9 +9,8 @@
 
 class PPortal : public PActor
 {
-	int32_t		mSourceIndex = -1;
 	std::string mTargetMap = "";
-	int32_t		mTargetIndex = -1;
+	IVector2	mTargetPosition = { -1, -1 };
 
 	PCollisionComponent* mCollisionComponent = nullptr;
 

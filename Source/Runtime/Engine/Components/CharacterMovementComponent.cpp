@@ -144,3 +144,17 @@ STile* PCharacterMovementComponent::GetTargetTile() const
 	}
 	return mCurrentChunk->GetTileAtPosition(mTargetPosition);
 }
+
+void PCharacterMovementComponent::SnapToTile(const IVector2& Position)
+{
+	auto Tile = mCurrentChunk->GetTileAt(Position.X, Position.Y);
+	if (!Tile)
+	{
+		LogError("No tile found at: {}", Position.ToString().c_str());
+		return;
+	}
+	auto TilePosition = Tile->GetPosition();
+	mOwner->SetPosition(TilePosition);
+	mTargetPosition = TilePosition;
+	MovementEnded.Broadcast(mMovementDirection);
+}

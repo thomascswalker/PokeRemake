@@ -5,6 +5,7 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Chunk.h"
+#include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
 #include "Interface/Widget.h"
 
@@ -14,16 +15,19 @@ DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 
 class PWorld : public PObject
 {
-	// META(PWorld)
-
-	// Chunks
 	std::map<std::string, PChunk*> mChunks;
 
+	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
+	std::vector<PActor*> mDestroyableActors;
+
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
 	PWidget*							  mRootWidget;
+
+	void DestroyActorInternal(const PActor* Actor);
+	void DestroyComponentInternal(const PComponent* Component);
 
 public:
 #if _EDITOR
@@ -63,7 +67,7 @@ public:
 		return Actor.get();
 	}
 
-	void DestroyActor(const PActor* Actor);
+	void DestroyActor(PActor* Actor);
 
 	template <typename T>
 	void RegisterActor(T* Actor)
@@ -127,11 +131,14 @@ public:
 	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
 	PWidget* GetRootWidget() const { return mRootWidget; }
 
+	PPlayerCharacter*	 GetPlayerCharacter() const;
+	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
 	PChunk*				 GetChunkAtPosition(const FVector2& Position) const;
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
+	void Cleanup();
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

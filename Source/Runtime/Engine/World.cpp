@@ -48,7 +48,17 @@ void PWorld::Tick(float DeltaTime)
 		Actor->Tick(DeltaTime);
 	}
 }
-void PWorld::DestroyActor(const PActor* Actor)
+
+void PWorld::DestroyActor(PActor* Actor)
+{
+	mDestroyableActors.emplace_back(Actor);
+	for (auto Child : Actor->GetChildren())
+	{
+		DestroyActor(Child);
+	}
+}
+
+void PWorld::DestroyActorInternal(const PActor* Actor)
 {
 	if (!Actor)
 	{
@@ -69,7 +79,31 @@ void PWorld::DestroyActor(const PActor* Actor)
 		return;
 	}
 
+	for (auto Component : Actor->GetComponents())
+	{
+		DestroyComponentInternal(Component);
+	}
+
 	mActors.erase(std::ranges::find(mActors, SharedActor));
+}
+
+void PWorld::DestroyComponentInternal(const PComponent* Component)
+{
+	std::shared_ptr<PComponent> SharedComponent;
+	for (auto Ptr : mComponents)
+	{
+		if (Ptr.get() == Component)
+		{
+			SharedComponent = Ptr;
+			break;
+		}
+	}
+	if (!SharedComponent)
+	{
+		return;
+	}
+
+	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
 }
 std::vector<PActor*> PWorld::GetActors() const
 {
@@ -112,6 +146,16 @@ std::vector<PWidget*> PWorld::GetWidgets() const
 		Widgets.push_back(Widget.get());
 	}
 	return Widgets;
+}
+
+PPlayerCharacter* PWorld::GetPlayerCharacter() const
+{
+	return mPlayerCharacter;
+}
+
+void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
+{
+	mPlayerCharacter = PlayerCharacter;
 }
 
 PChunk* PWorld::GetChunkAtPosition(const FVector2& Position) const
@@ -191,4 +235,13 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 			}
 		}
 	}
+}
+void PWorld::Cleanup()
+{
+	for (auto Actor : mDestroyableActors)
+	{
+		DestroyActorInternal(Actor);
+		Actor = nullptr;
+	}
+	mDestroyableActors.clear();
 }

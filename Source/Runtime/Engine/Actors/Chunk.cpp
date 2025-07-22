@@ -217,7 +217,7 @@ STile* PChunk::GetTileAt(int X, int Y) const
 json PChunk::Serialize() const
 {
 	json Result;
-	Result["Name"] = GetInternalName();
+	Result["Name"] = GetMapName();
 	Result["Class"] = GetClassName();
 	Result["Position"] = { GetPosition().X, GetPosition().Y };
 
@@ -241,6 +241,8 @@ void PChunk::Deserialize(const json& JsonData)
 	PActor::Deserialize(JsonData);
 	mRenderPriority = DP_BACKGROUND;
 	mBlocking = false;
+
+	mMapName = JsonData.at("MapName").get<std::string>();
 
 	auto Position = JsonData.at("Position");
 	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());

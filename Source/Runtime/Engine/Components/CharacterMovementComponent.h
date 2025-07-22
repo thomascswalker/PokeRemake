@@ -58,7 +58,6 @@ DECLARE_MULTICAST_DELEGATE(DMovementDirectionChanged, EMovementDirection);
 class PCharacterMovementComponent : public PComponent
 {
 
-
 	FVector2		   mTargetPosition;
 	EMovementDirection mMovementDirection;
 	FVector2		   mVelocity;
@@ -80,4 +79,6 @@ public:
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
 	STile*	 GetCurrentTile() const;
 	STile*	 GetTargetTile() const;
+	void	 SetCurrentChunk(PChunk* Chunk) { mCurrentChunk = Chunk; }
+	void	 SnapToTile(const IVector2& Position);
 };

@@ -43,4 +43,6 @@ public:
 
 	void OnMovementStarted(EMovementDirection Direction);
 	void OnMovementEnded(EMovementDirection Direction);
+
+	PCharacterMovementComponent* GetMovementComponent() { return mMovementComponent; }
 };

@@ -219,6 +219,9 @@ bool PApplication::Loop()
 		return false;
 	}
 
+	// Clean up any destroyable actors in the world
+	mEngine->GetGame()->GetWorld()->Cleanup();
+
 	return true;
 }
 
