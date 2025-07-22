@@ -33,7 +33,6 @@ set(SOURCES
         Renderer/Shader.cpp
         Engine/Components/Component.cpp
         Engine/Components/CameraComponent.cpp
-        Engine/Actors/Dummy.h
         Engine/Actors/PlayerCharacter.cpp
         Engine/Texture.cpp
         Core/Files.h
