@@ -4,7 +4,6 @@
 
 #include "../Settings.h"
 #include "Core/Macros.h"
-#include "Engine/ClassRegistry.h"
 #include "Engine/World.h"
 #if _EDITOR
 #include "../../../Editor/EditorGame.h"
@@ -42,33 +41,8 @@ FRect STile::GetDestRect() const
 	};
 }
 
-PChunk::PChunk(const json& JsonData)
-{
-	LogDebug("Constructing Chunk from JSON data");
-	mRenderPriority = DP_BACKGROUND;
-	mBlocking = false;
-	mData = JsonData;
-}
-
 void PChunk::Start()
 {
-	auto Position = mData.at("Position");
-	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
-
-	mSizeX = mData.at("SizeX").get<int>();
-	mSizeY = mData.at("SizeY").get<int>();
-
-	auto TileData = mData.at("Tiles");
-	for (int32_t I = 0; I < TileData.size(); I++)
-	{
-		auto Tile = TileData[I];
-		auto X = I % mSizeX;
-		auto Y = I / mSizeX;
-		auto Index = Tile.at("Index").get<int>();
-		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
-		mTiles.push_back({ Tileset, this, Index, X, Y });
-	}
-
 #if _EDITOR
 	if (const auto EditorGame = GetEditorGame())
 	{
@@ -164,6 +138,18 @@ bool PChunk::DebugDraw(const PRenderer* Renderer) const
 			Renderer->DrawRectAt(HoverRect);
 		}
 	}
+	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Actor) && mMouseOver)
+	{
+		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
+		if (auto Tile = GetTileAtPosition(MouseWorldPos))
+		{
+			Renderer->SetDrawColor(PColor::Red);
+			auto HoverRect = Tile->GetDestRect();
+			HoverRect.W *= 2.0f;
+			HoverRect.H *= 2.0f;
+			Renderer->DrawRectAt(HoverRect);
+		}
+	}
 #endif
 
 	return true;
@@ -248,6 +234,30 @@ json PChunk::Serialize() const
 	}
 	Result["Tiles"] = TileArray;
 	return Result;
+}
+
+void PChunk::Deserialize(const json& JsonData)
+{
+	PActor::Deserialize(JsonData);
+	mRenderPriority = DP_BACKGROUND;
+	mBlocking = false;
+
+	auto Position = JsonData.at("Position");
+	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
+
+	mSizeX = JsonData.at("SizeX").get<int>();
+	mSizeY = JsonData.at("SizeY").get<int>();
+
+	auto TileData = JsonData.at("Tiles");
+	for (int32_t I = 0; I < TileData.size(); I++)
+	{
+		auto Tile = TileData[I];
+		auto X = I % mSizeX;
+		auto Y = I / mSizeX;
+		auto Index = Tile.at("Index").get<int>();
+		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
+		mTiles.push_back({ Tileset, this, Index, X, Y });
+	}
 }
 
 #if _EDITOR

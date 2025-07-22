@@ -5,7 +5,7 @@
 class PEngine
 {
 	/* State */
-	bool bIsRunning = false;
+	bool mIsRunning = false;
 
 	/* Actors/Objects */
 	std::unique_ptr<PGame> mGame;
@@ -15,13 +15,14 @@ public:
 	~PEngine() = default;
 	void Stop();
 	void Tick(float DeltaTime) const;
-	bool IsRunning() const { return bIsRunning; }
+	bool IsRunning() const { return mIsRunning; }
 
 	template <typename GameType>
-	void StartGame()
+	void Start()
 	{
 		mGame = std::make_unique<GameType>();
 	}
+
 	PGame* GetGame() const { return mGame.get(); }
 };
 

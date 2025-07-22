@@ -3,15 +3,13 @@
 #include "../Settings.h"
 #include "Core/Constants.h"
 #include "Core/Logging.h"
-#include "Engine/ClassRegistry.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 
 #define PLAYER_SPEED 1.0f
 
-void PPlayerCharacter::Start()
+PPlayerCharacter::PPlayerCharacter()
 {
-	PCharacter::Start();
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
 	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }

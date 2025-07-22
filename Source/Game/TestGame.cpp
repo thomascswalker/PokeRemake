@@ -26,11 +26,8 @@ bool TestGame::PreStart()
 	Serializer.Deserialize(JsonData);
 
 	LogDebug("PreStart: Constructing actors.");
-	if (const auto W = GetWorld())
-	{
-		W->ConstructActor<PCharacter>()->MoveToTile(10, 6);
-		W->ConstructActor<PPlayerCharacter>()->MoveToTile(8, 8);
-	}
+	ConstructActor<PCharacter>()->MoveToTile(10, 6);
+	ConstructActor<PPlayerCharacter>()->MoveToTile(8, 8);
 
 	return true;
 }

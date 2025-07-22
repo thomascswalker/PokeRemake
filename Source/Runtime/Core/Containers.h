@@ -3,7 +3,13 @@
 
 namespace Containers
 {
-	template <typename C, typename P>
+	template <class C, typename T>
+	size_t Find(const C& Container, const T& Element)
+	{
+		return std::find(Container.begin(), Container.end(), Element);
+	}
+
+	template <class C, typename P>
 	C Filter(const C& Container, const P& Predicate)
 	{
 		C Result;
@@ -11,9 +17,15 @@ namespace Containers
 		return Result;
 	}
 
-	template <typename C, typename T>
+	template <class C, typename T>
 	bool Contains(const C& Container, const T& Element)
 	{
 		return std::find(Container.begin(), Container.end(), Element) != Container.end();
+	}
+
+	template <class C, typename T>
+	void Remove(C& Container, const T& Element)
+	{
+		Container.erase(std::remove(Container.begin(), Container.end(), Element), Container.end());
 	}
 } // namespace Containers

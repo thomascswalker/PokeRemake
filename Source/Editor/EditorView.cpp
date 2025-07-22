@@ -6,6 +6,7 @@
 
 void PEditorView::Start()
 {
+	mSerializable = false;
 	mBlocking = false;
 
 	if (const auto W = GetWorld())

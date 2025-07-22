@@ -1,17 +1,26 @@
 #pragma once
 
 #include "Core/Delegate.h"
+#include "Core/Json.h"
+#include "Core/Meta.h"
 #include "Core/Vector.h"
 #include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
+#include "ICollider.h"
 #include "ISelectable.h"
+#include "Interface/Layout.h"
 #include "Renderer/IDrawable.h"
 
 class PActor;
 class PComponent;
 
 DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
+
+struct SActorItem
+{
+	std::string Name;
+};
 
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
 {
@@ -26,16 +35,15 @@ protected:
 	void OnMouseEvent(SInputEvent* Event) override;
 
 public:
-	FVector2	mMousePosition;
-	bool		mMouseOver = false;
-	bool		mMouseDown = false;
+	FVector2 mMousePosition;
+	bool	 mMouseOver = false;
+	bool	 mMouseDown = false;
+
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 	DClicked	Clicked;
 
 	PActor() = default;
-	~PActor() override = default;
-	PActor(const json& JsonData) {}
 	PActor(const PActor& other)
 		: PObject{ other }, IDrawable{ other }, mPosition{ other.mPosition }, mSize{ other.mSize }
 	{
@@ -79,8 +87,12 @@ public:
 	std::vector<PComponent*> GetComponents() const { return mComponents; }
 
 	virtual FRect GetLocalBounds() const { return FRect(); }
-	virtual FRect GetWorldBounds() const { return FRect(); }
-	virtual bool  IsMouseOver() const { return mMouseOver; }
+	virtual FRect GetWorldBounds() const
+	{
+		auto Local = GetLocalBounds();
+		return { mPosition.X, mPosition.Y, Local.W, Local.H };
+	}
+	virtual bool IsMouseOver() const { return mMouseOver; }
 
 	virtual FVector2 GetPosition() const { return mPosition; }
 	virtual FVector2 GetWorldPosition() const
@@ -106,6 +118,28 @@ public:
 
 	void		 MoveToTile(int32_t X, int32_t Y);
 	virtual bool IsBlocking() const { return mBlocking; }
+
+	json Serialize() const override
+	{
+		return {
+			{ "Class",	   GetClassName()				  },
+			{ "Position", { mPosition.X, mPosition.Y } },
+		};
+	}
+
+	void Deserialize(const json& Data) override
+	{
+		PObject::Deserialize(Data);
+
+		CHECK_PROPERTY(Data, Position);
+		auto Position = Data["Position"];
+		mPosition.X = Position[0].get<int32_t>();
+		mPosition.Y = Position[1].get<int32_t>();
+	}
+
+	// Overlap
+	virtual void OnOverlapBegin(PActor* Actor) {}
+	virtual void OnOverlapEnd(PActor* Actor) {}
 
 	// Mouse events
 

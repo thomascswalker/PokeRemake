@@ -6,6 +6,7 @@
 #include "Interface/ButtonGroup.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
+#include "Interface/Group.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -14,6 +15,7 @@ enum EInputContext : uint8_t
 	IC_None = 1U << 0,
 	IC_Select = 1U << 2,
 	IC_Tile = 1U << 3,
+	IC_Actor = 1U << 4,
 };
 DEFINE_BITMASK_OPERATORS(EInputContext);
 
@@ -37,6 +39,12 @@ enum EBrushMode
 	BM_Fill		// Fills the entire chunk with the tile
 };
 
+struct SInputModeData
+{
+	EInputContext InputContext;
+	PGroup*		  Group;
+};
+
 DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
@@ -58,16 +66,21 @@ class PEditorGame : public PGame
 	STileset*	  mCurrentTileset = nullptr;
 	STileItem*	  mCurrentTilesetItem = nullptr;
 
+	PButtonGroup* mActorViewButtonGroup;
+	SActorItem*	  mCurrentActorItem = nullptr;
+
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
 public:
 	// Init
 	PEditorGame() = default;
-	bool	   PreStart() override;
-	void	   Start() override;
-	void	   SetupInterface();
+	bool PreStart() override;
+	void Start() override;
+	void SetupInterface();
+
 	PGridView* ConstructTilesetView(STileset* Tileset);
+	PGridView* ConstructActorView();
 
 	// Input
 
@@ -88,9 +101,9 @@ public:
 	void OnSizeYChanged(float Value) { mNewChunkSizeY = Value; }
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
-	void OnSelectButtonChecked(bool State);
-	void OnTileButtonChecked(bool State);
+	void OnEditModeClicked(SDropdownItemData* DropdownItemData);
 	void OnTilesetButtonChecked(bool State);
+	void OnActorButtonChecked(bool State);
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
 	void OnDropdownClicked(SDropdownItemData* Data) const;
