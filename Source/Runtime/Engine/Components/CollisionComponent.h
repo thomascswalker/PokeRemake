@@ -4,5 +4,5 @@
 class PCollisionComponent : public PComponent, public ICollider
 {
 public:
-	void Tick(float DeltaTime) override;
+	void ProcessCollision() override;
 };

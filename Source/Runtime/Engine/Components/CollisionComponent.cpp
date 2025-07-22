@@ -1,10 +1,7 @@
 #include "CollisionComponent.h"
-
 #include "Engine/World.h"
 
-#include <thread>
-
-void PCollisionComponent::Tick(float DeltaTime)
+void PCollisionComponent::ProcessCollision()
 {
 	auto W = GetWorld();
 	if (!W)
@@ -30,23 +27,14 @@ void PCollisionComponent::Tick(float DeltaTime)
 		{
 			continue;
 		}
+		// Add to overlapping actors
 		if (!Containers::Contains(mOverlappingActors, Actor))
 		{
-			mOverlappingActors.push_back(Actor);
+			Containers::Add(mOverlappingActors, Actor);
 			OverlapBegin.Broadcast(Actor);
 		}
-	}
-	// Loop through all actors in our overlapping actors array and if they're
-	// not currently overlapping, remove them from the array and broadcast
-	// that we've ended overlapping.
-	for (auto Actor : mOverlappingActors)
-	{
-		// Ignore the owner
-		if (Actor == mOwner)
-		{
-			continue;
-		}
-		if (!Containers::Contains(Actors, Actor))
+		// Remove from overlapping actors
+		else if (!Containers::Contains(Actors, Actor))
 		{
 			Containers::Remove(mOverlappingActors, Actor);
 			OverlapEnd.Broadcast(Actor);

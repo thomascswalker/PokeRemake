@@ -91,10 +91,8 @@ public:
 		{
 			return;
 		}
-
 		Child->SetParent(this);
-
-		mChildren.push_back(Child);
+		Containers::Add(mChildren, Child);
 	}
 	void RemoveChild(PActor* Child)
 	{
