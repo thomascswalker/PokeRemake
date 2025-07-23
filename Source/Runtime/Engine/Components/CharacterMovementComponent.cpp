@@ -28,16 +28,16 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 	auto OwnerPosition = mOwner->GetWorldPosition();
 	switch (mMovementDirection)
 	{
-		case MD_Right:
+		case OR_East:
 			CloseEnough = OwnerPosition.X >= mTargetPosition.X;
 			break;
-		case MD_Left:
+		case OR_West:
 			CloseEnough = OwnerPosition.X <= mTargetPosition.X;
 			break;
-		case MD_Down:
+		case OR_South:
 			CloseEnough = OwnerPosition.Y >= mTargetPosition.Y;
 			break;
-		case MD_Up:
+		case OR_North:
 			CloseEnough = OwnerPosition.Y <= mTargetPosition.Y;
 			break;
 	}
@@ -58,16 +58,16 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 	// Add distance traveled in the corresponding direction to the current position
 	switch (mMovementDirection)
 	{
-		case MD_Right:
+		case OR_East:
 			OwnerPosition.X += Distance;
 			break;
-		case MD_Left:
+		case OR_West:
 			OwnerPosition.X -= Distance;
 			break;
-		case MD_Down:
+		case OR_South:
 			OwnerPosition.Y += Distance;
 			break;
-		case MD_Up:
+		case OR_North:
 			OwnerPosition.Y -= Distance;
 			break;
 	}

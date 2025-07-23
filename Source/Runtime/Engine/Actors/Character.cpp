@@ -63,26 +63,26 @@ FRect PCharacter::GetWorldBounds() const
 	return { WorldPosition.X, WorldPosition.Y, BLOCK_SIZE, BLOCK_SIZE };
 }
 
-void PCharacter::OnMovementStarted(EMovementDirection Direction)
+void PCharacter::OnMovementStarted(EOrientation Direction)
 {
 	switch (Direction)
 	{
-		case MD_Right:
+		case OR_East:
 			{
 				mSprite.SetCurrentAnimation("WalkRight");
 				break;
 			}
-		case MD_Left:
+		case OR_West:
 			{
 				mSprite.SetCurrentAnimation("WalkLeft");
 				break;
 			}
-		case MD_Up:
+		case OR_North:
 			{
 				mSprite.SetCurrentAnimation("WalkUp");
 				break;
 			}
-		case MD_Down:
+		case OR_South:
 			{
 				mSprite.SetCurrentAnimation("WalkDown");
 				break;
@@ -91,26 +91,26 @@ void PCharacter::OnMovementStarted(EMovementDirection Direction)
 			break;
 	}
 }
-void PCharacter::OnMovementEnded(EMovementDirection Direction)
+void PCharacter::OnMovementEnded(EOrientation Direction)
 {
 	switch (Direction)
 	{
-		case MD_Right:
+		case OR_East:
 			{
 				mSprite.SetCurrentAnimation("IdleRight");
 				break;
 			}
-		case MD_Left:
+		case OR_West:
 			{
 				mSprite.SetCurrentAnimation("IdleLeft");
 				break;
 			}
-		case MD_Up:
+		case OR_North:
 			{
 				mSprite.SetCurrentAnimation("IdleUp");
 				break;
 			}
-		case MD_Down:
+		case OR_South:
 			{
 				mSprite.SetCurrentAnimation("IdleDown");
 				break;

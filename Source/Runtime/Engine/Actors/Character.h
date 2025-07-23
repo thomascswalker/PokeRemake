@@ -24,7 +24,7 @@ protected:
 	PCharacterMovementComponent* mMovementComponent = nullptr;
 
 	FVector2		   mTargetPosition;
-	EMovementDirection mMovementDirection = MD_Down;
+	EOrientation mMovementDirection = OR_South;
 	bool			   bInputAllowed = false;
 
 	bool  mAnimationCycle = false;
@@ -41,8 +41,8 @@ public:
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
 
-	void OnMovementStarted(EMovementDirection Direction);
-	void OnMovementEnded(EMovementDirection Direction);
+	void OnMovementStarted(EOrientation Direction);
+	void OnMovementEnded(EOrientation Direction);
 
 	PCharacterMovementComponent* GetMovementComponent() { return mMovementComponent; }
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "Actors/Map.h"
+#include "Core/Common.h"
 
 #include <string>
 
@@ -16,5 +17,5 @@ public:
 	static PMap* GetMapInWorld(const std::string& Name);
 	static PMap* LoadMap(const std::string& Name);
 	static bool	 UnloadMap(const std::string& Name);
-	static bool	 SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition);
+	static bool	 SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition, EOrientation ExitDirection);
 };
