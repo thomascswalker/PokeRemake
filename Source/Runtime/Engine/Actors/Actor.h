@@ -139,9 +139,9 @@ public:
 	void		 MoveToTile(int32_t X, int32_t Y);
 	virtual bool IsBlocking() const { return mBlocking; }
 
-	json Serialize() const override;
+	JSON Serialize() const override;
 
-	void Deserialize(const json& Data) override;
+	void Deserialize(const JSON& Data) override;
 
 	// Overlap
 	virtual void OnOverlapBegin(PActor* Actor) {}

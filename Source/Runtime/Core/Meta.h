@@ -1,8 +1,9 @@
 #pragma once
 
-#include "nlohmann/json.hpp"
 #include <cxxabi.h>
 #include <string>
+
+#include "Json.h"
 
 using namespace nlohmann;
 
@@ -35,7 +36,7 @@ struct SClass
 	std::string							 Name;
 	size_t								 TypeId;
 	std::function<PObject*()>			 Constructor;
-	std::function<PObject*(const json&)> JsonConstructor;
+	std::function<PObject*(const JSON&)> JsonConstructor;
 };
 
 #define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>

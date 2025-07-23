@@ -114,7 +114,7 @@ public:
 	void	   AddMap(PMap* Map);
 	size_t	   GetMapCount() const { return mMaps.size(); }
 	void	   SetCurrentMap(PMap* Map);
-	void	   ConstructMap(const json& JsonData);
+	void	   ConstructMap(const JSON& JsonData);
 	void	   ActorSelected(PActor* Actor);
 	PMap*	   GetCurrentMap() const { return mCurrentMap; }
 	STileItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }

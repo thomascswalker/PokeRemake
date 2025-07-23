@@ -145,6 +145,29 @@ STile* PCharacterMovementComponent::GetTargetTile() const
 	return mCurrentMap->GetTileAtPosition(mTargetPosition);
 }
 
+void PCharacterMovementComponent::SetCurrentMap(PMap* Map)
+{
+	mCurrentMap = Map;
+}
+
+void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PMap* Map)
+{
+	LogDebug("Moving character to: {}", Position.ToString().c_str());
+	if (!Map)
+	{
+		Map = GetWorld()->GetMapAtPosition(mTargetPosition);
+		if (!Map)
+		{
+			LogError("No map at target position.");
+			return;
+		}
+	}
+	mCurrentMap = Map;
+	mOwner->SetPosition(Position);
+	mTargetPosition = Position;
+	MovementEnded.Broadcast(mMovementDirection);
+}
+
 void PCharacterMovementComponent::SnapToTile(const IVector2& Position)
 {
 	auto Tile = mCurrentMap->GetTileAt(Position.X, Position.Y);

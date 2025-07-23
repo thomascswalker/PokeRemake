@@ -150,7 +150,7 @@ T* ConstructActor(ArgsType&&... Args)
 }
 
 template <typename T>
-T* ConstructActor(const json& Json)
+T* ConstructActor(const JSON& Json)
 {
 	auto Actor = ConstructActor<T>();
 	Actor->Deserialize(Json);
@@ -166,7 +166,7 @@ T* SpawnActor(ArgsType&&... Args)
 }
 
 template <typename T>
-T* SpawnActor(const json& Json)
+T* SpawnActor(const JSON& Json)
 {
 	auto Actor = ConstructActor<T>(Json);
 	Actor->Start();
@@ -180,7 +180,7 @@ T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 }
 
 template <typename T>
-T* ConstructComponent(PActor* Owner, const json& Json)
+T* ConstructComponent(PActor* Owner, const JSON& Json)
 {
 	auto Component = ConstructComponent<T>(Owner);
 	Component->Deserialize(Json);
@@ -194,7 +194,7 @@ T* ConstructWidget(ArgsType&&... Args)
 }
 
 template <typename T>
-T* ConstructWidget(const json& Json)
+T* ConstructWidget(const JSON& Json)
 {
 	auto Widget = ConstructWidget<T>();
 	Widget->Deserialize(Json);

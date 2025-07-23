@@ -214,20 +214,17 @@ STile* PMap::GetTileAt(int X, int Y) const
 	return const_cast<STile*>(Tile);
 }
 
-json PMap::Serialize() const
+JSON PMap::Serialize() const
 {
-	json Result;
-	Result["Name"] = GetMapName();
-	Result["Class"] = GetClassName();
-	Result["Position"] = { GetPosition().X, GetPosition().Y };
+	JSON Result = PActor::Serialize();
+	SAVE_MEMBER_PROPERTY(Result, MapName);
+	SAVE_MEMBER_PROPERTY(Result, SizeX);
+	SAVE_MEMBER_PROPERTY(Result, SizeY);
 
-	Result["SizeX"] = mSizeX;
-	Result["SizeY"] = mSizeY;
-
-	auto TileArray = json::array();
+	auto TileArray = JSON::array();
 	for (const auto& Tile : mTiles)
 	{
-		json TileResult;
+		JSON TileResult;
 		TileResult["Tileset"] = Tile.Tileset->Name;
 		TileResult["Index"] = Tile.Index;
 		TileArray.push_back(TileResult);
@@ -236,19 +233,15 @@ json PMap::Serialize() const
 	return Result;
 }
 
-void PMap::Deserialize(const json& JsonData)
+void PMap::Deserialize(const JSON& JsonData)
 {
 	PActor::Deserialize(JsonData);
 	mRenderPriority = DP_BACKGROUND;
 	mBlocking = false;
 
-	mMapName = JsonData.at("MapName").get<std::string>();
-
-	auto Position = JsonData.at("Position");
-	mPosition = FVector2(Position[0].get<float>(), Position[1].get<float>());
-
-	mSizeX = JsonData.at("SizeX").get<int>();
-	mSizeY = JsonData.at("SizeY").get<int>();
+	LOAD_MEMBER_PROPERTY(JsonData, MapName, std::string);
+	LOAD_MEMBER_PROPERTY(JsonData, SizeX, int32_t);
+	LOAD_MEMBER_PROPERTY(JsonData, SizeY, int32_t);
 
 	auto TileData = JsonData.at("Tiles");
 	for (int32_t I = 0; I < TileData.size(); I++)

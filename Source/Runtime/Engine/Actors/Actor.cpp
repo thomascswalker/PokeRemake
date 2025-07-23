@@ -55,12 +55,11 @@ void PActor::MoveToTile(int32_t X, int32_t Y)
 	mPosition = FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
 }
 
-json PActor::Serialize() const
+JSON PActor::Serialize() const
 {
-	json Result = {
-		{ "Class",	   GetClassName()				  },
-		{ "Position", { mPosition.X, mPosition.Y } },
-	};
+	JSON Result = PObject::Serialize();
+	Result["Class"] = GetClassName();
+	Result["Position"] = { mPosition.X, mPosition.Y };
 	if (mChildren.size() > 0)
 	{
 		Result["Children"] = {};
@@ -75,7 +74,7 @@ json PActor::Serialize() const
 	return Result;
 }
 
-void PActor::Deserialize(const json& Data)
+void PActor::Deserialize(const JSON& Data)
 {
 	PObject::Deserialize(Data);
 

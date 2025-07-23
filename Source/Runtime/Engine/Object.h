@@ -33,11 +33,16 @@ public:
 	void		SetInternalName(const std::string& Name) { mInternalName = Name; }
 	void		GenerateInternalName();
 
-	virtual json Serialize() const { return json(); }
-	virtual void Deserialize(const json& Data)
+	virtual JSON Serialize() const
+	{
+		JSON Result;
+		SAVE_MEMBER_PROPERTY(Result, InternalName);
+		return Result;
+	}
+	virtual void Deserialize(const JSON& Data)
 	{
 		LogDebug("Deserializing {}", GetClassName().c_str());
-		LOAD_PROPERTY(Data, InternalName, std::string);
+		LOAD_MEMBER_PROPERTY(Data, InternalName, std::string);
 	}
 	bool IsSerializable() const { return mSerializable; }
 };

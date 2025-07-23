@@ -6,7 +6,7 @@ include_directories(
         ../../ThirdParty
         ../../ThirdParty/glm
         ../../ThirdParty/SDL/include
-        ../../ThirdParty/json/include/
+        ../../ThirdParty/JSON/include/
         ../../ThirdParty/nativefiledialog-extended/include
 )
 
@@ -25,7 +25,7 @@ set(SOURCES
         Engine/InputManager.cpp
         Engine/Object.cpp
         Engine/World.cpp
-        Renderer/IDrawable.h
+        Renderer/Drawable.h
         Renderer/Renderer.cpp
         Renderer/IRHI.h
         Application/ArgParser.h
@@ -62,7 +62,7 @@ set(SOURCES
         Interface/AbstractButton.cpp
         Interface/Image.h
         Engine/Tileset.h
-        Engine/Actors/ISelectable.h
+        Engine/Actors/Selectable.h
         Core/Containers.h
         Interface/Panel.h
         Engine/Tileset.cpp
@@ -74,7 +74,7 @@ set(SOURCES
         Engine/Actors/Portal.h
         Core/Meta.h
         Core/Meta.cpp
-        Engine/Actors/ICollider.h
+        Engine/Actors/Collider.h
         Engine/Components/CollisionComponent.h
         Engine/Components/CollisionComponent.cpp
         Core/Time.h

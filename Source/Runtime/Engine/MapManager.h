@@ -10,9 +10,11 @@
 
 class PMapManager
 {
+	static std::map<std::string, JSON> sMapData;
+
 public:
 	static PMap* GetMapInWorld(const std::string& Name);
 	static PMap* LoadMap(const std::string& Name);
-	static bool	   UnloadMap(const std::string& Name);
-	static bool	   SwitchMap(const std::string& OldMap, const std::string& NewMap, const IVector2& NewPosition);
+	static bool	 UnloadMap(const std::string& Name);
+	static bool	 SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition);
 };

@@ -79,6 +79,8 @@ public:
 	FVector2 GetTargetPosition() const { return mTargetPosition; }
 	STile*	 GetCurrentTile() const;
 	STile*	 GetTargetTile() const;
-	void	 SetCurrentMap(PMap* Map) { mCurrentMap = Map; }
-	void	 SnapToTile(const IVector2& Position);
+	void	 SetCurrentMap(PMap* Map);
+
+	void SnapToPosition(const FVector2& Position, PMap* Map = nullptr);
+	void SnapToTile(const IVector2& Position);
 };

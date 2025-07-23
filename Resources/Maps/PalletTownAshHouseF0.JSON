@@ -1,6 +1,47 @@
 {
+  "Children": [
+    {
+      "Class": "PPortal",
+      "InternalName": "PortalEntranceLeft",
+      "Position": [
+        200.0,
+        700.0
+      ],
+      "TargetMap": "PalletTown",
+      "TargetPosition": [
+        500.0,
+        600.0
+      ]
+    },
+    {
+      "Class": "PPortal",
+      "InternalName": "PortalEntranceRight",
+      "Position": [
+        300.0,
+        700.0
+      ],
+      "TargetMap": "PalletTown",
+      "TargetPosition": [
+        500.0,
+        600.0
+      ]
+    },
+    {
+      "Class": "PPortal",
+      "InternalName": "PortalStairs",
+      "Position": [
+        700.0,
+        100.0
+      ],
+      "TargetMap": "PalletTownAshHouseF1",
+      "TargetPosition": [
+        600.0,
+        100.0
+      ]
+    }
+  ],
   "Class": "PMap",
-  "InternalName": "PalletTownAshHouseF0",
+  "InternalName": "PMap_648",
   "MapName": "PalletTownAshHouseF0",
   "Position": [
     0.0,
@@ -8,21 +49,6 @@
   ],
   "SizeX": 16,
   "SizeY": 16,
-  "Children": [
-    {
-      "Class": "PPortal",
-      "InternalName": "AshHouse",
-      "Position": [
-        200.0,
-        700.0
-      ],
-      "TargetMap": "PalletTown",
-      "TargetPosition": [
-        10,
-        12
-      ]
-    }
-  ],
   "Tiles": [
     {
       "Index": 38,
