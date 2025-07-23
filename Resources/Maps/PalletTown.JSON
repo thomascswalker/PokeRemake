@@ -11,7 +11,8 @@
       "TargetPosition": [
         200.0,
         600.0
-      ]
+      ],
+      "ExitDirection": 0
     },
     {
       "Class": "PPortal",
@@ -24,7 +25,8 @@
       "TargetPosition": [
         0,
         0
-      ]
+      ],
+      "ExitDirection": 0
     },
     {
       "Class": "PPortal",
@@ -37,7 +39,8 @@
       "TargetPosition": [
         0,
         0
-      ]
+      ],
+      "ExitDirection": 0
     }
   ],
   "Class": "PMap",

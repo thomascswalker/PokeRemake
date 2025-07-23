@@ -1,68 +1,61 @@
 #pragma once
 
 #include "Component.h"
+#include "Core/Common.h"
 #include "Core/Delegate.h"
 #include "Engine/Actors/Map.h"
 
-enum EMovementDirection
-{
-	MD_Left,
-	MD_Right,
-	MD_Up,
-	MD_Down
-};
-
-inline FVector2 DirectionToVector(EMovementDirection Direction)
+inline FVector2 DirectionToVector(EOrientation Direction)
 {
 	switch (Direction)
 	{
-		case MD_Right:
+		case OR_East:
 			return { 1, 0 };
-		case MD_Left:
+		case OR_West:
 			return { -1, 0 };
-		case MD_Down:
+		case OR_South:
 			return { 0, 1 };
-		case MD_Up:
+		case OR_North:
 			return { 0, -1 };
 		default:
 			return { 0, 0 };
 	}
 }
 
-inline EMovementDirection VectorToDirection(const FVector2& Direction)
+inline EOrientation VectorToDirection(const FVector2& Direction)
 {
 	if (Direction.X > 0)
 	{
-		return MD_Right;
+		return OR_East;
 	}
 	if (Direction.X < 0)
 	{
-		return MD_Left;
+		return OR_West;
 	}
 	if (Direction.Y > 0)
 	{
-		return MD_Down;
+		return OR_South;
 	}
 	if (Direction.Y < 0)
 	{
-		return MD_Up;
+		return OR_North;
 	}
-	return MD_Down;
+	return OR_South;
 }
 
 DECLARE_MULTICAST_DELEGATE(DDestinationReached, const FVector2&);
-DECLARE_MULTICAST_DELEGATE(DMovementStarted, EMovementDirection);
-DECLARE_MULTICAST_DELEGATE(DMovementEnded, EMovementDirection);
-DECLARE_MULTICAST_DELEGATE(DMovementDirectionChanged, EMovementDirection);
+DECLARE_MULTICAST_DELEGATE(DMovementStarted, EOrientation);
+DECLARE_MULTICAST_DELEGATE(DMovementEnded, EOrientation);
+DECLARE_MULTICAST_DELEGATE(DMovementDirectionChanged, EOrientation);
 
 class PCharacterMovementComponent : public PComponent
 {
 
-	FVector2		   mTargetPosition;
-	EMovementDirection mMovementDirection;
-	FVector2		   mVelocity;
-	float			   mDistanceTraveled = 0.0f;
-	PMap*			   mCurrentMap = nullptr;
+	FVector2	 mTargetPosition;
+	EOrientation mMovementDirection;
+	FVector2	 mVelocity;
+	float		 mDistanceTraveled = 0.0f;
+	PMap*		 mCurrentMap = nullptr;
 
 public:
 	DDestinationReached		  DestinationReached;
@@ -83,4 +76,12 @@ public:
 
 	void SnapToPosition(const FVector2& Position, PMap* Map = nullptr);
 	void SnapToTile(const IVector2& Position);
+	void SetMovementDirection(EOrientation Orientation)
+	{
+		if (Orientation == OR_Same)
+		{
+			return;
+		}
+		mMovementDirection = Orientation;
+	}
 };

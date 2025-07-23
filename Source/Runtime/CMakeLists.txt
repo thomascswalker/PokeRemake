@@ -80,6 +80,7 @@ set(SOURCES
         Core/Time.h
         Engine/Actors/Portal.cpp
         Engine/MapManager.cpp
+        Core/Common.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

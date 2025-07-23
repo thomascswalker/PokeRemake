@@ -34,7 +34,7 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Parent is not map");
 				return;
 			}
-			PMapManager::SwitchMap(Map->GetMapName(), mTargetMap, mTargetPosition);
+			PMapManager::SwitchMap(Map->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
 		}
 	}
 }
@@ -56,6 +56,7 @@ JSON PPortal::Serialize() const
 {
 	JSON Result = PActor::Serialize();
 	SAVE_MEMBER_PROPERTY(Result, TargetMap);
+	SAVE_MEMBER_PROPERTY(Result, ExitDirection);
 	Result["TargetPosition"] = { mTargetPosition.X, mTargetPosition.Y };
 	return Result;
 }
@@ -66,4 +67,5 @@ void PPortal::Deserialize(const JSON& Data)
 	mTargetPosition.X = Data.at("TargetPosition")[0].get<float>();
 	mTargetPosition.Y = Data.at("TargetPosition")[1].get<float>();
 	LOAD_MEMBER_PROPERTY(Data, TargetMap, std::string);
+	LOAD_MEMBER_PROPERTY(Data, ExitDirection, EOrientation);
 }

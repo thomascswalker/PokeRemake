@@ -69,7 +69,7 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	return true;
 }
 
-bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition)
+bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition, EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
 	PMap* Map = LoadMap(NewMap);
@@ -81,6 +81,7 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 	LogDebug("Switched to map: {}", NewMap.c_str());
 	if (auto Player = GetWorld()->GetPlayerCharacter())
 	{
+		Player->GetMovementComponent()->SetMovementDirection(ExitDirection);
 		Player->GetMovementComponent()->SnapToPosition(NewPosition, Map);
 	}
 	else
