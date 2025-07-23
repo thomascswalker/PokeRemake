@@ -26,13 +26,14 @@ struct STile
 
 class PMap : public PActor
 {
-	std::string		   mMapName;
+	// The display name of the map
+	std::string mMapName;
+	// The array of tiles within this map
 	std::vector<STile> mTiles;
-
 	// Width of this map in tiles
-	int mSizeX = 0;
+	int32_t mSizeX = 0;
 	// Height of this map in tiles
-	int mSizeY = 0;
+	int32_t mSizeY = 0;
 
 public:
 	void  Start() override;
@@ -54,8 +55,8 @@ public:
 	std::string GetMapName() const { return mMapName; }
 	void		SetMapName(const std::string& MapName) { mMapName = MapName; }
 
-	json Serialize() const override;
-	void Deserialize(const json& JsonData) override;
+	JSON Serialize() const override;
+	void Deserialize(const JSON& JsonData) override;
 
 #if _EDITOR
 	void OnKeyUp(SInputEvent* Event) override;

@@ -23,7 +23,6 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 		else
 		{
 			LogDebug("Loading {}", mTargetMap.c_str());
-			LogDebug("Moving player {} to {}", Player->GetInternalName().c_str(), mTargetPosition.ToString().c_str());
 			if (!mParent)
 			{
 				LogWarning("Invalid parent.");
@@ -53,18 +52,18 @@ bool PPortal::DebugDraw(const PRenderer* Renderer) const
 	return true;
 }
 
-json PPortal::Serialize() const
+JSON PPortal::Serialize() const
 {
-	json Result = PActor::Serialize();
-	SAVE_PROPERTY(Result, TargetMap);
+	JSON Result = PActor::Serialize();
+	SAVE_MEMBER_PROPERTY(Result, TargetMap);
 	Result["TargetPosition"] = { mTargetPosition.X, mTargetPosition.Y };
 	return Result;
 }
 
-void PPortal::Deserialize(const json& Data)
+void PPortal::Deserialize(const JSON& Data)
 {
 	PActor::Deserialize(Data);
-	mTargetPosition.X = Data.at("TargetPosition")[0].get<int>();
-	mTargetPosition.Y = Data.at("TargetPosition")[1].get<int>();
-	LOAD_PROPERTY(Data, TargetMap, std::string);
+	mTargetPosition.X = Data.at("TargetPosition")[0].get<float>();
+	mTargetPosition.Y = Data.at("TargetPosition")[1].get<float>();
+	LOAD_MEMBER_PROPERTY(Data, TargetMap, std::string);
 }

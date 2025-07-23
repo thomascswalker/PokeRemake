@@ -5,16 +5,17 @@
 #include "Serializer.h"
 #include "World.h"
 
+std::map<std::string, JSON> PMapManager::sMapData = {};
+
 PMap* PMapManager::GetMapInWorld(const std::string& Name)
 {
-	for (auto Actor : GetWorld()->GetActors())
+	LogDebug("Finding map: {}", Name.c_str());
+	for (auto Map : GetWorld()->GetActorsOfType<PMap>())
 	{
-		if (auto Map = dynamic_cast<PMap*>(Actor))
+		LogDebug("Comparing map: {}", Map->GetMapName().c_str());
+		if (Map->GetMapName() == Name)
 		{
-			if (Map->GetMapName() == Name)
-			{
-				return Map;
-			}
+			return Map;
 		}
 	}
 	return nullptr;
@@ -22,16 +23,26 @@ PMap* PMapManager::GetMapInWorld(const std::string& Name)
 
 PMap* PMapManager::LoadMap(const std::string& Name)
 {
-	LogDebug("Loading map: {}", Name.c_str());
-	std::string Data;
-	std::string FileName = Files::FindFile(Name + ".JSON");
-
-	if (FileName.empty() || !Files::ReadFile(FileName, Data))
+	JSON JsonData;
+	if (Containers::Contains(sMapData, Name))
 	{
-		return nullptr;
+		LogDebug("Loading map from memory: {}", Name.c_str());
+		JsonData = sMapData[Name];
 	}
+	else
+	{
+		LogDebug("Loading map from file: {}", Name.c_str());
+		std::string Data;
+		std::string FileName = Files::FindFile(Name + ".JSON");
 
-	const json JsonData = json::parse(Data.data());
+		if (FileName.empty() || !Files::ReadFile(FileName, Data))
+		{
+			return nullptr;
+		}
+
+		JsonData = JSON::parse(Data.data());
+		sMapData[Name] = JsonData;
+	}
 
 	if (JsonData.at("Class") != "PMap")
 	{
@@ -58,18 +69,25 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	return true;
 }
 
-bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const IVector2& NewPosition)
+bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition)
 {
 	UnloadMap(OldMap);
-	if (auto Map = LoadMap(NewMap))
+	PMap* Map = LoadMap(NewMap);
+	if (!Map)
 	{
-		LogDebug("Switched to map: {}", NewMap.c_str());
-
-		if (auto Player = GetWorld()->GetPlayerCharacter())
-		{
-			Player->GetMovementComponent()->SetCurrentMap(Map);
-			Player->GetMovementComponent()->SnapToTile(NewPosition);
-		}
+		LogError("Failed to load map: {}", NewMap.c_str());
+		return false;
 	}
+	LogDebug("Switched to map: {}", NewMap.c_str());
+	if (auto Player = GetWorld()->GetPlayerCharacter())
+	{
+		Player->GetMovementComponent()->SnapToPosition(NewPosition, Map);
+	}
+	else
+	{
+		LogError("Failed to get Player Character.");
+		return false;
+	}
+
 	return true;
 }

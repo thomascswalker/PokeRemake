@@ -34,7 +34,7 @@ static std::vector<SActorItem> PlaceableActors = {
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
-	{ "json", "JSON" },
+	{ "JSON", "JSON" },
 };
 
 PEditorGame* GetEditorGame()
@@ -302,7 +302,7 @@ void PEditorGame::OnCreateButtonClicked()
 	int TileCountY = mNewMapSizeY * 2;
 	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
 
-	json JsonData = {
+	JSON JsonData = {
 		{ "MapName",	 "NewMap"	  },
 		{ "Position", { 0, 0 }   },
 		{ "SizeX",	   TileCountX },
@@ -324,7 +324,7 @@ void PEditorGame::OnCreateButtonClicked()
 
 void PEditorGame::OnSaveButtonClicked()
 {
-	json Json;
+	JSON Json;
 
 	for (const auto Actor : mWorld->GetActors())
 	{
@@ -357,7 +357,7 @@ void PEditorGame::OnLoadButtonClicked()
 		return;
 	}
 
-	const json JsonData = json::parse(Data.data());
+	const JSON JsonData = JSON::parse(Data.data());
 	PSerializer::Deserialize(JsonData);
 }
 
@@ -485,10 +485,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 				LogDebug("Placing {}", mCurrentActorItem->Name.c_str());
 				auto Actor = SpawnActor<PPortal>();
 				Actor->SetPosition(Position);
-			}
-			else
-			{
-				LogWarning("Actor at clicked position.");
+				Map->AddChild(Actor);
 			}
 		}
 	}
@@ -515,7 +512,7 @@ void PEditorGame::SetCurrentMap(PMap* Map)
 	mCurrentMap = Map;
 }
 
-void PEditorGame::ConstructMap(const json& JsonData)
+void PEditorGame::ConstructMap(const JSON& JsonData)
 {
 	// Create the map
 	const auto Map = SpawnActor<PMap>(JsonData);

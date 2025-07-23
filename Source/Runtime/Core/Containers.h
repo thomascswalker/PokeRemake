@@ -38,9 +38,15 @@ namespace Containers
 		return Result;
 	}
 
-	template <class C, typename T>
-	bool Contains(const C& Container, const T& Element)
+	template <typename T>
+	bool Contains(const std::vector<T>& Container, const T& Element)
 	{
 		return std::find(Container.begin(), Container.end(), Element) != Container.end();
+	}
+
+	template <typename K, typename V>
+	bool Contains(const std::map<K, V>& Container, const K& Key)
+	{
+		return Container.contains(Key);
 	}
 } // namespace Containers

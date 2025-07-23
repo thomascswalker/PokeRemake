@@ -114,6 +114,7 @@ std::vector<PActor*> PWorld::GetActors() const
 	}
 	return Actors;
 }
+
 std::vector<PActor*> PWorld::GetDrawables(EDrawPriority Priority) const
 {
 	std::vector<PActor*> Drawables;

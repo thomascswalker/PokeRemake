@@ -1,4 +1,19 @@
 {
+  "Children": [
+    {
+      "Class": "PPortal",
+      "InternalName": "PortalStairs",
+      "Position": [
+        700.0,
+        100.0
+      ],
+      "TargetMap": "PalletTownAshHouseF0",
+      "TargetPosition": [
+        600.0,
+        100.0
+      ]
+    }
+  ],
   "Class": "PMap",
   "InternalName": "PalletTownAshHouseF1",
   "MapName": "PalletTownAshHouseF1",
@@ -8,7 +23,6 @@
   ],
   "SizeX": 16,
   "SizeY": 16,
-  "Children": [],
   "Tiles": [
     {
       "Index": 64,

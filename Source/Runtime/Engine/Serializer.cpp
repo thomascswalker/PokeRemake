@@ -4,7 +4,7 @@
 #include "Actors/Portal.h"
 #include "World.h"
 
-json PSerializer::Serialize(const PObject* Object)
+JSON PSerializer::Serialize(const PObject* Object)
 {
 	if (!Object->IsSerializable())
 	{
@@ -14,7 +14,7 @@ json PSerializer::Serialize(const PObject* Object)
 	return Object->Serialize();
 }
 
-PActor* PSerializer::Deserialize(const json& JsonData)
+PActor* PSerializer::Deserialize(const JSON& JsonData)
 {
 	if (JsonData.is_null())
 	{
