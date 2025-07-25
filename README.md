@@ -4,6 +4,7 @@ This is a personal project to attempt to recreate Pokemon Generation 1 in modern
 
 - [Examples](#examples)
 - [Building from Source](#building-from-source)
+- [Roadmap](#roadmap)
 
 ## Examples
 
