@@ -7,7 +7,7 @@ This is a personal project to attempt to recreate Pokemon Generation 1 in modern
 
 ## Examples
 
-<details>
+<details open>
 <summary>Expand</summary>
 
 ### Gameplay
