@@ -41,3 +41,40 @@ This is a personal project to attempt to recreate Pokemon Generation 1 in modern
 
 #### Custom
 - `-DIN_EDITOR` = `OFF` for building a standalone game, `ON` for building the editor.
+
+## Roadmap
+
+### Core
+
+#### Editor
+- [x] Editor mode
+
+#### Save/Load
+- [x] Save/load maps from editor
+- [x] Load/Unload maps into game
+- [ ] Load/Unload adjacent maps
+
+### Rendering
+- [x] Basic renderer
+
+#### Animation
+- [x] Character movement
+- [ ] Decor (grass, water)
+
+### Interface
+- [x] User interface
+
+### Gameplay
+- [x] Player movement
+
+#### Battle
+- [ ] Battle mode
+
+#### Menu
+- [ ] Open menu
+
+#### Interaction
+- [ ] Characters
+- [ ] Environment
+
+
