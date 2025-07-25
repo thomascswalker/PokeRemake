@@ -1,8 +1,8 @@
+// ReSharper disable CppUnusedIncludeDirective
+
 #pragma once
 
-#include <algorithm>
-#include <map>
-#include <vector>
+#include "Decl.h"
 
 namespace Containers
 {

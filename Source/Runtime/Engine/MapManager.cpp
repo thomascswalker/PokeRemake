@@ -2,7 +2,8 @@
 
 #include "Actors/PlayerCharacter.h"
 #include "Core/Files.h"
-#include "Serializer.h"
+
+#include "Serialization.h"
 #include "World.h"
 
 std::map<std::string, JSON> PMapManager::sMapData = {};
@@ -49,7 +50,7 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 		LogError("Invalid class at root level of map file. Must be 'PMap'.");
 		return nullptr;
 	}
-	PSerializer::Deserialize(JsonData);
+	Serialization::Deserialize(JsonData);
 
 	return GetMapInWorld(Name);
 }

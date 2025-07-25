@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Core/Delegate.h"
+
 #include "Widget.h"
 
 DECLARE_MULTICAST_DELEGATE(DButtonClicked);

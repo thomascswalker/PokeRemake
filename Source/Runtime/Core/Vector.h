@@ -1,25 +1,7 @@
 #pragma once
 
+#include "CFwd.h"
 #include "Constants.h"
-
-#include <cmath>
-#include <cstdint>
-#include <format>
-#include <iostream>
-
-template <typename T>
-class TVector2;
-template <typename T>
-class TVector3;
-template <typename T>
-class TVector4;
-
-using FVector2 = TVector2<float>;
-using FVector3 = TVector3<float>;
-using FVector4 = TVector4<float>;
-using IVector2 = TVector2<int32_t>;
-using IVector3 = TVector3<int32_t>;
-using IVector4 = TVector4<int32_t>;
 
 template <typename T>
 class TVector2

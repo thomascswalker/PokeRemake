@@ -1,8 +1,6 @@
 #pragma once
-#include "Actors/Map.h"
-#include "Core/Common.h"
 
-#include <string>
+#include "Actors/Map.h"
 
 #define MAP_PALLET_TOWN "PalletTown"
 #define MAP_PALLET_TOWN_ASH_HOUSE_F0 "PalletTownAshHouseF0"

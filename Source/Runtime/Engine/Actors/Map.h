@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Core/CoreFwd.h"
+
 #include "Actor.h"
-#include "Core/Json.h"
 
 class PMap;
 

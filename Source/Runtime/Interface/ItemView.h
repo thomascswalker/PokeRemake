@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Widget.h"
 
 // An item wrapper around some arbitrary data and its corresponding display widget.

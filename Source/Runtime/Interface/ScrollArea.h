@@ -2,8 +2,7 @@
 
 #include "Core/Macros.h"
 #include "Engine/InputManager.h"
-#include "Engine/World.h"
-#include "ItemView.h"
+
 #include "Widget.h"
 
 class PScrollArea : public PWidget

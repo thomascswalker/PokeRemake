@@ -1,12 +1,9 @@
-#include <format>
-
-#include <SDL3/SDL.h>
-
 #include "Application.h"
+
+#include <format>
 
 #include "Core/Constants.h"
 #include "Core/Logging.h"
-
 #include "SDL3/SDL_opengl.h"
 
 PApplication* PApplication::sInstance = nullptr;

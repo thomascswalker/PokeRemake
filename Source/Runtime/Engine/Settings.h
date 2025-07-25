@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Application/Context.h"
-#include "Engine/InputManager.h"
-#include "Engine/Object.h"
+#include "Core/Macros.h"
 
 struct PSettings
 {

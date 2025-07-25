@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Core/Rect.h"
-
 #include <map>
 #include <memory>
 #include <string>
 
+#include "Core/Rect.h"
 #include "SDL3/SDL.h"
 
 #define TEXTURE_ASH "Ash"

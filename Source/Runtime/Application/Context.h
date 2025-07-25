@@ -16,5 +16,3 @@ struct SDLContext
 		return GPUMode == "direct3d12" || GPUMode == "vulkan" || GPUMode == "metal";
 	}
 };
-
-#define DECLARE_STATIC_GLOBAL_GETTER(ClassName) P##ClassName* Get##ClassName();

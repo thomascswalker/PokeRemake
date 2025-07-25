@@ -1,12 +1,11 @@
 #pragma once
 
+#include "Core/CoreFwd.h"
 #include "Engine/Engine.h"
 #include "Engine/Game.h"
 #include "Engine/InputManager.h"
 #include "Renderer/Renderer.h"
 #include "SDL3/SDL.h"
-
-#include <memory>
 
 // Used by SDL_Window unique pointer
 struct SDLWindowDestroyer

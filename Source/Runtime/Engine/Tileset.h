@@ -1,14 +1,11 @@
 #pragma once
 
-#include "Core/Logging.h"
-#include "Core/Rect.h"
-#include "Core/Vector.h"
-#include "Texture.h"
-
-#include <map>
-#include <ranges>
 #include <string>
 #include <vector>
+
+#include "Core/Rect.h"
+
+#include "Texture.h"
 
 struct STileItem;
 struct SBlock;

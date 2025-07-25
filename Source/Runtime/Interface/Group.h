@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Text.h"
 #include "Widget.h"
 
 class PGroup : public PWidget

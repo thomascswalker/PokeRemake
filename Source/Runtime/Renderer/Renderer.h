@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Application/Context.h"
-#include "Core/Color.h"
-#include "Core/Matrix.h"
-#include "Core/Rect.h"
+#include <vector>
+
+#include "Core/CoreFwd.h"
 #include "Engine/Texture.h"
 #include "Engine/Tileset.h"
 #include "stb/stb_truetype.h"
-#include <vector>
 
 class PActor;
 

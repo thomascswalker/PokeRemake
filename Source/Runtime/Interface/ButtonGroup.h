@@ -1,7 +1,9 @@
 #pragma once
+
+#include <vector>
+
 #include "AbstractButton.h"
 #include "Widget.h"
-#include <vector>
 
 class PButtonGroup : public PWidget
 {

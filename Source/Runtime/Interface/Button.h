@@ -1,10 +1,9 @@
 #pragma once
 
-#include "AbstractButton.h"
 #include "Core/Color.h"
 #include "Core/Delegate.h"
-#include "Image.h"
-#include "Text.h"
+
+#include "AbstractButton.h"
 #include "Widget.h"
 
 constexpr float gButtonTextSize = 16.0f;
