@@ -38,6 +38,9 @@ class PApplication
 	std::unique_ptr<PRenderer> mRenderer;
 	std::unique_ptr<SDLContext> mContext;
 
+	/* Input */
+	SInputContext mInputContext = DefaultInputContext;
+
 	/* Editor */
 
 	bool bIsEditor = false;
@@ -51,7 +54,7 @@ public:
 	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode, bool IsEditor);
 	void Uninitialize() const;
 
-	template <typename GameType>
+	template <typename GameType, typename HUDType = PHUD>
 	bool Start() const
 	{
 		if (mEngine)
@@ -59,6 +62,7 @@ public:
 			mEngine->Start<GameType>();
 			if (PGame* Game = mEngine->GetGame())
 			{
+				Game->GetWorld()->CreateHUD<HUDType>();
 				if (!Game->PreStart())
 				{
 					return false;
@@ -92,4 +96,41 @@ public:
 	PEngine* GetEngine() const;
 	PRenderer* GetRenderer() const;
 	SDLContext* GetContext() const;
+
+	SInputContext* GetInputContext()
+	{
+		return &mInputContext;
+	}
+
+	void SetInputContext(const SInputContext& Context)
+	{
+		LogDebug("Setting input context to {}", Context.Name.c_str());
+		mInputContext = Context;
+	}
 };
+
+PApplication* GetApplication();
+SInputContext* GetInputContext();
+void SetInputContext(SInputContext& Context);
+
+#define CREATE_APP(GameType, HUDType) \
+const auto Args = ArgParser::Parse(argc, argv); \
+const auto App  = PApplication::GetInstance(); \
+\
+if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor)) \
+{ \
+	App->Start<GameType, HUDType>(); \
+	while (App->IsRunning()) \
+	{ \
+		if (!App->Loop()) \
+		{ \
+			break; \
+		}\
+	}\
+}\
+else\
+{\
+	return 1;\
+}\
+\
+return 0;

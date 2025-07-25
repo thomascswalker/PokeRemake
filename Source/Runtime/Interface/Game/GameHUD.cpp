@@ -1,6 +1,6 @@
 #include "GameHUD.h"
 
-#include "Engine/World.h"
+#include "Application/Application.h"
 
 PGameHUD::PGameHUD()
 {
@@ -17,4 +17,8 @@ PGameHUD::PGameHUD()
 void PGameHUD::DialogBox(const std::string& Text)
 {
     mDialogBox.GetVisible() ? mDialogBox.SetVisible(false) : mDialogBox.SetVisible(true);
+    mDialogBox.GetVisible()
+        ? GetApplication()->SetInputContext(Game::Context::Dialog)
+        : GetApplication()->SetInputContext(Game::Context::Default);
+    mDialogBox.SetText(Text);
 }

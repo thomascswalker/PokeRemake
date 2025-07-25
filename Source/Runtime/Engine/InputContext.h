@@ -1,21 +1,52 @@
 #pragma once
 
-#include <string>
 #include <vector>
+#include "Core/CoreFwd.h"
 
-using TInputContext = std::vector<SDL_Keycode>;
-
-static TInputContext DefaultContext =
+struct SInputContext
 {
-    SDLK_W,
-    SDLK_S,
-    SDLK_A,
-    SDLK_D,
-    SDLK_E,
-    SDLK_Q
+    std::string Name;
+    std::vector<int> Keyboard;
+    std::vector<int> Mouse;
+    bool Any = false;
 };
 
-static TInputContext DialogContext =
+static SInputContext DefaultInputContext{"Default", {}, {}, true};
+
+namespace Game::Context
 {
-    SDLK_E
-};
+    static SInputContext Default =
+    {
+        "Game::Default",
+        {
+            SDLK_W,
+            SDLK_S,
+            SDLK_A,
+            SDLK_D,
+            SDLK_E,
+            SDLK_Q
+        },
+        {}
+    };
+
+    static SInputContext Dialog =
+    {
+        "Game::Dialog",
+        {
+            SDLK_E,
+        },
+        {}
+    };
+}
+
+namespace Editor::Context
+{
+    static SInputContext Select{
+        "Editor::Select",
+        {},
+        {
+            SDL_EVENT_MOUSE_BUTTON_DOWN,
+            SDL_EVENT_MOUSE_BUTTON_UP,
+        },
+    };
+}

@@ -1,6 +1,7 @@
 #include "SignPost.h"
 
 #include "Engine/World.h"
+#include "Interface/Game/GameHUD.h"
 
 const FVector2 gSignPostTileIndex = {6.0f, 4.0f}; // Index 70
 
@@ -25,6 +26,7 @@ FRect PSignPost::GetLocalBounds() const
 
 void PSignPost::Interact(PPlayerCharacter* Player)
 {
-    auto HUD = GetHUD();
+    auto HUD = GetHUD<PGameHUD>();
     HUD->DialogBox("This is a signpost.");
 }
+

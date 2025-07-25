@@ -2,10 +2,9 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
+#include "Actors/Game/SignPost.h"
 
 #include "World.h"
-
-#include "Actors/SignPost.h"
 
 JSON Serialization::Serialize(const PObject* Object)
 {

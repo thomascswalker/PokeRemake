@@ -17,7 +17,7 @@ PApplication* PApplication::GetInstance()
 	return sInstance;
 }
 
-static PApplication* GetApplication()
+PApplication* GetApplication()
 {
 	return PApplication::GetInstance();
 }
@@ -172,6 +172,11 @@ bool PApplication::OnEvent(void* Event)
 
 	// Handle all other events
 	SInputEvent InputEvent(SDLEvent);
+	if (!InputEvent.Validate(&mInputContext))
+	{
+		LogDebug("Input '{}' invalid.", InputEvent.Event->type);
+		return false;
+	}
 
 	// Handle game-level events
 	if (GetGame()->ProcessEvents(&InputEvent))
@@ -212,4 +217,14 @@ PRenderer* PApplication::GetRenderer() const
 SDLContext* PApplication::GetContext() const
 {
 	return mContext.get();
+}
+
+SInputContext* GetInputContext()
+{
+	return PApplication::GetInstance()->GetInputContext();
+}
+
+void SetInputContext(const SInputContext& Context)
+{
+	PApplication::GetInstance()->SetInputContext(Context);
 }

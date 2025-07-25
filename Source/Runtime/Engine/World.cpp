@@ -5,10 +5,7 @@
 #include "Engine/Input.h"
 #include "Interface/Layout.h"
 
-PWorld::PWorld()
-{
-	mHUD = std::make_unique<HUDType>();
-}
+#include "../Interface/Game/GameHUD.h"
 
 void PWorld::Start()
 {

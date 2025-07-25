@@ -5,6 +5,8 @@
 
 #include "InputContext.h"
 
+#include "Core/Containers.h"
+
 DECLARE_MULTICAST_DELEGATE(DHoverBegin);
 DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 
@@ -127,6 +129,32 @@ struct SInputEvent
 	void Consume()
 	{
 		Consumed = true;
+	}
+
+	bool Validate(const SInputContext* Context)
+	{
+		if (Context->Any)
+		{
+			return true;
+		}
+
+		switch (Event->type)
+		{
+		case SDL_EVENT_KEY_DOWN:
+		case SDL_EVENT_KEY_UP:
+			{
+				if (!Containers::Contains(Context->Keyboard, static_cast<int>(Event->key.key)))
+				{
+					return false;
+				}
+				break;
+			}
+		default:
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 };
 

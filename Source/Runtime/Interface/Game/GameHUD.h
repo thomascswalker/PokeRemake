@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DialogBox.h"
+
 #include "Interface/Box.h"
 #include "Interface/HUD.h"
 #include "Interface/Spacer.h"
@@ -7,7 +9,7 @@
 class PGameHUD : public PHUD
 {
     PSpacer mSpacer;
-    PBox mDialogBox;
+    PDialogBox mDialogBox;
 
 public:
     PGameHUD();

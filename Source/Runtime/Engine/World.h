@@ -8,16 +8,10 @@
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
 #include "Interface/Widget.h"
-#include "Interface/Game/GameHUD.h"
+#include "Interface/HUD.h"
 
 #if _EDITOR
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
-#endif
-
-#if _EDITOR
-using HUDType = PHUD;
-#else
-using HUDType = PGameHUD;
 #endif
 
 class PWorld : public PObject
@@ -31,7 +25,7 @@ class PWorld : public PObject
 	std::vector<PActor*> mDestroyableActors;
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	std::unique_ptr<HUDType> mHUD;
+	std::shared_ptr<PHUD> mHUD;
 
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
@@ -41,7 +35,6 @@ public:
 	DActorSelected ActorClicked;
 #endif
 
-	PWorld();
 	~PWorld() override = default;
 
 	void Start() override;
@@ -135,9 +128,16 @@ public:
 
 	std::vector<PWidget*> GetWidgets() const;
 
-	HUDType* GetHUD() const
+	template <typename T = PHUD>
+	void CreateHUD()
 	{
-		return mHUD.get();
+		mHUD = std::make_shared<T>();
+	}
+
+	template <typename T = PHUD>
+	T* GetHUD() const
+	{
+		return static_cast<T*>(mHUD.get());
 	}
 
 	PPlayerCharacter* GetPlayerCharacter() const;
@@ -210,7 +210,8 @@ T* ConstructWidget(const JSON& Json)
 	return Widget;
 }
 
-inline HUDType* GetHUD()
+template <typename T>
+T* GetHUD()
 {
-	return GetWorld()->GetHUD();
+	return GetWorld()->GetHUD<T>();
 }

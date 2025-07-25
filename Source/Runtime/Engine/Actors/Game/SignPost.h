@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Actor.h"
-#include "Interactable.h"
+#include "Engine/Actors/Actor.h"
+#include "Engine/Actors/Interactable.h"
 
 class PSignPost : public PActor, public IInteractable
 {
@@ -11,5 +11,7 @@ public:
 
     bool Draw(const PRenderer* Renderer) const override;
     FRect GetLocalBounds() const override;
+#if !EDITOR
     void Interact(PPlayerCharacter* Player) override;
+#endif
 };

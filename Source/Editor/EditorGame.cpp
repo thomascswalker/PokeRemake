@@ -13,7 +13,7 @@
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
 #include "EditorView.h"
-#include "Engine/Actors/SignPost.h"
+#include "../Runtime/Engine/Actors/Game/SignPost.h"
 
 static PPanel* MainPanel;
 

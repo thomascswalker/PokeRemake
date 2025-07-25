@@ -6,5 +6,5 @@ class IInteractable
 {
 public:
 	virtual ~IInteractable() {}
-	virtual void Interact(PPlayerCharacter* Player) = 0;
+	virtual void Interact(PPlayerCharacter* Player) {};
 };
