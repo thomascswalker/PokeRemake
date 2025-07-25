@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.31)
 message("CMAKE Version: ${CMAKE_VERSION}")
 
 project(PokeRemake)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 option(IN_EDITOR "IN_EDITOR" OFF)
 
@@ -53,10 +53,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 add_subdirectory(ThirdParty/SDL EXCLUDE_FROM_ALL)
 #add_subdirectory(ThirdParty/SDL_image EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
-
-# GLM
-add_subdirectory(ThirdParty/glm EXCLUDE_FROM_ALL)
-target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
 # Vulkan
 find_package(Vulkan REQUIRED)
