@@ -81,6 +81,8 @@ set(SOURCES
         Engine/Actors/Interactable.h
         Core/Decl.h
         Core/CFwd.h
+        Engine/Actors/SignPost.h
+        Engine/Actors/SignPost.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

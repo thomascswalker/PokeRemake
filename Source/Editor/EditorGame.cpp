@@ -12,8 +12,8 @@
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
-
 #include "EditorView.h"
+#include "Engine/Actors/SignPost.h"
 
 static PPanel* MainPanel;
 
@@ -26,16 +26,16 @@ static PGroup* TileGroup;
 static PGroup* ActorGroup;
 
 static std::vector<SActorItem> PlaceableActors = {
-	{ "Portal" },
-	{ "Hill (South)" },
-	{ "Hill (West)" },
-	{ "Hill (East)" },
-	{ "Sign" },
-	{ "Water" },
+	{"Portal"},
+	{"SignPost"},
+	{"Hill (South)"},
+	{"Hill (West)"},
+	{"Hill (East)"},
+	{"Water"},
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
-	{ "JSON", "JSON" },
+	{"JSON", "JSON"},
 };
 
 PEditorGame* GetEditorGame()
@@ -86,7 +86,7 @@ void PEditorGame::SetupInterface()
 	FileGroup->SetResizeModeH(RM_Fit);
 	FileGroup->SetLayoutMode(LM_Vertical);
 
-	const auto NewButton = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
+	const auto NewButton    = mWorld->ConstructWidget<PButton>("New", this, &PEditorGame::OnNewButtonClicked);
 	const auto CreateButton = mWorld->ConstructWidget<PButton>("Create", this, &PEditorGame::OnCreateButtonClicked);
 	const auto SizeXSpinner = mWorld->ConstructWidget<PSpinner>(mNewMapSizeX);
 	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorGame::OnSizeXChanged);
@@ -136,7 +136,7 @@ void PEditorGame::SetupInterface()
 	// Actors
 
 	mActorViewButtonGroup = ConstructWidget<PButtonGroup>();
-	ActorGroup = mWorld->ConstructWidget<PGroup>("Actors");
+	ActorGroup            = mWorld->ConstructWidget<PGroup>("Actors");
 	ActorGroup->SetLayoutMode(LM_Vertical);
 
 	auto ActorView = ConstructActorView();
@@ -157,8 +157,8 @@ void PEditorGame::SetupInterface()
 
 PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 {
-	const int ItemSize = 20;
-	const int ViewWidth = Tileset->Width * ItemSize;
+	const int ItemSize   = 20;
+	const int ViewWidth  = Tileset->Width * ItemSize;
 	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
@@ -172,9 +172,9 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 	for (auto& Item : Tileset->Tiles)
 	{
 		// Create the button item
-		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
-		auto Button = GridItem->GetWidget<PButton>();
-		Button->Padding = { 0 };
+		auto GridItem   = GridView->AddItem<PButton>(TilesetTexture);
+		auto Button     = GridItem->GetWidget<PButton>();
+		Button->Padding = {0};
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
@@ -191,9 +191,8 @@ PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)
 
 PGridView* PEditorGame::ConstructActorView()
 {
-
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
-	GridView->Padding = { 5 };
+	GridView->Padding   = {5};
 	GridView->SetGridCount(2);
 
 	for (auto& Item : PlaceableActors)
@@ -201,7 +200,7 @@ PGridView* PEditorGame::ConstructActorView()
 		const int ItemSize = 40;
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(Item.Name);
-		auto Button = GridItem->GetWidget<PButton>();
+		auto Button   = GridItem->GetWidget<PButton>();
 		Button->SetResizeMode(RM_Grow, RM_Fixed);
 		Button->SetFixedHeight(ItemSize);
 		Button->SetCheckable(true);
@@ -223,6 +222,7 @@ void PEditorGame::RemoveInputContext(uint8_t InputContext)
 {
 	mInputContext &= ~InputContext;
 }
+
 bool PEditorGame::HasInputContext(uint8_t InputContext)
 {
 	return (mInputContext & InputContext) == InputContext;
@@ -238,20 +238,17 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 
 	switch (Event->KeyDown)
 	{
-		case SDLK_LSHIFT:
-			if (HasInputContext(IC_Tile))
-			{
-				mBrushMode = BM_Copy;
-			}
-			break;
-		case SDLK_LCTRL:
-			if (HasInputContext(IC_Tile))
-			{
-				mBrushMode = BM_Fill;
-			}
-			break;
-		default:
-			break;
+	case SDLK_LSHIFT: if (HasInputContext(IC_Tile))
+		{
+			mBrushMode = BM_Copy;
+		}
+		break;
+	case SDLK_LCTRL: if (HasInputContext(IC_Tile))
+		{
+			mBrushMode = BM_Fill;
+		}
+		break;
+	default: break;
 	}
 }
 
@@ -265,35 +262,32 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 
 	switch (Event->KeyUp)
 	{
-		case SDLK_DELETE:
-			// ReSharper disable once CppDFAConstantConditions
-			if (HasInputContext(IC_Select) && mCurrentMap)
-			{
-				// Remove the map from the list of maps
-				mMaps.erase(std::ranges::remove(mMaps, mCurrentMap).begin());
-				// Destroy the map actor
-				GetWorld()->DestroyActor(mCurrentMap);
-				// Set the current map to null
-				mCurrentMap = nullptr;
-				Event->Consume();
-			}
-			break;
-		case SDLK_UP:
-		case SDLK_DOWN:
-			if (HasInputContext(IC_Tile))
-			{
-				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
-			}
-			break;
-		case SDLK_LSHIFT:
-		case SDLK_LCTRL:
-			if (HasInputContext(IC_Tile))
-			{
-				mBrushMode = BM_Default;
-			}
-			break;
-		default:
-			break;
+	case SDLK_DELETE:
+		// ReSharper disable once CppDFAConstantConditions
+		if (HasInputContext(IC_Select) && mCurrentMap)
+		{
+			// Remove the map from the list of maps
+			mMaps.erase(std::ranges::remove(mMaps, mCurrentMap).begin());
+			// Destroy the map actor
+			GetWorld()->DestroyActor(mCurrentMap);
+			// Set the current map to null
+			mCurrentMap = nullptr;
+			Event->Consume();
+		}
+		break;
+	case SDLK_UP:
+	case SDLK_DOWN: if (HasInputContext(IC_Tile))
+		{
+			mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
+		}
+		break;
+	case SDLK_LSHIFT:
+	case SDLK_LCTRL: if (HasInputContext(IC_Tile))
+		{
+			mBrushMode = BM_Default;
+		}
+		break;
+	default: break;
 	}
 }
 
@@ -304,20 +298,20 @@ void PEditorGame::OnCreateButtonClicked()
 	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
 
 	JSON JsonData = {
-		{ "MapName",	 "NewMap"	  },
-		{ "Position", { 0, 0 }   },
-		{ "SizeX",	   TileCountX },
-		{ "SizeY",	   TileCountY },
+		{"MapName", "NewMap"},
+		{"Position", {0, 0}},
+		{"SizeX", TileCountX},
+		{"SizeY", TileCountY},
 	};
 	for (int X = 0; X < TileCountX; ++X)
 	{
 		for (int Y = 0; Y < TileCountY; ++Y)
 		{
-			auto Tileset = mCurrentTileset ? mCurrentTileset->Name : "Tileset1";
+			auto Tileset = mCurrentTileset ? mCurrentTileset->Name : TILESET_1;
 			JsonData["Tiles"].push_back({
-				{ "Index",   0		 },
-				{ "Tileset", Tileset }
-			   });
+				{"Index", 0},
+				{"Tileset", Tileset}
+			});
 		}
 	}
 	ConstructMap(JsonData);
@@ -343,6 +337,7 @@ void PEditorGame::OnSaveButtonClicked()
 		Files::WriteFile(FileName, Json.dump(4));
 	}
 }
+
 void PEditorGame::OnLoadButtonClicked()
 {
 	std::string FileName;
@@ -367,31 +362,31 @@ void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 	mInputContext = 0;
 	switch (DropdownItemData->Index)
 	{
-		case 0: // IC_Select
-			AddInputContext(IC_Select);
-			MainPanel->RemoveChild(TileGroup);
-			MainPanel->RemoveChild(ActorGroup);
-			break;
-		case 1: // IC_Tile
-			AddInputContext(IC_Tile);
-			MainPanel->AddChild(TileGroup);
-			MainPanel->RemoveChild(ActorGroup);
-			break;
-		case 2: // IC_Actor
-			AddInputContext(IC_Actor);
-			MainPanel->RemoveChild(TileGroup);
-			MainPanel->AddChild(ActorGroup);
-			break;
-		default:
-			LogError("Invalid dropdown item: {}", DropdownItemData->Index);
-			break;
+	case 0: // IC_Select
+		AddInputContext(IC_Select);
+		MainPanel->RemoveChild(TileGroup);
+		MainPanel->RemoveChild(ActorGroup);
+		break;
+	case 1: // IC_Tile
+		AddInputContext(IC_Tile);
+		MainPanel->AddChild(TileGroup);
+		MainPanel->RemoveChild(ActorGroup);
+		break;
+	case 2: // IC_Actor
+		AddInputContext(IC_Actor);
+		MainPanel->RemoveChild(TileGroup);
+		MainPanel->AddChild(ActorGroup);
+		break;
+	default:
+		LogError("Invalid dropdown item: {}", DropdownItemData->Index);
+		break;
 	}
 }
 
 void PEditorGame::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
-	auto Item = Sender->GetCustomData<STileItem>();
+	auto Item   = Sender->GetCustomData<STileItem>();
 
 	mCurrentTileset = Item->Tileset;
 	LogDebug("Set new tileset: {}", mCurrentTileset->Name);
@@ -409,7 +404,7 @@ void PEditorGame::OnTilesetButtonChecked(bool State)
 void PEditorGame::OnActorButtonChecked(bool State)
 {
 	auto Sender = PWidget::GetSender<PButton>();
-	auto Item = Sender->GetCustomData<SActorItem>();
+	auto Item   = Sender->GetCustomData<SActorItem>();
 	if (State)
 	{
 		mCurrentActorItem = Item;
@@ -456,17 +451,15 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		{
 			switch (mBrushMode)
 			{
-				case BM_Default:
-				case BM_Copy:
-					PaintTile(Map->GetTileUnderMouse());
-					break;
-				case BM_Fill:
-					for (auto Tile : Map->GetTiles())
-					{
-						Tile->Index = mCurrentTilesetItem->Index;
-						Tile->Tileset = mCurrentTileset;
-					}
-					break;
+			case BM_Default:
+			case BM_Copy: PaintTile(Map->GetTileUnderMouse());
+				break;
+			case BM_Fill: for (auto Tile : Map->GetTiles())
+				{
+					Tile->Index   = mCurrentTilesetItem->Index;
+					Tile->Tileset = mCurrentTileset;
+				}
+				break;
 			}
 		}
 	}
@@ -477,16 +470,30 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No actor item selected.");
 			return;
 		}
-		if (mCurrentActorItem->Name == "Portal")
+		auto Position = Map->GetTileUnderMouse()->GetPosition();
+		auto Actors   = mWorld->GetActorsAtPosition(Position);
+		if (Actors.size() == 0)
 		{
-			auto Position = Map->GetTileUnderMouse()->GetPosition();
-			auto Actors = mWorld->GetActorsAtPosition(Position);
-			if (Actors.size() == 0)
+			PActor* NewActor = nullptr;
+			if (mCurrentActorItem->Name == "Portal")
+			{
+				NewActor = SpawnActor<PPortal>();
+			}
+			else if (mCurrentActorItem->Name == "SignPost")
+			{
+				NewActor = SpawnActor<PSignPost>();
+			}
+			else
+			{
+				LogWarning("Actor placement not implemented for {}", mCurrentActorItem->Name);
+				return;
+			}
+
+			if (NewActor)
 			{
 				LogDebug("Placing {}", mCurrentActorItem->Name.c_str());
-				auto Actor = SpawnActor<PPortal>();
-				Actor->SetPosition(Position);
-				Map->AddChild(Actor);
+				NewActor->SetPosition(Position);
+				Map->AddChild(NewActor);
 			}
 		}
 	}
@@ -555,7 +562,7 @@ void PEditorGame::PaintTile(STile* Tile)
 
 	// Set hit tile
 	Tile->Tileset = mCurrentTileset;
-	Tile->Index = mCurrentTilesetItem->Index;
+	Tile->Index   = mCurrentTilesetItem->Index;
 
 	// Set adjacent tiles
 	if (mBrushSize == BS_Large)
@@ -566,17 +573,21 @@ void PEditorGame::PaintTile(STile* Tile)
 		if (auto Tile2 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
 		{
 			Tile2->Tileset = mCurrentTileset;
-			Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
+			Tile2->Index   = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 		}
 		if (auto Tile3 = Map->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
 		{
 			Tile3->Tileset = mCurrentTileset;
-			Tile3->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width : mCurrentTilesetItem->Index;
+			Tile3->Index   = mBrushMode == BM_Copy
+				               ? mCurrentTilesetItem->Index + Tile->Tileset->Width
+				               : mCurrentTilesetItem->Index;
 		}
 		if (auto Tile4 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
 		{
 			Tile4->Tileset = mCurrentTileset;
-			Tile4->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1 : mCurrentTilesetItem->Index;
+			Tile4->Index   = mBrushMode == BM_Copy
+				               ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1
+				               : mCurrentTilesetItem->Index;
 		}
 	}
 }

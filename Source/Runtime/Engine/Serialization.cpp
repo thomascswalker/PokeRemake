@@ -5,6 +5,8 @@
 
 #include "World.h"
 
+#include "Actors/SignPost.h"
+
 JSON Serialization::Serialize(const PObject* Object)
 {
 	if (!Object->IsSerializable())
@@ -30,6 +32,10 @@ PActor* Serialization::Deserialize(const JSON& JsonData)
 	if (ClassName == "PPortal")
 	{
 		return SpawnActor<PPortal>(JsonData);
+	}
+	if (ClassName == "PSignPost")
+	{
+		return SpawnActor<PSignPost>(JsonData);
 	}
 
 	LogWarning("Deserialization of actor {} not supported.", ClassName.c_str());
