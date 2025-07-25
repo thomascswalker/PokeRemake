@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #define DEFINE_BITMASK_OPERATORS(T)                                           \
 	inline constexpr T operator|(T a, T b)                                    \
 	{                                                                         \
@@ -49,7 +51,6 @@
 	{                                                                         \
 		return !(v == e);                                                     \
 	}
-#include <cstdint>
 
 namespace Bitmask
 {

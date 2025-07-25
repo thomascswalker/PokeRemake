@@ -1,11 +1,6 @@
 #pragma once
 
-#include "Core/Json.h"
-#include "Core/Logging.h"
-
-#include <string>
-
-#include "Core/Meta.h"
+#include "Core/CoreFwd.h"
 
 // Non-drawable and position-independent Object
 class PObject

@@ -27,16 +27,13 @@ set(SOURCES
         Engine/World.cpp
         Renderer/Drawable.h
         Renderer/Renderer.cpp
-        Renderer/IRHI.h
         Application/ArgParser.h
         Application/Context.h
-        Renderer/Shader.cpp
         Engine/Components/Component.cpp
         Engine/Components/CameraComponent.cpp
         Engine/Actors/PlayerCharacter.cpp
         Engine/Texture.cpp
         Core/Files.h
-        Engine/Mesh.h
         Core/Constants.h
         Engine/Settings.h
         Engine/Sprite.h
@@ -48,7 +45,7 @@ set(SOURCES
         Interface/Widget.cpp
         Interface/Layout.h
         Interface/Text.h
-        Engine/Serializer.cpp
+        Engine/Serialization.cpp
         Core/Json.h
         Core/CoreFwd.h
         Interface/Box.h
@@ -81,6 +78,9 @@ set(SOURCES
         Engine/Actors/Portal.cpp
         Engine/MapManager.cpp
         Core/Common.h
+        Engine/Actors/Interactable.h
+        Core/Decl.h
+        Core/CFwd.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

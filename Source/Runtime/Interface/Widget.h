@@ -1,11 +1,12 @@
 #pragma once
 
+#include <initializer_list>
+#include <limits>
+
 #include "Core/Containers.h"
 #include "Engine/InputManager.h"
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
-#include <initializer_list>
-#include <limits>
 
 #define WIDGET_TEXT 255, 255, 255, 255
 #define WIDGET_LIGHT 150, 150, 150, 255

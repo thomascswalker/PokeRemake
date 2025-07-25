@@ -2,6 +2,7 @@
 
 #include "Engine/CameraView.h"
 #include "Engine/Components/Component.h"
+#include "Engine/Serialization.h"
 
 void PActor::OnMouseEvent(SInputEvent* Event)
 {
@@ -87,7 +88,7 @@ void PActor::Deserialize(const JSON& Data)
 	{
 		for (auto& Child : Data.at("Children"))
 		{
-			if (auto ChildActor = PSerializer::Deserialize(Child))
+			if (auto ChildActor = Serialization::Deserialize(Child))
 			{
 				AddChild(ChildActor);
 			}

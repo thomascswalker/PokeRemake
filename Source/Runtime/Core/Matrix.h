@@ -1,12 +1,6 @@
 #pragma once
 
-#include "Vector.h"
-
-template <typename T>
-class TMatrix;
-using FMatrix = TMatrix<float>;
-using DMatrix = TMatrix<double>;
-using IMatrix = TMatrix<int32_t>;
+#include "Decl.h"
 
 // Row-major 4x4 Matrix
 template <typename T>

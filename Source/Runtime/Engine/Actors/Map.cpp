@@ -2,7 +2,6 @@
 
 #include "Map.h"
 
-#include "../Settings.h"
 #include "Core/Macros.h"
 #include "Engine/World.h"
 #if _EDITOR

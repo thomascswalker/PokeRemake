@@ -1,9 +1,10 @@
 #include "Character.h"
 
 #include "Core/Constants.h"
-#include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
+
+#include "Collider.h"
 
 PCharacter::PCharacter()
 {

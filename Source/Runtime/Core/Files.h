@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Logging.h"
-#include "nativefiledialog-extended/src/include/nfd.h"
-
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include "nativefiledialog-extended/src/include/nfd.h"
+
+#include "Logging.h"
 
 inline std::vector<std::string> gResourcePaths = { "Resources\\Shaders", "Resources\\Textures",
 												   "Resources\\Fonts", "Resources\\Maps" };

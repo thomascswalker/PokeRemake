@@ -2,10 +2,9 @@
 
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
-#include "EditorView.h"
 #include "Engine/Actors/Portal.h"
 #include "Engine/InputManager.h"
-#include "Engine/Serializer.h"
+#include "Engine/Serialization.h"
 #include "Interface/Canvas.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
@@ -13,6 +12,8 @@
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
+
+#include "EditorView.h"
 
 static PPanel* MainPanel;
 
@@ -358,7 +359,7 @@ void PEditorGame::OnLoadButtonClicked()
 	}
 
 	const JSON JsonData = JSON::parse(Data.data());
-	PSerializer::Deserialize(JsonData);
+	Serialization::Deserialize(JsonData);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)

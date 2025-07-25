@@ -1,6 +1,5 @@
 #include "Engine.h"
 
-#include "Actors/PlayerCharacter.h"
 #include "Actors/Portal.h"
 
 PEngine::PEngine()

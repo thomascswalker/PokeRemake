@@ -34,12 +34,20 @@ BreakStringLiterals: false
 ColumnLimit: 0
 Cpp11BracedListStyle: false
 EmptyLineBeforeAccessModifier: LogicalBlock
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '[<"].*(/|\\).*'
+    Priority: 2
+  - Regex: '^<.*'
+    Priority: 1
+  - Regex: '.*'
+    Priority: 3
 IndentCaseBlocks: true
 IndentCaseLabels: true
 IndentWidth: 4
 NamespaceIndentation: All
 PointerAlignment: Left
-SortIncludes: true
+SortIncludes: CaseInsensitive
 SpaceBeforeCaseColon: false
 TabWidth: 4
 UseTab: Always

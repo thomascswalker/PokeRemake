@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstdint>
-
 #include "SDL3/SDL.h"
-#include "Vector.h"
+
+#include "CoreFwd.h"
 
 template <typename T>
 class TRect
@@ -78,6 +77,3 @@ public:
 		return { (int)X, (int)Y, (int)W, (int)H };
 	}
 };
-
-using FRect = TRect<float>;
-using IRect = TRect<int32_t>;

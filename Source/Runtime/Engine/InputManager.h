@@ -1,14 +1,9 @@
 #pragma once
 
-#include <stdint.h>
-
+#include "Core/CoreFwd.h"
 #include "SDL3/SDL.h"
 
-#include "Core/Delegate.h"
-#include "Core/Vector.h"
 #include "InputContext.h"
-
-#include <map>
 
 DECLARE_MULTICAST_DELEGATE(DKeyDown, uint32_t);
 DECLARE_MULTICAST_DELEGATE(DKeyUp, uint32_t);

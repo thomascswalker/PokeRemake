@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Core/Logging.h"
-#include <cstdint>
-#include <stdlib.h>
-#include <string>
+#include "Core/CoreFwd.h"
 
 struct PColor
 {

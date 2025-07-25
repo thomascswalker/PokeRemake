@@ -1,8 +1,6 @@
 #include "PlayerCharacter.h"
 
-#include "../Settings.h"
 #include "Core/Constants.h"
-#include "Core/Logging.h"
 #include "Engine/InputManager.h"
 #include "Engine/World.h"
 

@@ -1,10 +1,11 @@
-#include "Serializer.h"
+#include "Serialization.h"
 
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
+
 #include "World.h"
 
-JSON PSerializer::Serialize(const PObject* Object)
+JSON Serialization::Serialize(const PObject* Object)
 {
 	if (!Object->IsSerializable())
 	{
@@ -14,7 +15,7 @@ JSON PSerializer::Serialize(const PObject* Object)
 	return Object->Serialize();
 }
 
-PActor* PSerializer::Deserialize(const JSON& JsonData)
+PActor* Serialization::Deserialize(const JSON& JsonData)
 {
 	if (JsonData.is_null())
 	{
