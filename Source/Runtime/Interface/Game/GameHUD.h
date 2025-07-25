@@ -13,8 +13,5 @@ public:
     PGameHUD();
     ~PGameHUD() override = default;
 
-    void DialogBox(const std::string& Text)
-    {
-        mDialogBox.GetVisible() ? mDialogBox.SetVisible(true) : mDialogBox.SetVisible(false);
-    }
+    void DialogBox(const std::string& Text);
 };

@@ -4,7 +4,7 @@
 #include <limits>
 
 #include "Core/Containers.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/Object.h"
 #include "Renderer/Renderer.h"
 

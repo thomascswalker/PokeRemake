@@ -4,7 +4,7 @@
 #include "Core/Json.h"
 #include "Core/Meta.h"
 #include "Core/Vector.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
 #include "Interface/Layout.h"

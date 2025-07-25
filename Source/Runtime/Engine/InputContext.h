@@ -3,31 +3,19 @@
 #include <string>
 #include <vector>
 
-enum EInputType
+using TInputContext = std::vector<SDL_Keycode>;
+
+static TInputContext DefaultContext =
 {
-	IT_Keyboard,
-	IT_Mouse
+    SDLK_W,
+    SDLK_S,
+    SDLK_A,
+    SDLK_D,
+    SDLK_E,
+    SDLK_Q
 };
 
-struct SInputAction
+static TInputContext DialogContext =
 {
-	std::string Name;
-	EInputType	Type;
-	union
-	{
-		float	 FValue;
-		uint32_t IValue;
-	};
-};
-
-class SInputContext
-{
-	bool					  mEnabled;
-	std::vector<SInputAction> mActions;
-
-public:
-	SInputContext()
-		: mEnabled(false) {}
-	SInputContext(std::initializer_list<SInputAction> Actions)
-		: mEnabled(false), mActions(Actions) {}
+    SDLK_E
 };

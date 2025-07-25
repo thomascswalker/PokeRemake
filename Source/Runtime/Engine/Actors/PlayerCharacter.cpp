@@ -3,7 +3,7 @@
 #include "Interactable.h"
 
 #include "Core/Constants.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/World.h"
 
 #define PLAYER_SPEED 1.0f

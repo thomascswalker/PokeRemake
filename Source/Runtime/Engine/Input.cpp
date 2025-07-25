@@ -1,4 +1,4 @@
-#include "InputManager.h"
+#include "Input.h"
 
 static IInputManager* gInputManager = nullptr;
 

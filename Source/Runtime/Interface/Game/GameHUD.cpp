@@ -13,3 +13,8 @@ PGameHUD::PGameHUD()
 
     PWidget::AddChild(&mDialogBox);
 }
+
+void PGameHUD::DialogBox(const std::string& Text)
+{
+    mDialogBox.GetVisible() ? mDialogBox.SetVisible(false) : mDialogBox.SetVisible(true);
+}

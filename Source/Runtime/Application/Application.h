@@ -3,23 +3,29 @@
 #include "Core/CoreFwd.h"
 #include "Engine/Engine.h"
 #include "Engine/Game.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Renderer/Renderer.h"
 #include "SDL3/SDL.h"
 
 // Used by SDL_Window unique pointer
 struct SDLWindowDestroyer
 {
-	void operator()(SDL_Window* Window) const { SDL_DestroyWindow(Window); }
+	void operator()(SDL_Window* Window) const
+	{
+		SDL_DestroyWindow(Window);
+	}
 };
 
 // Used by SDL_Window unique pointer
 struct SDLRendererDestroyer
 {
-	void operator()(SDL_Renderer* Renderer) const { SDL_DestroyRenderer(Renderer); }
+	void operator()(SDL_Renderer* Renderer) const
+	{
+		SDL_DestroyRenderer(Renderer);
+	}
 };
 
-class PApplication : public IInputManager
+class PApplication
 {
 	static PApplication* sInstance;
 
@@ -29,12 +35,8 @@ class PApplication : public IInputManager
 
 	/* Rendering */
 
-	std::unique_ptr<PRenderer>	mRenderer;
+	std::unique_ptr<PRenderer> mRenderer;
 	std::unique_ptr<SDLContext> mContext;
-
-	/* Keyboard */
-
-	std::map<uint32_t, bool> mKeyStates;
 
 	/* Editor */
 
@@ -47,7 +49,6 @@ public:
 	static PApplication* GetInstance();
 
 	bool Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode, bool IsEditor);
-	void InitializeKeyStates();
 	void Uninitialize() const;
 
 	template <typename GameType>
@@ -87,11 +88,8 @@ public:
 
 	/* Properties */
 
-	bool		IsRunning() const;
-	PEngine*	GetEngine() const;
-	PRenderer*	GetRenderer() const;
+	bool IsRunning() const;
+	PEngine* GetEngine() const;
+	PRenderer* GetRenderer() const;
 	SDLContext* GetContext() const;
-
-	bool IsKeyDown(uint32_t KeyCode) const override;
-	bool IsKeyUp(uint32_t KeyCode) const override;
 };

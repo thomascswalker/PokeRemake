@@ -2,7 +2,7 @@
 
 #include "Actors/Character.h"
 #include "Core/Logging.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Interface/Layout.h"
 
 PWorld::PWorld()

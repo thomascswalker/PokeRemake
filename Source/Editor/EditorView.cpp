@@ -1,7 +1,7 @@
 #include "EditorView.h"
 
 #include "Core/Logging.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/World.h"
 
 void PEditorView::Start()

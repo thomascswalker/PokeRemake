@@ -3,7 +3,7 @@
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
 #include "Engine/Actors/Portal.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/Serialization.h"
 #include "Interface/HUD.h"
 #include "Interface/Dropdown.h"
