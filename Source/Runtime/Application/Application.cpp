@@ -174,7 +174,6 @@ bool PApplication::OnEvent(void* Event)
 	SInputEvent InputEvent(SDLEvent);
 	if (!InputEvent.Validate(&mInputContext))
 	{
-		LogDebug("Input '{}' invalid.", InputEvent.Event->type);
 		return false;
 	}
 

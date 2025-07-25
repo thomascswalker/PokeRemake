@@ -12,10 +12,10 @@ class PButton : public PAbstractButton
 {
 protected:
 	std::string mText;
-	PTexture*	mTexture = nullptr;
+	PTexture* mTexture = nullptr;
 
 	FRect mSourceRect;
-	bool  mUseSourceRect = false;
+	bool mUseSourceRect = false;
 
 public:
 	PButton() = default;
@@ -33,9 +33,7 @@ public:
 	}
 
 	PButton(const std::string& Label)
-		: mText(Label)
-	{
-	}
+		: mText(Label) {}
 
 	PButton(const std::string& Label, void (*Delegate)())
 		: mText(Label)
@@ -58,9 +56,7 @@ public:
 	}
 
 	PButton(PTexture* Texture)
-		: mTexture(Texture)
-	{
-	}
+		: mTexture(Texture) {}
 
 	PButton(PTexture* Texture, void (*Delegate)())
 		: mTexture(Texture)
@@ -133,6 +129,7 @@ public:
 		// Draw text
 		if (!mText.empty())
 		{
+			Renderer->SetDrawColor(PColor::White);
 			Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), gButtonTextSize);
 		}
 
@@ -141,8 +138,23 @@ public:
 		Renderer->DrawRect(R);
 	}
 
-	void  SetUseSourceRect(bool State) { mUseSourceRect = State; }
-	bool  GetUseSourceRect() const { return mUseSourceRect; }
-	void  SetSourceRect(const FRect& SourceRect) { mSourceRect = SourceRect; }
-	FRect GetSourceRect() const { return mSourceRect; }
+	void SetUseSourceRect(bool State)
+	{
+		mUseSourceRect = State;
+	}
+
+	bool GetUseSourceRect() const
+	{
+		return mUseSourceRect;
+	}
+
+	void SetSourceRect(const FRect& SourceRect)
+	{
+		mSourceRect = SourceRect;
+	}
+
+	FRect GetSourceRect() const
+	{
+		return mSourceRect;
+	}
 };

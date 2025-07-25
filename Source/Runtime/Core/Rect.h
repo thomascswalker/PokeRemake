@@ -100,6 +100,21 @@ public:
 		return Out;
 	}
 
+	void Shrink(T Size)
+	{
+		X += Size;
+		Y += Size;
+		W -= Size;
+		H -= Size;
+	}
+
+	TRect Shrunk(T Size) const
+	{
+		TRect Out = *this;
+		Out.Shrink(Size);
+		return Out;
+	}
+
 	SDL_FRect ToSDL_FRect() const
 	{
 		return {(float)X, (float)Y, (float)W, (float)H};

@@ -155,6 +155,13 @@ void PRenderer::SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const
 	SDL_SetRenderDrawBlendMode(mContext->Renderer, BlendMode);
 }
 
+PColor PRenderer::GetDrawColor() const
+{
+	uint8_t R, G, B, A;
+	SDL_GetRenderDrawColor(mContext->Renderer, &R, &G, &B, &A);
+	return PColor{R, G, B, A};
+}
+
 bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const
 {
 	const auto ScreenSize = GetScreenSize();
@@ -355,10 +362,14 @@ void PRenderer::DrawGrid() const
 
 float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
 {
+	// uint8_t R, G, B, A;
+	auto Color = GetDrawColor();
+	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
 	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
-	const float Width  = GetTextWidth(Text);
+	const float Width  = GetTextWidth(Text, FontSize);
 
 	float X       = Position.X - Width / 2.0f;
 	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
@@ -371,6 +382,9 @@ float PRenderer::DrawText(const std::string& Text, const FVector2& Position, flo
 		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
 	}
+
+	// Reset draw color mod
+	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
 
 	return Width;
 }
@@ -459,10 +473,10 @@ void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 	DrawTextureAt(Texture, Source, Dest);
 }
 
-float PRenderer::GetTextWidth(const std::string& Text) const
+float PRenderer::GetTextWidth(const std::string& Text, const float FontSize) const
 {
-	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
-	float Width            = 0;
+	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
+	float Width        = 0;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
