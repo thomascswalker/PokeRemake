@@ -1,33 +1,52 @@
 #pragma once
 
-#include <string>
 #include <vector>
+#include "Core/CoreFwd.h"
 
-enum EInputType
+struct SInputContext
 {
-	IT_Keyboard,
-	IT_Mouse
+    std::string Name;
+    std::vector<int> Keyboard;
+    std::vector<int> Mouse;
+    bool Any = false;
 };
 
-struct SInputAction
-{
-	std::string Name;
-	EInputType	Type;
-	union
-	{
-		float	 FValue;
-		uint32_t IValue;
-	};
-};
+static SInputContext DefaultInputContext{"Default", {}, {}, true};
 
-class SInputContext
+namespace Game::Context
 {
-	bool					  mEnabled;
-	std::vector<SInputAction> mActions;
+    static SInputContext Default =
+    {
+        "Game::Default",
+        {
+            SDLK_W,
+            SDLK_S,
+            SDLK_A,
+            SDLK_D,
+            SDLK_E,
+            SDLK_Q
+        },
+        {}
+    };
 
-public:
-	SInputContext()
-		: mEnabled(false) {}
-	SInputContext(std::initializer_list<SInputAction> Actions)
-		: mEnabled(false), mActions(Actions) {}
-};
+    static SInputContext Dialog =
+    {
+        "Game::Dialog",
+        {
+            SDLK_E,
+        },
+        {}
+    };
+}
+
+namespace Editor::Context
+{
+    static SInputContext Select{
+        "Editor::Select",
+        {},
+        {
+            SDL_EVENT_MOUSE_BUTTON_DOWN,
+            SDL_EVENT_MOUSE_BUTTON_UP,
+        },
+    };
+}

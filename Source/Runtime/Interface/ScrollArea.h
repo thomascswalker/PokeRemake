@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Macros.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 
 #include "Widget.h"
 

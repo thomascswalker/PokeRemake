@@ -8,8 +8,8 @@
 class PPlayerCharacter : public PCharacter
 {
 	PCameraComponent* mCameraComponent = nullptr;
-	std::bitset<4>	  mInputState; // Left, Right, Down, Up
-	bool			  bInputAllowed = true;
+	std::bitset<4> mInputState; // Left, Right, Down, Up
+	bool bInputAllowed = true;
 
 public:
 	PPlayerCharacter();
@@ -18,5 +18,10 @@ public:
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
 
-	PCameraComponent* GetCameraComponent() const { return mCameraComponent; }
+	void Interact();
+
+	PCameraComponent* GetCameraComponent() const
+	{
+		return mCameraComponent;
+	}
 };

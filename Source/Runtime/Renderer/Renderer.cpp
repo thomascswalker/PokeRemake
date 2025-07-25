@@ -11,10 +11,10 @@
 #include "Engine/World.h"
 #include "Interface/Layout.h"
 
-std::string	 gDefaultFont = FONT_NAME; // Default font name
+std::string gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;
 
-constexpr auto gTextureScaleMode = SDL_SCALEMODE_NEAREST;
+constexpr auto gTextureScaleMode   = SDL_SCALEMODE_NEAREST;
 constexpr auto gTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
 
 bool PRenderer::Initialize()
@@ -28,9 +28,7 @@ bool PRenderer::Initialize()
 	return true;
 }
 
-void PRenderer::PostInitialize() const
-{
-}
+void PRenderer::PostInitialize() const {}
 
 void PRenderer::Uninitialize() const
 {
@@ -70,17 +68,17 @@ void PRenderer::LoadFont(const std::string& Name) const
 	LogDebug("Loaded font: {}", FontFileName.c_str());
 
 	const size_t TempSize = FONT_ATLAS_SIZE * FONT_ATLAS_SIZE * sizeof(uint8_t);
-	const auto	 Bitmap = static_cast<uint8_t*>(malloc(TempSize));
+	const auto Bitmap     = static_cast<uint8_t*>(malloc(TempSize));
 	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, Bitmap, FONT_ATLAS_SIZE,
-						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
-						 gCurrentFont.CharacterData);
+	                     FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
+	                     gCurrentFont.CharacterData);
 
 	gCurrentFont.Bitmap = static_cast<uint8_t*>(malloc(TempSize * 4));
 
 	// Expand the baked font atlas to RGBA format
 	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
 	{
-		gCurrentFont.Bitmap[i * 4] = Bitmap[i];
+		gCurrentFont.Bitmap[i * 4]     = Bitmap[i];
 		gCurrentFont.Bitmap[i * 4 + 1] = Bitmap[i];
 		gCurrentFont.Bitmap[i * 4 + 2] = Bitmap[i];
 		gCurrentFont.Bitmap[i * 4 + 3] = Bitmap[i];
@@ -89,10 +87,10 @@ void PRenderer::LoadFont(const std::string& Name) const
 	free(Bitmap);
 	free(FontBuffer);
 	gCurrentFont.Texture = SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
-											 FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
+	                                         FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
-					  FONT_ATLAS_SIZE * sizeof(uint32_t));
+	                  FONT_ATLAS_SIZE * sizeof(uint32_t));
 }
 
 void PRenderer::UnloadFonts() {}
@@ -129,7 +127,7 @@ bool PRenderer::Render() const
 			}
 		}
 
-		if (const auto Root = World->GetRootWidget())
+		if (const auto Root = World->GetHUD())
 		{
 			// Recursively draw all widgets, but not the root widget
 			VALIDATE(Root->DrawChildren(this));
@@ -151,9 +149,17 @@ bool PRenderer::Render() const
 	SDL_RenderPresent(mContext->Renderer);
 	return true;
 }
+
 void PRenderer::SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const
 {
 	SDL_SetRenderDrawBlendMode(mContext->Renderer, BlendMode);
+}
+
+PColor PRenderer::GetDrawColor() const
+{
+	uint8_t R, G, B, A;
+	SDL_GetRenderDrawColor(mContext->Renderer, &R, &G, &B, &A);
+	return PColor{R, G, B, A};
 }
 
 bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPosition) const
@@ -164,7 +170,7 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 	if (CameraView)
 	{
 		const auto ViewPosition = CameraView->GetPosition();
-		const auto Offset = (WorldPosition - ViewPosition) * CameraView->GetZoom() * RENDER_SCALE;
+		const auto Offset       = (WorldPosition - ViewPosition) * CameraView->GetZoom() * RENDER_SCALE;
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
@@ -190,10 +196,10 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 
 	if (const auto CameraView = GetCameraView())
 	{
-		auto Offset = (ScreenPosition / RENDER_SCALE / 0.5f) - ScreenSize;
+		auto Offset     = (ScreenPosition / RENDER_SCALE / 0.5f) - ScreenSize;
 		auto Position2D = Offset / CameraView->GetZoom();
 
-		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition   = CameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 
 		*WorldPosition = Position2D + ViewPosition2D;
@@ -235,7 +241,7 @@ void PRenderer::SetClipRect(const FRect& ClipRect) const
 
 void PRenderer::ReleaseClipRect() const
 {
-	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
+	SDL_Rect Clip = {0, 0, (int)GetScreenWidth(), (int)GetScreenHeight()};
 	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
 }
 
@@ -243,8 +249,10 @@ void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 {
 	if (Thickness > 0.0f)
 	{
-		const SDL_FRect R = { V.X - Thickness / 2.0f, V.Y - Thickness / 2.0f, Thickness,
-							  Thickness };
+		const SDL_FRect R = {
+			V.X - Thickness / 2.0f, V.Y - Thickness / 2.0f, Thickness,
+			Thickness
+		};
 		SDL_RenderFillRect(mContext->Renderer, &R);
 	}
 	else
@@ -270,24 +278,24 @@ void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 		auto Outer = Rect.Expanded(Thickness);
 
 		// Draw top edge
-		auto TopRect = FRect{ Outer.X, Outer.Y, Outer.W, Thickness };
+		auto TopRect = FRect{Outer.X, Outer.Y, Outer.W, Thickness};
 		DrawFillRect(TopRect);
 
 		// Draw bottom edge
-		auto BottomRect = FRect{ Outer.X, Outer.Y + Outer.H - Thickness, Outer.W, Thickness };
+		auto BottomRect = FRect{Outer.X, Outer.Y + Outer.H - Thickness, Outer.W, Thickness};
 		DrawFillRect(BottomRect);
 
 		// Draw left edge
-		auto LeftRect = FRect{ Outer.X, Outer.Y, Thickness, Outer.H };
+		auto LeftRect = FRect{Outer.X, Outer.Y, Thickness, Outer.H};
 		DrawFillRect(LeftRect);
 
 		// Draw right edge
-		auto RightRect = FRect{ Outer.X + Outer.W - Thickness, Outer.Y, Thickness, Outer.H };
+		auto RightRect = FRect{Outer.X + Outer.W - Thickness, Outer.Y, Thickness, Outer.H};
 		DrawFillRect(RightRect);
 	}
 	else
 	{
-		SRect = { Rect.X, Rect.Y, Rect.W, Rect.H };
+		SRect = {Rect.X, Rect.Y, Rect.W, Rect.H};
 	}
 
 	SDL_RenderRect(mContext->Renderer, &SRect);
@@ -304,7 +312,7 @@ void PRenderer::DrawFillRect(const FRect& Rect) const
 }
 
 void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
-							const std::vector<int32_t>&	 Indexes) const
+                            const std::vector<int32_t>& Indexes) const
 {
 	float R, G, B, A;
 	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
@@ -314,19 +322,19 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 		SDL_Vertex V;
 		V.position.x = Vertices[i].X;
 		V.position.y = Vertices[i].Y;
-		V.color = { R, G, B, A };
+		V.color      = {R, G, B, A};
 		SDLVertices.emplace_back(V);
 	}
 	SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertices.data(),
-					   static_cast<int>(SDLVertices.size()), Indexes.data(),
-					   static_cast<int>(Indexes.size()));
+	                   static_cast<int>(SDLVertices.size()), Indexes.data(),
+	                   static_cast<int>(Indexes.size()));
 }
 
 void PRenderer::DrawGrid() const
 {
 	SetDrawColor(100, 100, 100, 255);
 
-	const float ScreenWidth = GetScreenWidth();
+	const float ScreenWidth  = GetScreenWidth();
 	const float ScreenHeight = GetScreenHeight();
 
 	float X0, X1, Y0, Y1;
@@ -354,22 +362,29 @@ void PRenderer::DrawGrid() const
 
 float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
 {
+	// uint8_t R, G, B, A;
+	auto Color = GetDrawColor();
+	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
 	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
-	const float Width = GetTextWidth(Text);
+	const float Width  = GetTextWidth(Text, FontSize);
 
-	float		X = Position.X - Width / 2.0f;
+	float X       = Position.X - Width / 2.0f;
 	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
-		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
-		SDL_FRect  Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
-						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
+		SDL_FRect Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
+		SDL_FRect Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
+		               (Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
 		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
 		X += Info->xadvance * Aspect;
 	}
+
+	// Reset draw color mod
+	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
 
 	return Width;
 }
@@ -404,6 +419,7 @@ void PRenderer::DrawFillRectAt(const FRect& Rect) const
 	WorldToScreen(Rect, &ScreenRect);
 	DrawFillRect(ScreenRect);
 }
+
 void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize) const
 {
 	FVector2 ScreenPosition;
@@ -422,8 +438,8 @@ void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const 
 		return;
 	}
 	SDL_Texture* Tex = Texture->GetSDLTexture();
-	auto		 Source2 = Source.ToSDL_FRect();
-	auto		 Dest2 = Dest.ToSDL_FRect();
+	auto Source2     = Source.ToSDL_FRect();
+	auto Dest2       = Dest.ToSDL_FRect();
 	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
 }
 
@@ -439,13 +455,13 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	WorldToScreen(Dest, &ScreenRect);
 
 	const SDL_FRect SDLSource = Source.ToSDL_FRect();
-	const SDL_FRect SDLDest = ScreenRect.ToSDL_FRect();
+	const SDL_FRect SDLDest   = ScreenRect.ToSDL_FRect();
 
 	SDL_RenderTexture(mContext->Renderer, Tex, &SDLSource, &SDLDest);
 }
 
 void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
-							 int32_t Index) const
+                             int32_t Index) const
 {
 	if (!Texture)
 	{
@@ -453,14 +469,14 @@ void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 	}
 
 	const float SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
-	const FRect Source = { SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH };
+	const FRect Source       = {SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH};
 	DrawTextureAt(Texture, Source, Dest);
 }
 
-float PRenderer::GetTextWidth(const std::string& Text) const
+float PRenderer::GetTextWidth(const std::string& Text, const float FontSize) const
 {
-	constexpr float Aspect = FONT_RENDER_SCALE / FONT_ATLAS_BAKE_SCALE;
-	float			Width = 0;
+	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
+	float Width        = 0;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
@@ -487,13 +503,13 @@ FVector2 PRenderer::GetScreenSize() const
 {
 	int32_t Width, Height;
 	SDL_GetWindowSizeInPixels(GetRenderWindow(), &Width, &Height);
-	return { static_cast<float>(Width), static_cast<float>(Height) };
+	return {static_cast<float>(Width), static_cast<float>(Height)};
 }
 
 FRect PRenderer::GetScreenRect() const
 {
 	return {
-		{ 0, 0 },
+		{0, 0},
 		GetScreenSize()
 	};
 }
@@ -502,14 +518,14 @@ FRect PRenderer::GetViewport() const
 {
 	int32_t Width, Height;
 	SDL_GetWindowSize(GetRenderWindow(), &Width, &Height);
-	return { 0, 0, static_cast<float>(Width), static_cast<float>(Height) };
+	return {0, 0, static_cast<float>(Width), static_cast<float>(Height)};
 }
 
 FVector2 PRenderer::GetMousePosition() const
 {
 	float X, Y;
 	SDL_GetMouseState(&X, &Y);
-	return { X, Y };
+	return {X, Y};
 }
 
 FVector2 PRenderer::GetMouseWorldPosition() const

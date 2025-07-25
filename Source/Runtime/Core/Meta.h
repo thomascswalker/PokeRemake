@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cxxabi.h>
 #include <string>
 
 #include "Json.h"
@@ -33,10 +32,10 @@ class PObject;
 
 struct SClass
 {
-	std::string							 Name;
-	size_t								 TypeId;
-	std::function<PObject*()>			 Constructor;
+	std::string Name;
+	size_t TypeId;
+	std::function<PObject*()> Constructor;
 	std::function<PObject*(const JSON&)> JsonConstructor;
 };
 
-#define ENABLE_IF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>
+#define IS_SUBCLASS_OF(Class) class T, class = std::enable_if_t<std::is_base_of_v<Class, T>>

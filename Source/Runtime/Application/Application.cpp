@@ -17,7 +17,7 @@ PApplication* PApplication::GetInstance()
 	return sInstance;
 }
 
-static PApplication* GetApplication()
+PApplication* GetApplication()
 {
 	return PApplication::GetInstance();
 }
@@ -49,7 +49,7 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode,
-							  bool IsEditor)
+                              bool IsEditor)
 {
 	bIsEditor = IsEditor;
 	LogInfo("Constructing {} Application", bIsEditor ? "Editor" : "Game");
@@ -64,12 +64,12 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	}
 
 	// Create the SDL Context wrapper
-	mContext = std::make_unique<SDLContext>();
+	mContext          = std::make_unique<SDLContext>();
 	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
-									 WindowFlags, &mContext->Window, &mContext->Renderer))
+	                                 WindowFlags, &mContext->Window, &mContext->Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
@@ -92,83 +92,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	// Store initial time
 	mCurrentTime = SDL_GetTicks();
 
-	// Setup input
-	SetInputManager(this);
-
 	return true;
-}
-void PApplication::InitializeKeyStates()
-{
-	mKeyStates[SDLK_1] = false;
-	mKeyStates[SDLK_2] = false;
-	mKeyStates[SDLK_3] = false;
-	mKeyStates[SDLK_4] = false;
-	mKeyStates[SDLK_5] = false;
-	mKeyStates[SDLK_6] = false;
-	mKeyStates[SDLK_7] = false;
-	mKeyStates[SDLK_8] = false;
-	mKeyStates[SDLK_9] = false;
-	mKeyStates[SDLK_0] = false;
-	mKeyStates[SDLK_A] = false;
-	mKeyStates[SDLK_B] = false;
-	mKeyStates[SDLK_C] = false;
-	mKeyStates[SDLK_D] = false;
-	mKeyStates[SDLK_E] = false;
-	mKeyStates[SDLK_F] = false;
-	mKeyStates[SDLK_G] = false;
-	mKeyStates[SDLK_H] = false;
-	mKeyStates[SDLK_I] = false;
-	mKeyStates[SDLK_J] = false;
-	mKeyStates[SDLK_K] = false;
-	mKeyStates[SDLK_L] = false;
-	mKeyStates[SDLK_M] = false;
-	mKeyStates[SDLK_N] = false;
-	mKeyStates[SDLK_O] = false;
-	mKeyStates[SDLK_P] = false;
-	mKeyStates[SDLK_Q] = false;
-	mKeyStates[SDLK_R] = false;
-	mKeyStates[SDLK_S] = false;
-	mKeyStates[SDLK_T] = false;
-	mKeyStates[SDLK_U] = false;
-	mKeyStates[SDLK_V] = false;
-	mKeyStates[SDLK_W] = false;
-	mKeyStates[SDLK_X] = false;
-	mKeyStates[SDLK_Y] = false;
-	mKeyStates[SDLK_Z] = false;
-	mKeyStates[SDLK_SPACE] = false;
-	mKeyStates[SDLK_RETURN] = false;
-	mKeyStates[SDLK_ESCAPE] = false;
-	mKeyStates[SDLK_BACKSPACE] = false;
-	mKeyStates[SDLK_TAB] = false;
-	mKeyStates[SDLK_CAPSLOCK] = false;
-	mKeyStates[SDLK_LSHIFT] = false;
-	mKeyStates[SDLK_RSHIFT] = false;
-	mKeyStates[SDLK_LCTRL] = false;
-	mKeyStates[SDLK_RCTRL] = false;
-	mKeyStates[SDLK_LALT] = false;
-	mKeyStates[SDLK_RALT] = false;
-	mKeyStates[SDLK_INSERT] = false;
-	mKeyStates[SDLK_DELETE] = false;
-	mKeyStates[SDLK_HOME] = false;
-	mKeyStates[SDLK_END] = false;
-	mKeyStates[SDLK_PAGEUP] = false;
-	mKeyStates[SDLK_PAGEDOWN] = false;
-	mKeyStates[SDLK_UP] = false;
-	mKeyStates[SDLK_DOWN] = false;
-	mKeyStates[SDLK_LEFT] = false;
-	mKeyStates[SDLK_RIGHT] = false;
-	mKeyStates[SDLK_F1] = false;
-	mKeyStates[SDLK_F2] = false;
-	mKeyStates[SDLK_F3] = false;
-	mKeyStates[SDLK_F4] = false;
-	mKeyStates[SDLK_F5] = false;
-	mKeyStates[SDLK_F6] = false;
-	mKeyStates[SDLK_F7] = false;
-	mKeyStates[SDLK_F8] = false;
-	mKeyStates[SDLK_F9] = false;
-	mKeyStates[SDLK_F10] = false;
-	mKeyStates[SDLK_F11] = false;
-	mKeyStates[SDLK_F12] = false;
 }
 
 void PApplication::Uninitialize() const
@@ -192,11 +116,10 @@ void PApplication::Uninitialize() const
 
 bool PApplication::Loop()
 {
-
 	// Tick the engine
-	const uint64_t Now = SDL_GetTicksNS();
-	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
-	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	const uint64_t Now         = SDL_GetTicksNS();
+	const uint64_t DeltaTimeNS = Now - mCurrentTime;                               // Get delta time in nanoseconds
+	const float DeltaTime      = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
 	mEngine->Tick(DeltaTime);
 	mCurrentTime = Now;
 
@@ -233,23 +156,26 @@ bool PApplication::OnEvent(void* Event)
 	// Handle window-level events
 	switch (SDLEvent->type)
 	{
-		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-			{
-				Uninitialize();
-				return false;
-			}
-		case SDL_EVENT_WINDOW_RESIZED:
-			{
-				float Width = static_cast<float>(SDLEvent->window.data1);
-				float Height = static_cast<float>(SDLEvent->window.data2);
-				mRenderer->OnResize({ Width, Height });
-			}
-		default:
-			break;
+	case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+		{
+			Uninitialize();
+			return false;
+		}
+	case SDL_EVENT_WINDOW_RESIZED:
+		{
+			float Width  = static_cast<float>(SDLEvent->window.data1);
+			float Height = static_cast<float>(SDLEvent->window.data2);
+			mRenderer->OnResize({Width, Height});
+		}
+	default: break;
 	}
 
 	// Handle all other events
 	SInputEvent InputEvent(SDLEvent);
+	if (!InputEvent.Validate(&mInputContext))
+	{
+		return false;
+	}
 
 	// Handle game-level events
 	if (GetGame()->ProcessEvents(&InputEvent))
@@ -292,22 +218,12 @@ SDLContext* PApplication::GetContext() const
 	return mContext.get();
 }
 
-bool PApplication::IsKeyDown(uint32_t KeyCode) const
+SInputContext* GetInputContext()
 {
-	const auto Iter = mKeyStates.find(KeyCode);
-	if (Iter == mKeyStates.end())
-	{
-		return false;
-	}
-	return Iter->second;
+	return PApplication::GetInstance()->GetInputContext();
 }
 
-bool PApplication::IsKeyUp(uint32_t KeyCode) const
+void SetInputContext(const SInputContext& Context)
 {
-	const auto Iter = mKeyStates.find(KeyCode);
-	if (Iter == mKeyStates.end())
-	{
-		return false;
-	}
-	return !Iter->second;
+	PApplication::GetInstance()->SetInputContext(Context);
 }

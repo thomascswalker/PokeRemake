@@ -1,7 +1,7 @@
 #include "Character.h"
 
 #include "Core/Constants.h"
-#include "Engine/InputManager.h"
+#include "Engine/Input.h"
 #include "Engine/World.h"
 
 #include "Collider.h"

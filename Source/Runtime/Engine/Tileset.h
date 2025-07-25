@@ -7,6 +7,10 @@
 
 #include "Texture.h"
 
+#define TILESET_1 "Tileset1"
+#define TILESET_2 "Tileset2"
+#define TILESET_3 "Tileset3"
+
 struct STileItem;
 struct SBlock;
 struct STileset;
@@ -24,38 +28,61 @@ enum ETileType
 struct STileItem
 {
 	STileset* Tileset = nullptr;
-	int32_t	  Index;
+	int32_t Index;
 
 	STileItem(const int32_t InIndex)
-		: Index(InIndex)
-	{
-	}
+		: Index(InIndex) {}
+
 	FRect GetSourceRect();
 };
 
 struct STileset
 {
-	std::string			   Name{};
-	int32_t				   Index = 0;
+	std::string Name{};
+	int32_t Index = 0;
 	std::vector<STileItem> Tiles;
-	std::vector<int>	   Blocking;
-	float				   ItemSize = 8.0f;
-	int32_t				   Width = 16;
-	int32_t				   Height = 6;
-	PTexture*			   Texture = nullptr;
+	std::vector<int> Blocking;
+	float ItemSize    = 8.0f;
+	int32_t Width     = 16;
+	int32_t Height    = 6;
+	PTexture* Texture = nullptr;
 
 	STileset() = default;
-	STileset(const std::string& InName, const int32_t InWidth, const int32_t InHeight, const std::initializer_list<int>& InBlocking);
+	STileset(const std::string& InName, int32_t InWidth, int32_t InHeight,
+	         const std::initializer_list<int>& InBlocking);
 
 	int32_t IndexOf(const STileItem* Ptr);
 
-	auto begin() { return Tiles.begin(); }
-	auto end() { return Tiles.end(); }
+	STileItem* GetTileItem(int32_t Index)
+	{
+		return &Tiles[Index];
+	}
+
+	STileItem* GetTileItem(int32_t X, int32_t Y)
+	{
+		int32_t Index = Y * Width + X;
+		return &Tiles[Index];
+	}
+
+	STileItem* GetTileItem(const FVector2& Coordinate)
+	{
+		return GetTileItem(Coordinate.X, Coordinate.Y);
+	}
+
+	auto begin()
+	{
+		return Tiles.begin();
+	}
+
+	auto end()
+	{
+		return Tiles.end();
+	}
 };
 
-bool					 LoadTileset(const std::string& Name);
-STileset*				 GetTileset(const std::string& Name);
-std::vector<STileset*>	 GetTilesets();
-STileset*				 GetDefaultTileset();
-bool					 LoadAllTilesets();
+bool LoadTileset(const std::string& Name);
+STileset* GetTileset(const std::string& Name);
+std::vector<STileset*> GetTilesets();
+STileset* GetDefaultTileset();
+bool LoadAllTilesets();
 std::vector<std::string> GetTilesetNames();

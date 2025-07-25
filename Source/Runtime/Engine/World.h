@@ -8,6 +8,7 @@
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
 #include "Interface/Widget.h"
+#include "Interface/HUD.h"
 
 #if _EDITOR
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
@@ -17,14 +18,14 @@ class PWorld : public PObject
 {
 	std::map<std::string, PMap*> mMaps;
 
-	PPlayerCharacter*						 mPlayerCharacter = nullptr;
-	std::vector<std::shared_ptr<PActor>>	 mActors;
+	PPlayerCharacter* mPlayerCharacter = nullptr;
+	std::vector<std::shared_ptr<PActor>> mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
 	std::vector<PActor*> mDestroyableActors;
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	PWidget*							  mRootWidget;
+	std::shared_ptr<PHUD> mHUD;
 
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
@@ -34,7 +35,6 @@ public:
 	DActorSelected ActorClicked;
 #endif
 
-	PWorld() = default;
 	~PWorld() override = default;
 
 	void Start() override;
@@ -47,7 +47,7 @@ public:
 	}
 #endif
 
-	template <ENABLE_IF(PObject), typename... ArgsType>
+	template <IS_SUBCLASS_OF(PObject), typename... ArgsType>
 	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
 	{
 		std::shared_ptr<T> Object = std::make_shared<T>(std::forward<ArgsType>(Args)...);
@@ -55,7 +55,7 @@ public:
 		return Object;
 	}
 
-	template <ENABLE_IF(PActor), typename... ArgsType>
+	template <IS_SUBCLASS_OF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
 	{
 		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
@@ -75,7 +75,7 @@ public:
 		mActors.push_back(ConstructObject<T>(Actor));
 	}
 
-	template <ENABLE_IF(PActor), typename... ArgsType>
+	template <IS_SUBCLASS_OF(PActor), typename... ArgsType>
 	T* SpawnActor(ArgsType&&... Args)
 	{
 		auto Actor = ConstructActor<T>(std::forward<ArgsType>(Args)...);
@@ -112,7 +112,7 @@ public:
 
 	std::vector<PComponent*> GetComponents() const;
 
-	template <ENABLE_IF(PWidget), typename... ArgsType>
+	template <IS_SUBCLASS_OF(PWidget), typename... ArgsType>
 	T* ConstructWidget(ArgsType&&... Args)
 	{
 		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
@@ -128,13 +128,22 @@ public:
 
 	std::vector<PWidget*> GetWidgets() const;
 
-	void	 SetRootWidget(PWidget* Widget) { mRootWidget = Widget; }
-	PWidget* GetRootWidget() const { return mRootWidget; }
+	template <typename T = PHUD>
+	void CreateHUD()
+	{
+		mHUD = std::make_shared<T>();
+	}
 
-	PPlayerCharacter*	 GetPlayerCharacter() const;
-	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
-	PMap*				 GetMapAtPosition(const FVector2& Position) const;
-	PActor*				 GetActorAtPosition(const FVector2& Position) const;
+	template <typename T = PHUD>
+	T* GetHUD() const
+	{
+		return static_cast<T*>(mHUD.get());
+	}
+
+	PPlayerCharacter* GetPlayerCharacter() const;
+	void SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
+	PMap* GetMapAtPosition(const FVector2& Position) const;
+	PActor* GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
@@ -199,4 +208,10 @@ T* ConstructWidget(const JSON& Json)
 	auto Widget = ConstructWidget<T>();
 	Widget->Deserialize(Json);
 	return Widget;
+}
+
+template <typename T>
+T* GetHUD()
+{
+	return GetWorld()->GetHUD<T>();
 }

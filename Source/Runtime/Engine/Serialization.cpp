@@ -2,6 +2,7 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
+#include "Actors/Game/SignPost.h"
 
 #include "World.h"
 
@@ -30,6 +31,10 @@ PActor* Serialization::Deserialize(const JSON& JsonData)
 	if (ClassName == "PPortal")
 	{
 		return SpawnActor<PPortal>(JsonData);
+	}
+	if (ClassName == "PSignPost")
+	{
+		return SpawnActor<PSignPost>(JsonData);
 	}
 
 	LogWarning("Deserialization of actor {} not supported.", ClassName.c_str());

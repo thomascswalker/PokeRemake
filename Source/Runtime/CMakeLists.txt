@@ -12,75 +12,73 @@ include_directories(
 
 set(SOURCES
         Application/Application.cpp
+        Application/ArgParser.h
+        Application/Context.h
+        Core/Bitmask.h
+        Core/CFwd.h
+        Core/Color.cpp
+        Core/Common.h
+        Core/Constants.h
+        Core/Containers.h
+        Core/CoreFwd.h
+        Core/Decl.h
         Core/Delegate.cpp
+        Core/Files.h
+        Core/Json.h
         Core/Logging.h
+        Core/Macros.h
         Core/Matrix.h
+        Core/Meta.cpp
+        Core/Time.h
         Core/Vector.h
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
+        Engine/Actors/Collider.h
+        Engine/Actors/Interactable.h
         Engine/Actors/Map.cpp
+        Engine/Actors/PlayerCharacter.cpp
+        Engine/Actors/Portal.cpp
+        Engine/Actors/Selectable.h
+        Engine/Actors/Game/SignPost.cpp
         Engine/CameraView.h
+        Engine/Components/CameraComponent.cpp
+        Engine/Components/CharacterMovementComponent.cpp
+        Engine/Components/CollisionComponent.cpp
+        Engine/Components/Component.cpp
         Engine/Engine.cpp
         Engine/Game.cpp
-        Engine/InputManager.cpp
+        Engine/Input.cpp
+        Engine/InputContext.cpp
+        Engine/MapManager.cpp
         Engine/Object.cpp
-        Engine/World.cpp
-        Renderer/Drawable.h
-        Renderer/Renderer.cpp
-        Application/ArgParser.h
-        Application/Context.h
-        Engine/Components/Component.cpp
-        Engine/Components/CameraComponent.cpp
-        Engine/Actors/PlayerCharacter.cpp
-        Engine/Texture.cpp
-        Core/Files.h
-        Core/Constants.h
+        Engine/Serialization.cpp
         Engine/Settings.h
         Engine/Sprite.h
-        Engine/Components/CharacterMovementComponent.cpp
-        Interface/Widget.h
-        Interface/Button.h
-        Interface/Spinner.h
-        Interface/Canvas.h
-        Interface/Widget.cpp
-        Interface/Layout.h
-        Interface/Text.h
-        Engine/Serialization.cpp
-        Core/Json.h
-        Core/CoreFwd.h
-        Interface/Box.h
-        Interface/Group.h
-        Interface/AbstractButton.h
-        Core/Color.cpp
-        Interface/ButtonGroup.h
-        Core/Bitmask.h
-        Engine/InputContext.h
-        Interface/GridView.h
-        Interface/AbstractButton.cpp
-        Interface/Image.h
-        Engine/Tileset.h
-        Engine/Actors/Selectable.h
-        Core/Containers.h
-        Interface/Panel.h
+        Engine/Texture.cpp
         Engine/Tileset.cpp
-        Interface/Dropdown.h
-        Interface/ItemView.h
+        Engine/World.cpp
+        Interface/AbstractButton.cpp
+        Interface/Box.h
+        Interface/Button.h
+        Interface/ButtonGroup.h
         Interface/Dropdown.cpp
+        Interface/GridView.h
+        Interface/Group.h
+        Interface/HUD.h
+        Interface/Image.h
+        Interface/ItemView.h
+        Interface/Layout.h
+        Interface/Panel.h
         Interface/ScrollArea.h
-        Core/Macros.h
-        Engine/Actors/Portal.h
-        Core/Meta.h
-        Core/Meta.cpp
-        Engine/Actors/Collider.h
-        Engine/Components/CollisionComponent.h
-        Engine/Components/CollisionComponent.cpp
-        Core/Time.h
-        Engine/Actors/Portal.cpp
-        Engine/MapManager.cpp
-        Core/Common.h
-        Engine/Actors/Interactable.h
-        Core/Decl.h
-        Core/CFwd.h
+        Interface/Spacer.h
+        Interface/Spinner.h
+        Interface/Text.h
+        Interface/Widget.cpp
+        Interface/Widget.h
+        Renderer/Drawable.h
+        Renderer/Renderer.cpp
+        Interface/Game/GameHUD.cpp
+        Interface/Game/DialogBox.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

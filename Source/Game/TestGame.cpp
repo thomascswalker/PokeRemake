@@ -1,11 +1,11 @@
 #include "TestGame.h"
 
-#include "Core/Files.h"
+#include "Application/Application.h"
 #include "Core/Logging.h"
 #include "Engine/Actors/PlayerCharacter.h"
 #include "Engine/MapManager.h"
-#include "Engine/Serialization.h"
 #include "Engine/Texture.h"
+#include "Engine/InputContext.h"
 
 bool TestGame::PreStart()
 {
@@ -21,6 +21,8 @@ bool TestGame::PreStart()
 	auto Player = ConstructActor<PPlayerCharacter>();
 	GetWorld()->SetPlayerCharacter(Player);
 	Player->MoveToTile(8, 8);
+
+	GetApplication()->SetInputContext(Game::Context::Default);
 
 	return true;
 }
