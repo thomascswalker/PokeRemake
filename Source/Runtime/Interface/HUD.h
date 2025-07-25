@@ -2,10 +2,10 @@
 
 #include "Widget.h"
 
-class PCanvas : public PWidget
+class PHUD : public PWidget
 {
 public:
-	PCanvas()
+	PHUD()
 	{
 		mResizeModeW = RM_Fixed;
 		mResizeModeH = RM_Fixed;

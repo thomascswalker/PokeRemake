@@ -5,7 +5,7 @@
 #include "Engine/Actors/Portal.h"
 #include "Engine/InputManager.h"
 #include "Engine/Serialization.h"
-#include "Interface/Canvas.h"
+#include "Interface/HUD.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
@@ -149,10 +149,8 @@ void PEditorGame::SetupInterface()
 
 	// Main canvas
 
-	const auto MainCanvas = mWorld->ConstructWidget<PCanvas>();
-	MainCanvas->AddChild(MainPanel);
-
-	mWorld->SetRootWidget(MainCanvas);
+	const auto HUD = mWorld->GetHUD();
+	HUD->AddChild(MainPanel);
 }
 
 PGridView* PEditorGame::ConstructTilesetView(STileset* Tileset)

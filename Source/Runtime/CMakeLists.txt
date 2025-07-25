@@ -41,7 +41,7 @@ set(SOURCES
         Interface/Widget.h
         Interface/Button.h
         Interface/Spinner.h
-        Interface/Canvas.h
+        Interface/HUD.h
         Interface/Widget.cpp
         Interface/Layout.h
         Interface/Text.h
@@ -83,6 +83,8 @@ set(SOURCES
         Core/CFwd.h
         Engine/Actors/SignPost.h
         Engine/Actors/SignPost.cpp
+        Interface/Game/GameHUD.cpp
+        Interface/Spacer.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

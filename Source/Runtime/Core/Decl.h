@@ -39,7 +39,7 @@ class PButton;
 class PButtonGroup;
 class PCameraComponent;
 class PCameraView;
-class PCanvas;
+class PHUD;
 class PCharacter;
 class PCharacterMovementComponent;
 class PCollisionComponent;

@@ -5,6 +5,11 @@
 #include "Engine/InputManager.h"
 #include "Interface/Layout.h"
 
+PWorld::PWorld()
+{
+	mHUD = std::make_unique<HUDType>();
+}
+
 void PWorld::Start()
 {
 	LogDebug("Starting world");
@@ -27,14 +32,14 @@ void PWorld::Tick(float DeltaTime)
 
 	// If there's a root widget, set it to span the width and height of the screen
 	// and layout all of its children recursively.
-	if (mRootWidget)
+	if (mHUD)
 	{
 		// Resize the main root widget to fit the screen size
 		auto ScreenSize = R->GetScreenSize();
-		mRootWidget->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
+		mHUD->SetFixedSize({ScreenSize.X, ScreenSize.Y});
 
 		// Recursively construct the layout of all widgets
-		Layout::Layout(mRootWidget);
+		Layout::Layout(mHUD.get());
 	}
 
 	auto Comps = GetComponents();
@@ -105,6 +110,7 @@ void PWorld::DestroyComponentInternal(const PComponent* Component)
 
 	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
 }
+
 std::vector<PActor*> PWorld::GetActors() const
 {
 	std::vector<PActor*> Actors;
@@ -130,6 +136,7 @@ std::vector<PActor*> PWorld::GetDrawables(EDrawPriority Priority) const
 	}
 	return Drawables;
 }
+
 std::vector<PComponent*> PWorld::GetComponents() const
 {
 	std::vector<PComponent*> Components;
@@ -139,6 +146,7 @@ std::vector<PComponent*> PWorld::GetComponents() const
 	}
 	return Components;
 }
+
 std::vector<PWidget*> PWorld::GetWidgets() const
 {
 	std::vector<PWidget*> Widgets;
@@ -176,6 +184,7 @@ PMap* PWorld::GetMapAtPosition(const FVector2& Position) const
 	}
 	return nullptr;
 }
+
 PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : mActors)
@@ -213,9 +222,9 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 void PWorld::ProcessEvents(SInputEvent* Event)
 {
 	// First process all widget events as these are the layer 'above' the game view
-	if (mRootWidget)
+	if (mHUD)
 	{
-		if (mRootWidget->ProcessEvents(Event))
+		if (mHUD->ProcessEvents(Event))
 		{
 			return;
 		}
@@ -237,6 +246,7 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 		}
 	}
 }
+
 void PWorld::Cleanup()
 {
 	for (auto Actor : mDestroyableActors)
