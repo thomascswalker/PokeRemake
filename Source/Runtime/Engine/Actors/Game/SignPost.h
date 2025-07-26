@@ -2,16 +2,16 @@
 
 #include "Engine/Actors/Actor.h"
 #include "Engine/Actors/Interactable.h"
+#include "Engine/Components/SpriteComponent.h"
 
 class PSignPost : public PActor, public IInteractable
 {
+    PSpriteComponent* mSpriteComponent;
+
 public:
     PSignPost();
     ~PSignPost() override = default;
 
-    bool Draw(const PRenderer* Renderer) const override;
     FRect GetLocalBounds() const override;
-#if !EDITOR
     void Interact(PPlayerCharacter* Player) override;
-#endif
 };

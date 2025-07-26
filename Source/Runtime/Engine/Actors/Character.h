@@ -4,6 +4,8 @@
 
 #include "Actor.h"
 
+#include "Engine/Components/SpriteComponent.h"
+
 enum ESpriteIndex
 {
 	SI_WalkDownA,
@@ -22,21 +24,18 @@ class PCharacter : public PActor
 {
 protected:
 	PCharacterMovementComponent* mMovementComponent = nullptr;
+	PSpriteComponent* mSpriteComponent              = nullptr;
 
-	FVector2		   mTargetPosition;
+	FVector2 mTargetPosition;
 	EOrientation mMovementDirection = OR_South;
-	bool			   bInputAllowed = false;
+	bool bInputAllowed              = false;
 
-	bool  mAnimationCycle = false;
+	bool mAnimationCycle    = false;
 	float mDistanceTraveled = 0.0f;
 
 public:
 	PCharacter();
 	~PCharacter() override = default;
-
-	void End() override {}
-	void Tick(float DeltaTime) override;
-	bool Draw(const PRenderer* Renderer) const override;
 
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
@@ -44,5 +43,13 @@ public:
 	void OnMovementStarted(EOrientation Direction);
 	void OnMovementEnded(EOrientation Direction);
 
-	PCharacterMovementComponent* GetMovementComponent() { return mMovementComponent; }
+	PCharacterMovementComponent* GetMovementComponent()
+	{
+		return mMovementComponent;
+	}
+
+	PSpriteComponent* GetSpriteComponent()
+	{
+		return mSpriteComponent;
+	}
 };

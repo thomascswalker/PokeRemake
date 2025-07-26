@@ -118,19 +118,31 @@ std::vector<PActor*> PWorld::GetActors() const
 	return Actors;
 }
 
-std::vector<PActor*> PWorld::GetDrawables(EDrawPriority Priority) const
+std::vector<IDrawable*> PWorld::GetDrawables(EDrawPriority Priority) const
 {
-	std::vector<PActor*> Drawables;
+	std::vector<IDrawable*> Drawables;
 	for (const auto& Actor : mActors)
 	{
-		if (auto Drawable = static_cast<IDrawable*>(Actor.get()))
+		if (auto Drawable = dynamic_cast<IDrawable*>(Actor.get()))
 		{
-			if (Drawable->GetPriority() == Priority)
+			if (Drawable->GetDrawPriority() == Priority)
 			{
-				Drawables.push_back(Actor.get());
+				Drawables.push_back(Drawable);
 			}
 		}
 	}
+
+	for (const auto& Component : mComponents)
+	{
+		if (auto Drawable = dynamic_cast<IDrawable*>(Component.get()))
+		{
+			if (Drawable->GetDrawPriority() == Priority)
+			{
+				Drawables.push_back(Drawable);
+			}
+		}
+	}
+
 	return Drawables;
 }
 
@@ -249,7 +261,6 @@ void PWorld::Cleanup()
 	for (auto Actor : mDestroyableActors)
 	{
 		DestroyActorInternal(Actor);
-		Actor = nullptr;
 	}
 	mDestroyableActors.clear();
 }

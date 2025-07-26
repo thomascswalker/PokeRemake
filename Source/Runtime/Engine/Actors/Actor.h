@@ -25,35 +25,35 @@ struct SActorItem
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
 {
 protected:
-	PActor*					 mParent = nullptr;
-	FVector2				 mPosition;
-	FVector2				 mSize;
-	PSprite					 mSprite{};
-	bool					 mBlocking = true;
-	std::vector<PActor*>	 mChildren;
+	PActor* mParent = nullptr;
+	FVector2 mPosition;
+	FVector2 mSize;
+	bool mBlocking = true;
+	std::vector<PActor*> mChildren;
 	std::vector<PComponent*> mComponents;
+
+	PCollisionComponent* mCollisionComponent = nullptr;
 
 	void OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	FVector2 mMousePosition;
-	bool	 mMouseOver = false;
-	bool	 mMouseDown = false;
+	bool mMouseOver = false;
+	bool mMouseDown = false;
 
 	DHoverBegin HoverBegin;
-	DHoverEnd	HoverEnd;
-	DClicked	Clicked;
+	DHoverEnd HoverEnd;
+	DClicked Clicked;
 
 	PActor() = default;
+
 	PActor(const PActor& other)
-		: PObject{ other }, IDrawable{ other }, mPosition{ other.mPosition }, mSize{ other.mSize }
-	{
-	}
+		: PObject{other}, IDrawable{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
+
 	PActor(PActor&& other) noexcept
-		: PObject{ std::move(other) }, IDrawable{ std::move(other) },
-		  mPosition{ std::move(other.mPosition) }, mSize{ std::move(other.mSize) }
-	{
-	}
+		: PObject{std::move(other)}, IDrawable{std::move(other)},
+		  mPosition{std::move(other.mPosition)}, mSize{std::move(other.mSize)} {}
+
 	PActor& operator=(const PActor& other)
 	{
 		if (this == &other)
@@ -61,9 +61,10 @@ public:
 		PObject::operator=(other);
 		IDrawable::operator=(other);
 		mPosition = other.mPosition;
-		mSize = other.mSize;
+		mSize     = other.mSize;
 		return *this;
 	}
+
 	PActor& operator=(PActor&& other) noexcept
 	{
 		if (this == &other)
@@ -71,18 +72,24 @@ public:
 		PObject::operator=(std::move(other));
 		IDrawable::operator=(std::move(other));
 		mPosition = std::move(other.mPosition);
-		mSize = std::move(other.mSize);
+		mSize     = std::move(other.mSize);
 		return *this;
 	}
 
-	void Start() override {}
-	void End() override {}
+	bool Draw(const PRenderer* Renderer) const override
+	{
+		return true;
+	}
 
-	void Tick(float DeltaTime) override {}
-	bool Draw(const PRenderer* Renderer) const override { return true; }
+	PActor* GetParent() const
+	{
+		return mParent;
+	}
 
-	PActor* GetParent() const { return mParent; }
-	void	SetParent(PActor* Parent) { mParent = Parent; }
+	void SetParent(PActor* Parent)
+	{
+		mParent = Parent;
+	}
 
 	void AddChild(PActor* Child)
 	{
@@ -93,6 +100,7 @@ public:
 		Child->SetParent(this);
 		Containers::Add(mChildren, Child);
 	}
+
 	void RemoveChild(PActor* Child)
 	{
 		if (Containers::Contains(mChildren, Child))
@@ -100,20 +108,40 @@ public:
 			Containers::Remove(mChildren, Child);
 		}
 	}
-	std::vector<PActor*> GetChildren() const { return mChildren; }
 
-	void					 AddComponent(PComponent* Component);
-	std::vector<PComponent*> GetComponents() const { return mComponents; }
+	std::vector<PActor*> GetChildren() const
+	{
+		return mChildren;
+	}
 
-	virtual FRect GetLocalBounds() const { return FRect(); }
+	void AddComponent(PComponent* Component);
+
+	std::vector<PComponent*> GetComponents() const
+	{
+		return mComponents;
+	}
+
+	virtual FRect GetLocalBounds() const
+	{
+		return FRect();
+	}
+
 	virtual FRect GetWorldBounds() const
 	{
 		auto Local = GetLocalBounds();
-		return { mPosition.X, mPosition.Y, Local.W, Local.H };
+		return {mPosition.X, mPosition.Y, Local.W, Local.H};
 	}
-	virtual bool IsMouseOver() const { return mMouseOver; }
 
-	virtual FVector2 GetPosition() const { return mPosition; }
+	virtual bool IsMouseOver() const
+	{
+		return mMouseOver;
+	}
+
+	virtual FVector2 GetPosition() const
+	{
+		return mPosition;
+	}
+
 	virtual FVector2 GetWorldPosition() const
 	{
 		if (mParent)
@@ -122,7 +150,12 @@ public:
 		}
 		return mPosition;
 	}
-	void SetPosition(const FVector2& Position) { mPosition = Position; }
+
+	void SetPosition(const FVector2& Position)
+	{
+		mPosition = Position;
+	}
+
 	void AddPosition(const FVector2& Position)
 	{
 		mPosition.X += Position.X;
@@ -132,11 +165,15 @@ public:
 	FVector2 GetCenter() const
 	{
 		auto Bounds = GetWorldBounds();
-		return { Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f) };
+		return {Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f)};
 	}
 
-	void		 MoveToTile(int32_t X, int32_t Y);
-	virtual bool IsBlocking() const { return mBlocking; }
+	void MoveToTile(int32_t X, int32_t Y);
+
+	virtual bool IsBlocking() const
+	{
+		return mBlocking;
+	}
 
 	JSON Serialize() const override;
 
@@ -148,7 +185,18 @@ public:
 
 	// Mouse events
 
-	virtual void OnHoverBegin() { LogInfo("HoverBegin {}", GetInternalName().c_str()); }
-	virtual void OnHoverEnd() { LogInfo("HoverEnd {}", GetInternalName().c_str()); }
-	virtual void OnClicked() { LogInfo("Clicked {}", GetInternalName().c_str()); }
+	virtual void OnHoverBegin()
+	{
+		LogInfo("HoverBegin {}", GetInternalName().c_str());
+	}
+
+	virtual void OnHoverEnd()
+	{
+		LogInfo("HoverEnd {}", GetInternalName().c_str());
+	}
+
+	virtual void OnClicked()
+	{
+		LogInfo("Clicked {}", GetInternalName().c_str());
+	}
 };

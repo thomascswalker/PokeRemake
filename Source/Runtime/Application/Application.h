@@ -104,7 +104,6 @@ public:
 
 	void SetInputContext(const SInputContext& Context)
 	{
-		LogDebug("Setting input context to {}", Context.Name.c_str());
 		mInputContext = Context;
 	}
 };

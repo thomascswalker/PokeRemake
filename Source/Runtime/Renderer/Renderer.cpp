@@ -104,25 +104,24 @@ bool PRenderer::Render() const
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
 	{
-		for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
+		// Main draw
+		for (auto Priority : gDrawPriorities)
 		{
-			VALIDATE(Drawable->Draw(this));
-		}
-		for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
-		{
-			VALIDATE(Drawable->Draw(this));
+			for (const IDrawable* Drawable : World->GetDrawables(Priority))
+			{
+				VALIDATE(Drawable->Draw(this));
+			}
 		}
 
+		// Debug draw
 		if (DebugDraw)
 		{
-			for (const IDrawable* Drawable : World->GetDrawables(DP_BACKGROUND))
+			for (auto Priority : gDrawPriorities)
 			{
-				VALIDATE(Drawable->DebugDraw(this));
-			}
-
-			for (const IDrawable* Drawable : World->GetDrawables(DP_FOREGROUND))
-			{
-				VALIDATE(Drawable->DebugDraw(this));
+				for (const IDrawable* Drawable : World->GetDrawables(Priority))
+				{
+					VALIDATE(Drawable->DebugDraw(this));
+				}
 			}
 		}
 
@@ -467,8 +466,8 @@ void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 		return;
 	}
 
-	const float SourceOffset = Index * SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
-	const FRect Source       = {SourceOffset, 0, SPRITE_WIDTH, SPRITE_WIDTH};
+	const float SourceOffset = Index * DEFAULT_SPRITE_WIDTH; // Assuming each sprite is 16x16 pixels
+	const FRect Source       = {SourceOffset, 0, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_WIDTH};
 	DrawTextureAt(Texture, Source, Dest);
 }
 
