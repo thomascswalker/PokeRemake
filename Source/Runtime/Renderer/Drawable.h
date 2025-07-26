@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Renderer/Renderer.h"
-
 enum EDrawPriority
 {
 	DP_FOREGROUND,

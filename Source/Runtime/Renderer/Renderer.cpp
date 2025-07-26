@@ -9,7 +9,6 @@
 #include "Engine/Game.h"
 #include "Engine/Texture.h"
 #include "Engine/World.h"
-#include "Interface/Layout.h"
 
 std::string gDefaultFont = FONT_NAME; // Default font name
 static PFont gCurrentFont;

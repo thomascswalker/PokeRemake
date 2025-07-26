@@ -6,10 +6,12 @@
 class PDialogBox : public PBox
 {
     PText mText;
+    PTexture* mTexture;
 
 public:
     PDialogBox(const std::string& Text = "") : mText(Text, 36.0f, PColor::Black)
     {
+        Padding = {0};
         SetFixedHeight(100);
         SetResizeModeH(RM_Fixed);
         PWidget::AddChild(&mText);
@@ -17,13 +19,10 @@ public:
 
     void Draw(const PRenderer* Renderer) const override
     {
+        PTexture* Tex  = PTextureManager::Get("DialogBox");
         FRect Geometry = GetGeometry();
-        Renderer->SetDrawColor(PColor::White);
-        Renderer->DrawFillRect(Geometry);
-        Renderer->SetDrawColor(PColor::Black);
-        Renderer->DrawRect(Geometry.Shrunk(4), 4.0f);
-
-        mText.Draw(Renderer);
+        Renderer->DrawTexture(Tex, Tex->GetRect(), Geometry);
+        // mText.Draw(Renderer);
     }
 
     void SetText(const std::string& Text)
