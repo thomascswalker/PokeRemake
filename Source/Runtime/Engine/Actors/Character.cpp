@@ -8,21 +8,7 @@
 
 PCharacter::PCharacter()
 {
-	mRenderPriority = DP_FOREGROUND;
-
-	mSprite = PSprite();
-	mSprite.SetTexture(PTextureManager::Get(TEXTURE_GARY));
-	mSprite.AddAnimation("WalkRight", { SI_WalkRight, SI_IdleRight });
-	mSprite.AddAnimation("WalkLeft", { SI_WalkLeft, SI_IdleLeft });
-	mSprite.AddAnimation("WalkUp", { SI_WalkUpA, SI_WalkUpB });
-	mSprite.AddAnimation("WalkDown", { SI_WalkDownA, SI_WalkDownB });
-	mSprite.AddAnimation("IdleRight", { SI_IdleRight });
-	mSprite.AddAnimation("IdleLeft", { SI_IdleLeft });
-	mSprite.AddAnimation("IdleUp", { SI_IdleUp });
-	mSprite.AddAnimation("IdleDown", { SI_IdleDown });
-
-	// Default to idle down animation
-	mSprite.SetCurrentAnimation("IdleDown");
+	mDrawPriority = DP_FOREGROUND;
 
 	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
@@ -31,93 +17,98 @@ PCharacter::PCharacter()
 		mMovementComponent->MovementEnded.AddRaw(this, &PCharacter::OnMovementEnded);
 		mMovementComponent->MovementDirectionChanged.AddRaw(this, &PCharacter::OnMovementEnded);
 	}
-}
 
-void PCharacter::Tick(float DeltaTime)
-{
-	PActor::Tick(DeltaTime);
-	mSprite.Tick(DeltaTime);
-}
-
-bool PCharacter::Draw(const PRenderer* Renderer) const
-{
-	int32_t Index = 0;
-	if (auto CurrentAnim = mSprite.GetCurrentAnimation())
+	mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
+	if (mSpriteComponent)
 	{
-		Index = CurrentAnim->GetCurrentIndex();
-	}
+		mSpriteComponent->SetYOffset(CHARACTER_OFFSET);
 
-	auto Bounds = GetWorldBounds();
-	Bounds.Y -= CHARACTER_OFFSET;
-	Renderer->DrawSpriteAt(mSprite.GetTexture(), Bounds, Index);
-	return true;
+		auto Sprite = mSpriteComponent->GetSprite();
+
+		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
+		Sprite->AddAnimation("WalkRight", {SI_WalkRight, SI_IdleRight});
+		Sprite->AddAnimation("WalkLeft", {SI_WalkLeft, SI_IdleLeft});
+		Sprite->AddAnimation("WalkUp", {SI_WalkUpA, SI_WalkUpB});
+		Sprite->AddAnimation("WalkDown", {SI_WalkDownA, SI_WalkDownB});
+		Sprite->AddAnimation("IdleRight", {SI_IdleRight});
+		Sprite->AddAnimation("IdleLeft", {SI_IdleLeft});
+		Sprite->AddAnimation("IdleUp", {SI_IdleUp});
+		Sprite->AddAnimation("IdleDown", {SI_IdleDown});
+
+		// Default to idle down animation
+		Sprite->SetCurrentAnimation("IdleDown");
+	}
 }
 
 FRect PCharacter::GetLocalBounds() const
 {
-	return { 0, 0, BLOCK_SIZE, BLOCK_SIZE };
+	return FRect::Block();
 }
 
 FRect PCharacter::GetWorldBounds() const
 {
-	auto WorldPosition = GetWorldPosition();
-	return { WorldPosition.X, WorldPosition.Y, BLOCK_SIZE, BLOCK_SIZE };
+	return {GetWorldPosition(), FVector2::Block()};
 }
 
 void PCharacter::OnMovementStarted(EOrientation Direction)
 {
 	switch (Direction)
 	{
-		case OR_East:
-			{
-				mSprite.SetCurrentAnimation("WalkRight");
-				break;
-			}
-		case OR_West:
-			{
-				mSprite.SetCurrentAnimation("WalkLeft");
-				break;
-			}
-		case OR_North:
-			{
-				mSprite.SetCurrentAnimation("WalkUp");
-				break;
-			}
-		case OR_South:
-			{
-				mSprite.SetCurrentAnimation("WalkDown");
-				break;
-			}
-		default:
+	case OR_East:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkRight");
 			break;
+		}
+	case OR_West:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkLeft");
+			break;
+		}
+	case OR_North:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkUp");
+			break;
+		}
+	case OR_South:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkDown");
+			break;
+		}
+	default:
+		{
+			break;
+		}
 	}
 }
+
 void PCharacter::OnMovementEnded(EOrientation Direction)
 {
 	switch (Direction)
 	{
-		case OR_East:
-			{
-				mSprite.SetCurrentAnimation("IdleRight");
-				break;
-			}
-		case OR_West:
-			{
-				mSprite.SetCurrentAnimation("IdleLeft");
-				break;
-			}
-		case OR_North:
-			{
-				mSprite.SetCurrentAnimation("IdleUp");
-				break;
-			}
-		case OR_South:
-			{
-				mSprite.SetCurrentAnimation("IdleDown");
-				break;
-			}
-		default:
+	case OR_East:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleRight");
 			break;
+		}
+	case OR_West:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleLeft");
+			break;
+		}
+	case OR_North:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleUp");
+			break;
+		}
+	case OR_South:
+		{
+			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleDown");
+			break;
+		}
+	default:
+		{
+			break;
+		}
 	}
 
 	// Collision

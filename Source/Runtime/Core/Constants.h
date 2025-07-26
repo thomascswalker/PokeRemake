@@ -6,13 +6,15 @@
 
 constexpr float EPSILON = 0.000000000001f;
 
-constexpr int SPRITE_WIDTH = 16;
+constexpr int DEFAULT_SPRITE_WIDTH = 16;
 
-constexpr float RENDER_SCALE = 1.0f;
-constexpr float TILE_SIZE    = 50.0f;
-constexpr float BLOCK_SIZE   = TILE_SIZE * 2.0f;
-constexpr int TILE_ROWS      = 10;
-constexpr int TILE_COLUMNS   = 9;
+constexpr float RENDER_SCALE    = 1.0f;
+constexpr float TILE_SIZE       = 50.0f;
+constexpr float BLOCK_SIZE      = TILE_SIZE * 2.0f;
+constexpr float TILE_ITEM_SIZE  = 8.0f;
+constexpr float BLOCK_ITEM_SIZE = TILE_ITEM_SIZE * 2.0f;
+constexpr int TILE_ROWS         = 10;
+constexpr int TILE_COLUMNS      = 9;
 
 constexpr auto WINDOW_TITLE           = "PokeRemake";
 constexpr auto WINDOW_TITLE_EDITOR    = "PokeRemake Editor";

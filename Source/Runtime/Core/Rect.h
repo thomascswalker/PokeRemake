@@ -144,4 +144,9 @@ public:
 	{
 		return {Position.X * 8.0f, Position.Y * 8.0f, 16, 16};
 	}
+
+	static TRect SpriteItem(const FVector2& Position)
+	{
+		return {Position.X * 16.0f, Position.Y * 16.0f, 16, 16};
+	}
 };

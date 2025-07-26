@@ -79,6 +79,8 @@ set(SOURCES
         Renderer/Renderer.cpp
         Interface/Game/GameHUD.cpp
         Interface/Game/DialogBox.h
+        Engine/Components/SpriteComponent.cpp
+        Engine/Components/SpriteComponent.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

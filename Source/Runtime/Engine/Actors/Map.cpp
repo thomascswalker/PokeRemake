@@ -235,7 +235,7 @@ JSON PMap::Serialize() const
 void PMap::Deserialize(const JSON& JsonData)
 {
 	PActor::Deserialize(JsonData);
-	mRenderPriority = DP_BACKGROUND;
+	mDrawPriority = DP_BACKGROUND;
 	mBlocking = false;
 
 	LOAD_MEMBER_PROPERTY(JsonData, MapName, std::string);

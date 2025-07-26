@@ -99,7 +99,7 @@ public:
 		return OutActors;
 	}
 
-	std::vector<PActor*> GetDrawables(EDrawPriority Priority) const;
+	std::vector<IDrawable*> GetDrawables(EDrawPriority Priority) const;
 
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)

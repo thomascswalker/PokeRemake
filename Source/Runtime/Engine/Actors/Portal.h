@@ -8,17 +8,15 @@
 
 class PPortal : public PActor
 {
-	std::string	 mTargetMap = "";
-	FVector2	 mTargetPosition = { 0, 0 };
+	std::string mTargetMap      = "";
+	FVector2 mTargetPosition    = {0, 0};
 	EOrientation mExitDirection = OR_South;
-
-	PCollisionComponent* mCollisionComponent = nullptr;
 
 public:
 	PPortal();
-	void  OnOverlapBegin(PActor* Actor) override;
+	void OnOverlapBegin(PActor* Actor) override;
 	FRect GetLocalBounds() const override;
-	bool  DebugDraw(const PRenderer* Renderer) const override;
-	JSON  Serialize() const override;
-	void  Deserialize(const JSON& Data) override;
+	bool DebugDraw(const PRenderer* Renderer) const override;
+	JSON Serialize() const override;
+	void Deserialize(const JSON& Data) override;
 };

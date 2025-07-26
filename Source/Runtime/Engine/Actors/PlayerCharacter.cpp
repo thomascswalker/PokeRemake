@@ -11,12 +11,11 @@
 PPlayerCharacter::PPlayerCharacter()
 {
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
-	mSprite.SetTexture(PTextureManager::Get(TEXTURE_ASH));
+	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
 {
-	PCharacter::Tick(DeltaTime);
 	if (!mMovementComponent->IsMoving() && mInputState.any())
 	{
 		if (mInputState[0])
@@ -158,14 +157,9 @@ void PPlayerCharacter::Interact()
 
 	if (auto Actor = GetWorld()->GetActorAtPosition(TargetPosition))
 	{
-		LogDebug("Actor at {}: {}", TargetPosition.ToString().c_str(), Actor->GetInternalName().c_str());
 		if (auto Interactable = dynamic_cast<IInteractable*>(Actor))
 		{
 			Interactable->Interact(this);
 		}
-	}
-	else
-	{
-		LogDebug("No actor at {}.", TargetPosition.ToString().c_str());
 	}
 }
