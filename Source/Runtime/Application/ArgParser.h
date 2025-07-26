@@ -12,8 +12,8 @@ namespace ArgParser
 	struct TArguments
 	{
 		SDL_WindowFlags WindowFlags;
-		std::string		GPUMode;
-		bool			IsEditor = false;
+		std::string GPUMode;
+		bool IsEditor = false;
 	};
 
 	inline TArguments Parse(int argc, char** argv)
@@ -38,15 +38,9 @@ namespace ArgParser
 		}
 
 		TArguments Args{};
-		Args.GPUMode = DEFAULT_GPU_MODE;
 
-		for (const auto& [Key, Value] : RawArgs)
+		for (const auto& Key : RawArgs | std::views::keys)
 		{
-			LogDebug("Parsing argument: {}={}", Key, Value);
-			if (Key == "r")
-			{
-				Args.GPUMode = Value;
-			}
 			if (Key == "e")
 			{
 				Args.IsEditor = true;

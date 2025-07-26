@@ -74,7 +74,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
 	}
-	SDL_SetWindowResizable(mContext->Window, true);
+	// SDL_SetWindowResizable(mContext->Window, true);
 
 	// Construct the game engine
 	mEngine = std::make_unique<PEngine>();

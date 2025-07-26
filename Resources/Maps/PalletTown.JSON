@@ -65,6 +65,14 @@
                 1100.0,
                 500.0
             ]
+        },
+        {
+            "Class": "PSignPost",
+            "InternalName": "PSignPost_657",
+            "Position": [
+                1300.0,
+                1300.0
+            ]
         }
     ],
     "Class": "PMap",
@@ -4342,11 +4350,11 @@
             "Tileset": "Tileset1"
         },
         {
-            "Index": 70,
+            "Index": 0,
             "Tileset": "Tileset1"
         },
         {
-            "Index": 71,
+            "Index": 0,
             "Tileset": "Tileset1"
         },
         {
@@ -4502,11 +4510,11 @@
             "Tileset": "Tileset1"
         },
         {
-            "Index": 86,
+            "Index": 0,
             "Tileset": "Tileset1"
         },
         {
-            "Index": 87,
+            "Index": 0,
             "Tileset": "Tileset1"
         },
         {
