@@ -104,6 +104,10 @@ public:
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 	{
+		if (T* ExistingComponent = Owner->GetComponent<T>())
+		{
+			return ExistingComponent;
+		}
 		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Owner->AddComponent(Component.get());
 		mComponents.push_back(Component);

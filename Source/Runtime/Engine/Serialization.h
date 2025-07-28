@@ -4,6 +4,7 @@
 
 namespace Serialization
 {
-	JSON	Serialize(const PObject* Object);
-	PActor* Deserialize(const JSON& JsonData);
+	JSON Serialize(const PObject* Object);
+	PActor* DeserializeActor(const JSON& Data);
+	PComponent* DeserializeComponent(const JSON& Data, PActor* Owner);
 }; // namespace Serialization

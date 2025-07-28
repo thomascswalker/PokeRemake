@@ -39,7 +39,7 @@ set(SOURCES
         Engine/Actors/PlayerCharacter.cpp
         Engine/Actors/Portal.cpp
         Engine/Actors/Selectable.h
-        Engine/Actors/Game/SignPost.cpp
+        Engine/Actors/SceneryActor.cpp
         Engine/CameraView.h
         Engine/Components/CameraComponent.cpp
         Engine/Components/CharacterMovementComponent.cpp

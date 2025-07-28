@@ -1,0 +1,342 @@
+{
+  "Children": [
+    {
+      "Class": "PSceneryActor",
+      "Components": [
+        {
+          "Class": "PSpriteComponent",
+          "InternalName": "PSpriteComponent_648",
+          "Sprite": {
+            "Animations": [
+              {
+                "Indexes": [
+                  35
+                ],
+                "Name": "SignPost"
+              }
+            ],
+            "Class": "PSprite",
+            "InternalName": "PSprite_650",
+            "Size": 16.0,
+            "Width": 8,
+            "Texture": "Tileset1"
+          },
+          "YOffset": 0.0
+        }
+      ],
+      "InternalName": "PSceneryActor_649",
+      "Position": [
+        100.0,
+        100.0
+      ],
+      "Type": 3131961357
+    },
+    {
+      "Class": "PPortal",
+      "Components": [
+        {
+          "Class": "PCollisionComponent",
+          "InternalName": "PCollisionComponent_651"
+        }
+      ],
+      "ExitDirection": 1,
+      "InternalName": "PPortal_652",
+      "Position": [
+        0.0,
+        100.0
+      ],
+      "TargetMap": "",
+      "TargetPosition": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "Class": "PPortal",
+      "Components": [
+        {
+          "Class": "PCollisionComponent",
+          "InternalName": "PCollisionComponent_653"
+        }
+      ],
+      "ExitDirection": 1,
+      "InternalName": "PPortal_654",
+      "Position": [
+        0.0,
+        200.0
+      ],
+      "TargetMap": "",
+      "TargetPosition": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "Class": "PMap",
+  "InternalName": "PMap_647",
+  "MapName": "NewMap",
+  "Position": [
+    0.0,
+    0.0
+  ],
+  "SizeX": 8,
+  "SizeY": 8,
+  "Tiles": [
+    {
+      "Index": 5,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 6,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 42,
+      "Tileset": "Tileset2"
+    },
+    {
+      "Index": 43,
+      "Tileset": "Tileset2"
+    },
+    {
+      "Index": 45,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 46,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 21,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 22,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 58,
+      "Tileset": "Tileset2"
+    },
+    {
+      "Index": 59,
+      "Tileset": "Tileset2"
+    },
+    {
+      "Index": 61,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 62,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    },
+    {
+      "Index": 0,
+      "Tileset": "Tileset1"
+    }
+  ]
+}

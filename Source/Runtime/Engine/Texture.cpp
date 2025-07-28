@@ -18,9 +18,7 @@ uint32_t gNextTextureID = 0;
 
 PTexture::PTexture()
 	: mID(gNextTextureID++), mWidth(0), mHeight(0), mChannels(0), mData(nullptr),
-	  mSDLTexture(nullptr)
-{
-}
+	  mSDLTexture(nullptr) {}
 
 PTexture::~PTexture() {}
 
@@ -35,9 +33,9 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	}
 	LogDebug("Loading texture: {}", AbsFileName.c_str());
 
-	int	  Width, Height, Channels;
-	int	  DesiredChannelCount = 4;
-	void* Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
+	int Width, Height, Channels;
+	int DesiredChannelCount = 4;
+	void* Data              = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
 
 	if (!Data)
 	{
@@ -66,11 +64,11 @@ void PTextureManager::LoadAllTextures()
 
 bool PTextureManager::LoadSDL(PTexture* Texture)
 {
-	const auto Renderer = GetRenderer()->GetSDLRenderer();
-	const auto Width = Texture->GetWidth();
-	const auto Height = Texture->GetHeight();
+	const auto Renderer   = GetRenderer()->GetSDLRenderer();
+	const auto Width      = Texture->GetWidth();
+	const auto Height     = Texture->GetHeight();
 	const auto SDLTexture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
-											  SDL_TEXTUREACCESS_STATIC, Width, Height);
+	                                          SDL_TEXTUREACCESS_STATIC, Width, Height);
 
 	if (!SDLTexture)
 	{
@@ -100,21 +98,29 @@ void PTextureManager::UnloadSDL()
 
 PTexture* PTextureManager::Get(const std::string& Name)
 {
-	for (auto K : GetTextures() | std::views::keys)
+	for (auto Key : GetTextures() | std::views::keys)
 	{
-		if (K == Name)
+		if (Key == Name)
 		{
 			return sTextures.at(Name).get();
 		}
 	}
+	for (auto& Value : GetTextures() | std::views::values)
+	{
+		if (Value->GetName() == Name)
+		{
+			return Value.get();
+		}
+	}
+	LogWarning("Texture {} not found.", Name.c_str());
 	return nullptr;
 }
 
 PTexture* PTextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
 {
-	PTexture   Tex;
+	PTexture Tex;
 	const auto DataSize = Width * Height * Channels;
-	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
+	Tex.mData           = static_cast<uint8_t*>(malloc(DataSize));
 	LogDebug("Copying texture data into new texture {}", FileName.c_str());
 	memcpy(Tex.mData, Data, DataSize);
 
@@ -124,9 +130,11 @@ PTexture* PTextureManager::Create(const std::string& FileName, float Width, floa
 		return nullptr;
 	}
 
-	Tex.mName = FileName;
-	Tex.mWidth = Width;
-	Tex.mHeight = Height;
+	auto BaseName = Files::SplitExt(FileName);
+	Tex.mName     = BaseName;
+	Tex.mPath     = Files::DirName(FileName);
+	Tex.mWidth    = Width;
+	Tex.mHeight   = Height;
 	Tex.mChannels = Channels;
 
 	if (!LoadSDL(&Tex))
@@ -134,7 +142,6 @@ PTexture* PTextureManager::Create(const std::string& FileName, float Width, floa
 		return nullptr;
 	}
 	free(Data);
-	auto BaseName = std::filesystem::path(FileName).stem().string();
 	sTextures[BaseName] = std::make_shared<PTexture>(Tex);
 	return sTextures[BaseName].get();
 }

@@ -7,14 +7,18 @@ class PObject
 {
 protected:
 	std::string mInternalName;
-	bool		mSerializable = true;
+	bool mSerializable = true;
 
 public:
-	PObject() = default;
+	PObject()          = default;
 	virtual ~PObject() = default;
 
 	// Called before the game begins
-	virtual bool PreStart() { return true; }
+	virtual bool PreStart()
+	{
+		return true;
+	}
+
 	// Called when the game begins
 	virtual void Start() {}
 	// Called when the game ends
@@ -24,20 +28,42 @@ public:
 	virtual void Tick(float DeltaTime) {};
 
 	std::string GetClassName() const;
-	std::string GetInternalName() const { return mInternalName; }
-	void		SetInternalName(const std::string& Name) { mInternalName = Name; }
-	void		GenerateInternalName();
+
+	std::string GetInternalName() const
+	{
+		return mInternalName;
+	}
+
+	void SetInternalName(const std::string& Name)
+	{
+		mInternalName = Name;
+	}
+
+	void GenerateInternalName();
 
 	virtual JSON Serialize() const
 	{
 		JSON Result;
-		SAVE_MEMBER_PROPERTY(Result, InternalName);
+		Result["Class"] = GetClassName();
+		SAVE_MEMBER_PROPERTY(InternalName);
 		return Result;
 	}
+
 	virtual void Deserialize(const JSON& Data)
 	{
-		LogDebug("Deserializing {}", GetClassName().c_str());
-		LOAD_MEMBER_PROPERTY(Data, InternalName, std::string);
+		if (Data.contains("InternalName"))
+		{
+			mInternalName = Data["InternalName"].get<std::string>();
+		}
+		else
+		{
+			GenerateInternalName();
+		}
+		LogDebug("Deserializing {}: {}", GetClassName().c_str(), mInternalName.c_str());
 	}
-	bool IsSerializable() const { return mSerializable; }
+
+	bool IsSerializable() const
+	{
+		return mSerializable;
+	}
 };

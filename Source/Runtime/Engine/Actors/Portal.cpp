@@ -4,7 +4,7 @@
 
 PPortal::PPortal()
 {
-	mBlocking = false;
+	mBlocking           = false;
 	mCollisionComponent = ConstructComponent<PCollisionComponent>(this);
 	if (mCollisionComponent)
 	{
@@ -28,7 +28,7 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Invalid parent.");
 				return;
 			}
-			auto Map = static_cast<PMap*>(mParent);
+			auto Map = dynamic_cast<PMap*>(mParent);
 			if (!Map)
 			{
 				LogWarning("Parent is not map");
@@ -41,7 +41,7 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 
 FRect PPortal::GetLocalBounds() const
 {
-	return { 0, 0, BLOCK_SIZE, BLOCK_SIZE };
+	return {0, 0, BLOCK_SIZE, BLOCK_SIZE};
 }
 
 bool PPortal::DebugDraw(const PRenderer* Renderer) const
@@ -55,9 +55,9 @@ bool PPortal::DebugDraw(const PRenderer* Renderer) const
 JSON PPortal::Serialize() const
 {
 	JSON Result = PActor::Serialize();
-	SAVE_MEMBER_PROPERTY(Result, TargetMap);
-	SAVE_MEMBER_PROPERTY(Result, ExitDirection);
-	Result["TargetPosition"] = { mTargetPosition.X, mTargetPosition.Y };
+	SAVE_MEMBER_PROPERTY(TargetMap);
+	SAVE_MEMBER_PROPERTY(ExitDirection);
+	Result["TargetPosition"] = {mTargetPosition.X, mTargetPosition.Y};
 	return Result;
 }
 
@@ -66,6 +66,6 @@ void PPortal::Deserialize(const JSON& Data)
 	PActor::Deserialize(Data);
 	mTargetPosition.X = Data.at("TargetPosition")[0].get<float>();
 	mTargetPosition.Y = Data.at("TargetPosition")[1].get<float>();
-	LOAD_MEMBER_PROPERTY(Data, TargetMap, std::string);
-	LOAD_MEMBER_PROPERTY(Data, ExitDirection, EOrientation);
+	LOAD_MEMBER_PROPERTY(TargetMap, std::string);
+	LOAD_MEMBER_PROPERTY(ExitDirection, EOrientation);
 }

@@ -2,7 +2,7 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
-#include "Actors/Game/SignPost.h"
+#include "Actors/SceneryActor.h"
 
 #include "World.h"
 
@@ -16,27 +16,43 @@ JSON Serialization::Serialize(const PObject* Object)
 	return Object->Serialize();
 }
 
-PActor* Serialization::Deserialize(const JSON& JsonData)
+PActor* Serialization::DeserializeActor(const JSON& Data)
 {
-	if (JsonData.is_null())
+	if (Data.is_null())
 	{
 		return nullptr; // Skip null objects
 	}
 
-	auto ClassName = JsonData.at("Class").get<std::string>();
-	if (ClassName == "PMap")
+	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str());
+	BEGIN_CONSTRUCT_ACTOR;
+
+	CONSTRUCT_EACH_ACTOR(
+		Map,
+		Portal,
+		SceneryActor
+	);
+
+	LogWarning("Deserialization of Actor {} not supported.", ClassName.c_str());
+	return nullptr;
+}
+
+PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
+{
+	if (Data.is_null())
 	{
-		return SpawnActor<PMap>(JsonData);
-	}
-	if (ClassName == "PPortal")
-	{
-		return SpawnActor<PPortal>(JsonData);
-	}
-	if (ClassName == "PSignPost")
-	{
-		return SpawnActor<PSignPost>(JsonData);
+		return nullptr; // Skip null objects
 	}
 
-	LogWarning("Deserialization of actor {} not supported.", ClassName.c_str());
+	LogDebug("Deserializing Component: {}", Data.at("Class").get<std::string>().c_str());
+	BEGIN_CONSTRUCT_COMPONENT;
+
+	CONSTRUCT_EACH_COMPONENT(
+		SpriteComponent,
+		CameraComponent,
+		CharacterMovementComponent,
+		CollisionComponent
+	);
+
+	LogWarning("Deserialization of Component {} not supported.", ClassName.c_str());
 	return nullptr;
 }

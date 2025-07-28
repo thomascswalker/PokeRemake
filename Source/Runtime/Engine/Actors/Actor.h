@@ -20,6 +20,7 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 struct SActorItem
 {
 	std::string Name;
+	JSON Data;
 };
 
 class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
@@ -116,6 +117,25 @@ public:
 
 	void AddComponent(PComponent* Component);
 
+	template <typename T>
+	T* GetComponent()
+	{
+		for (auto Component : mComponents)
+		{
+			if (Component)
+			{
+				return dynamic_cast<T*>(Component);
+			}
+		}
+		return nullptr;
+	}
+
+	template <typename T>
+	bool HasComponent()
+	{
+		return GetComponent<T>() != nullptr;
+	}
+
 	std::vector<PComponent*> GetComponents() const
 	{
 		return mComponents;
@@ -176,7 +196,6 @@ public:
 	}
 
 	JSON Serialize() const override;
-
 	void Deserialize(const JSON& Data) override;
 
 	// Overlap
@@ -200,3 +219,12 @@ public:
 		LogInfo("Clicked {}", GetInternalName().c_str());
 	}
 };
+
+#define BEGIN_CONSTRUCT_ACTOR \
+auto ClassName   = Data.at("Class").get<std::string>();
+#define CONSTRUCT_ACTOR(Class) if (ClassName == PREPEND(P, Class)) { if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) {NewActor->Deserialize(Data); return NewActor;} }
+
+#define CONSTRUCT_EACH_ACTOR(...) FOR_EACH(CONSTRUCT_ACTOR, __VA_ARGS__)
+
+#define MAP_COMPONENT(Component) \
+	m##Component = GetComponent<PCLASS(Component)>()

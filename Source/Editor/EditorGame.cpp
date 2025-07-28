@@ -2,18 +2,18 @@
 
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
+#include "EditorView.h"
 #include "Engine/Actors/Portal.h"
+#include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
 #include "Engine/Serialization.h"
-#include "Interface/HUD.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
+#include "Interface/HUD.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
-#include "EditorView.h"
-#include "../Runtime/Engine/Actors/Game/SignPost.h"
 
 static PPanel* MainPanel;
 
@@ -26,12 +26,54 @@ static PGroup* TileGroup;
 static PGroup* ActorGroup;
 
 static std::vector<SActorItem> PlaceableActors = {
-	{"Portal"},
-	{"SignPost"},
-	{"Hill (South)"},
-	{"Hill (West)"},
-	{"Hill (East)"},
-	{"Water"},
+	{
+		"Portal", {},
+	},
+	{
+		"SignPost",
+		{
+			{"Type", ST_SignPost},
+			{
+				"Components",
+				{
+					{
+						{"Class", "PSpriteComponent"},
+						{
+							"Sprite",
+							{
+								{"Texture", TILESET_1},
+								{"Width", 8},
+								{
+									"Animations",
+									{
+										{
+											{"Name", "SignPost"},
+											{"Indexes", {35}},
+										}
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
+		},
+	},
+	{
+		"Hill (South)", {},
+	},
+	{
+		"Hill (West)", {},
+	},
+	{
+		"Hill (East)",
+		{},
+	},
+	{
+		"Water",
+		{},
+	},
 };
 
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
@@ -352,7 +394,7 @@ void PEditorGame::OnLoadButtonClicked()
 	}
 
 	const JSON JsonData = JSON::parse(Data.data());
-	Serialization::Deserialize(JsonData);
+	Serialization::DeserializeActor(JsonData);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
@@ -434,6 +476,11 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
 	auto Map = GetCurrentMap();
+	if (!Map)
+	{
+		LogError("Current map is null.");
+		return;
+	}
 	if (HasInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
@@ -477,14 +524,11 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			{
 				NewActor = SpawnActor<PPortal>();
 			}
-			else if (mCurrentActorItem->Name == "SignPost")
-			{
-				NewActor = SpawnActor<PSignPost>();
-			}
 			else
 			{
-				LogWarning("Actor placement not implemented for {}", mCurrentActorItem->Name);
-				return;
+				const JSON Json = mCurrentActorItem->Data;
+				LogDebug("Creating new Scenery Actor:\n{}", Json.dump(4));
+				NewActor = SpawnActor<PSceneryActor>(Json);
 			}
 
 			if (NewActor)

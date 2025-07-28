@@ -50,7 +50,7 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 		LogError("Invalid class at root level of map file. Must be 'PMap'.");
 		return nullptr;
 	}
-	Serialization::Deserialize(JsonData);
+	Serialization::DeserializeActor(JsonData);
 
 	return GetMapInWorld(Name);
 }

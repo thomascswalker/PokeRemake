@@ -3,12 +3,13 @@ BasedOnStyle: LLVM
 
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Left
+AlignArrayOfStructures: Right
 AlignConsecutiveDeclarations: true
-AlignEscapedNewlines: Left
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: LeftWithLastLine
 AlignOperands: Align
 AlignTrailingComments: true
-AllowShortBlocksOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Always
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: All
 AlwaysBreakTemplateDeclarations: Yes
