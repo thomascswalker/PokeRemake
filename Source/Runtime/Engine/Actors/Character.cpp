@@ -34,9 +34,6 @@ PCharacter::PCharacter()
 		Sprite->AddAnimation("IdleLeft", {SI_IdleLeft});
 		Sprite->AddAnimation("IdleUp", {SI_IdleUp});
 		Sprite->AddAnimation("IdleDown", {SI_IdleDown});
-
-		// Default to idle down animation
-		Sprite->SetCurrentAnimation("IdleDown");
 	}
 }
 

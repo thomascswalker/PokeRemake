@@ -1,0 +1,21 @@
+{
+  "Class": "PSceneryActor",
+  "Name": "Sign Post",
+  "Type": 1,
+  "Components": [
+    {
+      "Class": "PSpriteComponent",
+      "Sprite": {
+        "Animations": [
+          {
+            "Indexes": [
+              70
+            ],
+            "Name": "SignPost"
+          }
+        ],
+        "Texture": "Tileset1"
+      }
+    }
+  ]
+}

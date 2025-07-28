@@ -151,14 +151,14 @@ public:
 		if (mCurrentAnim && !mCurrentAnim->Indexes.empty())
 		{
 			const auto Index = mCurrentAnim->GetCurrentIndex();
-			const auto X     = Index % mWidth;
-			const auto Y     = (Index / mWidth) / 2; // Always 16px for rows
-			return {X * mSize, Y * mSize, mSize, mSize};
+			const auto X     = Index % static_cast<uint32_t>(BLOCK_ITEM_SIZE);
+			const auto Y     = Index / static_cast<uint32_t>(BLOCK_ITEM_SIZE);
+			return {X * TILE_ITEM_SIZE, Y * TILE_ITEM_SIZE, BLOCK_ITEM_SIZE, BLOCK_ITEM_SIZE};
 		}
 		return FRect();
 	}
 
-	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes)
+	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes, bool LargeIndexing = false)
 	{
 		mAnimations[Name] = PAnimation(Name, Indexes);
 		if (!mCurrentAnim)
@@ -247,7 +247,7 @@ public:
 		mTexture     = PTextureManager::Get(Texture);
 		LogDebug("Loaded texture: {}", mTexture->GetName());
 		LOAD_MEMBER_PROPERTY(Size, float);
-		LOAD_MEMBER_PROPERTY(Width, int32_t);
+		LOAD_MEMBER_PROPERTY(Width, uint32_t);
 
 		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump(4));
 		for (auto& Anim : Data["Animations"])

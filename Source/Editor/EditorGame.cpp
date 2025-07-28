@@ -1,5 +1,7 @@
 #include "EditorGame.h"
 
+#include "ActorManager.h"
+
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
 #include "EditorView.h"
@@ -25,60 +27,11 @@ static std::vector<std::string> EditModeStrings = {
 static PGroup* TileGroup;
 static PGroup* ActorGroup;
 
-static std::vector<SActorItem> PlaceableActors = {
-	{
-		"Portal", {},
-	},
-	{
-		"SignPost",
-		{
-			{"Type", ST_SignPost},
-			{
-				"Components",
-				{
-					{
-						{"Class", "PSpriteComponent"},
-						{
-							"Sprite",
-							{
-								{"Texture", TILESET_1},
-								{"Width", 8},
-								{
-									"Animations",
-									{
-										{
-											{"Name", "SignPost"},
-											{"Indexes", {35}},
-										}
-									}
-								}
-
-							}
-						}
-					}
-				}
-			}
-		},
-	},
-	{
-		"Hill (South)", {},
-	},
-	{
-		"Hill (West)", {},
-	},
-	{
-		"Hill (East)",
-		{},
-	},
-	{
-		"Water",
-		{},
-	},
-};
-
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{"JSON", "JSON"},
 };
+
+std::vector<SActorItem> gPlaceableActors{};
 
 PEditorGame* GetEditorGame()
 {
@@ -93,6 +46,12 @@ bool PEditorGame::PreStart()
 	if (!EditorView)
 	{
 		LogError("Failed to create Editor View");
+	}
+
+	ActorManager::LoadActorDefs();
+	for (auto& [K, V] : ActorManager::GetActorDefs().items())
+	{
+		gPlaceableActors.push_back(SActorItem(K, V));
 	}
 
 	if (!LoadAllTilesets())
@@ -233,18 +192,18 @@ PGridView* PEditorGame::ConstructActorView()
 {
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
 	GridView->Padding   = {5};
-	GridView->SetGridCount(2);
+	GridView->SetGridCount(1);
 
-	for (auto& Item : PlaceableActors)
+	for (auto& ActorItem : gPlaceableActors)
 	{
 		const int ItemSize = 40;
 		// Create the button item
-		auto GridItem = GridView->AddItem<PButton>(Item.Name);
+		auto GridItem = GridView->AddItem<PButton>(ActorItem.Name);
 		auto Button   = GridItem->GetWidget<PButton>();
 		Button->SetResizeMode(RM_Grow, RM_Fixed);
 		Button->SetFixedHeight(ItemSize);
 		Button->SetCheckable(true);
-		Button->SetCustomData(&Item);
+		Button->SetCustomData(&ActorItem);
 		Button->Checked.AddRaw(this, &PEditorGame::OnActorButtonChecked);
 
 		mActorViewButtonGroup->AddButton(Button);

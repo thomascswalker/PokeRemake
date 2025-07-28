@@ -1,0 +1,17 @@
+{
+  "Scenery": [
+    {
+      "Name": "Tree",
+      "Type": 0,
+      "Animations": [
+        {
+          "Indexes": [
+            45
+          ],
+          "Name": "Tree"
+        }
+      ],
+      "Texture": "Tileset1"
+    }
+  ]
+}

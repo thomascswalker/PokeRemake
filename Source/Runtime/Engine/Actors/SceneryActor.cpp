@@ -40,6 +40,6 @@ void PSceneryActor::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PActor);
     LOAD_MEMBER_PROPERTY(Type, ESceneryType);
-    MAP_COMPONENT(SpriteComponent);
+    // MAP_COMPONENT(SpriteComponent);
 }
 
