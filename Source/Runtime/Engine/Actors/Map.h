@@ -25,7 +25,7 @@ struct STile
 	FRect GetDestRect() const;
 };
 
-class PMap : public PActor
+class PMap : public PActor, public IDrawable
 {
 	// The display name of the map
 	std::string mMapName;

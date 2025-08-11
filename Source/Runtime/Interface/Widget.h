@@ -34,10 +34,10 @@ enum EResizeMode
 	RM_Grow,
 };
 
-enum EZDepth
+enum EWidgetDepth
 {
-	ZD_Floating,
-	ZD_Default
+	WD_Floating,
+	WD_Default
 };
 
 template <typename T>
@@ -50,8 +50,10 @@ struct TPadding
 
 	explicit TPadding(T Value)
 		: Left(Value), Bottom(Value), Right(Value), Top(Value) {}
+
 	explicit TPadding(T InLeft, T InBottom, T InRight, T InTop)
 		: Left(InLeft), Bottom(InBottom), Right(InRight), Top(InTop) {}
+
 	TPadding(std::initializer_list<T> Values)
 	{
 		T* P = &Left;
@@ -61,6 +63,7 @@ struct TPadding
 		}
 	}
 };
+
 using FPadding = TPadding<float>;
 
 class PWidget : public PObject, public IInputHandler
@@ -80,18 +83,18 @@ protected:
 	EResizeMode mResizeModeW = RM_Grow;
 	EResizeMode mResizeModeH = RM_Grow;
 
-	FVector2 mFixedSize = { 0.0f, 0.0f };
-	FVector2 mOffset = { 0.0f, 0.0f };
-	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
-	int		 mGridCount = 1;
+	FVector2 mFixedSize = {0.0f, 0.0f};
+	FVector2 mOffset    = {0.0f, 0.0f};
+	FVector2 mMaxSize   = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()};
+	int mGridCount      = 1;
 
 	bool mMouseOver = false;
-	bool mVisible = true;
+	bool mVisible   = true;
 
 	// Floating widgets
 
-	bool	mFloating = false;
-	EZDepth mDepth = ZD_Default;
+	bool mFloating      = false;
+	EWidgetDepth mDepth = WD_Default;
 
 public:
 	float X = 0.0f;
@@ -99,19 +102,24 @@ public:
 	float W = 0.0f;
 	float H = 0.0f;
 
-	FPadding	Padding;
+	FPadding Padding;
 	DHoverBegin HoverBegin;
-	DHoverEnd	HoverEnd;
+	DHoverEnd HoverEnd;
 
 	PWidget()
-		: Padding(5.0f) { GenerateInternalName(); }
+		: Padding(5.0f)
+	{
+		GenerateInternalName();
+	}
+
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;
 
 	// General
 
-	void		 Tick(float DeltaTime) override {}
-	bool		 ProcessEvents(SInputEvent* Event) override;
+	void Tick(float DeltaTime) override {}
+	bool ProcessEvents(SInputEvent* Event) override;
+
 	virtual void OnLayout()
 	{
 		for (auto Child : mChildren)
@@ -120,15 +128,37 @@ public:
 		}
 	}
 
-	PWidget* GetParent() const { return mParent; }
-	void	 SetParent(PWidget* Parent);
+	PWidget* GetParent() const
+	{
+		return mParent;
+	}
 
-	bool GetVisible() const { return mVisible; }
-	void SetVisible(bool State) { mVisible = State; }
-	void ToggleVisible() { SetVisible(!mVisible); }
+	void SetParent(PWidget* Parent);
 
-	bool GetFloating() const { return mFloating; }
-	void SetFloating(bool State) { mFloating = State; }
+	bool GetVisible() const
+	{
+		return mVisible;
+	}
+
+	void SetVisible(bool State)
+	{
+		mVisible = State;
+	}
+
+	void ToggleVisible()
+	{
+		SetVisible(!mVisible);
+	}
+
+	bool GetFloating() const
+	{
+		return mFloating;
+	}
+
+	void SetFloating(bool State)
+	{
+		mFloating = State;
+	}
 
 	// Drawing
 
@@ -159,29 +189,39 @@ public:
 		}
 		return true;
 	}
+
 	virtual void PreDraw(const PRenderer* Renderer) {}
 	virtual void Draw(const PRenderer* Renderer) const {}
 	virtual void PostDraw(const PRenderer* Renderer) {}
 
 	// Children
 
-	virtual void		  AddChild(PWidget* Child);
-	virtual void		  RemoveChild(PWidget* Child);
+	virtual void AddChild(PWidget* Child);
+	virtual void RemoveChild(PWidget* Child);
+
 	std::vector<PWidget*> GetChildren() const
 	{
 		return mChildren;
 	}
-	size_t GetChildCount() const { return mChildren.size(); }
+
+	size_t GetChildCount() const
+	{
+		return mChildren.size();
+	}
 
 	// Layout
 
 	virtual FRect GetGeometry() const
 	{
-		return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) };
+		return FRect{X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y)};
 	}
 
-	FVector2 GetOffset() const { return mOffset; }
-	void	 SetOffset(const FVector2& Offset, bool Propagate = true)
+	FVector2 GetOffset() const
+	{
+		return mOffset;
+	}
+
+	void SetOffset(const FVector2& Offset, bool Propagate = true)
 	{
 		mOffset = Offset;
 		if (!Propagate)
@@ -193,6 +233,7 @@ public:
 			Child->SetOffset(Offset, Propagate);
 		}
 	}
+
 	void SetOffsetX(float Value, bool Propagate = false)
 	{
 		mOffset.X = Value;
@@ -205,6 +246,7 @@ public:
 			Child->SetOffsetX(Value, Propagate);
 		}
 	}
+
 	void SetOffsetY(float Value, bool Propagate = false)
 	{
 		mOffset.Y = Value;
@@ -218,33 +260,101 @@ public:
 		}
 	}
 
-	ELayoutMode GetLayoutMode() const { return mLayoutMode; }
-	void		SetLayoutMode(ELayoutMode LayoutMode) { mLayoutMode = LayoutMode; }
+	ELayoutMode GetLayoutMode() const
+	{
+		return mLayoutMode;
+	}
 
-	EResizeMode GetResizeModeW() const { return mResizeModeW; }
-	EResizeMode GetResizeModeH() const { return mResizeModeH; }
-	void		SetResizeModeW(EResizeMode resizeMode) { mResizeModeW = resizeMode; }
-	void		SetResizeModeH(EResizeMode resizeMode) { mResizeModeH = resizeMode; }
-	void		SetResizeMode(EResizeMode InW, EResizeMode InH)
+	void SetLayoutMode(ELayoutMode LayoutMode)
+	{
+		mLayoutMode = LayoutMode;
+	}
+
+	EResizeMode GetResizeModeW() const
+	{
+		return mResizeModeW;
+	}
+
+	EResizeMode GetResizeModeH() const
+	{
+		return mResizeModeH;
+	}
+
+	void SetResizeModeW(EResizeMode resizeMode)
+	{
+		mResizeModeW = resizeMode;
+	}
+
+	void SetResizeModeH(EResizeMode resizeMode)
+	{
+		mResizeModeH = resizeMode;
+	}
+
+	void SetResizeMode(EResizeMode InW, EResizeMode InH)
 	{
 		mResizeModeW = InW;
 		mResizeModeH = InH;
 	}
 
-	FVector2 GetFixedSize() const { return mFixedSize; }
-	void	 SetFixedSize(const FVector2& Size) { mFixedSize = Size; }
-	void	 SetFixedSize(float Width, float Height) { mFixedSize = FVector2(Width, Height); }
-	void	 SetFixedSize(float Value) { mFixedSize = FVector2(Value, Value); }
-	void	 SetFixedWidth(float W) { mFixedSize.X = W; }
-	void	 SetFixedHeight(float H) { mFixedSize.Y = H; }
+	FVector2 GetFixedSize() const
+	{
+		return mFixedSize;
+	}
 
-	int	 GetGridCount() const { return mGridCount; }
-	void SetGridCount(int Size) { mGridCount = Size; }
+	void SetFixedSize(const FVector2& Size)
+	{
+		mFixedSize = Size;
+	}
 
-	FVector2 GetMaxSize() const { return mMaxSize; }
-	void	 SetMaxSize(const FVector2& MaxSize) { mMaxSize = MaxSize; }
-	void	 SetMaxWidth(float W) { mMaxSize.X = W; }
-	void	 SetMaxHeight(float H) { mMaxSize.Y = H; }
+	void SetFixedSize(float Width, float Height)
+	{
+		mFixedSize = FVector2(Width, Height);
+	}
+
+	void SetFixedSize(float Value)
+	{
+		mFixedSize = FVector2(Value, Value);
+	}
+
+	void SetFixedWidth(float W)
+	{
+		mFixedSize.X = W;
+	}
+
+	void SetFixedHeight(float H)
+	{
+		mFixedSize.Y = H;
+	}
+
+	int GetGridCount() const
+	{
+		return mGridCount;
+	}
+
+	void SetGridCount(int Size)
+	{
+		mGridCount = Size;
+	}
+
+	FVector2 GetMaxSize() const
+	{
+		return mMaxSize;
+	}
+
+	void SetMaxSize(const FVector2& MaxSize)
+	{
+		mMaxSize = MaxSize;
+	}
+
+	void SetMaxWidth(float W)
+	{
+		mMaxSize.X = W;
+	}
+
+	void SetMaxHeight(float H)
+	{
+		mMaxSize.Y = H;
+	}
 
 	// Custom data
 	template <typename T>
@@ -256,7 +366,7 @@ public:
 	template <typename T>
 	void SetCustomData(T* Data)
 	{
-		auto Size = sizeof(T);
+		auto Size   = sizeof(T);
 		mCustomData = std::malloc(Size);
 		std::memcpy(mCustomData, Data, Size);
 	}

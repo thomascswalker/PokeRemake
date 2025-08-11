@@ -42,6 +42,7 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 		}
 
 		JsonData = JSON::parse(Data.data());
+		Expand(&JsonData);
 		sMapData[Name] = JsonData;
 	}
 
@@ -70,7 +71,8 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	return true;
 }
 
-bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition, EOrientation ExitDirection)
+bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
+                            EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
 	PMap* Map = LoadMap(NewMap);

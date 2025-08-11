@@ -11,7 +11,12 @@
 PPlayerCharacter::PPlayerCharacter()
 {
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
+
 	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
+	if (mSpriteComponent)
+	{
+		mSpriteComponent->SetDrawPriority(Z_Player);
+	}
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
@@ -39,8 +44,6 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 bool PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 {
-	PCharacter::DebugDraw(Renderer);
-
 	// Draw current block under the character
 	Renderer->SetDrawColor(255, 0, 0, 50);
 	Renderer->DrawFillRectAt(GetWorldBounds());

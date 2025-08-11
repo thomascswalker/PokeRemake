@@ -6,7 +6,7 @@
 #include "Engine/Components/CollisionComponent.h"
 #include "Engine/World.h"
 
-class PPortal : public PActor
+class PPortal : public PActor, public IDrawable
 {
 	std::string mTargetMap      = "";
 	FVector2 mTargetPosition    = {0, 0};

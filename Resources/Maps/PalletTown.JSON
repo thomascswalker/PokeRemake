@@ -61,128 +61,39 @@
       ]
     },
     {
-      "Class": "PSceneryActor",
-      "Components": [
-        {
-          "Class": "PSpriteComponent",
-          "InternalName": "PSpriteComponent_649",
-          "Sprite": {
-            "Size": 16.0,
-            "IndexSize": 8.0,
-            "Animations": [
-              {
-                "Indexes": [
-                  70
-                ],
-                "Name": "SignPost"
-              }
-            ],
-            "Class": "PSprite",
-            "InternalName": "PSprite_650",
-            "Texture": "Tileset1"
-          },
-          "YOffset": 0.0
-        }
-      ],
-      "InternalName": "PSceneryActor_648",
+      "$Ref": "Tree",
+      "Position": [
+        800.0,
+        900.0
+      ]
+    },
+    {
+      "$Ref": "SignPost",
       "Position": [
         700.0,
         900.0
-      ],
-      "Type": 1
+      ]
     },
     {
-      "Class": "PSceneryActor",
-      "Components": [
-        {
-          "Class": "PSpriteComponent",
-          "InternalName": "PSpriteComponent_654",
-          "Sprite": {
-            "Size": 16.0,
-            "IndexSize": 8.0,
-            "Animations": [
-              {
-                "Indexes": [
-                  70
-                ],
-                "Name": "SignPost"
-              }
-            ],
-            "Class": "PSprite",
-            "InternalName": "PSprite_655",
-            "Texture": "Tileset1"
-          },
-          "YOffset": 0.0
-        }
-      ],
-      "InternalName": "PSceneryActor_653",
+      "$Ref": "SignPost",
       "Position": [
         300.0,
         500.0
-      ],
-      "Type": 1
+      ]
     },
     {
-      "Class": "PSceneryActor",
-      "Components": [
-        {
-          "Class": "PSpriteComponent",
-          "InternalName": "PSpriteComponent_659",
-          "Sprite": {
-            "Size": 16.0,
-            "IndexSize": 8.0,
-            "Animations": [
-              {
-                "Indexes": [
-                  70
-                ],
-                "Name": "SignPost"
-              }
-            ],
-            "Class": "PSprite",
-            "InternalName": "PSprite_660",
-            "Texture": "Tileset1"
-          },
-          "YOffset": 0.0
-        }
-      ],
-      "InternalName": "PSceneryActor_658",
+      "$Ref": "SignPost",
       "Position": [
         1100.0,
         500.0
-      ],
-      "Type": 1
+      ]
     },
     {
-      "Class": "PSceneryActor",
-      "Components": [
-        {
-          "Class": "PSpriteComponent",
-          "InternalName": "PSpriteComponent_664",
-          "Sprite": {
-            "Size": 16.0,
-            "IndexSize": 8.0,
-            "Animations": [
-              {
-                "Indexes": [
-                  70
-                ],
-                "Name": "SignPost"
-              }
-            ],
-            "Class": "PSprite",
-            "InternalName": "PSprite_665",
-            "Texture": "Tileset1"
-          },
-          "YOffset": 0.0
-        }
-      ],
-      "InternalName": "PSceneryActor_663",
+      "$Ref": "SignPost",
       "Position": [
         1300.0,
         1300.0
-      ],
-      "Type": 1
+      ]
     }
   ],
   "Class": "PMap",

@@ -83,6 +83,7 @@ set(SOURCES
         Engine/Components/SpriteComponent.h
         Core/String.h
         Core/Array.h
+        Core/Json.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

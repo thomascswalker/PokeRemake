@@ -6,6 +6,9 @@
     {
       "Class": "PSpriteComponent",
       "Sprite": {
+        "Size": 16.0,
+        "IndexSize": 8.0,
+        "Width": 16,
         "Animations": [
           {
             "Indexes": [

@@ -16,7 +16,6 @@ struct PAnimation
 	{
 		auto PrevIndex = Indexes[CurrentIndex];
 		CurrentIndex   = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
-		LogDebug("Anim {}: {} => {}", Name.c_str(), PrevIndex, Indexes[CurrentIndex]);
 	}
 
 	void Previous()
@@ -73,6 +72,7 @@ class PSprite : public PObject
 	float mSize = 16.0f;
 	// Pixel size of each index within the texture atlas
 	float mIndexSize = 8.0f;
+	int32_t mWidth   = 1;
 
 	std::map<std::string, PAnimation> mAnimations;
 	PAnimation* mCurrentAnim;
@@ -146,6 +146,7 @@ public:
 	void SetTexture(PTexture* InTexture)
 	{
 		mTexture = InTexture;
+		mWidth   = mTexture->GetWidth() / mIndexSize;
 	}
 
 	PTexture* GetTexture() const
@@ -158,8 +159,8 @@ public:
 		if (mCurrentAnim && !mCurrentAnim->Indexes.empty())
 		{
 			const auto Index = mCurrentAnim->GetCurrentIndex();
-			const auto X     = Index % static_cast<uint32_t>(mIndexSize);
-			const auto Y     = Index / static_cast<uint32_t>(mIndexSize);
+			const auto X     = Index % static_cast<uint32_t>(mWidth);
+			const auto Y     = Index / static_cast<uint32_t>(mWidth);
 			return {X * mIndexSize, Y * mIndexSize, mSize, mSize};
 		}
 		return FRect();
@@ -167,7 +168,6 @@ public:
 
 	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes)
 	{
-		LogDebug("Adding animation {} with indexes: {}", Name.c_str(), String::ToString(Indexes).c_str());
 		mAnimations[Name] = PAnimation(Name, Indexes);
 		if (!mCurrentAnim)
 		{
@@ -255,8 +255,9 @@ public:
 		LogDebug("Loaded texture: {}", mTexture->GetName());
 		LOAD_MEMBER_PROPERTY(Size, float);
 		LOAD_MEMBER_PROPERTY(IndexSize, float);
+		LOAD_MEMBER_PROPERTY(Width, int32_t);
 
-		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump(4));
+		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump());
 		for (auto& Anim : Data["Animations"])
 		{
 			std::string Name              = Anim["Name"];

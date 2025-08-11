@@ -5,7 +5,7 @@
 
 #include <bitset>
 
-class PPlayerCharacter : public PCharacter
+class PPlayerCharacter : public PCharacter, public IDrawable
 {
 	PCameraComponent* mCameraComponent = nullptr;
 	std::bitset<4> mInputState; // Left, Right, Down, Up

@@ -5,6 +5,10 @@
 
 using JSON = nlohmann::json;
 
+void ExpandRef(JSON* Json, const std::string& Ref);
+
+void Expand(JSON* Json);
+
 inline void OnPropertyMissing(const JSON& Json, const char* Property)
 {
 	std::vector<std::string> Keys;

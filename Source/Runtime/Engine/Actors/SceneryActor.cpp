@@ -9,6 +9,8 @@ PSceneryActor::PSceneryActor()
     mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
     if (mSpriteComponent)
     {
+        mSpriteComponent->SetDrawPriority(Z_FG);
+
         // Assumes scenery actors use the standard tileset atlases.
         mSpriteComponent->SetSize(16.0f);
         mSpriteComponent->SetIndexSize(8.0f);

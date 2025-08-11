@@ -23,7 +23,7 @@ struct SActorItem
 	JSON Data;
 };
 
-class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
+class PActor : public PObject, public ISelectable, public IInputHandler
 {
 protected:
 	PActor* mParent = nullptr;
@@ -49,10 +49,10 @@ public:
 	PActor() = default;
 
 	PActor(const PActor& other)
-		: PObject{other}, IDrawable{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
+		: PObject{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
 
 	PActor(PActor&& other) noexcept
-		: PObject{std::move(other)}, IDrawable{std::move(other)},
+		: PObject{std::move(other)},
 		  mPosition{std::move(other.mPosition)}, mSize{std::move(other.mSize)} {}
 
 	PActor& operator=(const PActor& other)
@@ -60,7 +60,6 @@ public:
 		if (this == &other)
 			return *this;
 		PObject::operator=(other);
-		IDrawable::operator=(other);
 		mPosition = other.mPosition;
 		mSize     = other.mSize;
 		return *this;
@@ -71,15 +70,9 @@ public:
 		if (this == &other)
 			return *this;
 		PObject::operator=(std::move(other));
-		IDrawable::operator=(std::move(other));
 		mPosition = std::move(other.mPosition);
 		mSize     = std::move(other.mSize);
 		return *this;
-	}
-
-	bool Draw(const PRenderer* Renderer) const override
-	{
-		return true;
 	}
 
 	PActor* GetParent() const

@@ -1,8 +1,8 @@
 #include "SpriteComponent.h"
 
-PSpriteComponent::PSpriteComponent(): mSprite{}
+PSpriteComponent::PSpriteComponent()
 {
-    mDrawPriority = DP_FOREGROUND;
+    mDrawPriority = Z_FG;
 }
 
 bool PSpriteComponent::Draw(const PRenderer* Renderer) const
