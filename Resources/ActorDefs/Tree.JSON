@@ -19,6 +19,11 @@
         ],
         "Texture": "Tileset1"
       }
+    },
+    {
+      "Class": "PInteractionComponent",
+      "Name": "Tree",
+      "Message": "This is a tree."
     }
   ]
 }

@@ -50,7 +50,8 @@ PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
 		SpriteComponent,
 		CameraComponent,
 		CharacterMovementComponent,
-		CollisionComponent
+		CollisionComponent,
+		InteractionComponent
 	);
 
 	LogWarning("Deserialization of Component {} not supported.", ClassName.c_str());

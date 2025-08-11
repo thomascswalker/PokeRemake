@@ -24,11 +24,11 @@ using FVector4 = TVector4<float>;
 using IVector2 = TVector2<int32_t>;
 using IVector3 = TVector3<int32_t>;
 using IVector4 = TVector4<int32_t>;
-using FMatrix = TMatrix<float>;
-using DMatrix = TMatrix<double>;
-using IMatrix = TMatrix<int32_t>;
-using FRect = TRect<float>;
-using IRect = TRect<int32_t>;
+using FMatrix  = TMatrix<float>;
+using DMatrix  = TMatrix<double>;
+using IMatrix  = TMatrix<int32_t>;
+using FRect    = TRect<float>;
+using IRect    = TRect<int32_t>;
 
 /* Classes */
 
@@ -51,6 +51,7 @@ class PGame;
 class PGridView;
 class PGroup;
 class PImage;
+class PInteractionComponent;
 class PMap;
 class PObject;
 class PPanel;

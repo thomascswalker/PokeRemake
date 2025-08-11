@@ -3,6 +3,7 @@
 #include "Engine/Actors/Actor.h"
 #include "Engine/Actors/Interactable.h"
 #include "Engine/Components/SpriteComponent.h"
+#include "Engine/Components/InteractionComponent.h"
 
 enum ESceneryType
 {
@@ -14,6 +15,7 @@ class PSceneryActor : public PActor, public IInteractable
 {
     ESceneryType mType;
     PSpriteComponent* mSpriteComponent;
+    PInteractionComponent* mInteractionComponent;
 
 public:
     PSceneryActor();
@@ -21,8 +23,9 @@ public:
 
     PSpriteComponent* GetSpriteComponent();
 
+    PInteractionComponent* GetInteractionComponent() override;
+
     FRect GetLocalBounds() const override;
-    void Interact(PPlayerCharacter* Player) override;
 
     JSON Serialize() const override;
     void Deserialize(const JSON& Data) override;

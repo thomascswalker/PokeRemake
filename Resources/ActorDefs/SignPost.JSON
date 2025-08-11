@@ -19,6 +19,11 @@
         ],
         "Texture": "Tileset1"
       }
+    },
+    {
+      "Class": "PInteractionComponent",
+      "Name": "Sign Post",
+      "Message": "This is a signpost."
     }
   ]
 }

@@ -84,6 +84,8 @@ set(SOURCES
         Core/String.h
         Core/Array.h
         Core/Json.cpp
+        Engine/Components/InteractionComponent.h
+        Engine/Components/InteractionComponent.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

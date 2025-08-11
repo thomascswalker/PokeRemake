@@ -27,6 +27,7 @@ public:
 #define CONSTRUCT_COMPONENT(Class) if (ClassName == PREPEND(P, Class)) \
 	{ if (PCLASS(Class)* NewComponent = ConstructComponent<PCLASS(Class)>(Owner, Data)) \
 		{ \
+		NewComponent->Deserialize(Data);\
 		return NewComponent; \
 	} \
 }

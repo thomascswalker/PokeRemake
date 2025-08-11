@@ -115,9 +115,9 @@ public:
 	{
 		for (auto Component : mComponents)
 		{
-			if (Component)
+			if (auto Inst = dynamic_cast<T*>(Component))
 			{
-				return dynamic_cast<T*>(Component);
+				return Inst;
 			}
 		}
 		return nullptr;
@@ -190,6 +190,7 @@ public:
 
 	JSON Serialize() const override;
 	void Deserialize(const JSON& Data) override;
+	virtual void BindComponent(PComponent* Component) {}
 
 	// Overlap
 	virtual void OnOverlapBegin(PActor* Actor) {}

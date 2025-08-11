@@ -1,20 +1,24 @@
 #pragma once
 
+#include "Engine/World.h"
+
 #include "Interface/Box.h"
 #include "Interface/Text.h"
 
 class PDialogBox : public PBox
 {
-    PText mText;
+    PText* mText;
     PTexture* mTexture;
 
 public:
-    PDialogBox(const std::string& Text = "") : mText(Text, 36.0f, PColor::Black)
+    PDialogBox(const std::string& Text = "")
     {
         Padding = {0};
         SetFixedHeight(100);
         SetResizeModeH(RM_Fixed);
-        PWidget::AddChild(&mText);
+
+        mText = ConstructWidget<PText>(Text, 36.0f, PColor::Black);
+        PWidget::AddChild(mText);
     }
 
     void Draw(const PRenderer* Renderer) const override
@@ -27,6 +31,6 @@ public:
 
     void SetText(const std::string& Text)
     {
-        mText.SetText(Text);
+        mText->SetText(Text);
     }
 };
