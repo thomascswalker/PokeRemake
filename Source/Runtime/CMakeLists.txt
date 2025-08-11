@@ -39,7 +39,7 @@ set(SOURCES
         Engine/Actors/PlayerCharacter.cpp
         Engine/Actors/Portal.cpp
         Engine/Actors/Selectable.h
-        Engine/Actors/Game/SignPost.cpp
+        Engine/Actors/SceneryActor.cpp
         Engine/CameraView.h
         Engine/Components/CameraComponent.cpp
         Engine/Components/CharacterMovementComponent.cpp
@@ -81,6 +81,9 @@ set(SOURCES
         Interface/Game/DialogBox.h
         Engine/Components/SpriteComponent.cpp
         Engine/Components/SpriteComponent.h
+        Core/String.h
+        Core/Array.h
+        Core/Json.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

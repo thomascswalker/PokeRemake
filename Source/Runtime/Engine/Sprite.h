@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include "Core/String.h"
+
 struct PAnimation
 {
 	std::string Name;
@@ -12,7 +14,8 @@ struct PAnimation
 
 	void Next()
 	{
-		CurrentIndex = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
+		auto PrevIndex = Indexes[CurrentIndex];
+		CurrentIndex   = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
 	}
 
 	void Previous()
@@ -33,19 +36,45 @@ struct PAnimation
 		}
 		return Indexes[CurrentIndex];
 	}
+
+	JSON Serialize() const
+	{
+		JSON Result;
+		Result["Name"]    = Name;
+		Result["Indexes"] = Indexes;
+		return Result;
+	}
+
+	void Deserialize(const JSON& Json)
+	{
+		Indexes.clear();
+		Indexes.resize(Json["Indexes"].size());
+		for (int i = 0; i < Json["Indexes"].size(); i++)
+		{
+			Indexes[i] = Json["Indexes"][i]["Index"];
+		}
+		Name         = Json.at("Name");
+		CurrentIndex = 0;
+	}
+};
+
+enum ESpriteSize
+{
+	SS_8  = 8,
+	SS_16 = 16
 };
 
 class PSprite : public PObject
 {
-	using Animations = std::map<std::string, PAnimation>;
-
 	PTexture* mTexture;
-	// Horizontal count
-	int32_t mWidth = 10;
-	// Pixel size (width and height) of each sprite
-	float mSize = DEFAULT_SPRITE_WIDTH;
 
-	Animations mAnimations;
+	// Pixel size (width and height) of each sprite
+	float mSize = 16.0f;
+	// Pixel size of each index within the texture atlas
+	float mIndexSize = 8.0f;
+	int32_t mWidth   = 1;
+
+	std::map<std::string, PAnimation> mAnimations;
 	PAnimation* mCurrentAnim;
 
 	float mAnimationSpeed = DEFAULT_ANIM_SPEED; // Default animation speed in seconds
@@ -53,6 +82,52 @@ class PSprite : public PObject
 
 public:
 	PSprite() : mTexture(nullptr), mCurrentAnim(nullptr) {}
+
+	PSprite(const PSprite& other)
+		: PObject{other},
+		  mTexture{other.mTexture},
+		  mSize{other.mSize},
+		  mAnimations{other.mAnimations},
+		  mCurrentAnim{other.mCurrentAnim},
+		  mAnimationSpeed{other.mAnimationSpeed},
+		  mAnimationTimer{other.mAnimationTimer} {}
+
+	PSprite(PSprite&& other) noexcept
+		: PObject{std::move(other)},
+		  mTexture{other.mTexture},
+		  mSize{other.mSize},
+		  mAnimations{std::move(other.mAnimations)},
+		  mCurrentAnim{other.mCurrentAnim},
+		  mAnimationSpeed{other.mAnimationSpeed},
+		  mAnimationTimer{other.mAnimationTimer} {}
+
+	PSprite& operator=(const PSprite& other)
+	{
+		if (this == &other)
+			return *this;
+		PObject::operator =(other);
+		mTexture        = other.mTexture;
+		mSize           = other.mSize;
+		mAnimations     = other.mAnimations;
+		mCurrentAnim    = other.mCurrentAnim;
+		mAnimationSpeed = other.mAnimationSpeed;
+		mAnimationTimer = other.mAnimationTimer;
+		return *this;
+	}
+
+	PSprite& operator=(PSprite&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+		PObject::operator =(std::move(other));
+		mTexture        = other.mTexture;
+		mSize           = other.mSize;
+		mAnimations     = std::move(other.mAnimations);
+		mCurrentAnim    = other.mCurrentAnim;
+		mAnimationSpeed = other.mAnimationSpeed;
+		mAnimationTimer = other.mAnimationTimer;
+		return *this;
+	}
 
 	void Tick(float DeltaTime) override
 	{
@@ -71,6 +146,7 @@ public:
 	void SetTexture(PTexture* InTexture)
 	{
 		mTexture = InTexture;
+		mWidth   = mTexture->GetWidth() / mIndexSize;
 	}
 
 	PTexture* GetTexture() const
@@ -83,9 +159,9 @@ public:
 		if (mCurrentAnim && !mCurrentAnim->Indexes.empty())
 		{
 			const auto Index = mCurrentAnim->GetCurrentIndex();
-			const auto X     = Index % mWidth;
-			const auto Y     = Index / mWidth;
-			return {X * mSize, Y * mSize, mSize, mSize};
+			const auto X     = Index % static_cast<uint32_t>(mWidth);
+			const auto Y     = Index / static_cast<uint32_t>(mWidth);
+			return {X * mIndexSize, Y * mIndexSize, mSize, mSize};
 		}
 		return FRect();
 	}
@@ -137,13 +213,56 @@ public:
 		mAnimationTimer = 0.0f; // Reset animation timer
 	}
 
-	void SetWidth(int Width)
-	{
-		mWidth = Width;
-	}
-
 	void SetSize(float Size)
 	{
 		mSize = Size;
+	}
+
+	float GetSize() const
+	{
+		return mSize;
+	}
+
+	float GetIndexSize() const
+	{
+		return mIndexSize;
+	}
+
+	void SetIndexSize(float Size)
+	{
+		mIndexSize = Size;
+	}
+
+	JSON Serialize() const override
+	{
+		JSON Result          = PObject::Serialize();
+		Result["Animations"] = {};
+		for (const auto& V : mAnimations | std::views::values)
+		{
+			Result["Animations"].push_back(V.Serialize());
+		}
+		Result["Texture"] = GetTexture()->GetName();
+		Result["Size"]    = mSize;
+		return Result;
+	}
+
+	void Deserialize(const JSON& Data) override
+	{
+		PObject::Deserialize(Data);
+
+		auto Texture = Data["Texture"].get<std::string>();
+		mTexture     = PTextureManager::Get(Texture);
+		LogDebug("Loaded texture: {}", mTexture->GetName());
+		LOAD_MEMBER_PROPERTY(Size, float);
+		LOAD_MEMBER_PROPERTY(IndexSize, float);
+		LOAD_MEMBER_PROPERTY(Width, int32_t);
+
+		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump());
+		for (auto& Anim : Data["Animations"])
+		{
+			std::string Name              = Anim["Name"];
+			std::vector<uint32_t> Indexes = Anim["Indexes"];
+			AddAnimation(Name, Indexes);
+		}
 	}
 };

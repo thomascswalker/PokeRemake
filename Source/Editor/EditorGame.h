@@ -12,11 +12,12 @@
 
 enum EInputContext : uint8_t
 {
-	IC_None = 1U << 0,
+	IC_None   = 1U << 0,
 	IC_Select = 1U << 2,
-	IC_Tile = 1U << 3,
-	IC_Actor = 1U << 4,
+	IC_Tile   = 1U << 3,
+	IC_Actor  = 1U << 4,
 };
+
 DEFINE_BITMASK_OPERATORS(EInputContext);
 
 enum EEditMode
@@ -35,14 +36,14 @@ enum EBrushSize
 enum EBrushMode
 {
 	BM_Default, // Paint from the source tile into all four quadrants.
-	BM_Copy,	// Paint from the source tile the three adjacent tiles, where the source tile is the top left.
-	BM_Fill		// Fills the entire map with the tile
+	BM_Copy,    // Paint from the source tile the three adjacent tiles, where the source tile is the top left.
+	BM_Fill     // Fills the entire map with the tile
 };
 
 struct SInputModeData
 {
 	EInputContext InputContext;
-	PGroup*		  Group;
+	PGroup* Group;
 };
 
 DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
@@ -55,19 +56,19 @@ class PEditorGame : public PGame
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
-	EEditMode		 mEditMode = EM_None;
+	EEditMode mEditMode = EM_None;
 
 	std::vector<PMap*> mMaps;
-	PMap*				 mCurrentMap;
+	PMap* mCurrentMap;
 
 	std::map<std::string, PGridView*> mTilesetViews;
 
 	PButtonGroup* mTilesetViewButtonGroup;
-	STileset*	  mCurrentTileset = nullptr;
-	STileItem*	  mCurrentTilesetItem = nullptr;
+	STileset* mCurrentTileset      = nullptr;
+	STileItem* mCurrentTilesetItem = nullptr;
 
 	PButtonGroup* mActorViewButtonGroup;
-	SActorItem*	  mCurrentActorItem = nullptr;
+	SActorItem* mCurrentActorItem = nullptr;
 
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
@@ -84,11 +85,19 @@ public:
 
 	// Input
 
-	uint8_t GetInputContext() { return mInputContext; }
-	void	ClearInputContext() { mInputContext = IC_None; }
-	void	AddInputContext(uint8_t InputContext);
-	void	RemoveInputContext(uint8_t InputContext);
-	bool	HasInputContext(uint8_t InputContext);
+	uint8_t GetInputContext()
+	{
+		return mInputContext;
+	}
+
+	void ClearInputContext()
+	{
+		mInputContext = IC_None;
+	}
+
+	void AddInputContext(uint8_t InputContext);
+	void RemoveInputContext(uint8_t InputContext);
+	bool HasInputContext(uint8_t InputContext);
 
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
@@ -97,8 +106,17 @@ public:
 
 	void OnNewButtonClicked();
 	void OnCreateButtonClicked();
-	void OnSizeXChanged(float Value) { mNewMapSizeX = Value; }
-	void OnSizeYChanged(float Value) { mNewMapSizeY = Value; }
+
+	void OnSizeXChanged(float Value)
+	{
+		mNewMapSizeX = Value;
+	}
+
+	void OnSizeYChanged(float Value)
+	{
+		mNewMapSizeY = Value;
+	}
+
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
 	void OnEditModeClicked(SDropdownItemData* DropdownItemData);
@@ -108,17 +126,34 @@ public:
 	void OnActorClicked(PActor* ClickedActor);
 	void OnDropdownClicked(SDropdownItemData* Data) const;
 
-	EBrushSize GetBrushSize() { return mBrushSize; }
+	EBrushSize GetBrushSize()
+	{
+		return mBrushSize;
+	}
 
 	// Scene
-	void	   AddMap(PMap* Map);
-	size_t	   GetMapCount() const { return mMaps.size(); }
-	void	   SetCurrentMap(PMap* Map);
-	void	   ConstructMap(const JSON& JsonData);
-	void	   ActorSelected(PActor* Actor);
-	PMap*	   GetCurrentMap() const { return mCurrentMap; }
-	STileItem* GetCurrentTilesetItem() const { return mCurrentTilesetItem; }
-	void	   PaintTile(STile* Tile);
+	void AddMap(PMap* Map);
+
+	size_t GetMapCount() const
+	{
+		return mMaps.size();
+	}
+
+	void SetCurrentMap(PMap* Map);
+	void ConstructMap(const JSON& JsonData);
+	void ActorSelected(PActor* Actor);
+
+	PMap* GetCurrentMap() const
+	{
+		return mCurrentMap;
+	}
+
+	STileItem* GetCurrentTilesetItem() const
+	{
+		return mCurrentTilesetItem;
+	}
+
+	void PaintTile(STile* Tile);
 
 	template <typename T = PActor>
 	T* GetActorUnderMouse()

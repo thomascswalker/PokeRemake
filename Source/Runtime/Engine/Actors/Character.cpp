@@ -8,8 +8,6 @@
 
 PCharacter::PCharacter()
 {
-	mDrawPriority = DP_FOREGROUND;
-
 	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
 	{
@@ -21,11 +19,15 @@ PCharacter::PCharacter()
 	mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
 	if (mSpriteComponent)
 	{
+		mSpriteComponent->SetDrawPriority(Z_NPC);
 		mSpriteComponent->SetYOffset(CHARACTER_OFFSET);
 
 		auto Sprite = mSpriteComponent->GetSprite();
 
 		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
+		Sprite->SetSize(16.0f);
+		Sprite->SetIndexSize(16.0f);
+
 		Sprite->AddAnimation("WalkRight", {SI_WalkRight, SI_IdleRight});
 		Sprite->AddAnimation("WalkLeft", {SI_WalkLeft, SI_IdleLeft});
 		Sprite->AddAnimation("WalkUp", {SI_WalkUpA, SI_WalkUpB});
@@ -35,7 +37,6 @@ PCharacter::PCharacter()
 		Sprite->AddAnimation("IdleUp", {SI_IdleUp});
 		Sprite->AddAnimation("IdleDown", {SI_IdleDown});
 
-		// Default to idle down animation
 		Sprite->SetCurrentAnimation("IdleDown");
 	}
 }

@@ -13,6 +13,8 @@ include_directories(
 set(SOURCES
         EditorGame.cpp
         EditorView.cpp
+        ActorManager.h
+        ActorManager.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

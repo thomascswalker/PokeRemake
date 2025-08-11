@@ -13,9 +13,9 @@ class PScrollArea : public PWidget
 public:
 	PScrollArea()
 	{
-		mLayoutMode = LM_Vertical;
+		mLayoutMode  = LM_Vertical;
 		mResizeModeH = RM_Grow;
-		Padding = { 0 };
+		Padding      = {0};
 	}
 
 	void OnMouseEvent(SInputEvent* Event) override
@@ -82,7 +82,7 @@ public:
 	bool DrawChildren(const PRenderer* Renderer) const override
 	{
 		Renderer->SetClipRect(GetGeometry());
-		VALIDATE(PWidget::DrawChildren(Renderer));
+		VALIDATE(PWidget::DrawChildren(Renderer), "Failed to draw ScrollArea children.");
 		Renderer->ReleaseClipRect();
 
 		return true;

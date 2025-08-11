@@ -118,7 +118,7 @@ std::vector<PActor*> PWorld::GetActors() const
 	return Actors;
 }
 
-std::vector<IDrawable*> PWorld::GetDrawables(EDrawPriority Priority) const
+std::vector<IDrawable*> PWorld::GetDrawables(EZDepth Priority) const
 {
 	std::vector<IDrawable*> Drawables;
 	for (const auto& Actor : mActors)

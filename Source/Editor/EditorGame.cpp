@@ -1,19 +1,21 @@
 #include "EditorGame.h"
 
+#include "ActorManager.h"
+
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
+#include "EditorView.h"
 #include "Engine/Actors/Portal.h"
+#include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
 #include "Engine/Serialization.h"
-#include "Interface/HUD.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
+#include "Interface/HUD.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
-#include "EditorView.h"
-#include "../Runtime/Engine/Actors/Game/SignPost.h"
 
 static PPanel* MainPanel;
 
@@ -25,18 +27,11 @@ static std::vector<std::string> EditModeStrings = {
 static PGroup* TileGroup;
 static PGroup* ActorGroup;
 
-static std::vector<SActorItem> PlaceableActors = {
-	{"Portal"},
-	{"SignPost"},
-	{"Hill (South)"},
-	{"Hill (West)"},
-	{"Hill (East)"},
-	{"Water"},
-};
-
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{"JSON", "JSON"},
 };
+
+std::vector<SActorItem> gPlaceableActors{};
 
 PEditorGame* GetEditorGame()
 {
@@ -51,6 +46,12 @@ bool PEditorGame::PreStart()
 	if (!EditorView)
 	{
 		LogError("Failed to create Editor View");
+	}
+
+	ActorManager::LoadActorDefs();
+	for (auto& [K, V] : ActorManager::GetActorDefs().items())
+	{
+		gPlaceableActors.push_back(SActorItem(K, V));
 	}
 
 	if (!LoadAllTilesets())
@@ -191,18 +192,18 @@ PGridView* PEditorGame::ConstructActorView()
 {
 	PGridView* GridView = mWorld->ConstructWidget<PGridView>();
 	GridView->Padding   = {5};
-	GridView->SetGridCount(2);
+	GridView->SetGridCount(1);
 
-	for (auto& Item : PlaceableActors)
+	for (auto& ActorItem : gPlaceableActors)
 	{
 		const int ItemSize = 40;
 		// Create the button item
-		auto GridItem = GridView->AddItem<PButton>(Item.Name);
+		auto GridItem = GridView->AddItem<PButton>(ActorItem.Name);
 		auto Button   = GridItem->GetWidget<PButton>();
 		Button->SetResizeMode(RM_Grow, RM_Fixed);
 		Button->SetFixedHeight(ItemSize);
 		Button->SetCheckable(true);
-		Button->SetCustomData(&Item);
+		Button->SetCustomData(&ActorItem);
 		Button->Checked.AddRaw(this, &PEditorGame::OnActorButtonChecked);
 
 		mActorViewButtonGroup->AddButton(Button);
@@ -352,7 +353,7 @@ void PEditorGame::OnLoadButtonClicked()
 	}
 
 	const JSON JsonData = JSON::parse(Data.data());
-	Serialization::Deserialize(JsonData);
+	Serialization::DeserializeActor(JsonData);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
@@ -434,6 +435,11 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
 	auto Map = GetCurrentMap();
+	if (!Map)
+	{
+		LogError("Current map is null.");
+		return;
+	}
 	if (HasInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
@@ -477,14 +483,11 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			{
 				NewActor = SpawnActor<PPortal>();
 			}
-			else if (mCurrentActorItem->Name == "SignPost")
-			{
-				NewActor = SpawnActor<PSignPost>();
-			}
 			else
 			{
-				LogWarning("Actor placement not implemented for {}", mCurrentActorItem->Name);
-				return;
+				const JSON Json = mCurrentActorItem->Data;
+				LogDebug("Creating new Scenery Actor:\n{}", Json.dump(4));
+				NewActor = SpawnActor<PSceneryActor>(Json);
 			}
 
 			if (NewActor)

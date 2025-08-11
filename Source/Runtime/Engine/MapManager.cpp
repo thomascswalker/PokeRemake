@@ -42,6 +42,7 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 		}
 
 		JsonData = JSON::parse(Data.data());
+		Expand(&JsonData);
 		sMapData[Name] = JsonData;
 	}
 
@@ -50,7 +51,7 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 		LogError("Invalid class at root level of map file. Must be 'PMap'.");
 		return nullptr;
 	}
-	Serialization::Deserialize(JsonData);
+	Serialization::DeserializeActor(JsonData);
 
 	return GetMapInWorld(Name);
 }
@@ -70,7 +71,8 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	return true;
 }
 
-bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition, EOrientation ExitDirection)
+bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
+                            EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
 	PMap* Map = LoadMap(NewMap);

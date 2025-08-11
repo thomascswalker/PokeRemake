@@ -5,6 +5,10 @@
 
 using JSON = nlohmann::json;
 
+void ExpandRef(JSON* Json, const std::string& Ref);
+
+void Expand(JSON* Json);
+
 inline void OnPropertyMissing(const JSON& Json, const char* Property)
 {
 	std::vector<std::string> Keys;
@@ -24,19 +28,28 @@ inline void OnPropertyMissing(const JSON& Json, const char* Property)
 	if (!Json.contains(#Property))          \
 	{                                       \
 		OnPropertyMissing(Json, #Property); \
-		return;                             \
 	}
 
-#define SAVE_MEMBER_PROPERTY(Json, Property) \
-	Json[#Property] = m##Property
+#define BEGIN_SAVE_PROPERTIES(Parent) JSON Result = Parent::Serialize()
+#define END_SAVE_PROPERTIES return Result
 
-#define LOAD_MEMBER_PROPERTY(Json, Property, Type) \
-	if (Json.contains(#Property))                  \
+#define BEGIN_LOAD_PROPERTIES(Parent) Parent::Deserialize(Data)
+
+#define SAVE_MEMBER_PROPERTY(Property) \
+	Result[#Property] = m##Property
+
+#define LOAD_MEMBER_PROPERTY(Property, Type) \
+	if (Data.contains(#Property))                  \
 	{                                              \
-		m##Property = Json[#Property].get<Type>(); \
+		m##Property = Data[#Property].get<Type>(); \
 	}                                              \
 	else                                           \
 	{                                              \
-		OnPropertyMissing(Json, #Property);        \
+		OnPropertyMissing(Data, #Property);        \
 	}
-//
+
+#define SERIALIZE_MEMBER_PROPERTY(Property) \
+	Result[#Property] = m##Property.Serialize()
+
+#define DESERIALIZE_MEMBER_PROPERTY(Property) \
+	m##Property.Deserialize(Data[#Property])

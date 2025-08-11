@@ -109,7 +109,8 @@ bool PRenderer::Render() const
 		{
 			for (const IDrawable* Drawable : World->GetDrawables(Priority))
 			{
-				VALIDATE(Drawable->Draw(this));
+				VALIDATE(Drawable->Draw(this),
+				         dynamic_cast<PObject*>(const_cast<IDrawable*>(Drawable))->GetInternalName().c_str());
 			}
 		}
 
@@ -120,7 +121,7 @@ bool PRenderer::Render() const
 			{
 				for (const IDrawable* Drawable : World->GetDrawables(Priority))
 				{
-					VALIDATE(Drawable->DebugDraw(this));
+					VALIDATE(Drawable->DebugDraw(this), "Failed to draw.");
 				}
 			}
 		}
@@ -128,7 +129,7 @@ bool PRenderer::Render() const
 		if (const auto Root = World->GetHUD())
 		{
 			// Recursively draw all widgets, but not the root widget
-			VALIDATE(Root->DrawChildren(this));
+			VALIDATE(Root->DrawChildren(this), "Failed to draw.");
 		}
 
 		for (auto W : GetWorld()->GetWidgets())
@@ -140,7 +141,7 @@ bool PRenderer::Render() const
 			W->PreDraw(this);
 			W->Draw(this);
 			W->PostDraw(this);
-			VALIDATE(W->DrawChildren(this));
+			VALIDATE(W->DrawChildren(this), "Failed to draw.");
 		}
 	}
 

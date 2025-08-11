@@ -28,15 +28,15 @@ FRect STile::GetSourceRect() const
 	return {
 		TilesetX * Tileset->ItemSize, // X
 		TilesetY * Tileset->ItemSize, // Y
-		Tileset->ItemSize,			  // Width
-		Tileset->ItemSize,			  // Height
+		Tileset->ItemSize,            // Width
+		Tileset->ItemSize,            // Height
 	};
 }
 
 FRect STile::GetDestRect() const
 {
 	return {
-		GetPosition(), { TILE_SIZE, TILE_SIZE }
+		GetPosition(), {TILE_SIZE, TILE_SIZE}
 	};
 }
 
@@ -55,8 +55,8 @@ bool PMap::Draw(const PRenderer* Renderer) const
 	// Draw each tile
 	for (const auto& Tile : mTiles)
 	{
-		VALIDATE(Tile.Tileset);
-		VALIDATE(Tile.Tileset->Texture);
+		VALIDATE(Tile.Tileset, "Tileset is invalid.");
+		VALIDATE(Tile.Tileset->Texture, "Tileset texture is invalid.");
 		Renderer->DrawTextureAt(Tile.Tileset->Texture, Tile.GetSourceRect(), Tile.GetDestRect());
 	}
 	return true;
@@ -87,7 +87,7 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(0, 0, 0, 255);
 		}
-		Renderer->DrawLineAt({ X * TILE_SIZE, 0 }, { X * TILE_SIZE, Max.Y });
+		Renderer->DrawLineAt({X * TILE_SIZE, 0}, {X * TILE_SIZE, Max.Y});
 	}
 	for (int Y = 0; Y < mSizeY; Y++)
 	{
@@ -101,7 +101,7 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(0, 0, 0, 255);
 		}
-		Renderer->DrawLineAt({ 0, Y * TILE_SIZE }, { Max.X, Y * TILE_SIZE });
+		Renderer->DrawLineAt({0, Y * TILE_SIZE}, {Max.X, Y * TILE_SIZE});
 	}
 
 #if _EDITOR
@@ -122,7 +122,7 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
 	{
 		auto EditorGame = GetEditorGame();
-		auto BrushSize = EditorGame->GetBrushSize();
+		auto BrushSize  = EditorGame->GetBrushSize();
 
 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
 		if (auto Tile = GetTileAtPosition(MouseWorldPos))
@@ -156,12 +156,12 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 
 FRect PMap::GetLocalBounds() const
 {
-	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return {0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
 }
 
 FRect PMap::GetWorldBounds() const
 {
-	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
+	return {mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
 }
 
 std::vector<STile*> PMap::GetTiles()
@@ -207,7 +207,7 @@ STile* PMap::GetTileAt(int X, int Y) const
 	{
 		return nullptr;
 	}
-	auto		 Index = Y * mSizeX + X;
+	auto Index        = Y * mSizeX + X;
 	const STile* Tile = &mTiles[Index];
 
 	return const_cast<STile*>(Tile);
@@ -216,42 +216,47 @@ STile* PMap::GetTileAt(int X, int Y) const
 JSON PMap::Serialize() const
 {
 	JSON Result = PActor::Serialize();
-	SAVE_MEMBER_PROPERTY(Result, MapName);
-	SAVE_MEMBER_PROPERTY(Result, SizeX);
-	SAVE_MEMBER_PROPERTY(Result, SizeY);
+	SAVE_MEMBER_PROPERTY(MapName);
+	SAVE_MEMBER_PROPERTY(SizeX);
+	SAVE_MEMBER_PROPERTY(SizeY);
 
 	auto TileArray = JSON::array();
 	for (const auto& Tile : mTiles)
 	{
 		JSON TileResult;
 		TileResult["Tileset"] = Tile.Tileset->Name;
-		TileResult["Index"] = Tile.Index;
+		TileResult["Index"]   = Tile.Index;
 		TileArray.push_back(TileResult);
 	}
 	Result["Tiles"] = TileArray;
 	return Result;
 }
 
-void PMap::Deserialize(const JSON& JsonData)
+void PMap::Deserialize(const JSON& Data)
 {
-	PActor::Deserialize(JsonData);
-	mDrawPriority = DP_BACKGROUND;
-	mBlocking = false;
+	PActor::Deserialize(Data);
+	mDrawPriority = Z_BG;
+	mBlocking     = false;
 
-	LOAD_MEMBER_PROPERTY(JsonData, MapName, std::string);
-	LOAD_MEMBER_PROPERTY(JsonData, SizeX, int32_t);
-	LOAD_MEMBER_PROPERTY(JsonData, SizeY, int32_t);
+	LOAD_MEMBER_PROPERTY(MapName, std::string);
+	LOAD_MEMBER_PROPERTY(SizeX, int32_t);
+	LOAD_MEMBER_PROPERTY(SizeY, int32_t);
 
-	auto TileData = JsonData.at("Tiles");
+	auto TileData = Data.at("Tiles");
 	for (int32_t I = 0; I < TileData.size(); I++)
 	{
-		auto Tile = TileData[I];
-		auto X = I % mSizeX;
-		auto Y = I / mSizeX;
-		auto Index = Tile.at("Index").get<int>();
+		auto Tile    = TileData[I];
+		auto X       = I % mSizeX;
+		auto Y       = I / mSizeX;
+		auto Index   = Tile.at("Index").get<int>();
 		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
-		mTiles.push_back({ Tileset, this, Index, X, Y });
+		mTiles.push_back({Tileset, this, Index, X, Y});
 	}
+
+#if _EDITOR
+	auto EditorGame = GetEditorGame();
+	EditorGame->SetCurrentMap(this);
+#endif
 }
 
 #if _EDITOR
@@ -262,20 +267,15 @@ void PMap::OnKeyUp(SInputEvent* Event)
 		FVector2 Direction;
 		switch (Event->KeyUp)
 		{
-			case SDLK_UP:
-				Direction.Y = -BLOCK_SIZE;
-				break;
-			case SDLK_DOWN:
-				Direction.Y = BLOCK_SIZE;
-				break;
-			case SDLK_LEFT:
-				Direction.X = -BLOCK_SIZE;
-				break;
-			case SDLK_RIGHT:
-				Direction.X = BLOCK_SIZE;
-				break;
-			default:
-				break;
+		case SDLK_UP: Direction.Y = -BLOCK_SIZE;
+			break;
+		case SDLK_DOWN: Direction.Y = BLOCK_SIZE;
+			break;
+		case SDLK_LEFT: Direction.X = -BLOCK_SIZE;
+			break;
+		case SDLK_RIGHT: Direction.X = BLOCK_SIZE;
+			break;
+		default: break;
 		}
 		AddPosition(Direction);
 		Event->Consume();

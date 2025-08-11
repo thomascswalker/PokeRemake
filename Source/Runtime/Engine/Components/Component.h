@@ -21,3 +21,13 @@ public:
 	void Tick(float DeltaTime) override {}
 	FVector2 GetPosition() const;
 };
+
+#define BEGIN_CONSTRUCT_COMPONENT \
+	auto ClassName   = Data.at("Class").get<std::string>();
+#define CONSTRUCT_COMPONENT(Class) if (ClassName == PREPEND(P, Class)) \
+	{ if (PCLASS(Class)* NewComponent = ConstructComponent<PCLASS(Class)>(Owner, Data)) \
+		{ \
+		return NewComponent; \
+	} \
+}
+#define CONSTRUCT_EACH_COMPONENT(...) FOR_EACH(CONSTRUCT_COMPONENT, __VA_ARGS__)

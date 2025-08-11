@@ -20,9 +20,10 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 struct SActorItem
 {
 	std::string Name;
+	JSON Data;
 };
 
-class PActor : public PObject, public IDrawable, public ISelectable, public IInputHandler
+class PActor : public PObject, public ISelectable, public IInputHandler
 {
 protected:
 	PActor* mParent = nullptr;
@@ -48,10 +49,10 @@ public:
 	PActor() = default;
 
 	PActor(const PActor& other)
-		: PObject{other}, IDrawable{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
+		: PObject{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
 
 	PActor(PActor&& other) noexcept
-		: PObject{std::move(other)}, IDrawable{std::move(other)},
+		: PObject{std::move(other)},
 		  mPosition{std::move(other.mPosition)}, mSize{std::move(other.mSize)} {}
 
 	PActor& operator=(const PActor& other)
@@ -59,7 +60,6 @@ public:
 		if (this == &other)
 			return *this;
 		PObject::operator=(other);
-		IDrawable::operator=(other);
 		mPosition = other.mPosition;
 		mSize     = other.mSize;
 		return *this;
@@ -70,15 +70,9 @@ public:
 		if (this == &other)
 			return *this;
 		PObject::operator=(std::move(other));
-		IDrawable::operator=(std::move(other));
 		mPosition = std::move(other.mPosition);
 		mSize     = std::move(other.mSize);
 		return *this;
-	}
-
-	bool Draw(const PRenderer* Renderer) const override
-	{
-		return true;
 	}
 
 	PActor* GetParent() const
@@ -115,6 +109,25 @@ public:
 	}
 
 	void AddComponent(PComponent* Component);
+
+	template <typename T>
+	T* GetComponent()
+	{
+		for (auto Component : mComponents)
+		{
+			if (Component)
+			{
+				return dynamic_cast<T*>(Component);
+			}
+		}
+		return nullptr;
+	}
+
+	template <typename T>
+	bool HasComponent()
+	{
+		return GetComponent<T>() != nullptr;
+	}
 
 	std::vector<PComponent*> GetComponents() const
 	{
@@ -176,7 +189,6 @@ public:
 	}
 
 	JSON Serialize() const override;
-
 	void Deserialize(const JSON& Data) override;
 
 	// Overlap
@@ -200,3 +212,12 @@ public:
 		LogInfo("Clicked {}", GetInternalName().c_str());
 	}
 };
+
+#define BEGIN_CONSTRUCT_ACTOR \
+auto ClassName   = Data.at("Class").get<std::string>();
+#define CONSTRUCT_ACTOR(Class) if (ClassName == PREPEND(P, Class)) { if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) {NewActor->Deserialize(Data); return NewActor;} }
+
+#define CONSTRUCT_EACH_ACTOR(...) FOR_EACH(CONSTRUCT_ACTOR, __VA_ARGS__)
+
+#define MAP_COMPONENT(Component) \
+	m##Component = GetComponent<PCLASS(Component)>()

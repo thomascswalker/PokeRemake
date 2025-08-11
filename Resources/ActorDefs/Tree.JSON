@@ -1,0 +1,24 @@
+{
+  "Class": "PSceneryActor",
+  "Name": "Tree",
+  "Type": 1,
+  "Components": [
+    {
+      "Class": "PSpriteComponent",
+      "Sprite": {
+        "Size": 16.0,
+        "IndexSize": 8.0,
+        "Width": 16,
+        "Animations": [
+          {
+            "Indexes": [
+              45
+            ],
+            "Name": "Tree"
+          }
+        ],
+        "Texture": "Tileset1"
+      }
+    }
+  ]
+}
