@@ -23,7 +23,8 @@ PActor* Serialization::DeserializeActor(const JSON& Data)
 		return nullptr; // Skip null objects
 	}
 
-	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str());
+	CHECK_PROPERTY(Data, "Class");
+
 	BEGIN_CONSTRUCT_ACTOR;
 
 	CONSTRUCT_EACH_ACTOR(

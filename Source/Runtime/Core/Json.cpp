@@ -1,8 +1,10 @@
 #include "Json.h"
 
+#include "Array.h"
 #include "Files.h"
+#include "String.h"
 
-void ExpandRef(JSON* Json, const std::string& Ref)
+void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override)
 {
     std::string Buffer;
     auto FileName = Files::FindFile(Ref + ".JSON");
@@ -12,8 +14,33 @@ void ExpandRef(JSON* Json, const std::string& Ref)
         return;
     }
     Files::ReadFile(FileName, Buffer);
+
     JSON RefJson = JSON::parse(Buffer);
     Json->merge_patch(RefJson);
+    LogDebug("Patched Ref: {}", Json->dump());
+
+    for (const auto& [K, V] : Override.items())
+    {
+        Array Keys = String::Split(K, "::");
+        if (Keys.Size() == 0)
+        {
+            continue;
+        }
+        JSON* Ptr = Json;
+        for (auto Key : Keys)
+        {
+            if (Ptr->is_object())
+            {
+                Ptr = &Ptr->at(Key);
+            }
+            else if (Ptr->is_array())
+            {
+                Ptr = &Ptr->operator[](std::stoi(Key));
+            }
+        }
+        *Ptr = V;
+    }
+    LogDebug("Custom Ref: {}", Json->dump());
 }
 
 void Expand(JSON* Json)
@@ -22,13 +49,13 @@ void Expand(JSON* Json)
     {
         for (auto& [K, V] : Json->items())
         {
-            if (V.is_object() || V.is_array())
+            if (!K.starts_with("$") && V.is_object() || V.is_array())
             {
                 Expand(&V);
             }
-            else if (K == "$Ref" && V.is_string())
+            else if (K.starts_with("$") && V.is_object() || V.is_array())
             {
-                ExpandRef(Json, V);
+                ExpandRef(Json, K.substr(1), V);
             }
         }
     }

@@ -215,7 +215,9 @@ public:
 };
 
 #define BEGIN_CONSTRUCT_ACTOR \
-auto ClassName   = Data.at("Class").get<std::string>();
+	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str()); \
+	auto ClassName   = Data.at("Class").get<std::string>();
+
 #define CONSTRUCT_ACTOR(Class) if (ClassName == PREPEND(P, Class)) { if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) {NewActor->Deserialize(Data); return NewActor;} }
 
 #define CONSTRUCT_EACH_ACTOR(...) FOR_EACH(CONSTRUCT_ACTOR, __VA_ARGS__)
