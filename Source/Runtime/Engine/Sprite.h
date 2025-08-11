@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include "Core/String.h"
+
 struct PAnimation
 {
 	std::string Name;
@@ -158,8 +160,9 @@ public:
 		return FRect();
 	}
 
-	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes, bool LargeIndexing = false)
+	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes)
 	{
+		LogDebug("Adding animation {} with indexes: {}", Name.c_str(), String::ToString(Indexes).c_str());
 		mAnimations[Name] = PAnimation(Name, Indexes);
 		if (!mCurrentAnim)
 		{

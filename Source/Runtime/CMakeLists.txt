@@ -81,6 +81,8 @@ set(SOURCES
         Interface/Game/DialogBox.h
         Engine/Components/SpriteComponent.cpp
         Engine/Components/SpriteComponent.h
+        Core/String.h
+        Core/Array.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
