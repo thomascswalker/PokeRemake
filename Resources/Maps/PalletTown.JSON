@@ -67,6 +67,8 @@
           "Class": "PSpriteComponent",
           "InternalName": "PSpriteComponent_649",
           "Sprite": {
+            "Size": 16.0,
+            "IndexSize": 8.0,
             "Animations": [
               {
                 "Indexes": [
@@ -96,6 +98,8 @@
           "Class": "PSpriteComponent",
           "InternalName": "PSpriteComponent_654",
           "Sprite": {
+            "Size": 16.0,
+            "IndexSize": 8.0,
             "Animations": [
               {
                 "Indexes": [
@@ -125,6 +129,8 @@
           "Class": "PSpriteComponent",
           "InternalName": "PSpriteComponent_659",
           "Sprite": {
+            "Size": 16.0,
+            "IndexSize": 8.0,
             "Animations": [
               {
                 "Indexes": [
@@ -154,6 +160,8 @@
           "Class": "PSpriteComponent",
           "InternalName": "PSpriteComponent_664",
           "Sprite": {
+            "Size": 16.0,
+            "IndexSize": 8.0,
             "Animations": [
               {
                 "Indexes": [

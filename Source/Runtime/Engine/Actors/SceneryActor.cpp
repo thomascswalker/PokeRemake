@@ -7,6 +7,12 @@ PSceneryActor::PSceneryActor()
 {
     mBlocking        = true;
     mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
+    if (mSpriteComponent)
+    {
+        // Assumes scenery actors use the standard tileset atlases.
+        mSpriteComponent->SetSize(16.0f);
+        mSpriteComponent->SetIndexSize(8.0f);
+    }
 }
 
 PSpriteComponent* PSceneryActor::GetSpriteComponent()
@@ -40,6 +46,5 @@ void PSceneryActor::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PActor);
     LOAD_MEMBER_PROPERTY(Type, ESceneryType);
-    // MAP_COMPONENT(SpriteComponent);
 }
 

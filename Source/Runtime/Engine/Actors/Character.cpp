@@ -24,7 +24,8 @@ PCharacter::PCharacter()
 		mSpriteComponent->SetYOffset(CHARACTER_OFFSET);
 
 		auto Sprite = mSpriteComponent->GetSprite();
-
+		Sprite->SetSize(16.0f);
+		Sprite->SetIndexSize(16.0f);
 		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
 		Sprite->AddAnimation("WalkRight", {SI_WalkRight, SI_IdleRight});
 		Sprite->AddAnimation("WalkLeft", {SI_WalkLeft, SI_IdleLeft});
@@ -34,6 +35,8 @@ PCharacter::PCharacter()
 		Sprite->AddAnimation("IdleLeft", {SI_IdleLeft});
 		Sprite->AddAnimation("IdleUp", {SI_IdleUp});
 		Sprite->AddAnimation("IdleDown", {SI_IdleDown});
+
+		Sprite->SetCurrentAnimation("IdleDown");
 	}
 }
 

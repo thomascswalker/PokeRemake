@@ -14,7 +14,9 @@ struct PAnimation
 
 	void Next()
 	{
-		CurrentIndex = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
+		auto PrevIndex = Indexes[CurrentIndex];
+		CurrentIndex   = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
+		LogDebug("Anim {}: {} => {}", Name.c_str(), PrevIndex, Indexes[CurrentIndex]);
 	}
 
 	void Previous()
@@ -57,13 +59,20 @@ struct PAnimation
 	}
 };
 
+enum ESpriteSize
+{
+	SS_8  = 8,
+	SS_16 = 16
+};
+
 class PSprite : public PObject
 {
 	PTexture* mTexture;
-	// Horizontal count
-	int32_t mWidth = 10;
+
 	// Pixel size (width and height) of each sprite
-	float mSize = DEFAULT_SPRITE_WIDTH;
+	float mSize = 16.0f;
+	// Pixel size of each index within the texture atlas
+	float mIndexSize = 8.0f;
 
 	std::map<std::string, PAnimation> mAnimations;
 	PAnimation* mCurrentAnim;
@@ -77,7 +86,6 @@ public:
 	PSprite(const PSprite& other)
 		: PObject{other},
 		  mTexture{other.mTexture},
-		  mWidth{other.mWidth},
 		  mSize{other.mSize},
 		  mAnimations{other.mAnimations},
 		  mCurrentAnim{other.mCurrentAnim},
@@ -87,7 +95,6 @@ public:
 	PSprite(PSprite&& other) noexcept
 		: PObject{std::move(other)},
 		  mTexture{other.mTexture},
-		  mWidth{other.mWidth},
 		  mSize{other.mSize},
 		  mAnimations{std::move(other.mAnimations)},
 		  mCurrentAnim{other.mCurrentAnim},
@@ -100,7 +107,6 @@ public:
 			return *this;
 		PObject::operator =(other);
 		mTexture        = other.mTexture;
-		mWidth          = other.mWidth;
 		mSize           = other.mSize;
 		mAnimations     = other.mAnimations;
 		mCurrentAnim    = other.mCurrentAnim;
@@ -115,7 +121,6 @@ public:
 			return *this;
 		PObject::operator =(std::move(other));
 		mTexture        = other.mTexture;
-		mWidth          = other.mWidth;
 		mSize           = other.mSize;
 		mAnimations     = std::move(other.mAnimations);
 		mCurrentAnim    = other.mCurrentAnim;
@@ -153,9 +158,9 @@ public:
 		if (mCurrentAnim && !mCurrentAnim->Indexes.empty())
 		{
 			const auto Index = mCurrentAnim->GetCurrentIndex();
-			const auto X     = Index % static_cast<uint32_t>(BLOCK_ITEM_SIZE);
-			const auto Y     = Index / static_cast<uint32_t>(BLOCK_ITEM_SIZE);
-			return {X * TILE_ITEM_SIZE, Y * TILE_ITEM_SIZE, BLOCK_ITEM_SIZE, BLOCK_ITEM_SIZE};
+			const auto X     = Index % static_cast<uint32_t>(mIndexSize);
+			const auto Y     = Index / static_cast<uint32_t>(mIndexSize);
+			return {X * mIndexSize, Y * mIndexSize, mSize, mSize};
 		}
 		return FRect();
 	}
@@ -208,16 +213,6 @@ public:
 		mAnimationTimer = 0.0f; // Reset animation timer
 	}
 
-	void SetWidth(int32_t Width)
-	{
-		mWidth = Width;
-	}
-
-	int32_t GetWidth() const
-	{
-		return mWidth;
-	}
-
 	void SetSize(float Size)
 	{
 		mSize = Size;
@@ -226,6 +221,16 @@ public:
 	float GetSize() const
 	{
 		return mSize;
+	}
+
+	float GetIndexSize() const
+	{
+		return mIndexSize;
+	}
+
+	void SetIndexSize(float Size)
+	{
+		mIndexSize = Size;
 	}
 
 	JSON Serialize() const override
@@ -238,7 +243,6 @@ public:
 		}
 		Result["Texture"] = GetTexture()->GetName();
 		Result["Size"]    = mSize;
-		Result["Width"]   = mWidth;
 		return Result;
 	}
 
@@ -250,7 +254,7 @@ public:
 		mTexture     = PTextureManager::Get(Texture);
 		LogDebug("Loaded texture: {}", mTexture->GetName());
 		LOAD_MEMBER_PROPERTY(Size, float);
-		LOAD_MEMBER_PROPERTY(Width, uint32_t);
+		LOAD_MEMBER_PROPERTY(IndexSize, float);
 
 		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump(4));
 		for (auto& Anim : Data["Animations"])

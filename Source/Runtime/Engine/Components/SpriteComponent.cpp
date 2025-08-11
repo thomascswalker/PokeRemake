@@ -1,6 +1,6 @@
 #include "SpriteComponent.h"
 
-PSpriteComponent::PSpriteComponent()
+PSpriteComponent::PSpriteComponent(): mSprite{}
 {
     mDrawPriority = DP_FOREGROUND;
 }

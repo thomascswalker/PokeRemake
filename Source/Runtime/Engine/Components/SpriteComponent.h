@@ -3,7 +3,7 @@
 
 class PSpriteComponent : public PComponent, public IDrawable
 {
-    PSprite mSprite{};
+    PSprite mSprite;
     float mYOffset = 0;
 
 public:
@@ -52,6 +52,16 @@ public:
     PSprite* GetSprite()
     {
         return &mSprite;
+    }
+
+    void SetSize(float Size)
+    {
+        mSprite.SetSize(Size);
+    }
+
+    void SetIndexSize(float Size)
+    {
+        mSprite.SetIndexSize(Size);
     }
 
     JSON Serialize() const override;
