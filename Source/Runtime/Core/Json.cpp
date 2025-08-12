@@ -17,7 +17,11 @@ void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override)
 
     JSON RefJson = JSON::parse(Buffer);
     Json->merge_patch(RefJson);
-    LogDebug("Patched Ref: {}", Json->dump());
+
+    if (!(Override.is_object() || Override.is_array()))
+    {
+        return;
+    }
 
     for (const auto& [K, V] : Override.items())
     {
@@ -40,7 +44,6 @@ void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override)
         }
         *Ptr = V;
     }
-    LogDebug("Custom Ref: {}", Json->dump());
 }
 
 void Expand(JSON* Json)
@@ -49,11 +52,11 @@ void Expand(JSON* Json)
     {
         for (auto& [K, V] : Json->items())
         {
-            if (!K.starts_with("$") && V.is_object() || V.is_array())
+            if (!K.starts_with("$"))
             {
                 Expand(&V);
             }
-            else if (K.starts_with("$") && V.is_object() || V.is_array())
+            else if (K.starts_with("$"))
             {
                 ExpandRef(Json, K.substr(1), V);
             }

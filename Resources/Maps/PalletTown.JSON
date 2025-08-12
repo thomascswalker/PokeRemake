@@ -61,37 +61,43 @@
       ]
     },
     {
-      "$Tree": {
-        "Components::1::Message": "This is a custom tree."
-      },
+      "$Tree": null,
       "Position": [
         800.0,
         900.0
       ]
     },
     {
-      "$SignPost": {},
-      "Position": [
-        700.0,
-        900.0
-      ]
-    },
-    {
-      "$SignPost": {},
+      "$SignPost": {
+        "Components::1::Message": "${PLAYER}'s house"
+      },
       "Position": [
         300.0,
         500.0
       ]
     },
     {
-      "$SignPost": {},
+      "$SignPost": {
+        "Components::1::Message": "${RIVAL}'s house"
+      },
       "Position": [
         1100.0,
         500.0
       ]
     },
     {
-      "$SignPost": {},
+      "$SignPost": {
+        "Components::1::Message": "PALLET TOWN"
+      },
+      "Position": [
+        700.0,
+        900.0
+      ]
+    },
+    {
+      "$SignPost": {
+        "Components::1::Message": "OAK POKeMON"
+      },
       "Position": [
         1300.0,
         1300.0

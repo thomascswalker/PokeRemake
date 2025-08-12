@@ -4,7 +4,7 @@
 class PSpriteComponent : public PComponent, public IDrawable
 {
     PSprite mSprite;
-    float mYOffset = 0;
+    FVector2 mOffset{};
 
 public:
     PSpriteComponent();
@@ -12,20 +12,20 @@ public:
     PSpriteComponent(const PSpriteComponent& other)
         : PComponent{other},
           mSprite{other.mSprite},
-          mYOffset{other.mYOffset} {}
+          mOffset{other.mOffset} {}
 
     PSpriteComponent(PSpriteComponent&& other) noexcept
         : PComponent{std::move(other)},
           mSprite{std::move(other.mSprite)},
-          mYOffset{other.mYOffset} {}
+          mOffset{other.mOffset} {}
 
     PSpriteComponent& operator=(const PSpriteComponent& other)
     {
         if (this == &other)
             return *this;
         PComponent::operator =(other);
-        mSprite  = other.mSprite;
-        mYOffset = other.mYOffset;
+        mSprite = other.mSprite;
+        mOffset = other.mOffset;
         return *this;
     }
 
@@ -34,8 +34,8 @@ public:
         if (this == &other)
             return *this;
         PComponent::operator =(std::move(other));
-        mSprite  = std::move(other.mSprite);
-        mYOffset = other.mYOffset;
+        mSprite = std::move(other.mSprite);
+        mOffset = other.mOffset;
         return *this;
     }
 
@@ -44,9 +44,9 @@ public:
     bool Draw(const PRenderer* Renderer) const override;
     void Tick(float DeltaTime) override;
 
-    void SetYOffset(float Offset)
+    void SetOffset(const FVector2& Offset)
     {
-        mYOffset = Offset;
+        mOffset = Offset;
     }
 
     PSprite* GetSprite()
