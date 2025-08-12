@@ -23,6 +23,11 @@ public:
         return *this;
     }
 
+    SInteractData* GetInteractData()
+    {
+        return &mData;
+    }
+
     void Interact(PPlayerCharacter* Player);
     void Deserialize(const JSON& Data) override;
 };

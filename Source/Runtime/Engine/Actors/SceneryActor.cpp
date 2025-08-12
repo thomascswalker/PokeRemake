@@ -1,6 +1,7 @@
 #include "SceneryActor.h"
 
 #include "Engine/World.h"
+#include "Engine/Components/InteractionComponent.h"
 
 PSceneryActor::PSceneryActor()
 {
@@ -35,15 +36,19 @@ FRect PSceneryActor::GetLocalBounds() const
 
 JSON PSceneryActor::Serialize() const
 {
-    BEGIN_SAVE_PROPERTIES(PActor);
-    SAVE_MEMBER_PROPERTY(Type);
+    JSON Result;
+    Result["Position"] = {mPosition.X, mPosition.Y};
+    Result[mType]      = JSON::object();
+
+    auto InteractData                       = mInteractionComponent->GetInteractData();
+    Result[mType]["Components::1::Message"] = InteractData->Message;
     END_SAVE_PROPERTIES;
 }
 
 void PSceneryActor::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PActor);
-    LOAD_MEMBER_PROPERTY(Type, ESceneryType);
+    LOAD_MEMBER_PROPERTY(Type, std::string);
     mSpriteComponent      = GetComponent<PSpriteComponent>();
     mInteractionComponent = GetComponent<PInteractionComponent>();
 }

@@ -3,6 +3,7 @@
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
 #include "Actors/SceneryActor.h"
+#include "Components/InteractionComponent.h"
 
 #include "World.h"
 

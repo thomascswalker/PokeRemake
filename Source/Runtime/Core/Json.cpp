@@ -17,11 +17,11 @@ void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override)
 
     JSON RefJson = JSON::parse(Buffer);
     Json->merge_patch(RefJson);
-
-    if (!(Override.is_object() || Override.is_array()))
-    {
-        return;
-    }
+    //
+    // if (!(Override.is_object() || Override.is_array()))
+    // {
+    //     return;
+    // }
 
     for (const auto& [K, V] : Override.items())
     {

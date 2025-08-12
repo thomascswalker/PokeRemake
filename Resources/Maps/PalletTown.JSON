@@ -61,13 +61,6 @@
       ]
     },
     {
-      "$Tree": null,
-      "Position": [
-        800.0,
-        900.0
-      ]
-    },
-    {
       "$SignPost": {
         "Components::1::Message": "${PLAYER}'s house"
       },

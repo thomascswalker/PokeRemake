@@ -3,17 +3,18 @@
 #include "Engine/Actors/Actor.h"
 #include "Engine/Actors/Interactable.h"
 #include "Engine/Components/SpriteComponent.h"
-#include "Engine/Components/InteractionComponent.h"
 
-enum ESceneryType
+namespace SceneryTypes
 {
-    ST_Default  = 0,
-    ST_SignPost = 1
-};
+#define DECLARE_TYPE(X) inline const char* X = PREPEND($, X)
+    DECLARE_TYPE(SignPost);
+    DECLARE_TYPE(Tree);
+#undef DECLARE_TYPE
+}
 
 class PSceneryActor : public PActor, public IInteractable
 {
-    ESceneryType mType;
+    std::string mType;
     PSpriteComponent* mSpriteComponent;
     PInteractionComponent* mInteractionComponent;
 
@@ -22,7 +23,6 @@ public:
     ~PSceneryActor() override = default;
 
     PSpriteComponent* GetSpriteComponent();
-
     PInteractionComponent* GetInteractionComponent() override;
 
     FRect GetLocalBounds() const override;
