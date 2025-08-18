@@ -86,7 +86,6 @@ set(SOURCES
         Core/Json.cpp
         Engine/Components/InteractionComponent.h
         Engine/Components/InteractionComponent.cpp
-        Engine/Components/SelectionComponent.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

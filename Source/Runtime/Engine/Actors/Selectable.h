@@ -1,16 +1,12 @@
 #pragma once
 
-#include "Core/CoreFwd.h"
-
 class ISelectable
 {
+protected:
+	bool mSelected = false;
+
 public:
-	virtual ~ISelectable() = default;
-
-	virtual PSelectionComponent* GetSelectionComponent() const
-	{
-		return nullptr;
-	}
-
-	virtual void SetSelectionComponent(PSelectionComponent* Component) {}
+	bool GetSelected() { return mSelected; }
+	void SetSelected(bool value) { mSelected = value; }
+	void ToggleSelected() { mSelected = !mSelected; }
 };

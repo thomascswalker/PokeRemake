@@ -56,7 +56,7 @@ class PEditorGame : public PGame
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
-	EEditMode mEditMode = EM_Select;
+	EEditMode mEditMode = EM_None;
 
 	std::vector<PMap*> mMaps;
 	PMap* mCurrentMap;
@@ -99,7 +99,6 @@ public:
 	void RemoveInputContext(uint8_t InputContext);
 	bool HasInputContext(uint8_t InputContext);
 
-	void OnMouseEvent(SInputEvent* Event) override;
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
 

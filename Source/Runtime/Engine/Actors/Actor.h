@@ -9,8 +9,8 @@
 #include "Engine/Sprite.h"
 #include "Interface/Layout.h"
 #include "Renderer/Drawable.h"
+
 #include "Selectable.h"
-#include "Engine/Components/Component.h"
 
 class PActor;
 class PComponent;
@@ -23,12 +23,7 @@ struct SActorItem
 	JSON Data;
 };
 
-class PActor :
-	public PObject,
-#if _EDITOR
-	public ISelectable,
-#endif
-	public IInputHandler
+class PActor : public PObject, public ISelectable, public IInputHandler
 {
 protected:
 	PActor* mParent = nullptr;
@@ -39,10 +34,6 @@ protected:
 	std::vector<PComponent*> mComponents;
 
 	PCollisionComponent* mCollisionComponent = nullptr;
-
-#if _EDITOR
-	PSelectionComponent* mSelectionComponent = nullptr;
-#endif
 
 	void OnMouseEvent(SInputEvent* Event) override;
 
@@ -142,20 +133,6 @@ public:
 	{
 		return mComponents;
 	}
-
-#if _EDITOR
-	PSelectionComponent* GetSelectionComponent() const override
-	{
-		return mSelectionComponent;
-	}
-
-	void SetSelectionComponent(PSelectionComponent* Component) override
-	{
-		mSelectionComponent = Component;
-	}
-#endif
-
-	IDrawable* GetDrawableComponent() const;
 
 	virtual FRect GetLocalBounds() const
 	{
