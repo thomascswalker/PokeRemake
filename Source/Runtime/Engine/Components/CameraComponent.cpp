@@ -1,5 +1,10 @@
 #include "CameraComponent.h"
 
+PCameraComponent::PCameraComponent()
+{
+	mCameraView.SetComponent(this);
+}
+
 void PCameraComponent::Tick(float DeltaTime)
 {
 	if (mOwner)

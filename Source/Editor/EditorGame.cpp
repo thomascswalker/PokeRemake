@@ -327,8 +327,10 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 		{
 			if (mActiveCameraView)
 			{
-				mActiveCameraView->SetPosition({0, 0});
+				mActiveCameraView->GetComponent()->GetOwner()->SetPosition2D({0, 0});
+				mActiveCameraView->SetZoom(1.0f);
 			}
+			break;
 		}
 	default: break;
 	}

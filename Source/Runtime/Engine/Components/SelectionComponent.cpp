@@ -2,19 +2,17 @@
 
 bool PSelectionComponent::DebugDraw(const PRenderer* Renderer) const
 {
-    auto Bounds = mOwner->GetWorldBounds();
-    if (mSelected)
+    if (!mSelected)
     {
-        Renderer->SetDrawColor(255, 255, 128, 128);
-        Renderer->DrawFillRectAt(Bounds);
+        return true;
     }
 
-    Renderer->SetDrawColor(PColor::UISecondary);
-    Renderer->DrawRectAt(Bounds);
-
+    auto Bounds = mOwner->GetWorldBounds();
+    Renderer->SetDrawColor(PColor::SelectionOpaque);
+    Renderer->DrawRectAt(Bounds, 4.0f);
     auto Depth = GetOwner()->GetPosition3D().Z;
     auto Text  = std::format("{}: {}", GetOwner()->GetClassName().c_str(), Depth);
-    Renderer->DrawTextAt(Text, Bounds.Max(), 24.0f);
+    Renderer->DrawTextAt(Text, mOwner->GetCenter2D(), 24.0f, true);
 
     return true;
 }

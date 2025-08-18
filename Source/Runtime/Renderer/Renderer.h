@@ -24,6 +24,8 @@ class PRenderer
 	FMatrix mMVP;
 	SDL_Texture* mRenderTarget;
 
+	float DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize) const;
+
 public:
 	explicit PRenderer(SDLContext* InContext)
 		: mContext(InContext), mRenderTarget(nullptr) {}
@@ -87,14 +89,14 @@ public:
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
 	void DrawGrid() const;
-	float DrawText(const std::string& Text, const FVector2& Position, float FontSize) const;
+	float DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false) const;
 	void DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;
 	void DrawRectAt(const FRect& Rect, float Thickness = 0.0f) const;
 	void DrawFillRectAt(const FRect& Rect) const;
-	void DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize) const;
+	void DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false) const;
 	void DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
 	void DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
 	                  int32_t Index) const;
