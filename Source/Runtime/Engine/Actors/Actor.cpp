@@ -5,7 +5,6 @@
 #include "Engine/Serialization.h"
 #include "Engine/World.h"
 #include "Engine/Components/CollisionComponent.h"
-#include "Engine/Components/SpriteComponent.h"
 
 void PActor::OnMouseEvent(SInputEvent* Event)
 {
@@ -52,6 +51,18 @@ void PActor::AddComponent(PComponent* Component)
 {
 	Component->SetOwner(this);
 	mComponents.push_back(Component);
+}
+
+IDrawable* PActor::GetDrawableComponent() const
+{
+	for (auto Component : mComponents)
+	{
+		if (auto Inst = dynamic_cast<IDrawable*>(Component))
+		{
+			return Inst;
+		}
+	}
+	return nullptr;
 }
 
 void PActor::MoveToTile(int32_t X, int32_t Y)

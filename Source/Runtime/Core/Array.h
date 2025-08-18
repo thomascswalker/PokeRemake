@@ -88,6 +88,20 @@ public:
         return Result;
     }
 
+    template <typename P>
+    void Sort()
+    {
+        std::sort(mData.begin(), mData.end());
+    }
+
+    template <typename P>
+    Array Sorted(P Pred)
+    {
+        Array Result = *this;
+        std::sort(Result.begin(), Result.end(), Pred);
+        return Result;
+    }
+
     std::string ToString() const
     {
         auto Result = String::Join(mData, ",");

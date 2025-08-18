@@ -7,6 +7,8 @@
 #include "Actors/Map.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
+#include "Components/SelectionComponent.h"
+
 #include "Interface/Widget.h"
 #include "Interface/HUD.h"
 
@@ -63,6 +65,8 @@ public:
 
 #if _EDITOR
 		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
+		auto SelectionComponent = ConstructComponent<PSelectionComponent>(Actor.get());
+		Actor->SetSelectionComponent(SelectionComponent);
 #endif
 		return Actor.get();
 	}

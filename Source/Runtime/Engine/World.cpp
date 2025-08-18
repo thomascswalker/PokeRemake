@@ -216,10 +216,6 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 	std::vector<PActor*> OutActors;
 	for (auto Actor : mActors)
 	{
-		if (dynamic_cast<PMap*>(Actor.get()))
-		{
-			continue;
-		}
 		if (Actor->GetWorldBounds().Contains(Position))
 		{
 			OutActors.push_back(Actor.get());
