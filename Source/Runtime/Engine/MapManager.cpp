@@ -22,10 +22,25 @@ PMap* PMapManager::GetMapInWorld(const std::string& Name)
 	return nullptr;
 }
 
-PMap* PMapManager::LoadMap(const std::string& Name)
+PMap* PMapManager::LoadMap(const JSON& Data)
+{
+	JSON ExpandedData = Data;
+	Expand(&ExpandedData);
+	const std::string MapName = ExpandedData["MapName"];
+	sMapData[MapName]         = ExpandedData;
+	if (ExpandedData.at("Class") != "PMap")
+	{
+		LogError("Invalid class at root level of map data. Must be 'PMap'.");
+		return nullptr;
+	}
+	Serialization::DeserializeActor(ExpandedData);
+	return GetMapInWorld(MapName);
+}
+
+PMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
 	JSON JsonData;
-	if (Containers::Contains(sMapData, Name))
+	if (Containers::Contains(sMapData, Name) && !ForceReload)
 	{
 		LogDebug("Loading map from memory: {}", Name.c_str());
 		JsonData = sMapData[Name];
@@ -34,7 +49,15 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 	{
 		LogDebug("Loading map from file: {}", Name.c_str());
 		std::string Data;
-		std::string FileName = Files::FindFile(Name + ".JSON");
+		std::string FileName;
+		if (!Name.ends_with(".JSON"))
+		{
+			FileName = Files::FindFile(Name + ".JSON");
+		}
+		else
+		{
+			FileName = Name;
+		}
 
 		if (FileName.empty() || !Files::ReadFile(FileName, Data))
 		{
@@ -56,6 +79,33 @@ PMap* PMapManager::LoadMap(const std::string& Name)
 	return GetMapInWorld(Name);
 }
 
+PMap* PMapManager::LoadMapFile(const std::string& FileName)
+{
+	JSON JsonData;
+
+	LogDebug("Loading map from file: {}", FileName.c_str());
+	std::string Data;
+
+	if (FileName.empty() || !Files::ReadFile(FileName, Data))
+	{
+		return nullptr;
+	}
+
+	JsonData = JSON::parse(Data.data());
+	Expand(&JsonData);
+	const std::string MapName = JsonData["MapName"];
+	sMapData[MapName]         = JsonData;
+
+	if (JsonData.at("Class") != "PMap")
+	{
+		LogError("Invalid class at root level of map file. Must be 'PMap'.");
+		return nullptr;
+	}
+	Serialization::DeserializeActor(JsonData);
+
+	return GetMapInWorld(MapName);
+}
+
 bool PMapManager::UnloadMap(const std::string& Name)
 {
 	auto Map = GetMapInWorld(Name);
@@ -75,7 +125,7 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
                             EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
-	PMap* Map = LoadMap(NewMap);
+	PMap* Map = LoadMap(NewMap, false);
 	if (!Map)
 	{
 		LogError("Failed to load map: {}", NewMap.c_str());

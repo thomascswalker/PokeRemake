@@ -15,7 +15,7 @@ bool TestGame::PreStart()
 	LoadAllTilesets();
 
 	// Load the map from JSON
-	PMapManager::LoadMap(MAP_PALLET_TOWN);
+	PMapManager::LoadMap(MAP_PALLET_TOWN, false);
 
 	LogDebug("PreStart: Constructing actors.");
 	auto Player = ConstructActor<PPlayerCharacter>();

@@ -8,6 +8,7 @@
 #include "Engine/Actors/Portal.h"
 #include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
+#include "Engine/MapManager.h"
 #include "Engine/Serialization.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
@@ -346,14 +347,7 @@ void PEditorGame::OnLoadButtonClicked()
 		return;
 	}
 
-	std::string Data;
-	if (!Files::ReadFile(FileName, Data))
-	{
-		return;
-	}
-
-	const JSON JsonData = JSON::parse(Data.data());
-	Serialization::DeserializeActor(JsonData);
+	PMapManager::LoadMap(FileName, true);
 }
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
@@ -451,20 +445,18 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No tileset item selected.");
 			return;
 		}
-		if (Map)
+
+		switch (mBrushMode)
 		{
-			switch (mBrushMode)
+		case BM_Default:
+		case BM_Copy: PaintTile(Map->GetTileUnderMouse());
+			break;
+		case BM_Fill: for (auto Tile : Map->GetTiles())
 			{
-			case BM_Default:
-			case BM_Copy: PaintTile(Map->GetTileUnderMouse());
-				break;
-			case BM_Fill: for (auto Tile : Map->GetTiles())
-				{
-					Tile->Index   = mCurrentTilesetItem->Index;
-					Tile->Tileset = mCurrentTileset;
-				}
-				break;
+				Tile->Index   = mCurrentTilesetItem->Index;
+				Tile->Tileset = mCurrentTileset;
 			}
+			break;
 		}
 	}
 	else if (HasInputContext(IC_Actor))
