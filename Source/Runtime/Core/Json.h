@@ -5,7 +5,7 @@
 
 using JSON = nlohmann::json;
 
-void ExpandRef(JSON* Json, const std::string& Ref);
+void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override);
 
 void Expand(JSON* Json);
 

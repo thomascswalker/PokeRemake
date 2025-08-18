@@ -79,3 +79,7 @@ This is a personal project to attempt to recreate Pokemon Generation 1 in modern
 - [ ] Environment
 
 
+## Bugs
+
+- Debug mode, fix loading PalletTown map. Doesn't seem to properly expand the `$Ref` key within a map file.
+

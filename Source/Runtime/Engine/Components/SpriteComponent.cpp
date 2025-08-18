@@ -26,7 +26,11 @@ bool PSpriteComponent::Draw(const PRenderer* Renderer) const
     }
 
     auto Bounds = mOwner->GetWorldBounds();
-    Bounds.Y -= mYOffset;
+    if (mOffset)
+    {
+        Bounds.X -= mOffset.X;
+        Bounds.Y -= mOffset.Y;
+    }
 
     const FRect Source = mSprite.GetCurrentRect();
     Renderer->DrawTextureAt(Texture, Source, Bounds);
@@ -43,7 +47,7 @@ JSON PSpriteComponent::Serialize() const
 {
     BEGIN_SAVE_PROPERTIES(PComponent);
     SERIALIZE_MEMBER_PROPERTY(Sprite);
-    SAVE_MEMBER_PROPERTY(YOffset);
+    // SAVE_MEMBER_PROPERTY(Offset);
     END_SAVE_PROPERTIES;
 }
 
@@ -51,5 +55,5 @@ void PSpriteComponent::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PComponent);
     DESERIALIZE_MEMBER_PROPERTY(Sprite);
-    LOAD_MEMBER_PROPERTY(YOffset, float);
+    // LOAD_MEMBER_PROPERTY(Offset, float);
 }

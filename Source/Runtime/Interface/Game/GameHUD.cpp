@@ -6,17 +6,19 @@ PGameHUD::PGameHUD()
 {
     mLayoutMode = LM_Vertical;
 
-    PWidget::AddChild(&mSpacer);
-    mDialogBox.SetVisible(false);
+    mSpacer = ConstructWidget<PSpacer>();
+    PWidget::AddChild(mSpacer);
 
-    PWidget::AddChild(&mDialogBox);
+    mDialogBox = ConstructWidget<PDialogBox>();
+    PWidget::AddChild(mDialogBox);
+    mDialogBox->SetVisible(false);
 }
 
 void PGameHUD::DialogBox(const std::string& Text)
 {
-    mDialogBox.GetVisible() ? mDialogBox.SetVisible(false) : mDialogBox.SetVisible(true);
-    mDialogBox.GetVisible()
+    mDialogBox->GetVisible() ? mDialogBox->SetVisible(false) : mDialogBox->SetVisible(true);
+    mDialogBox->GetVisible()
         ? GetApplication()->SetInputContext(Game::Context::Dialog)
         : GetApplication()->SetInputContext(Game::Context::Default);
-    mDialogBox.SetText(Text);
+    mDialogBox->SetText(Text);
 }

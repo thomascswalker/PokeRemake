@@ -124,8 +124,11 @@ void PActor::Deserialize(const JSON& Data)
 		LogDebug("Deserializing {} components for {}.", Count, mInternalName.c_str());
 		for (auto& Component : Components)
 		{
-			Serialization::DeserializeComponent(Component, this);
-			LogDebug("Deserialized component: {}", mInternalName.c_str());
+			if (auto NewComponent = Serialization::DeserializeComponent(Component, this))
+			{
+				AddComponent(NewComponent);
+				LogDebug("Deserialized component: {}", NewComponent->GetClassName().c_str());
+			}
 		}
 	}
 	else

@@ -20,7 +20,7 @@ PCharacter::PCharacter()
 	if (mSpriteComponent)
 	{
 		mSpriteComponent->SetDrawPriority(Z_NPC);
-		mSpriteComponent->SetYOffset(CHARACTER_OFFSET);
+		mSpriteComponent->SetOffset({0, CHARACTER_OFFSET});
 
 		auto Sprite = mSpriteComponent->GetSprite();
 

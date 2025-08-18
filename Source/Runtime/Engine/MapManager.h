@@ -13,7 +13,10 @@ class PMapManager
 
 public:
 	static PMap* GetMapInWorld(const std::string& Name);
-	static PMap* LoadMap(const std::string& Name);
-	static bool	 UnloadMap(const std::string& Name);
-	static bool	 SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition, EOrientation ExitDirection);
+	static PMap* LoadMap(const JSON& Data);
+	static PMap* LoadMap(const std::string& Name, bool ForceReload);
+	static PMap* LoadMapFile(const std::string& FileName);
+	static bool UnloadMap(const std::string& Name);
+	static bool SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
+	                      EOrientation ExitDirection);
 };

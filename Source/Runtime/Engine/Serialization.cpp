@@ -3,6 +3,7 @@
 #include "Actors/Actor.h"
 #include "Actors/Portal.h"
 #include "Actors/SceneryActor.h"
+#include "Components/InteractionComponent.h"
 
 #include "World.h"
 
@@ -23,7 +24,8 @@ PActor* Serialization::DeserializeActor(const JSON& Data)
 		return nullptr; // Skip null objects
 	}
 
-	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str());
+	CHECK_PROPERTY(Data, Class);
+
 	BEGIN_CONSTRUCT_ACTOR;
 
 	CONSTRUCT_EACH_ACTOR(
@@ -50,7 +52,8 @@ PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
 		SpriteComponent,
 		CameraComponent,
 		CharacterMovementComponent,
-		CollisionComponent
+		CollisionComponent,
+		InteractionComponent
 	);
 
 	LogWarning("Deserialization of Component {} not supported.", ClassName.c_str());

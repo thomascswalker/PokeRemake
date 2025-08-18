@@ -1,7 +1,7 @@
 #include "SceneryActor.h"
 
 #include "Engine/World.h"
-#include "Interface/Game/GameHUD.h"
+#include "Engine/Components/InteractionComponent.h"
 
 PSceneryActor::PSceneryActor()
 {
@@ -15,16 +15,18 @@ PSceneryActor::PSceneryActor()
         mSpriteComponent->SetSize(16.0f);
         mSpriteComponent->SetIndexSize(8.0f);
     }
+
+    mInteractionComponent = ConstructComponent<PInteractionComponent>(this);
 }
 
 PSpriteComponent* PSceneryActor::GetSpriteComponent()
 {
-    if (mSpriteComponent)
-    {
-        return mSpriteComponent;
-    }
-    mSpriteComponent = GetComponent<PSpriteComponent>();
     return mSpriteComponent;
+}
+
+PInteractionComponent* PSceneryActor::GetInteractionComponent()
+{
+    return mInteractionComponent;
 }
 
 FRect PSceneryActor::GetLocalBounds() const
@@ -32,21 +34,22 @@ FRect PSceneryActor::GetLocalBounds() const
     return FRect::Block();
 }
 
-void PSceneryActor::Interact(PPlayerCharacter* Player)
-{
-    GetHUD<PGameHUD>()->DialogBox("This is a signpost.");
-}
-
 JSON PSceneryActor::Serialize() const
 {
-    BEGIN_SAVE_PROPERTIES(PActor);
-    SAVE_MEMBER_PROPERTY(Type);
+    JSON Result;
+    Result["Position"] = {mPosition.X, mPosition.Y};
+    Result[mType]      = JSON::object();
+
+    auto InteractData                       = mInteractionComponent->GetInteractData();
+    Result[mType]["Components::1::Message"] = InteractData->Message;
     END_SAVE_PROPERTIES;
 }
 
 void PSceneryActor::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PActor);
-    LOAD_MEMBER_PROPERTY(Type, ESceneryType);
+    LOAD_MEMBER_PROPERTY(Type, std::string);
+    mSpriteComponent      = GetComponent<PSpriteComponent>();
+    mInteractionComponent = GetComponent<PInteractionComponent>();
 }
 

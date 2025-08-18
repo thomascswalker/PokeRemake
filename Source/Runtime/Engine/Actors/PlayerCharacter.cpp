@@ -5,6 +5,7 @@
 #include "Core/Constants.h"
 #include "Engine/Input.h"
 #include "Engine/World.h"
+#include "Engine/Components/InteractionComponent.h"
 
 #define PLAYER_SPEED 1.0f
 
@@ -162,7 +163,10 @@ void PPlayerCharacter::Interact()
 	{
 		if (auto Interactable = dynamic_cast<IInteractable*>(Actor))
 		{
-			Interactable->Interact(this);
+			if (auto Component = Interactable->GetInteractionComponent())
+			{
+				Component->Interact(this);
+			}
 		}
 	}
 }

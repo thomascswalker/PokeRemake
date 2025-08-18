@@ -8,8 +8,8 @@
 
 class PGameHUD : public PHUD
 {
-    PSpacer mSpacer;
-    PDialogBox mDialogBox;
+    PSpacer* mSpacer;
+    PDialogBox* mDialogBox;
 
 public:
     PGameHUD();

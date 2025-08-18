@@ -115,9 +115,9 @@ public:
 	{
 		for (auto Component : mComponents)
 		{
-			if (Component)
+			if (auto Inst = dynamic_cast<T*>(Component))
 			{
-				return dynamic_cast<T*>(Component);
+				return Inst;
 			}
 		}
 		return nullptr;
@@ -190,6 +190,7 @@ public:
 
 	JSON Serialize() const override;
 	void Deserialize(const JSON& Data) override;
+	virtual void BindComponent(PComponent* Component) {}
 
 	// Overlap
 	virtual void OnOverlapBegin(PActor* Actor) {}
@@ -214,7 +215,9 @@ public:
 };
 
 #define BEGIN_CONSTRUCT_ACTOR \
-auto ClassName   = Data.at("Class").get<std::string>();
+	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str()); \
+	auto ClassName   = Data.at("Class").get<std::string>();
+
 #define CONSTRUCT_ACTOR(Class) if (ClassName == PREPEND(P, Class)) { if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) {NewActor->Deserialize(Data); return NewActor;} }
 
 #define CONSTRUCT_EACH_ACTOR(...) FOR_EACH(CONSTRUCT_ACTOR, __VA_ARGS__)
