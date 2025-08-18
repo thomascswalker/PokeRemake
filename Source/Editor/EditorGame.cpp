@@ -228,6 +228,55 @@ bool PEditorGame::HasInputContext(uint8_t InputContext)
 	return (mInputContext & InputContext) == InputContext;
 }
 
+void PEditorGame::OnMouseEvent(SInputEvent* Event)
+{
+	switch (Event->Type)
+	{
+	case IET_MouseUp:
+		{
+			if (mEditMode != EM_Select)
+			{
+				break;
+			}
+
+			auto Actors = GetRenderer()->GetActorsUnderMouse();
+			if (Actors.Size() == 0)
+			{
+				return;
+			}
+
+			auto CompareDrawPriority = [](const PActor* A, const PActor* B)
+			{
+				auto CompA = A->GetDrawableComponent();
+				auto CompB = B->GetDrawableComponent();
+				if (!CompA || !CompB)
+				{
+					return true;
+				}
+				return CompA->GetDrawPriority() > CompB->GetDrawPriority();
+			};
+			std::ranges::sort(Actors, CompareDrawPriority);
+
+			auto Comps         = GetWorld()->GetComponents();
+			auto SelectionComp = Actors[0]->GetSelectionComponent();
+			if (!SelectionComp)
+			{
+				LogWarning("No selection component on selected actor.");
+				return;
+			}
+			SelectionComp->ToggleSelected();
+
+			LogDebug("Selecting {}", Actors[0]->GetInternalName().c_str());
+
+			break;
+		}
+	default:
+		{
+			break;
+		}
+	}
+}
+
 void PEditorGame::OnKeyDown(SInputEvent* Event)
 {
 	PGame::OnKeyDown(Event);
@@ -411,19 +460,23 @@ void PEditorGame::OnActorButtonChecked(bool State)
 
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
 {
-	if (auto Map = dynamic_cast<PMap*>(ClickedActor))
+	if (auto Selectable = static_cast<ISelectable*>(ClickedActor))
 	{
-		Map->ToggleSelected();
-		for (auto Actor : GetWorld()->GetActors())
-		{
-			if (Map->GetInternalName() == Actor->GetInternalName())
-			{
-				continue;
-			}
-			Actor->SetSelected(false);
-		}
-		mCurrentMap = Map;
+		LogDebug("Selecting {}", ClickedActor->GetInternalName().c_str());
 	}
+	// if (auto Map = dynamic_cast<PMap*>(ClickedActor))
+	// {
+	// 	Map->ToggleSelected();
+	// 	for (auto Actor : GetWorld()->GetActors())
+	// 	{
+	// 		if (Map->GetInternalName() == Actor->GetInternalName())
+	// 		{
+	// 			continue;
+	// 		}
+	// 		Actor->SetSelected(false);
+	// 	}
+	// 	mCurrentMap = Map;
+	// }
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
@@ -527,20 +580,20 @@ void PEditorGame::ConstructMap(const JSON& JsonData)
 
 void PEditorGame::ActorSelected(PActor* Actor)
 {
-	if (const auto Map = dynamic_cast<PMap*>(Actor))
-	{
-		// Deselect all other maps
-		for (const auto C : mWorld->GetActorsOfType<PMap>())
-		{
-			if (C == Map)
-			{
-				continue; // Skip the currently selected map
-			}
-			C->SetSelected(false);
-		}
-
-		Map->GetSelected() ? SetCurrentMap(Map) : SetCurrentMap(nullptr);
-	}
+	// if (const auto Map = dynamic_cast<PMap*>(Actor))
+	// {
+	// 	// Deselect all other maps
+	// 	for (const auto C : mWorld->GetActorsOfType<PMap>())
+	// 	{
+	// 		if (C == Map)
+	// 		{
+	// 			continue; // Skip the currently selected map
+	// 		}
+	// 		C->SetSelected(false);
+	// 	}
+	//
+	// 	Map->GetSelected() ? SetCurrentMap(Map) : SetCurrentMap(nullptr);
+	// }
 }
 
 void PEditorGame::PaintTile(STile* Tile)

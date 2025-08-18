@@ -76,8 +76,4 @@ public:
 
 	JSON Serialize() const override;
 	void Deserialize(const JSON& Data) override;
-
-#if _EDITOR
-	void OnKeyUp(SInputEvent* Event) override;
-#endif
 };

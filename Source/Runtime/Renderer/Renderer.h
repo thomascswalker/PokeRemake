@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Core/Array.h"
 #include "Core/CoreFwd.h"
 #include "Engine/Texture.h"
 #include "Engine/Tileset.h"
@@ -65,6 +66,7 @@ public:
 	bool ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const;
 
 	PActor* GetActorUnderMouse() const;
+	Array<PActor*> GetActorsUnderMouse() const;
 
 	/* Drawing */
 

@@ -103,53 +103,53 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 		}
 		Renderer->DrawLineAt({0, Y * TILE_SIZE}, {Max.X, Y * TILE_SIZE});
 	}
-
-#if _EDITOR
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
-	{
-		auto Dest = GetWorldBounds();
-		Renderer->SetDrawColor(255, 200, 0, 150);
-		if (mMouseOver)
-		{
-			constexpr float ExpandSize = 2.0f;
-			Renderer->DrawRectAt(Dest.Expanded(ExpandSize));
-		}
-		if (mSelected)
-		{
-			Renderer->DrawFillRectAt(Dest);
-		}
-	}
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
-	{
-		auto EditorGame = GetEditorGame();
-		auto BrushSize  = EditorGame->GetBrushSize();
-
-		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
-		if (auto Tile = GetTileAtPosition(MouseWorldPos))
-		{
-			Renderer->SetDrawColor(PColor::Red);
-			auto HoverRect = Tile->GetDestRect();
-			if (BrushSize == BS_Large)
-			{
-				HoverRect.W *= 2.0f;
-				HoverRect.H *= 2.0f;
-			}
-			Renderer->DrawRectAt(HoverRect);
-		}
-	}
-	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Actor) && mMouseOver)
-	{
-		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
-		if (auto Tile = GetTileAtPosition(MouseWorldPos))
-		{
-			Renderer->SetDrawColor(PColor::Red);
-			auto HoverRect = Tile->GetDestRect();
-			HoverRect.W *= 2.0f;
-			HoverRect.H *= 2.0f;
-			Renderer->DrawRectAt(HoverRect);
-		}
-	}
-#endif
+	//
+	// #if _EDITOR
+	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
+	// 	{
+	// 		auto Dest = GetWorldBounds();
+	// 		Renderer->SetDrawColor(255, 200, 0, 150);
+	// 		if (mMouseOver)
+	// 		{
+	// 			constexpr float ExpandSize = 2.0f;
+	// 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize));
+	// 		}
+	// 		if (mSelected)
+	// 		{
+	// 			Renderer->DrawFillRectAt(Dest);
+	// 		}
+	// 	}
+	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
+	// 	{
+	// 		auto EditorGame = GetEditorGame();
+	// 		auto BrushSize  = EditorGame->GetBrushSize();
+	//
+	// 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
+	// 		if (auto Tile = GetTileAtPosition(MouseWorldPos))
+	// 		{
+	// 			Renderer->SetDrawColor(PColor::Red);
+	// 			auto HoverRect = Tile->GetDestRect();
+	// 			if (BrushSize == BS_Large)
+	// 			{
+	// 				HoverRect.W *= 2.0f;
+	// 				HoverRect.H *= 2.0f;
+	// 			}
+	// 			Renderer->DrawRectAt(HoverRect);
+	// 		}
+	// 	}
+	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Actor) && mMouseOver)
+	// 	{
+	// 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
+	// 		if (auto Tile = GetTileAtPosition(MouseWorldPos))
+	// 		{
+	// 			Renderer->SetDrawColor(PColor::Red);
+	// 			auto HoverRect = Tile->GetDestRect();
+	// 			HoverRect.W *= 2.0f;
+	// 			HoverRect.H *= 2.0f;
+	// 			Renderer->DrawRectAt(HoverRect);
+	// 		}
+	// 	}
+	// #endif
 
 	return true;
 }
@@ -258,27 +258,3 @@ void PMap::Deserialize(const JSON& Data)
 	EditorGame->SetCurrentMap(this);
 #endif
 }
-
-#if _EDITOR
-void PMap::OnKeyUp(SInputEvent* Event)
-{
-	if (GetEditorGame()->GetCurrentMap() == this && mSelected)
-	{
-		FVector2 Direction;
-		switch (Event->KeyUp)
-		{
-		case SDLK_UP: Direction.Y = -BLOCK_SIZE;
-			break;
-		case SDLK_DOWN: Direction.Y = BLOCK_SIZE;
-			break;
-		case SDLK_LEFT: Direction.X = -BLOCK_SIZE;
-			break;
-		case SDLK_RIGHT: Direction.X = BLOCK_SIZE;
-			break;
-		default: break;
-		}
-		AddPosition(Direction);
-		Event->Consume();
-	}
-}
-#endif

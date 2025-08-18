@@ -551,3 +551,17 @@ PActor* PRenderer::GetActorUnderMouse() const
 	}
 	return nullptr;
 }
+
+Array<PActor*> PRenderer::GetActorsUnderMouse() const
+{
+	Array<PActor*> Actors;
+	auto W = GetWorld();
+	for (const auto& Actor : W->GetActors())
+	{
+		if (Actor->mMouseOver)
+		{
+			Actors.Add(Actor);
+		}
+	}
+	return Actors;
+}
