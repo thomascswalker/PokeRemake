@@ -81,21 +81,26 @@ void PEditorGame::PostTick()
 	{
 		return;
 	}
-	auto DepthCompare = [](const PActor* A, const PActor* B)
+	if (mSelectionQueue.Size() == 1)
 	{
-		return A < B;
-	};
+		auto Comp     = mSelectionQueue[0]->GetSelectionComponent();
+		bool NewState = !Comp->GetSelected();
+		DeselectAll();
+		Comp->SetSelected(NewState);
+		mSelectionQueue.Clear();
+		return;
+	}
 
 	// Sort the selection queue by Z depth.
-	mSelectionQueue.Sort(DepthCompare);
+	auto TempQueue = mSelectionQueue.Sorted(DepthSort);
 
 	// Store the opposite selection state of the first actor.
-	auto Comp     = mSelectionQueue[0]->GetSelectionComponent();
+	auto Comp     = TempQueue[0]->GetSelectionComponent();
 	bool NewState = !Comp->GetSelected();
 
 	// Deselect all actors, then set the new state of the first actor.
 	DeselectAll();
-	mSelectionQueue[0]->GetSelectionComponent()->SetSelected(NewState);
+	TempQueue[0]->GetSelectionComponent()->SetSelected(NewState);
 
 	// Clear the selection queue.
 	mSelectionQueue.Clear();

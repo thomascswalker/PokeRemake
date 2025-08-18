@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/CoreFwd.h"
+
 enum EZDepth
 {
 	Z_0      = 0, // In the background of all else
@@ -39,3 +41,5 @@ public:
 
 	virtual float GetDepth() const = 0;
 };
+
+bool DepthSort(const PActor* A, const PActor* B);

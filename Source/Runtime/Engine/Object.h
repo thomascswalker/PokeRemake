@@ -42,6 +42,11 @@ public:
 
 	void GenerateInternalName();
 
+	virtual std::string GetDisplayName() const
+	{
+		return mInternalName;
+	}
+
 	virtual JSON Serialize() const
 	{
 		JSON Result;

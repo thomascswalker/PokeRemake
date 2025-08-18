@@ -94,13 +94,13 @@ public:
     }
 
     template <typename P>
-    void Sort(P& Pred)
+    void Sort(P Pred)
     {
         std::ranges::sort(mData, Pred);
     }
 
     template <typename P>
-    Array Sorted(P& Pred)
+    Array Sorted(P Pred)
     {
         Array Result = *this;
         std::ranges::sort(Result, Pred);
