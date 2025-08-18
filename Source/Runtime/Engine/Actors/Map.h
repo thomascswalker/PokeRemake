@@ -37,11 +37,17 @@ class PMap : public PActor, public IDrawable
 	int32_t mSizeY = 0;
 
 public:
+	PMap();
 	void Start() override;
 	bool Draw(const PRenderer* Renderer) const override;
 	bool DebugDraw(const PRenderer* Renderer) const override;
 	FRect GetLocalBounds() const override;
 	FRect GetWorldBounds() const override;
+
+	float GetDepth() const override
+	{
+		return mPosition.Z;
+	}
 
 	std::vector<STile*> GetTiles();
 	STile* GetTile(int Index);

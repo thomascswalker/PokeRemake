@@ -4,6 +4,9 @@
 
 class ISelectable
 {
+protected:
+	bool mSelectable = true;
+
 public:
 	virtual ~ISelectable() = default;
 
@@ -13,4 +16,9 @@ public:
 	}
 
 	virtual void SetSelectionComponent(PSelectionComponent* Component) {}
+
+	bool GetSelectable() const
+	{
+		return mSelectable;
+	}
 };

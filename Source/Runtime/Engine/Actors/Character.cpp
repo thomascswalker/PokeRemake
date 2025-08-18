@@ -8,6 +8,8 @@
 
 PCharacter::PCharacter()
 {
+	mPosition.Z = Drawing::Z_NPC;
+
 	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
 	{
@@ -19,7 +21,6 @@ PCharacter::PCharacter()
 	mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
 	if (mSpriteComponent)
 	{
-		mSpriteComponent->SetDrawPriority(Z_NPC);
 		mSpriteComponent->SetOffset({0, CHARACTER_OFFSET});
 
 		auto Sprite = mSpriteComponent->GetSprite();
@@ -48,7 +49,7 @@ FRect PCharacter::GetLocalBounds() const
 
 FRect PCharacter::GetWorldBounds() const
 {
-	return {GetWorldPosition(), FVector2::Block()};
+	return {GetWorldPosition2D(), FVector2::Block()};
 }
 
 void PCharacter::OnMovementStarted(EOrientation Direction)
@@ -113,7 +114,7 @@ void PCharacter::OnMovementEnded(EOrientation Direction)
 	}
 
 	// Collision
-	for (auto Actor : GetWorld()->GetActorsAtPosition(mPosition))
+	for (auto Actor : GetWorld()->GetActorsAtPosition(GetPosition2D()))
 	{
 		if (Actor == this)
 		{

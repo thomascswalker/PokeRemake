@@ -15,7 +15,7 @@ bool STile::IsBlocking() const
 
 FVector2 STile::GetPosition() const
 {
-	auto Position = Map->GetWorldPosition();
+	auto Position = Map->GetWorldPosition2D();
 	Position.X += X * TILE_SIZE;
 	Position.Y += Y * TILE_SIZE;
 	return Position;
@@ -38,6 +38,11 @@ FRect STile::GetDestRect() const
 	return {
 		GetPosition(), {TILE_SIZE, TILE_SIZE}
 	};
+}
+
+PMap::PMap()
+{
+	mPosition.Z = Drawing::Z_BG;
 }
 
 void PMap::Start()
@@ -103,53 +108,6 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 		}
 		Renderer->DrawLineAt({0, Y * TILE_SIZE}, {Max.X, Y * TILE_SIZE});
 	}
-	//
-	// #if _EDITOR
-	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Select) && (mMouseOver || mSelected))
-	// 	{
-	// 		auto Dest = GetWorldBounds();
-	// 		Renderer->SetDrawColor(255, 200, 0, 150);
-	// 		if (mMouseOver)
-	// 		{
-	// 			constexpr float ExpandSize = 2.0f;
-	// 			Renderer->DrawRectAt(Dest.Expanded(ExpandSize));
-	// 		}
-	// 		if (mSelected)
-	// 		{
-	// 			Renderer->DrawFillRectAt(Dest);
-	// 		}
-	// 	}
-	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Tile) && mMouseOver)
-	// 	{
-	// 		auto EditorGame = GetEditorGame();
-	// 		auto BrushSize  = EditorGame->GetBrushSize();
-	//
-	// 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
-	// 		if (auto Tile = GetTileAtPosition(MouseWorldPos))
-	// 		{
-	// 			Renderer->SetDrawColor(PColor::Red);
-	// 			auto HoverRect = Tile->GetDestRect();
-	// 			if (BrushSize == BS_Large)
-	// 			{
-	// 				HoverRect.W *= 2.0f;
-	// 				HoverRect.H *= 2.0f;
-	// 			}
-	// 			Renderer->DrawRectAt(HoverRect);
-	// 		}
-	// 	}
-	// 	if (Bitmask::Test(GetEditorGame()->GetInputContext(), IC_Actor) && mMouseOver)
-	// 	{
-	// 		auto MouseWorldPos = Renderer->GetMouseWorldPosition();
-	// 		if (auto Tile = GetTileAtPosition(MouseWorldPos))
-	// 		{
-	// 			Renderer->SetDrawColor(PColor::Red);
-	// 			auto HoverRect = Tile->GetDestRect();
-	// 			HoverRect.W *= 2.0f;
-	// 			HoverRect.H *= 2.0f;
-	// 			Renderer->DrawRectAt(HoverRect);
-	// 		}
-	// 	}
-	// #endif
 
 	return true;
 }
@@ -235,8 +193,7 @@ JSON PMap::Serialize() const
 void PMap::Deserialize(const JSON& Data)
 {
 	PActor::Deserialize(Data);
-	mDrawPriority = Z_BG;
-	mBlocking     = false;
+	mBlocking = false;
 
 	LOAD_MEMBER_PROPERTY(MapName, std::string);
 	LOAD_MEMBER_PROPERTY(SizeX, int32_t);

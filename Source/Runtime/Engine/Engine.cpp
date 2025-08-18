@@ -17,3 +17,8 @@ void PEngine::Tick(float DeltaTime) const
 		mGame->Tick(DeltaTime);
 	}
 }
+
+void PEngine::PostTick() const
+{
+	GetGame()->PostTick();
+}

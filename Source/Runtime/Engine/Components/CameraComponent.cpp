@@ -4,6 +4,6 @@ void PCameraComponent::Tick(float DeltaTime)
 {
 	if (mOwner)
 	{
-		mCameraView.SetPosition(mOwner->GetPosition());
+		mCameraView.SetPosition(mOwner->GetPosition2D());
 	}
 }

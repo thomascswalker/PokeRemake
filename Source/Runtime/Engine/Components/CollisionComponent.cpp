@@ -14,7 +14,7 @@ void PCollisionComponent::ProcessCollision()
 		LogError("Owner is invalid.");
 		return;
 	}
-	auto OwnerPosition = mOwner->GetPosition();
+	auto OwnerPosition = mOwner->GetPosition2D();
 	auto Actors = W->GetActorsAtPosition(OwnerPosition);
 
 	// Loop through all actors at the current position and if they're

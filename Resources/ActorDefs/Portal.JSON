@@ -1,4 +1,5 @@
 {
   "Class": "PPortal",
-  "Name": "Portal"
+  "Name": "Portal",
+  "Depth": 1000.0
 }

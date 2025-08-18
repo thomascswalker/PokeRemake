@@ -105,24 +105,20 @@ bool PRenderer::Render() const
 	if (const PWorld* World = GetWorld())
 	{
 		// Main draw
-		for (auto Priority : gDrawPriorities)
+		auto Drawables = World->GetDrawables();
+		for (IDrawable* Drawable : Drawables)
 		{
-			for (const IDrawable* Drawable : World->GetDrawables(Priority))
-			{
-				VALIDATE(Drawable->Draw(this),
-				         dynamic_cast<PObject*>(const_cast<IDrawable*>(Drawable))->GetInternalName().c_str());
-			}
+			VALIDATE(Drawable->Draw(this),
+			         dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
 		}
 
 		// Debug draw
 		if (DebugDraw)
 		{
-			for (auto Priority : gDrawPriorities)
+			for (IDrawable* Drawable : Drawables)
 			{
-				for (const IDrawable* Drawable : World->GetDrawables(Priority))
-				{
-					VALIDATE(Drawable->DebugDraw(this), "Failed to draw.");
-				}
+				VALIDATE(Drawable->DebugDraw(this),
+				         dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
 			}
 		}
 

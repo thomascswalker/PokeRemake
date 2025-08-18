@@ -1,7 +1,6 @@
 #include "EditorGame.h"
 
 #include "ActorManager.h"
-
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
 #include "EditorView.h"
@@ -9,7 +8,6 @@
 #include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
 #include "Engine/MapManager.h"
-#include "Engine/Serialization.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
 #include "Interface/Group.h"
@@ -67,7 +65,40 @@ bool PEditorGame::PreStart()
 void PEditorGame::Start()
 {
 	PGame::Start();
-	mWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
+
+	// Default to selection context
+	AddInputContext(IC_Select);
+
+	// Bind the world actor clicked event to handle selection within the editor.
+	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
+}
+
+void PEditorGame::PostTick()
+{
+	PGame::PostTick();
+
+	if (mSelectionQueue.Size() == 0)
+	{
+		return;
+	}
+	auto DepthCompare = [](const PActor* A, const PActor* B)
+	{
+		return A < B;
+	};
+
+	// Sort the selection queue by Z depth.
+	mSelectionQueue.Sort(DepthCompare);
+
+	// Store the opposite selection state of the first actor.
+	auto Comp     = mSelectionQueue[0]->GetSelectionComponent();
+	bool NewState = !Comp->GetSelected();
+
+	// Deselect all actors, then set the new state of the first actor.
+	DeselectAll();
+	mSelectionQueue[0]->GetSelectionComponent()->SetSelected(NewState);
+
+	// Clear the selection queue.
+	mSelectionQueue.Clear();
 }
 
 void PEditorGame::OnDropdownClicked(SDropdownItemData* Data) const
@@ -228,55 +259,6 @@ bool PEditorGame::HasInputContext(uint8_t InputContext)
 	return (mInputContext & InputContext) == InputContext;
 }
 
-void PEditorGame::OnMouseEvent(SInputEvent* Event)
-{
-	switch (Event->Type)
-	{
-	case IET_MouseUp:
-		{
-			if (mEditMode != EM_Select)
-			{
-				break;
-			}
-
-			auto Actors = GetRenderer()->GetActorsUnderMouse();
-			if (Actors.Size() == 0)
-			{
-				return;
-			}
-
-			auto CompareDrawPriority = [](const PActor* A, const PActor* B)
-			{
-				auto CompA = A->GetDrawableComponent();
-				auto CompB = B->GetDrawableComponent();
-				if (!CompA || !CompB)
-				{
-					return true;
-				}
-				return CompA->GetDrawPriority() > CompB->GetDrawPriority();
-			};
-			std::ranges::sort(Actors, CompareDrawPriority);
-
-			auto Comps         = GetWorld()->GetComponents();
-			auto SelectionComp = Actors[0]->GetSelectionComponent();
-			if (!SelectionComp)
-			{
-				LogWarning("No selection component on selected actor.");
-				return;
-			}
-			SelectionComp->ToggleSelected();
-
-			LogDebug("Selecting {}", Actors[0]->GetInternalName().c_str());
-
-			break;
-		}
-	default:
-		{
-			break;
-		}
-	}
-}
-
 void PEditorGame::OnKeyDown(SInputEvent* Event)
 {
 	PGame::OnKeyDown(Event);
@@ -312,30 +294,42 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	switch (Event->KeyUp)
 	{
 	case SDLK_DELETE:
-		// ReSharper disable once CppDFAConstantConditions
-		if (HasInputContext(IC_Select) && mCurrentMap)
 		{
-			// Remove the map from the list of maps
-			mMaps.erase(std::ranges::remove(mMaps, mCurrentMap).begin());
-			// Destroy the map actor
-			GetWorld()->DestroyActor(mCurrentMap);
-			// Set the current map to null
-			mCurrentMap = nullptr;
+			if (HasInputContext(IC_Select))
+			{
+				for (auto Actor : GetSelectedActors())
+				{
+					mWorld->DestroyActor(Actor);
+				}
+			}
 			Event->Consume();
 		}
 		break;
 	case SDLK_UP:
-	case SDLK_DOWN: if (HasInputContext(IC_Tile))
+	case SDLK_DOWN:
 		{
-			mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
+			}
+			break;
 		}
-		break;
 	case SDLK_LSHIFT:
-	case SDLK_LCTRL: if (HasInputContext(IC_Tile))
+	case SDLK_LCTRL:
 		{
-			mBrushMode = BM_Default;
+			if (HasInputContext(IC_Tile))
+			{
+				mBrushMode = BM_Default;
+			}
+			break;
 		}
-		break;
+	case SDLK_F:
+		{
+			if (mActiveCameraView)
+			{
+				mActiveCameraView->SetPosition({0, 0});
+			}
+		}
 	default: break;
 	}
 }
@@ -401,7 +395,7 @@ void PEditorGame::OnLoadButtonClicked()
 
 void PEditorGame::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 {
-	mInputContext = 0;
+	mInputContext = IC_None;
 	switch (DropdownItemData->Index)
 	{
 	case 0: // IC_Select
@@ -460,38 +454,20 @@ void PEditorGame::OnActorButtonChecked(bool State)
 
 void PEditorGame::UpdateSelection(PActor* ClickedActor)
 {
-	if (auto Selectable = static_cast<ISelectable*>(ClickedActor))
-	{
-		LogDebug("Selecting {}", ClickedActor->GetInternalName().c_str());
-	}
-	// if (auto Map = dynamic_cast<PMap*>(ClickedActor))
-	// {
-	// 	Map->ToggleSelected();
-	// 	for (auto Actor : GetWorld()->GetActors())
-	// 	{
-	// 		if (Map->GetInternalName() == Actor->GetInternalName())
-	// 		{
-	// 			continue;
-	// 		}
-	// 		Actor->SetSelected(false);
-	// 	}
-	// 	mCurrentMap = Map;
-	// }
+	// Add the clicked actor to the selection queue. The queue will be processed within
+	// PEditorGame::PostTick().
+	mSelectionQueue.Add(ClickedActor);
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
-	auto Map = GetCurrentMap();
-	if (!Map)
-	{
-		LogError("Current map is null.");
-		return;
-	}
 	if (HasInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
+		return;
 	}
-	else if (HasInputContext(IC_Tile))
+	auto Map = GetCurrentMap();
+	if (HasInputContext(IC_Tile))
 	{
 		if (!mCurrentTilesetItem)
 		{
@@ -521,6 +497,10 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		}
 		auto Position = Map->GetTileUnderMouse()->GetPosition();
 		auto Actors   = mWorld->GetActorsAtPosition(Position);
+		Actors        = Containers::Filter(Actors, [](PActor* Actor)
+		{
+			return dynamic_cast<PMap*>(Actor) == nullptr;
+		});
 		if (Actors.size() == 0)
 		{
 			PActor* NewActor = nullptr;
@@ -538,7 +518,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			if (NewActor)
 			{
 				LogDebug("Placing {}", mCurrentActorItem->Name.c_str());
-				NewActor->SetPosition(Position);
+				NewActor->SetPosition2D(Position);
 				Map->AddChild(NewActor);
 			}
 		}
@@ -549,6 +529,11 @@ void PEditorGame::OnNewButtonClicked()
 {
 	for (auto Actor : mWorld->GetActors())
 	{
+		// Don't delete the editor view
+		if (dynamic_cast<PEditorView*>(Actor))
+		{
+			continue;
+		}
 		mWorld->DestroyActor(Actor);
 	}
 	mMaps.clear();
@@ -578,22 +563,35 @@ void PEditorGame::ConstructMap(const JSON& JsonData)
 	AddMap(Map);
 }
 
-void PEditorGame::ActorSelected(PActor* Actor)
+void PEditorGame::ActorSelected(PActor* Actor) {}
+
+void PEditorGame::SelectAll()
 {
-	// if (const auto Map = dynamic_cast<PMap*>(Actor))
-	// {
-	// 	// Deselect all other maps
-	// 	for (const auto C : mWorld->GetActorsOfType<PMap>())
-	// 	{
-	// 		if (C == Map)
-	// 		{
-	// 			continue; // Skip the currently selected map
-	// 		}
-	// 		C->SetSelected(false);
-	// 	}
-	//
-	// 	Map->GetSelected() ? SetCurrentMap(Map) : SetCurrentMap(nullptr);
-	// }
+	for (auto Actor : mWorld->GetSelectableActors())
+	{
+		Actor->GetSelectionComponent()->SetSelected(true);
+	}
+}
+
+void PEditorGame::DeselectAll()
+{
+	for (auto Actor : mWorld->GetSelectableActors())
+	{
+		Actor->GetSelectionComponent()->SetSelected(false);
+	}
+}
+
+Array<PActor*> PEditorGame::GetSelectedActors()
+{
+	Array<PActor*> SelectedActors;
+	for (auto Actor : mWorld->GetSelectableActors())
+	{
+		if (Actor->GetSelectionComponent()->GetSelected())
+		{
+			SelectedActors.Add(Actor);
+		}
+	}
+	return SelectedActors;
 }
 
 void PEditorGame::PaintTile(STile* Tile)

@@ -6,7 +6,7 @@
 
 PGame::PGame()
 {
-	mWorld = std::make_shared<PWorld>();
+	mWorld    = std::make_shared<PWorld>();
 	mSettings = std::make_shared<PSettings>();
 }
 
@@ -19,6 +19,11 @@ void PGame::Start()
 void PGame::Tick(float DeltaTime)
 {
 	mWorld->Tick(DeltaTime);
+}
+
+void PGame::PostTick()
+{
+	mWorld->PostTick();
 }
 
 void PGame::FindActiveCamera()
@@ -41,11 +46,9 @@ void PGame::OnKeyUp(SInputEvent* Event)
 {
 	switch (Event->KeyUp)
 	{
-		case SDLK_F1:
-			mSettings->DebugDraw = !mSettings->DebugDraw;
-			Event->Consume();
-			break;
-		default:
-			break;
+	case SDLK_F1: mSettings->DebugDraw = !mSettings->DebugDraw;
+		Event->Consume();
+		break;
+	default: break;
 	}
 }

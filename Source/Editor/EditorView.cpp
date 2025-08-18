@@ -4,11 +4,15 @@
 #include "Engine/Input.h"
 #include "Engine/World.h"
 
-void PEditorView::Start()
+PEditorView::PEditorView()
 {
 	mSerializable = false;
-	mBlocking = false;
+	mBlocking     = false;
+	mSelectable   = false;
+}
 
+void PEditorView::Start()
+{
 	if (const auto W = GetWorld())
 	{
 		LogDebug("Constructing camera component for PEditorView");
@@ -26,8 +30,8 @@ void PEditorView::Start()
 
 void PEditorView::Tick(float DeltaTime)
 {
-	FVector2	Destination;
-	auto		View = GetCameraView();
+	FVector2 Destination;
+	auto View               = GetCameraView();
 	const float CameraSpeed = DeltaTime / View->GetZoom(); // Adjust camera speed based on zoom level
 
 	if (mInputState[0]) // W
@@ -49,7 +53,7 @@ void PEditorView::Tick(float DeltaTime)
 
 	if (Destination)
 	{
-		AddPosition(Destination);
+		AddPosition2D(Destination);
 	}
 }
 
@@ -57,24 +61,19 @@ void PEditorView::OnKeyDown(SInputEvent* Event)
 {
 	switch (Event->KeyDown)
 	{
-		case SDLK_W:
-			mInputState[0] = true;
-			// Destination = { 0, -CameraSpeed };
-			break;
-		case SDLK_S:
-			mInputState[1] = true;
-			// Destination = { 0, CameraSpeed };
-			break;
-		case SDLK_A:
-			mInputState[2] = true;
-			// Destination = { -CameraSpeed, 0 };
-			break;
-		case SDLK_D:
-			mInputState[3] = true;
-			// Destination = { CameraSpeed, 0 };
-			break;
-		default:
-			break;
+	case SDLK_W: mInputState[0] = true;
+		// Destination = { 0, -CameraSpeed };
+		break;
+	case SDLK_S: mInputState[1] = true;
+		// Destination = { 0, CameraSpeed };
+		break;
+	case SDLK_A: mInputState[2] = true;
+		// Destination = { -CameraSpeed, 0 };
+		break;
+	case SDLK_D: mInputState[3] = true;
+		// Destination = { CameraSpeed, 0 };
+		break;
+	default: break;
 	}
 	Event->Consume();
 }
@@ -83,20 +82,15 @@ void PEditorView::OnKeyUp(SInputEvent* Event)
 {
 	switch (Event->KeyUp)
 	{
-		case SDLK_W:
-			mInputState[0] = false;
-			break;
-		case SDLK_S:
-			mInputState[1] = false;
-			break;
-		case SDLK_A:
-			mInputState[2] = false;
-			break;
-		case SDLK_D:
-			mInputState[3] = false;
-			break;
-		default:
-			break;
+	case SDLK_W: mInputState[0] = false;
+		break;
+	case SDLK_S: mInputState[1] = false;
+		break;
+	case SDLK_A: mInputState[2] = false;
+		break;
+	case SDLK_D: mInputState[3] = false;
+		break;
+	default: break;
 	}
 	Event->Consume();
 }
@@ -105,14 +99,12 @@ void PEditorView::OnMouseEvent(SInputEvent* Event)
 {
 	switch (Event->Type)
 	{
-		case IET_MouseScroll:
-			if (mCameraComponent)
-			{
-				mCameraComponent->GetCameraView()->AddZoom(Event->MouseScroll);
-				Event->Consume();
-			}
-			break;
-		default:
-			break;
+	case IET_MouseScroll: if (mCameraComponent)
+		{
+			mCameraComponent->GetCameraView()->AddZoom(Event->MouseScroll);
+			Event->Consume();
+		}
+		break;
+	default: break;
 	}
 }

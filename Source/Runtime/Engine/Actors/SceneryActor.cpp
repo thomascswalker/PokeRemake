@@ -5,12 +5,11 @@
 
 PSceneryActor::PSceneryActor()
 {
+    mPosition.Z      = Drawing::Z_FG;
     mBlocking        = true;
     mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
     if (mSpriteComponent)
     {
-        mSpriteComponent->SetDrawPriority(Z_FG);
-
         // Assumes scenery actors use the standard tileset atlases.
         mSpriteComponent->SetSize(16.0f);
         mSpriteComponent->SetIndexSize(8.0f);
@@ -38,6 +37,7 @@ JSON PSceneryActor::Serialize() const
 {
     JSON Result;
     Result["Position"] = {mPosition.X, mPosition.Y};
+    Result["Depth"]    = mPosition.Z;
     Result[mType]      = JSON::object();
 
     auto InteractData                       = mInteractionComponent->GetInteractData();

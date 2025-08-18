@@ -1,10 +1,5 @@
 #include "SpriteComponent.h"
 
-PSpriteComponent::PSpriteComponent()
-{
-    mDrawPriority = Z_FG;
-}
-
 bool PSpriteComponent::Draw(const PRenderer* Renderer) const
 {
     auto Texture = mSprite.GetTexture();
@@ -43,11 +38,15 @@ void PSpriteComponent::Tick(float DeltaTime)
     mSprite.Tick(DeltaTime);
 }
 
+float PSpriteComponent::GetDepth() const
+{
+    return GetOwner()->GetPosition3D().Z;
+}
+
 JSON PSpriteComponent::Serialize() const
 {
     BEGIN_SAVE_PROPERTIES(PComponent);
     SERIALIZE_MEMBER_PROPERTY(Sprite);
-    // SAVE_MEMBER_PROPERTY(Offset);
     END_SAVE_PROPERTIES;
 }
 
@@ -55,5 +54,4 @@ void PSpriteComponent::Deserialize(const JSON& Data)
 {
     BEGIN_LOAD_PROPERTIES(PComponent);
     DESERIALIZE_MEMBER_PROPERTY(Sprite);
-    // LOAD_MEMBER_PROPERTY(Offset, float);
 }

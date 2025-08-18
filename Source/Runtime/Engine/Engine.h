@@ -15,7 +15,12 @@ public:
 	~PEngine() = default;
 	void Stop();
 	void Tick(float DeltaTime) const;
-	bool IsRunning() const { return mIsRunning; }
+	void PostTick() const;
+
+	bool IsRunning() const
+	{
+		return mIsRunning;
+	}
 
 	template <typename GameType>
 	void Start()
@@ -23,7 +28,10 @@ public:
 		mGame = std::make_unique<GameType>();
 	}
 
-	PGame* GetGame() const { return mGame.get(); }
+	PGame* GetGame() const
+	{
+		return mGame.get();
+	}
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(Engine)

@@ -19,4 +19,5 @@ public:
 	bool DebugDraw(const PRenderer* Renderer) const override;
 	JSON Serialize() const override;
 	void Deserialize(const JSON& Data) override;
+	float GetDepth() const override;
 };

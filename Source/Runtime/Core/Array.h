@@ -70,6 +70,11 @@ public:
         mData.erase(std::remove(mData.begin(), mData.end(), Value), mData.end());
     }
 
+    void Clear()
+    {
+        mData.clear();
+    }
+
     size_t Find(const T& Value)
     {
         return std::find(mData.begin(), mData.end(), Value);
@@ -89,16 +94,16 @@ public:
     }
 
     template <typename P>
-    void Sort()
+    void Sort(P& Pred)
     {
-        std::sort(mData.begin(), mData.end());
+        std::ranges::sort(mData, Pred);
     }
 
     template <typename P>
-    Array Sorted(P Pred)
+    Array Sorted(P& Pred)
     {
         Array Result = *this;
-        std::sort(Result.begin(), Result.end(), Pred);
+        std::ranges::sort(Result, Pred);
         return Result;
     }
 

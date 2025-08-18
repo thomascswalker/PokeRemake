@@ -39,7 +39,7 @@ constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f;
 // This is kind of arbitrary for now and is simply based on what looks best visually.
 constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f;
 
-const std::string FONT_NAME           = "Pokemon";
+const std::string FONT_NAME           = "Roboto";
 constexpr int FONT_ATLAS_SIZE         = 1024;
 constexpr int FONT_CHAR_COUNT         = 96;    // ASCII 32..126
 constexpr int FONT_CHAR_START         = 32;    // ASCII 32 is the first printable character

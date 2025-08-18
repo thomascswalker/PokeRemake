@@ -3,34 +3,29 @@
 
 class PSelectionComponent : public PComponent, public IDrawable
 {
-    bool mSelected = false;
+    bool mSelected;
 
 public:
-    PSelectionComponent()
+    PSelectionComponent(): mSelected(false)
     {
         mSerializable = false;
     }
 
-    bool DebugDraw(const PRenderer* Renderer) const override
+    float GetDepth() const override
     {
-        if (!mSelected)
-        {
-            return true;
-        }
-        auto Rect = mOwner->GetWorldBounds();
-        Renderer->SetDrawColor(255, 255, 128, 128);
-        Renderer->DrawFillRectAt(Rect);
-        return true;
+        return mOwner->GetPosition3D().Z;
     }
 
-    bool GetSelected()
+    bool DebugDraw(const PRenderer* Renderer) const override;
+
+    bool GetSelected() const
     {
         return mSelected;
     }
 
-    void SetSelected(bool value)
+    void SetSelected(bool State)
     {
-        mSelected = value;
+        mSelected = State;
     }
 
     void ToggleSelected()

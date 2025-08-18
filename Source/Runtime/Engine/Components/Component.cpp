@@ -11,7 +11,7 @@ FVector2 PComponent::GetPosition() const
 {
 	if (mOwner)
 	{
-		return mOwner->GetPosition();
+		return mOwner->GetPosition2D();
 	}
 	LogDebug("Parent is invalid");
 	return FVector2(0, 0);

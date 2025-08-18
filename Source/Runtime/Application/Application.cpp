@@ -129,25 +129,25 @@ bool PApplication::Loop()
 	SDL_Event Event;
 	if (SDL_PollEvent(&Event))
 	{
-		if (!OnEvent(&Event))
+		if (!HandleEvent(&Event))
 		{
 			return true;
 		}
 	}
 
 	// Draw to the screen
-	if (!OnDraw())
+	if (!Draw())
 	{
 		return false;
 	}
 
 	// Clean up any destroyable actors in the world
-	mEngine->GetGame()->GetWorld()->Cleanup();
+	mEngine->PostTick();
 
 	return true;
 }
 
-bool PApplication::OnEvent(void* Event)
+bool PApplication::HandleEvent(void* Event)
 {
 	auto* SDLEvent = static_cast<SDL_Event*>(Event);
 	if (!SDLEvent)
@@ -190,7 +190,7 @@ bool PApplication::OnEvent(void* Event)
 	return true;
 }
 
-bool PApplication::OnDraw() const
+bool PApplication::Draw() const
 {
 	if (!mRenderer->Render())
 	{

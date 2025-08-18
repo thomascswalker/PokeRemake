@@ -87,8 +87,8 @@ public:
 
 	/* Events */
 
-	bool OnEvent(void* Event);
-	bool OnDraw() const;
+	bool HandleEvent(void* Event);
+	bool Draw() const;
 
 	/* Properties */
 

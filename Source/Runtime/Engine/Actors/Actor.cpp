@@ -10,17 +10,13 @@ void PActor::OnMouseEvent(SInputEvent* Event)
 {
 	const auto Renderer = GetRenderer();
 	mMousePosition      = Event->MousePosition;
-	FVector2 ScreenPosition;
-	Renderer->WorldToScreen(GetPosition(), &ScreenPosition);
 
-	auto CameraView  = GetCameraView();
-	auto Rect        = GetWorldBounds();
-	FRect ScreenRect = {
-		ScreenPosition.X,
-		ScreenPosition.Y,
-		Rect.W * CameraView->GetZoom(),
-		Rect.H * CameraView->GetZoom(),
-	};
+	// Convert the current world bounds of this actor to a screen position
+	FRect WorldRect = GetWorldBounds();
+	FRect ScreenRect;
+
+	Renderer->WorldToScreen(WorldRect, &ScreenRect);
+
 	const bool NewMouseState = ScreenRect.Contains(mMousePosition);
 
 	if (!mMouseOver && NewMouseState)
@@ -43,7 +39,6 @@ void PActor::OnMouseEvent(SInputEvent* Event)
 	{
 		mMouseDown = false;
 		Clicked.Broadcast(this);
-		Event->Consume();
 	}
 }
 
@@ -67,13 +62,16 @@ IDrawable* PActor::GetDrawableComponent() const
 
 void PActor::MoveToTile(int32_t X, int32_t Y)
 {
-	mPosition = FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
+	auto NewPosition = FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
+	mPosition.X      = NewPosition.X;
+	mPosition.Y      = NewPosition.Y;
 }
 
 JSON PActor::Serialize() const
 {
 	JSON Result        = PObject::Serialize();
 	Result["Position"] = {mPosition.X, mPosition.Y};
+	Result["Depth"]    = mPosition.Z;
 	if (mChildren.size() > 0)
 	{
 		Result["Children"] = {};
@@ -85,6 +83,7 @@ JSON PActor::Serialize() const
 			}
 		}
 	}
+
 	if (mComponents.size() > 0)
 	{
 		Result["Components"] = {};
@@ -106,8 +105,13 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Position"))
 	{
 		auto Position = Data.at("Position");
-		mPosition.X   = Position[0].get<int32_t>();
-		mPosition.Y   = Position[1].get<int32_t>();
+		mPosition.X   = Position[0].get<float>();
+		mPosition.Y   = Position[1].get<float>();
+	}
+
+	if (Data.contains("Depth"))
+	{
+		mPosition.Z = Data.at("Depth").get<float>();
 	}
 
 	if (Data.contains("Children"))

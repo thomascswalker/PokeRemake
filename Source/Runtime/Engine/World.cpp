@@ -51,6 +51,15 @@ void PWorld::Tick(float DeltaTime)
 	}
 }
 
+void PWorld::PostTick()
+{
+	for (auto Actor : mDestroyableActors)
+	{
+		DestroyActorInternal(Actor);
+	}
+	mDestroyableActors.clear();
+}
+
 void PWorld::DestroyActor(PActor* Actor)
 {
 	mDestroyableActors.emplace_back(Actor);
@@ -118,17 +127,14 @@ std::vector<PActor*> PWorld::GetActors() const
 	return Actors;
 }
 
-std::vector<IDrawable*> PWorld::GetDrawables(EZDepth Priority) const
+std::vector<IDrawable*> PWorld::GetDrawables() const
 {
 	std::vector<IDrawable*> Drawables;
 	for (const auto& Actor : mActors)
 	{
 		if (auto Drawable = dynamic_cast<IDrawable*>(Actor.get()))
 		{
-			if (Drawable->GetDrawPriority() == Priority)
-			{
-				Drawables.push_back(Drawable);
-			}
+			Drawables.push_back(Drawable);
 		}
 	}
 
@@ -136,14 +142,31 @@ std::vector<IDrawable*> PWorld::GetDrawables(EZDepth Priority) const
 	{
 		if (auto Drawable = dynamic_cast<IDrawable*>(Component.get()))
 		{
-			if (Drawable->GetDrawPriority() == Priority)
-			{
-				Drawables.push_back(Drawable);
-			}
+			Drawables.push_back(Drawable);
 		}
 	}
 
+	auto DepthSort = [](const IDrawable* A, const IDrawable* B)
+	{
+		return A->GetDepth() < B->GetDepth();
+	};
+
+	std::ranges::sort(Drawables, DepthSort);
 	return Drawables;
+}
+
+Array<PActor*> PWorld::GetSelectableActors() const
+{
+	Array<PActor*> Actors;
+	for (const auto& Actor : mActors)
+	{
+		if (!Actor->GetSelectable())
+		{
+			continue;
+		}
+		Actors.Add(Actor.get());
+	}
+	return Actors;
 }
 
 std::vector<PComponent*> PWorld::GetComponents() const
@@ -203,7 +226,7 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 		{
 			continue;
 		}
-		if (Actor->GetPosition() == Position)
+		if (Actor->GetPosition2D() == Position)
 		{
 			return Actor.get();
 		}
@@ -250,13 +273,4 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 			}
 		}
 	}
-}
-
-void PWorld::Cleanup()
-{
-	for (auto Actor : mDestroyableActors)
-	{
-		DestroyActorInternal(Actor);
-	}
-	mDestroyableActors.clear();
 }

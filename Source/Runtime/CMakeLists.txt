@@ -87,6 +87,7 @@ set(SOURCES
         Engine/Components/InteractionComponent.h
         Engine/Components/InteractionComponent.cpp
         Engine/Components/SelectionComponent.h
+        Engine/Components/SelectionComponent.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

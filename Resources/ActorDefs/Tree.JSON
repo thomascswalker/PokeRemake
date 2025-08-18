@@ -2,6 +2,7 @@
   "Class": "PSceneryActor",
   "Name": "Tree",
   "Type": "$Tree",
+  "Depth": 200.0,
   "Components": [
     {
       "Class": "PSpriteComponent",

@@ -2,6 +2,7 @@
   "Class": "PSceneryActor",
   "Name": "Sign Post",
   "Type": "$SignPost",
+  "Depth": 200.0,
   "Components": [
     {
       "Class": "PSpriteComponent",
