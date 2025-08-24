@@ -86,6 +86,10 @@ set(SOURCES
         Core/Json.cpp
         Engine/Components/InteractionComponent.h
         Engine/Components/InteractionComponent.cpp
+        Engine/Components/SelectionComponent.h
+        Engine/Components/SelectionComponent.cpp
+        Engine/CameraView.cpp
+        Renderer/Drawable.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

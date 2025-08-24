@@ -7,10 +7,13 @@
 #include "Actors/Map.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
+#include "Components/SelectionComponent.h"
+
 #include "Interface/Widget.h"
 #include "Interface/HUD.h"
 
 #if _EDITOR
+#include "../../Editor/EditorView.h"
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 #endif
 
@@ -39,6 +42,7 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+	void PostTick() override;
 
 #if _EDITOR
 	void OnActorClicked(PActor* Actor)
@@ -63,6 +67,13 @@ public:
 
 #if _EDITOR
 		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
+
+		if (Actor->GetSelectable())
+		{
+			auto SelectionComponent = ConstructComponent<PSelectionComponent>(Actor.get());
+			Actor->SetSelectionComponent(SelectionComponent);
+		}
+
 #endif
 		return Actor.get();
 	}
@@ -99,7 +110,9 @@ public:
 		return OutActors;
 	}
 
-	std::vector<IDrawable*> GetDrawables(EZDepth Priority) const;
+	std::vector<IDrawable*> GetDrawables() const;
+
+	Array<PActor*> GetSelectableActors() const;
 
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
@@ -151,7 +164,6 @@ public:
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
-	void Cleanup();
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

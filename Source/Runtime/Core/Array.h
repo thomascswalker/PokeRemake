@@ -70,6 +70,11 @@ public:
         mData.erase(std::remove(mData.begin(), mData.end(), Value), mData.end());
     }
 
+    void Clear()
+    {
+        mData.clear();
+    }
+
     size_t Find(const T& Value)
     {
         return std::find(mData.begin(), mData.end(), Value);
@@ -85,6 +90,20 @@ public:
     {
         std::vector<T> Result;
         std::copy_if(mData.begin(), mData.end(), std::back_inserter(Result), Predicate);
+        return Result;
+    }
+
+    template <typename P>
+    void Sort(P Pred)
+    {
+        std::ranges::sort(mData, Pred);
+    }
+
+    template <typename P>
+    Array Sorted(P Pred)
+    {
+        Array Result = *this;
+        std::ranges::sort(Result, Pred);
         return Result;
     }
 

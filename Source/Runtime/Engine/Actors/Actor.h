@@ -9,8 +9,8 @@
 #include "Engine/Sprite.h"
 #include "Interface/Layout.h"
 #include "Renderer/Drawable.h"
-
 #include "Selectable.h"
+#include "Engine/Components/Component.h"
 
 class PActor;
 class PComponent;
@@ -23,11 +23,16 @@ struct SActorItem
 	JSON Data;
 };
 
-class PActor : public PObject, public ISelectable, public IInputHandler
+class PActor :
+	public PObject,
+#if _EDITOR
+	public ISelectable,
+#endif
+	public IInputHandler
 {
 protected:
 	PActor* mParent = nullptr;
-	FVector2 mPosition;
+	FVector3 mPosition;
 	FVector2 mSize;
 	bool mBlocking = true;
 	std::vector<PActor*> mChildren;
@@ -134,6 +139,8 @@ public:
 		return mComponents;
 	}
 
+	IDrawable* GetDrawableComponent() const;
+
 	virtual FRect GetLocalBounds() const
 	{
 		return FRect();
@@ -150,35 +157,51 @@ public:
 		return mMouseOver;
 	}
 
-	virtual FVector2 GetPosition() const
+	virtual FVector2 GetPosition2D() const
 	{
-		return mPosition;
+		return {mPosition.X, mPosition.Y};
 	}
 
-	virtual FVector2 GetWorldPosition() const
+	virtual FVector2 GetWorldPosition2D() const
 	{
 		if (mParent)
 		{
-			return mParent->GetWorldPosition() + mPosition;
+			return mParent->GetWorldPosition2D() + FVector2(mPosition.X, mPosition.Y);
 		}
-		return mPosition;
+		return {mPosition.X, mPosition.Y};
 	}
 
-	void SetPosition(const FVector2& Position)
+	void SetPosition2D(const FVector2& Position)
 	{
-		mPosition = Position;
+		mPosition.X = Position.X;
+		mPosition.Y = Position.Y;
 	}
 
-	void AddPosition(const FVector2& Position)
+	void AddPosition2D(const FVector2& Position)
 	{
 		mPosition.X += Position.X;
 		mPosition.Y += Position.Y;
 	}
 
-	FVector2 GetCenter() const
+	FVector3 GetPosition3D() const
+	{
+		return mPosition;
+	}
+
+	FVector2 GetCenter2D() const
 	{
 		auto Bounds = GetWorldBounds();
 		return {Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f)};
+	}
+
+	bool operator<(const PActor& Other) const
+	{
+		return mPosition.Z < Other.mPosition.Z;
+	}
+
+	bool operator>(const PActor& Other) const
+	{
+		return mPosition.Z > Other.mPosition.Z;
 	}
 
 	void MoveToTile(int32_t X, int32_t Y);
@@ -212,6 +235,23 @@ public:
 	{
 		LogInfo("Clicked {}", GetInternalName().c_str());
 	}
+
+#if _EDITOR
+
+protected:
+	PSelectionComponent* mSelectionComponent = nullptr;
+
+public:
+	PSelectionComponent* GetSelectionComponent() const override
+	{
+		return mSelectionComponent;
+	}
+
+	void SetSelectionComponent(PSelectionComponent* Component) override
+	{
+		mSelectionComponent = Component;
+	}
+#endif
 };
 
 #define BEGIN_CONSTRUCT_ACTOR \

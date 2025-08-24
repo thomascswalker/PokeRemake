@@ -16,6 +16,35 @@ static PFont gCurrentFont;
 constexpr auto gTextureScaleMode   = SDL_SCALEMODE_NEAREST;
 constexpr auto gTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
 
+float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize) const
+{
+	// uint8_t R, G, B, A;
+	auto Color = GetDrawColor();
+	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+
+	// Aspect ratio of the pixel height we render at to the pixel height we baked the
+	// font atlas at.
+	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
+	const float Width  = GetTextWidth(Text, FontSize);
+
+	float X       = Position.X - Width / 2.0f;
+	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
+	for (const auto& C : Text)
+	{
+		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		SDL_FRect Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
+		SDL_FRect Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
+		               (Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
+		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+		X += Info->xadvance * Aspect;
+	}
+
+	// Reset draw color mod
+	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
+
+	return Width;
+}
+
 bool PRenderer::Initialize()
 {
 	SDL_SetDefaultTextureScaleMode(mContext->Renderer, gTextureScaleMode);
@@ -105,24 +134,20 @@ bool PRenderer::Render() const
 	if (const PWorld* World = GetWorld())
 	{
 		// Main draw
-		for (auto Priority : gDrawPriorities)
+		auto Drawables = World->GetDrawables();
+		for (IDrawable* Drawable : Drawables)
 		{
-			for (const IDrawable* Drawable : World->GetDrawables(Priority))
-			{
-				VALIDATE(Drawable->Draw(this),
-				         dynamic_cast<PObject*>(const_cast<IDrawable*>(Drawable))->GetInternalName().c_str());
-			}
+			VALIDATE(Drawable->Draw(this),
+			         dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
 		}
 
 		// Debug draw
 		if (DebugDraw)
 		{
-			for (auto Priority : gDrawPriorities)
+			for (IDrawable* Drawable : Drawables)
 			{
-				for (const IDrawable* Drawable : World->GetDrawables(Priority))
-				{
-					VALIDATE(Drawable->DebugDraw(this), "Failed to draw.");
-				}
+				VALIDATE(Drawable->DebugDraw(this),
+				         dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
 			}
 		}
 
@@ -295,9 +320,8 @@ void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 	else
 	{
 		SRect = {Rect.X, Rect.Y, Rect.W, Rect.H};
+		SDL_RenderRect(mContext->Renderer, &SRect);
 	}
-
-	SDL_RenderRect(mContext->Renderer, &SRect);
 }
 
 void PRenderer::DrawFillRect(const FRect& Rect) const
@@ -359,33 +383,20 @@ void PRenderer::DrawGrid() const
 	}
 }
 
-float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize) const
+float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const
 {
 	// uint8_t R, G, B, A;
-	auto Color = GetDrawColor();
-	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
-
-	// Aspect ratio of the pixel height we render at to the pixel height we baked the
-	// font atlas at.
-	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
-	const float Width  = GetTextWidth(Text, FontSize);
-
-	float X       = Position.X - Width / 2.0f;
-	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
-	for (const auto& C : Text)
+	if (Shadow)
 	{
-		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
-		SDL_FRect Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
-		SDL_FRect Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
-		               (Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
-		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
-		X += Info->xadvance * Aspect;
+		auto Color = GetDrawColor();
+		SetDrawColor(0, 0, 0, 255);
+		DrawTextInternal(Text, Position + FVector2{-1, -1}, FontSize);
+		DrawTextInternal(Text, Position + FVector2{-1, 1}, FontSize);
+		DrawTextInternal(Text, Position + FVector2{1, -1}, FontSize);
+		DrawTextInternal(Text, Position + FVector2{1, 1}, FontSize);
+		SetDrawColor(Color);
 	}
-
-	// Reset draw color mod
-	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
-
-	return Width;
+	return DrawTextInternal(Text, Position, FontSize);
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
@@ -419,11 +430,11 @@ void PRenderer::DrawFillRectAt(const FRect& Rect) const
 	DrawFillRect(ScreenRect);
 }
 
-void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize) const
+void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const
 {
 	FVector2 ScreenPosition;
 	WorldToScreen(Position, &ScreenPosition);
-	DrawText(Text, ScreenPosition, FontSize);
+	DrawText(Text, ScreenPosition, FontSize, Shadow);
 }
 
 void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
@@ -550,4 +561,18 @@ PActor* PRenderer::GetActorUnderMouse() const
 		}
 	}
 	return nullptr;
+}
+
+Array<PActor*> PRenderer::GetActorsUnderMouse() const
+{
+	Array<PActor*> Actors;
+	auto W = GetWorld();
+	for (const auto& Actor : W->GetActors())
+	{
+		if (Actor->mMouseOver)
+		{
+			Actors.Add(Actor);
+		}
+	}
+	return Actors;
 }

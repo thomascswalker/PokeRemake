@@ -4,6 +4,7 @@
 
 PPortal::PPortal()
 {
+	mPosition.Z         = Drawing::Z_1000;
 	mBlocking           = false;
 	mCollisionComponent = ConstructComponent<PCollisionComponent>(this);
 	if (mCollisionComponent)
@@ -14,7 +15,7 @@ PPortal::PPortal()
 
 void PPortal::OnOverlapBegin(PActor* Actor)
 {
-	if (auto Player = dynamic_cast<PPlayerCharacter*>(Actor))
+	if (dynamic_cast<PPlayerCharacter*>(Actor))
 	{
 		if (mTargetMap.empty())
 		{
@@ -68,4 +69,9 @@ void PPortal::Deserialize(const JSON& Data)
 	mTargetPosition.Y = Data.at("TargetPosition")[1].get<float>();
 	LOAD_MEMBER_PROPERTY(TargetMap, std::string);
 	LOAD_MEMBER_PROPERTY(ExitDirection, EOrientation);
+}
+
+float PPortal::GetDepth() const
+{
+	return mPosition.Z;
 }

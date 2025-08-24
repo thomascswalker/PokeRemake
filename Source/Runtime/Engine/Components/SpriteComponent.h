@@ -7,7 +7,8 @@ class PSpriteComponent : public PComponent, public IDrawable
     FVector2 mOffset{};
 
 public:
-    PSpriteComponent();
+    PSpriteComponent()           = default;
+    ~PSpriteComponent() override = default;
 
     PSpriteComponent(const PSpriteComponent& other)
         : PComponent{other},
@@ -39,10 +40,10 @@ public:
         return *this;
     }
 
-    ~PSpriteComponent() override = default;
-
     bool Draw(const PRenderer* Renderer) const override;
     void Tick(float DeltaTime) override;
+
+    float GetDepth() const override;
 
     void SetOffset(const FVector2& Offset)
     {

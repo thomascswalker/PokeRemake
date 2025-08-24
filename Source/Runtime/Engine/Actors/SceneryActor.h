@@ -25,6 +25,11 @@ public:
     PSpriteComponent* GetSpriteComponent();
     PInteractionComponent* GetInteractionComponent() override;
 
+    std::string GetDisplayName() const override
+    {
+        return std::format("{}_{}", mInternalName.c_str(), mType.c_str());
+    }
+
     FRect GetLocalBounds() const override;
 
     JSON Serialize() const override;

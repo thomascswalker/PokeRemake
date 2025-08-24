@@ -6,7 +6,6 @@
 #include "Interface/ButtonGroup.h"
 #include "Interface/Dropdown.h"
 #include "Interface/GridView.h"
-#include "Interface/Group.h"
 
 #define NEW_GRID_SIZE 5
 
@@ -56,7 +55,7 @@ class PEditorGame : public PGame
 	uint8_t mInputContext;
 
 	DEditModeChanged EditModeChanged;
-	EEditMode mEditMode = EM_None;
+	EEditMode mEditMode = EM_Select;
 
 	std::vector<PMap*> mMaps;
 	PMap* mCurrentMap;
@@ -73,11 +72,14 @@ class PEditorGame : public PGame
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
+	Array<PActor*> mSelectionQueue;
+
 public:
 	// Init
 	PEditorGame() = default;
 	bool PreStart() override;
 	void Start() override;
+	void PostTick() override;
 	void SetupInterface();
 
 	PGridView* ConstructTilesetView(STileset* Tileset);
@@ -142,6 +144,10 @@ public:
 	void SetCurrentMap(PMap* Map);
 	void ConstructMap(const JSON& JsonData);
 	void ActorSelected(PActor* Actor);
+
+	void SelectAll();
+	void DeselectAll();
+	Array<PActor*> GetSelectedActors();
 
 	PMap* GetCurrentMap() const
 	{

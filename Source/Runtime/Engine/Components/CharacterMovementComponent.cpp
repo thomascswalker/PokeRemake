@@ -7,7 +7,7 @@ void PCharacterMovementComponent::Start()
 {
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
-	mTargetPosition = mOwner->GetWorldPosition();
+	mTargetPosition = mOwner->GetWorldPosition2D();
 	mCurrentMap = GetWorld()->GetMapAtPosition(mTargetPosition);
 	if (!mCurrentMap)
 	{
@@ -25,7 +25,7 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 
 	// Are we close enough to snap to the target position?
 	bool CloseEnough = false;
-	auto OwnerPosition = mOwner->GetWorldPosition();
+	auto OwnerPosition = mOwner->GetWorldPosition2D();
 	switch (mMovementDirection)
 	{
 		case OR_East:
@@ -46,7 +46,7 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 	if (CloseEnough || OwnerPosition.CloseEnough(mTargetPosition))
 	{
 		mDistanceTraveled = 0.0f;
-		mOwner->SetPosition(mTargetPosition);
+		mOwner->SetPosition2D(mTargetPosition);
 		MovementEnded.Broadcast(mMovementDirection);
 		return;
 	}
@@ -71,19 +71,19 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 			OwnerPosition.Y -= Distance;
 			break;
 	}
-	mOwner->SetPosition(OwnerPosition);
+	mOwner->SetPosition2D(OwnerPosition);
 	mDistanceTraveled += Distance;
 }
 
 bool PCharacterMovementComponent::IsMoving() const
 {
-	return mOwner->GetWorldPosition() != mTargetPosition;
+	return mOwner->GetWorldPosition2D() != mTargetPosition;
 }
 
 bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
 	// Compute the target position
-	const auto NewPosition = Velocity + mOwner->GetWorldPosition();
+	const auto NewPosition = Velocity + mOwner->GetWorldPosition2D();
 
 	// Convert velocity to a movement direction
 	mMovementDirection = VectorToDirection(Velocity);
@@ -132,7 +132,7 @@ STile* PCharacterMovementComponent::GetCurrentTile() const
 	{
 		return {};
 	}
-	return mCurrentMap->GetTileAtPosition(mOwner->GetWorldPosition());
+	return mCurrentMap->GetTileAtPosition(mOwner->GetWorldPosition2D());
 }
 
 STile* PCharacterMovementComponent::GetTargetTile() const
@@ -163,7 +163,7 @@ void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PMap*
 		}
 	}
 	mCurrentMap = Map;
-	mOwner->SetPosition(Position);
+	mOwner->SetPosition2D(Position);
 	mTargetPosition = Position;
 	MovementEnded.Broadcast(mMovementDirection);
 }
@@ -177,7 +177,7 @@ void PCharacterMovementComponent::SnapToTile(const IVector2& Position)
 		return;
 	}
 	auto TilePosition = Tile->GetPosition();
-	mOwner->SetPosition(TilePosition);
+	mOwner->SetPosition2D(TilePosition);
 	mTargetPosition = TilePosition;
 	MovementEnded.Broadcast(mMovementDirection);
 }

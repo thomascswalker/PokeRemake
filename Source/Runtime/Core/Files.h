@@ -71,8 +71,12 @@ namespace Files
 		}
 		else
 		{
-			LogDebug("Failed to open file dialog: {}", NFD_GetError());
-			return false;
+			const char* Error = NFD_GetError();
+			if (Error != nullptr && strlen(Error) > 0)
+			{
+				LogDebug("Failed to open file dialog: {}", Error);
+				return false;
+			}
 		}
 		NFD_Quit();
 		return true;

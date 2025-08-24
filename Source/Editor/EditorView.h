@@ -8,11 +8,11 @@
 class PEditorView : public PActor
 {
 protected:
-	std::bitset<4>	  mInputState;
+	std::bitset<4> mInputState;
 	PCameraComponent* mCameraComponent = nullptr;
 
 public:
-	PEditorView() = default;
+	PEditorView();
 	~PEditorView() override = default;
 
 	void Start() override;
