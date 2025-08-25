@@ -5,8 +5,7 @@
 class TestGame : public PGame
 {
 public:
-	TestGame() = default;
+	TestGame();
 	~TestGame() override {}
 	bool PreStart() override;
-	void Start() override;
 };

@@ -62,11 +62,13 @@ public:
 			mEngine->Start<GameType>();
 			if (PGame* Game = mEngine->GetGame())
 			{
-				Game->GetWorld()->CreateHUD<HUDType>();
 				if (!Game->PreStart())
 				{
 					return false;
 				}
+				Game->GetWorld()->CreateHUD<HUDType>();
+				Game->GetWorld()->GetHUD()->PreStart();
+
 				Game->Start();
 				mRenderer->PostInitialize();
 			}

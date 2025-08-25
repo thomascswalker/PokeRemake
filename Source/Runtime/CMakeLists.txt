@@ -91,6 +91,9 @@ set(SOURCES
         Engine/CameraView.cpp
         Renderer/Drawable.cpp
         Core/Map.h
+        Engine/GameMode.h
+        Engine/SaveState.h
+        Engine/GameMode.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
