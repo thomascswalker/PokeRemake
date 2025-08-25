@@ -25,7 +25,7 @@ void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override)
 
     for (const auto& [K, V] : Override.items())
     {
-        Array Keys = String::Split(K, "::");
+        TArray Keys = String::Split(K, "::");
         if (Keys.Size() == 0)
         {
             continue;

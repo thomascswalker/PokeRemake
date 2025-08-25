@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <initializer_list>
 
 #include "String.h"
 
@@ -11,43 +12,72 @@
  * @tparam T The element type.
  */
 template <typename T>
-class Array
+class TArray
 {
-    std::vector<T> mData;
+    using DataType      = std::vector<T>;
+    using RefType       = T&;
+    using ConstRefType  = const T&;
+    using IterType      = typename DataType::iterator;
+    using ConstIterType = typename DataType::const_iterator;
+
+    DataType mData{};
 
 public:
-    Array() = default;
+    TArray() = default;
 
-    Array(const Array& Other)
+    TArray(TArray& Other)
     {
         mData = Other.mData;
     }
 
-    Array(const std::vector<T>& Other)
+    TArray(const TArray& Other)
+    {
+        mData = Other.mData;
+    }
+
+    TArray(const DataType& Other)
     {
         mData = Other;
     }
 
-    Array(std::initializer_list<T> Other)
+    TArray(const std::initializer_list<T>& InList)
     {
-        mData = std::vector<T>(Other.begin(), Other.end());
+        mData = DataType(InList.begin(), InList.end());
     }
 
-    ~Array() = default;
+    ~TArray() = default;
 
-    T* begin()
+    /* STL */
+    IterType begin()
     {
-        return &mData[0];
+        return mData.begin();
     }
 
-    T* end()
+    ConstIterType begin() const
     {
-        return &mData[mData.size()];
+        return mData.begin();
     }
+
+    IterType end()
+    {
+        return mData.end();
+    }
+
+    ConstIterType end() const
+    {
+        return mData.end();
+    }
+
+    /* Methods */
 
     size_t Size() const
     {
         return mData.size();
+    }
+
+    bool IsEmpty() const
+    {
+        return mData.empty();
     }
 
     void Add(const T& Value)
@@ -60,14 +90,14 @@ public:
         mData.emplace(mData.begin(), Value);
     }
 
-    void RemoveAt(size_t Index)
-    {
-        mData.erase(mData.begin() + Index);
-    }
-
     void Remove(const T& Value)
     {
         mData.erase(std::remove(mData.begin(), mData.end(), Value), mData.end());
+    }
+
+    void RemoveAt(size_t Index)
+    {
+        mData.erase(mData.begin() + Index);
     }
 
     void Clear()
@@ -86,9 +116,9 @@ public:
     }
 
     template <typename P>
-    Array Filter(const P& Predicate)
+    TArray Filter(const P& Predicate)
     {
-        std::vector<T> Result;
+        DataType Result;
         std::copy_if(mData.begin(), mData.end(), std::back_inserter(Result), Predicate);
         return Result;
     }
@@ -100,9 +130,9 @@ public:
     }
 
     template <typename P>
-    Array Sorted(P Pred)
+    TArray Sorted(P Pred)
     {
-        Array Result = *this;
+        TArray Result = *this;
         std::ranges::sort(Result, Pred);
         return Result;
     }
@@ -113,28 +143,28 @@ public:
         return std::format("[{}]", Result.c_str());
     }
 
-    Array& operator=(const Array& Other)
+    TArray& operator=(const TArray& Other)
     {
         mData = Other.mData;
         return *this;
     }
 
-    bool operator==(const Array& Other) const
+    bool operator==(const TArray& Other) const
     {
         return mData == Other.mData;
     }
 
-    T& operator[](int index)
+    RefType operator[](int Index)
     {
-        return mData[index];
+        return mData[Index];
     }
 
-    T& operator[](int index) const
+    ConstRefType operator[](int Index) const
     {
-        return mData[index];
+        return mData[Index];
     }
 
-    std::vector<T>* operator->()
+    DataType* operator->()
     {
         return &mData;
     }

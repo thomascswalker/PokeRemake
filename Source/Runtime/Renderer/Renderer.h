@@ -68,7 +68,7 @@ public:
 	bool ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPosition) const;
 
 	PActor* GetActorUnderMouse() const;
-	Array<PActor*> GetActorsUnderMouse() const;
+	TArray<PActor*> GetActorsUnderMouse() const;
 
 	/* Drawing */
 

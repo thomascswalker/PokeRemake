@@ -256,9 +256,9 @@ void PEditorGame::DeselectAll()
 	}
 }
 
-Array<PActor*> PEditorGame::GetSelectedActors()
+TArray<PActor*> PEditorGame::GetSelectedActors()
 {
-	Array<PActor*> SelectedActors;
+	TArray<PActor*> SelectedActors;
 	for (auto Actor : mWorld->GetSelectableActors())
 	{
 		if (Actor->GetSelectionComponent()->GetSelected())

@@ -159,7 +159,7 @@ public:
 	void ProcessEvents(SInputEvent* Event);
 
 #if _EDITOR
-	Array<PActor*> GetSelectableActors() const;
+	TArray<PActor*> GetSelectableActors() const;
 #endif
 };
 

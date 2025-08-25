@@ -563,9 +563,9 @@ PActor* PRenderer::GetActorUnderMouse() const
 	return nullptr;
 }
 
-Array<PActor*> PRenderer::GetActorsUnderMouse() const
+TArray<PActor*> PRenderer::GetActorsUnderMouse() const
 {
-	Array<PActor*> Actors;
+	TArray<PActor*> Actors;
 	auto W = GetWorld();
 	for (const auto& Actor : W->GetActors())
 	{

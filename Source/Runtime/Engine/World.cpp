@@ -244,9 +244,9 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 }
 
 #if _EDITOR
-Array<PActor*> PWorld::GetSelectableActors() const
+TArray<PActor*> PWorld::GetSelectableActors() const
 {
-	Array<PActor*> Actors;
+	TArray<PActor*> Actors;
 	for (const auto& Actor : mActors)
 	{
 		if (!Actor->GetSelectable())

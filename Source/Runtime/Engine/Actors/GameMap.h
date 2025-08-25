@@ -30,7 +30,7 @@ class PGameMap : public PActor, public IDrawable
 	// The display name of the map
 	std::string mMapName;
 	// The array of tiles within this map
-	std::vector<STile> mTiles;
+	TArray<STile> mTiles;
 	// Width of this map in tiles
 	int32_t mSizeX = 0;
 	// Height of this map in tiles
@@ -48,7 +48,7 @@ public:
 		return mPosition.Z;
 	}
 
-	std::vector<STile*> GetTiles();
+	TArray<STile*> GetTiles();
 	STile* GetTile(int Index);
 	STile* GetTileAt(int X, int Y) const;
 	STile* GetTileAtPosition(const FVector2& Position) const;

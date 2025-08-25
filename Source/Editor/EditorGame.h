@@ -14,7 +14,7 @@ class PEditorGame : public PGame
 	STileItem* mCurrentTilesetItem = nullptr;
 	SActorItem* mCurrentActorItem  = nullptr;
 	STileset* mCurrentTileset      = nullptr;
-	Array<PActor*> mSelectionQueue;
+	TArray<PActor*> mSelectionQueue;
 
 public:
 	// Init
@@ -79,7 +79,7 @@ public:
 
 	void SelectAll();
 	void DeselectAll();
-	Array<PActor*> GetSelectedActors();
+	TArray<PActor*> GetSelectedActors();
 
 	void PaintTile(STile* Tile);
 };
