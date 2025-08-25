@@ -8,7 +8,7 @@
 
 bool PBattleMode::Load()
 {
-    GetApplication()->SetInputContext(Game::Context::Battle);
+    SetInputContext(IC_Battle);
 
     ConstructActor<PBattleView>();
 
@@ -26,7 +26,7 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
     {
     case SDLK_ESCAPE:
         {
-            GetGame()->SetCurrentGameMode("MapMode");
+            GetGame()->SetAndLoadCurrentGameMode("MapMode");
             break;
         }
     default: break;

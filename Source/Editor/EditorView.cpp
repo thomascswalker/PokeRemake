@@ -9,23 +9,9 @@ PEditorView::PEditorView()
 	mSerializable = false;
 	mBlocking     = false;
 	mSelectable   = false;
-}
 
-void PEditorView::Start()
-{
-	if (const auto W = GetWorld())
-	{
-		LogDebug("Constructing camera component for PEditorView");
-		mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
-		if (!mCameraComponent)
-		{
-			LogError("Failed to create camera component for PEditorView");
-		}
-		else
-		{
-			LogDebug("Created camera component for PEditorView");
-		}
-	}
+	const auto W     = GetWorld();
+	mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
 }
 
 void PEditorView::Tick(float DeltaTime)

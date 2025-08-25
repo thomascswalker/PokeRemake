@@ -38,9 +38,6 @@ class PApplication
 	std::unique_ptr<PRenderer> mRenderer;
 	std::unique_ptr<SDLContext> mContext;
 
-	/* Input */
-	SInputContext mInputContext = DefaultInputContext;
-
 	/* Editor */
 
 	bool bIsEditor = false;
@@ -59,17 +56,13 @@ public:
 	{
 		if (mEngine)
 		{
-			mEngine->Start<GameType>();
+			mEngine->Initialize<GameType>();
 			if (PGame* Game = mEngine->GetGame())
 			{
-				if (!Game->PreStart())
-				{
-					return false;
-				}
+				Game->Start();
 				Game->GetWorld()->CreateHUD<HUDType>();
 				Game->GetWorld()->GetHUD()->PreStart();
 
-				Game->Start();
 				mRenderer->PostInitialize();
 			}
 			else
@@ -98,21 +91,9 @@ public:
 	PEngine* GetEngine() const;
 	PRenderer* GetRenderer() const;
 	SDLContext* GetContext() const;
-
-	SInputContext* GetInputContext()
-	{
-		return &mInputContext;
-	}
-
-	void SetInputContext(const SInputContext& Context)
-	{
-		mInputContext = Context;
-	}
 };
 
 PApplication* GetApplication();
-SInputContext* GetInputContext();
-void SetInputContext(SInputContext& Context);
 
 #define CREATE_APP(GameType, HUDType) \
 const auto Args = ArgParser::Parse(argc, argv); \

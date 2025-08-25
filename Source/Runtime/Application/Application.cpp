@@ -174,7 +174,7 @@ bool PApplication::HandleEvent(void* Event)
 
 	// Handle all other events
 	SInputEvent InputEvent(SDLEvent);
-	if (!InputEvent.Validate(&mInputContext))
+	if (!InputEvent.Validate(GetInputContext()))
 	{
 		return false;
 	}
@@ -220,12 +220,3 @@ SDLContext* PApplication::GetContext() const
 	return mContext.get();
 }
 
-SInputContext* GetInputContext()
-{
-	return PApplication::GetInstance()->GetInputContext();
-}
-
-void SetInputContext(const SInputContext& Context)
-{
-	PApplication::GetInstance()->SetInputContext(Context);
-}

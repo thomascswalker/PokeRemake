@@ -3,58 +3,28 @@
 #include <vector>
 #include "Core/CoreFwd.h"
 
+enum EInputContext
+{
+    // Game
+    IC_Default = 0,
+    IC_Dialog,
+    IC_Battle,
+    // Editor
+    IC_Select = 100,
+    IC_Tile,
+    IC_Actor,
+};
+
 struct SInputContext
 {
-    std::string Name;
+    EInputContext Type;
     std::vector<int> Keyboard;
     std::vector<int> Mouse;
     bool Any = false;
 };
 
-static SInputContext DefaultInputContext{"Default", {}, {}, true};
+static SInputContext DefaultInputContext{IC_Default, {}, {}, true};
 
-namespace Game::Context
-{
-    static SInputContext Default =
-    {
-        "Game::Default",
-        {
-            SDLK_W,
-            SDLK_S,
-            SDLK_A,
-            SDLK_D,
-            SDLK_E,
-            SDLK_Q
-        },
-        {}
-    };
-
-    static SInputContext Dialog =
-    {
-        "Game::Dialog",
-        {
-            SDLK_E,
-        },
-        {}
-    };
-
-    static SInputContext Battle =
-    {
-        "Game::Battle",
-        {
-            SDLK_ESCAPE
-        }
-    };
-}
-
-namespace Editor::Context
-{
-    static SInputContext Select{
-        "Editor::Select",
-        {},
-        {
-            SDL_EVENT_MOUSE_BUTTON_DOWN,
-            SDL_EVENT_MOUSE_BUTTON_UP,
-        },
-    };
-}
+void SetInputContext(EInputContext Type);
+SInputContext* GetInputContext();
+bool IsInputContext(EInputContext Type);

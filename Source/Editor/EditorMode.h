@@ -1,4 +1,6 @@
 #pragma once
+#include "Application/Application.h"
+
 #include "Engine/GameMode.h"
 
 class PEditorMode : public PGameMode
@@ -11,6 +13,8 @@ public:
 
     bool Load() override
     {
+        SetInputContext(IC_Select);
+
         return true;
     }
 

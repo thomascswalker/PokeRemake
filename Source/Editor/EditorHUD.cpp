@@ -3,6 +3,9 @@
 
 #include "ActorManager.h"
 #include "EditorGame.h"
+
+#include "Application/Application.h"
+
 #include "Engine/Game.h"
 #include "Engine/MapManager.h"
 #include "Engine/World.h"
@@ -210,21 +213,20 @@ void PEditorHUD::OnSizeYChanged(float Value)
 
 void PEditorHUD::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 {
-	EditorGame->ClearInputContext();
 	switch (DropdownItemData->Index)
 	{
 	case 0: // IC_Select
-		EditorGame->AddInputContext(IC_Select);
+		SetInputContext(IC_Select);
 		MainPanel->RemoveChild(TileGroup);
 		MainPanel->RemoveChild(ActorGroup);
 		break;
 	case 1: // IC_Tile
-		EditorGame->AddInputContext(IC_Tile);
+		SetInputContext(IC_Tile);
 		MainPanel->AddChild(TileGroup);
 		MainPanel->RemoveChild(ActorGroup);
 		break;
 	case 2: // IC_Actor
-		EditorGame->AddInputContext(IC_Actor);
+		SetInputContext(IC_Actor);
 		MainPanel->RemoveChild(TileGroup);
 		MainPanel->AddChild(ActorGroup);
 		break;

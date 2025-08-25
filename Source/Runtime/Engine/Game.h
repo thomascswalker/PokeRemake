@@ -18,13 +18,14 @@ protected:
 
 	/* Game State */
 
+	bool mGameStarted    = false;
 	PGameMode* mGameMode = nullptr;
 	TMap<std::string, std::shared_ptr<PGameMode>> mGameModes;
 
 public:
+	PGame();
 	~PGame() override {}
 
-	bool PreStart() override;
 	void Start() override;
 	void End() override {}
 	void Tick(float DeltaTime) override;
@@ -78,6 +79,8 @@ public:
 	}
 
 	bool SetCurrentGameMode(const std::string& Name);
+	bool LoadCurrentGameMode();
+	bool SetAndLoadCurrentGameMode(const std::string& Name);
 
 	virtual void OnGameModeLoaded(PGameMode* GameMode);
 	virtual void OnGameModeUnloaded(PGameMode* GameMode);

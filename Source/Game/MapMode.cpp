@@ -26,8 +26,7 @@ bool PMapMode::Load()
     FVector2 Position(JsonPosition);
     Player->GetMovementComponent()->SnapToPosition(Position, Map);
 
-    GetApplication()->SetInputContext(Game::Context::Default);
-
+    SetInputContext(IC_Default);
     return true;
 }
 
@@ -69,7 +68,7 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
     {
     case SDLK_Q:
         {
-            if (!GetGame()->SetCurrentGameMode("BattleMode"))
+            if (!GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
             {
                 Event->Invalidate();
             }

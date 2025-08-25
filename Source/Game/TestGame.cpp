@@ -9,7 +9,7 @@
 #include "Engine/MapManager.h"
 #include "Engine/Texture.h"
 
-TestGame::TestGame()
+TestGame::TestGame() : PGame()
 {
 	AddGameMode<PMapMode>();
 	AddGameMode<PBattleMode>();
@@ -17,16 +17,9 @@ TestGame::TestGame()
 
 bool TestGame::PreStart()
 {
-	PGame::PreStart();
-
 	LogDebug("PreStart: Loading textures.");
 	PTextureManager::LoadAllTextures();
 	LoadAllTilesets();
-	if (!SetCurrentGameMode("MapMode"))
-	{
-		LogError("Failed to set current game mode.");
-		return false;
-	}
 	return true;
 }
 

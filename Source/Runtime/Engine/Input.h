@@ -157,7 +157,7 @@ struct SInputEvent
 			}
 		default:
 			{
-				return false;
+				break;
 			}
 		}
 		return true;

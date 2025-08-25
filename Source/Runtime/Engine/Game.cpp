@@ -4,22 +4,28 @@
 
 #include <memory>
 
-bool PGame::PreStart()
+PGame::PGame()
 {
 	mWorld    = std::make_shared<PWorld>();
 	mSettings = std::make_shared<PSettings>();
-
-	assert(mGameModes.Size() > 0);
-
-	return true;
 }
 
 void PGame::Start()
 {
-	assert(mGameMode != nullptr);
-	mGameMode->Start();
+	this->PreStart();
+
+	if (mGameStarted)
+	{
+		LogWarning("Game is already started.");
+		return;
+	}
 	assert(mWorld != nullptr);
 	mWorld->Start();
+	assert(mGameMode != nullptr);
+	UpdateCameraView();
+	LoadCurrentGameMode();
+
+	mGameStarted = true;
 }
 
 void PGame::Tick(float DeltaTime)
@@ -83,13 +89,14 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 	auto NewGameMode = GetGameMode(Name);
 
 	// Unload the current game mode
-	if (mGameMode != nullptr && mGameMode != NewGameMode)
+	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->GetLoaded())
 	{
 		if (!mGameMode->Unload())
 		{
 			LogError("Failed to unload game mode.");
 			return false;
 		}
+		mGameMode->SetLoaded(false);
 		OnGameModeUnloaded(mGameMode);
 	}
 
@@ -101,15 +108,29 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 	}
 #endif
 	mGameMode = NewGameMode;
+	return true;
+}
 
-	if (!mGameMode->Load())
+bool PGame::LoadCurrentGameMode()
+{
+	if (mGameMode->GetLoaded() && !mGameMode->Load())
 	{
 		LogError("Failed to load game mode.");
 		return false;
 	}
+	mGameMode->SetLoaded(true);
 	OnGameModeLoaded(mGameMode);
 
 	return true;
+}
+
+bool PGame::SetAndLoadCurrentGameMode(const std::string& Name)
+{
+	if (!SetCurrentGameMode(Name))
+	{
+		return false;
+	}
+	return LoadCurrentGameMode();
 }
 
 void PGame::OnGameModeLoaded(PGameMode* GameMode)
