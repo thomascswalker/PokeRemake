@@ -166,6 +166,21 @@ PGameMap* PMapManager::GetMapUnderMouse()
 	return nullptr;
 }
 
+PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
+{
+	for (const auto GameMap : sActiveMaps | std::views::values)
+	{
+		auto Bounds = GameMap->GetWorldBounds();
+		Bounds.W *= 2.0f;
+		Bounds.H *= 2.0f;
+		if (Bounds.Contains(Position))
+		{
+			return GameMap;
+		}
+	}
+	return nullptr;
+}
+
 void PMapManager::ClearMaps()
 {
 	for (const auto GameMap : sActiveMaps | std::views::values)

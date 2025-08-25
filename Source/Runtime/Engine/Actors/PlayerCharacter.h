@@ -18,6 +18,11 @@ public:
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
 
+	float GetDepth() const override
+	{
+		return Drawing::Z_Player;
+	}
+
 	void Interact();
 
 	PCameraComponent* GetCameraComponent() const

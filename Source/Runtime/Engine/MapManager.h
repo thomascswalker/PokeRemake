@@ -24,5 +24,6 @@ public:
 	                      EOrientation ExitDirection);
 
 	static PGameMap* GetMapUnderMouse();
+	static PGameMap* GetMapAtPosition(const FVector2& Position);
 	static void ClearMaps();
 };
