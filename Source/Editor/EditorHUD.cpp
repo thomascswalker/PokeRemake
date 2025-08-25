@@ -12,8 +12,8 @@
 #include "Interface/ScrollArea.h"
 #include "Interface/Spinner.h"
 
-static PWorld* World     = nullptr;
-static PEditorGame* Game = nullptr;
+static PWorld* World           = nullptr;
+static PEditorGame* EditorGame = nullptr;
 
 static PPanel* MainPanel  = nullptr;
 static PGroup* EditGroup  = nullptr;
@@ -37,8 +37,8 @@ bool PEditorHUD::PreStart()
 {
 	World = GetWorld();
 	assert(World != nullptr);
-	Game = dynamic_cast<PEditorGame*>(GetGame());
-	assert(Game != nullptr);
+	EditorGame = dynamic_cast<PEditorGame*>(GetGame());
+	assert(EditorGame != nullptr);
 
 	ActorManager::LoadActorDefs();
 	for (auto& [K, V] : ActorManager::GetActorDefs().items())
@@ -134,7 +134,7 @@ void PEditorHUD::SetupInterface()
 
 PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 {
-	if (!World || !Game)
+	if (!World || !EditorGame)
 	{
 		return nullptr;
 	}
@@ -172,7 +172,7 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 
 PGridView* PEditorHUD::ConstructActorView()
 {
-	if (!World || !Game)
+	if (!World || !EditorGame)
 	{
 		return nullptr;
 	}
@@ -210,21 +210,21 @@ void PEditorHUD::OnSizeYChanged(float Value)
 
 void PEditorHUD::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 {
-	Game->ClearInputContext();
+	EditorGame->ClearInputContext();
 	switch (DropdownItemData->Index)
 	{
 	case 0: // IC_Select
-		Game->AddInputContext(IC_Select);
+		EditorGame->AddInputContext(IC_Select);
 		MainPanel->RemoveChild(TileGroup);
 		MainPanel->RemoveChild(ActorGroup);
 		break;
 	case 1: // IC_Tile
-		Game->AddInputContext(IC_Tile);
+		EditorGame->AddInputContext(IC_Tile);
 		MainPanel->AddChild(TileGroup);
 		MainPanel->RemoveChild(ActorGroup);
 		break;
 	case 2: // IC_Actor
-		Game->AddInputContext(IC_Actor);
+		EditorGame->AddInputContext(IC_Actor);
 		MainPanel->RemoveChild(TileGroup);
 		MainPanel->AddChild(ActorGroup);
 		break;
@@ -236,21 +236,13 @@ void PEditorHUD::OnEditModeClicked(SDropdownItemData* DropdownItemData)
 
 void PEditorHUD::OnNewButtonClicked()
 {
-	for (auto Actor : World->GetActors())
-	{
-		// Don't delete the editor view
-		if (dynamic_cast<PEditorView*>(Actor))
-		{
-			continue;
-		}
-		World->DestroyActor(Actor);
-	}
+	World->DestroyAllActors();
 	PMapManager::ClearMaps();
 }
 
 void PEditorHUD::OnCreateButtonClicked()
 {
-	auto CurrentTileset = Game->GetCurrentTileset();
+	auto CurrentTileset = EditorGame->GetCurrentTileset();
 	int TileCountX      = mNewMapSizeX * 2;
 	int TileCountY      = mNewMapSizeY * 2;
 	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
@@ -314,13 +306,13 @@ void PEditorHUD::OnTilesetButtonChecked(bool State)
 	auto Sender = GetSender<PButton>();
 	auto Item   = Sender->GetCustomData<STileItem>();
 
-	Game->SetCurrentTileset(Item->Tileset);
-	Game->SetCurrentTilesetItem(State ? Item : nullptr);
+	EditorGame->SetCurrentTileset(Item->Tileset);
+	EditorGame->SetCurrentTilesetItem(State ? Item : nullptr);
 }
 
 void PEditorHUD::OnActorButtonChecked(bool State)
 {
 	auto Sender = GetSender<PButton>();
 	auto Item   = Sender->GetCustomData<SActorItem>();
-	Game->SetCurrentActorItem(State ? Item : nullptr);
+	EditorGame->SetCurrentActorItem(State ? Item : nullptr);
 }

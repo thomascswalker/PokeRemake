@@ -13,7 +13,7 @@ struct SInputContext
 
 static SInputContext DefaultInputContext{"Default", {}, {}, true};
 
-namespace Input::Context
+namespace Game::Context
 {
     static SInputContext Default =
     {
@@ -36,6 +36,14 @@ namespace Input::Context
             SDLK_E,
         },
         {}
+    };
+
+    static SInputContext Battle =
+    {
+        "Game::Battle",
+        {
+            SDLK_ESCAPE
+        }
     };
 }
 

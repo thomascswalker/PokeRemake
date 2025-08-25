@@ -76,6 +76,8 @@ public:
 
 	void DestroyActor(PActor* Actor);
 
+	void DestroyAllActors();
+
 	template <typename T>
 	void RegisterActor(T* Actor)
 	{
