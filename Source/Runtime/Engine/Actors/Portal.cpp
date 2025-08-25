@@ -29,13 +29,13 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Invalid parent.");
 				return;
 			}
-			auto Map = dynamic_cast<PMap*>(mParent);
-			if (!Map)
+			auto GameMap = dynamic_cast<PGameMap*>(mParent);
+			if (!GameMap)
 			{
 				LogWarning("Parent is not map");
 				return;
 			}
-			PMapManager::SwitchMap(Map->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
+			PMapManager::SwitchMap(GameMap->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
 		}
 	}
 }

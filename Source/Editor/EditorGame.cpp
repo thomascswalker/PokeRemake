@@ -181,7 +181,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		UpdateSelection(ClickedActor);
 		return;
 	}
-	auto Map = GetCurrentMap();
+	auto GameMap = PMapManager::GetMapUnderMouse();
 	if (HasInputContext(IC_Tile))
 	{
 		if (!mCurrentTilesetItem)
@@ -193,9 +193,9 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		switch (mBrushMode)
 		{
 		case BM_Default:
-		case BM_Copy: PaintTile(Map->GetTileUnderMouse());
+		case BM_Copy: PaintTile(GameMap->GetTileUnderMouse());
 			break;
-		case BM_Fill: for (auto Tile : Map->GetTiles())
+		case BM_Fill: for (auto Tile : GameMap->GetTiles())
 			{
 				Tile->Index   = mCurrentTilesetItem->Index;
 				Tile->Tileset = mCurrentTileset;
@@ -210,11 +210,11 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			LogWarning("No actor item selected.");
 			return;
 		}
-		auto Position = Map->GetTileUnderMouse()->GetPosition();
+		auto Position = GameMap->GetTileUnderMouse()->GetPosition();
 		auto Actors   = mWorld->GetActorsAtPosition(Position);
 		Actors        = Containers::Filter(Actors, [](PActor* Actor)
 		{
-			return dynamic_cast<PMap*>(Actor) == nullptr;
+			return dynamic_cast<PGameMap*>(Actor) == nullptr;
 		});
 		if (Actors.size() == 0)
 		{
@@ -234,33 +234,10 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			{
 				LogDebug("Placing {}", mCurrentActorItem->Name.c_str());
 				NewActor->SetPosition2D(Position);
-				Map->AddChild(NewActor);
+				GameMap->AddChild(NewActor);
 			}
 		}
 	}
-}
-
-void PEditorGame::AddMap(PMap* Map)
-{
-	mMaps.emplace_back(Map);
-	SetCurrentMap(Map);
-}
-
-void PEditorGame::SetCurrentMap(PMap* Map)
-{
-	mCurrentMap = Map;
-}
-
-void PEditorGame::ConstructMap(const JSON& JsonData)
-{
-	// Create the map
-	const auto Map = SpawnActor<PMap>(JsonData);
-	if (!Map)
-	{
-		LogError("Failed to create map");
-		return;
-	}
-	AddMap(Map);
 }
 
 void PEditorGame::SelectAll()
@@ -300,7 +277,7 @@ void PEditorGame::PaintTile(STile* Tile)
 	}
 
 	// Fill all tiles
-	PMap* Map = Tile->Map;
+	PGameMap* GameMap = Tile->GameMap;
 
 	// Set hit tile
 	Tile->Tileset = mCurrentTileset;
@@ -312,19 +289,19 @@ void PEditorGame::PaintTile(STile* Tile)
 		auto MousePosition = GetRenderer()->GetMouseWorldPosition();
 
 		// TODO: Clean this up
-		if (auto Tile2 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
+		if (auto Tile2 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
 		{
 			Tile2->Tileset = mCurrentTileset;
 			Tile2->Index   = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 		}
-		if (auto Tile3 = Map->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
+		if (auto Tile3 = GameMap->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
 		{
 			Tile3->Tileset = mCurrentTileset;
 			Tile3->Index   = mBrushMode == BM_Copy
 				               ? mCurrentTilesetItem->Index + Tile->Tileset->Width
 				               : mCurrentTilesetItem->Index;
 		}
-		if (auto Tile4 = Map->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
+		if (auto Tile4 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
 		{
 			Tile4->Tileset = mCurrentTileset;
 			Tile4->Index   = mBrushMode == BM_Copy

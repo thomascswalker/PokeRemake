@@ -19,16 +19,14 @@ static PPanel* MainPanel  = nullptr;
 static PGroup* EditGroup  = nullptr;
 static PGroup* TileGroup  = nullptr;
 static PGroup* ActorGroup = nullptr;
-static std::map<std::string, PGridView*> mTilesetViews;
-static PButtonGroup* mTilesetViewButtonGroup = nullptr;
-static PButtonGroup* mActorViewButtonGroup   = nullptr;
+static std::map<std::string, PGridView*> TilesetViews;
+static PButtonGroup* TilesetViewButtonGroup = nullptr;
+static PButtonGroup* ActorViewButtonGroup   = nullptr;
 
+std::vector<SActorItem> gPlaceableActors{};
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{"JSON", "JSON"},
 };
-
-std::vector<SActorItem> gPlaceableActors{};
-
 static std::vector<std::string> gEditModeStrings = {
 	"Select",
 	"Tiles",
@@ -107,20 +105,20 @@ void PEditorHUD::SetupInterface()
 	TileGroup->AddChild(ScrollArea);
 
 	// Create a button group for all tiles across all tilesets
-	mTilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
+	TilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
 
 	// Construct each widget for each tile in each tileset
 	for (const auto Tileset : GetTilesets())
 	{
 		auto TilesetView = ConstructTilesetView(Tileset);
 		ScrollArea->AddChild(TilesetView);
-		mTilesetViews[Tileset->Name] = TilesetView;
+		TilesetViews[Tileset->Name] = TilesetView;
 	}
 
 	// Actors
 
-	mActorViewButtonGroup = ConstructWidget<PButtonGroup>();
-	ActorGroup            = World->ConstructWidget<PGroup>("Actors");
+	ActorViewButtonGroup = ConstructWidget<PButtonGroup>();
+	ActorGroup           = World->ConstructWidget<PGroup>("Actors");
 	ActorGroup->SetLayoutMode(LM_Vertical);
 
 	auto ActorView = ConstructActorView();
@@ -166,7 +164,7 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 		Button->SetSourceRect(Item.GetSourceRect());
 		Button->Checked.AddRaw(this, &PEditorHUD::OnTilesetButtonChecked);
 
-		mTilesetViewButtonGroup->AddButton(Button);
+		TilesetViewButtonGroup->AddButton(Button);
 	}
 
 	return GridView;
@@ -194,7 +192,7 @@ PGridView* PEditorHUD::ConstructActorView()
 		Button->SetCustomData(&ActorItem);
 		Button->Checked.AddRaw(this, &PEditorHUD::OnActorButtonChecked);
 
-		mActorViewButtonGroup->AddButton(Button);
+		ActorViewButtonGroup->AddButton(Button);
 	}
 
 	return GridView;
@@ -247,7 +245,7 @@ void PEditorHUD::OnNewButtonClicked()
 		}
 		World->DestroyActor(Actor);
 	}
-	Game->ClearMaps();
+	PMapManager::ClearMaps();
 }
 
 void PEditorHUD::OnCreateButtonClicked()
@@ -274,7 +272,8 @@ void PEditorHUD::OnCreateButtonClicked()
 			});
 		}
 	}
-	Game->ConstructMap(JsonData);
+
+	PMapManager::ConstructMap(JsonData);
 }
 
 void PEditorHUD::OnSaveButtonClicked()
@@ -283,9 +282,9 @@ void PEditorHUD::OnSaveButtonClicked()
 
 	for (const auto Actor : World->GetActors())
 	{
-		if (auto Map = dynamic_cast<PMap*>(Actor))
+		if (auto GameMap = dynamic_cast<PGameMap*>(Actor))
 		{
-			Json = Map->Serialize();
+			Json = GameMap->Serialize();
 			break;
 		}
 	}

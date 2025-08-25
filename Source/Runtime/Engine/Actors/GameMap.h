@@ -4,14 +4,14 @@
 
 #include "Actor.h"
 
-class PMap;
+class PGameMap;
 
 struct STile
 {
 	// The tileset this tile is associated with.
 	STileset* Tileset;
 	// The map this tile belongs to.
-	PMap* Map = nullptr;
+	PGameMap* GameMap = nullptr;
 	// The index within the tileset this tile will render.
 	int32_t Index;
 	// The X coordinate within the map.
@@ -25,7 +25,7 @@ struct STile
 	FRect GetDestRect() const;
 };
 
-class PMap : public PActor, public IDrawable
+class PGameMap : public PActor, public IDrawable
 {
 	// The display name of the map
 	std::string mMapName;
@@ -37,8 +37,7 @@ class PMap : public PActor, public IDrawable
 	int32_t mSizeY = 0;
 
 public:
-	PMap();
-	void Start() override;
+	PGameMap();
 	bool Draw(const PRenderer* Renderer) const override;
 	bool DebugDraw(const PRenderer* Renderer) const override;
 	FRect GetLocalBounds() const override;

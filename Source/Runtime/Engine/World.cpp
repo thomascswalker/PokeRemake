@@ -199,18 +199,18 @@ void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
 	mPlayerCharacter = PlayerCharacter;
 }
 
-PMap* PWorld::GetMapAtPosition(const FVector2& Position) const
+PGameMap* PWorld::GetMapAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : GetActors())
 	{
-		if (const auto Map = dynamic_cast<PMap*>(Actor))
+		if (const auto GameMap = dynamic_cast<PGameMap*>(Actor))
 		{
-			auto Bounds = Map->GetWorldBounds();
+			auto Bounds = GameMap->GetWorldBounds();
 			Bounds.W *= 2.0f;
 			Bounds.H *= 2.0f;
 			if (Bounds.Contains(Position))
 			{
-				return Map;
+				return GameMap;
 			}
 		}
 	}
@@ -222,7 +222,7 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (dynamic_cast<PMap*>(Actor.get()))
+		if (dynamic_cast<PGameMap*>(Actor.get()))
 		{
 			continue;
 		}

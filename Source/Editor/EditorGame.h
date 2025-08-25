@@ -3,15 +3,10 @@
 #include "EditorData.h"
 
 #include "Engine/Game.h"
-#include "Interface/Button.h"
-#include "Interface/ButtonGroup.h"
 
 class PEditorGame : public PGame
 {
 	uint8_t mInputContext;
-
-	std::vector<PMap*> mMaps;
-	PMap* mCurrentMap;
 
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
@@ -82,46 +77,11 @@ public:
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
 
-	size_t GetMapCount() const
-	{
-		return mMaps.size();
-	}
-
-	void AddMap(PMap* Map);
-	void SetCurrentMap(PMap* Map);
-	void ConstructMap(const JSON& JsonData);
-
-	PMap* GetCurrentMap() const
-	{
-		return mCurrentMap;
-	}
-
-	void ClearMaps()
-	{
-		mMaps.clear();
-		mCurrentMap = nullptr;
-	}
-
 	void SelectAll();
 	void DeselectAll();
 	Array<PActor*> GetSelectedActors();
 
 	void PaintTile(STile* Tile);
-
-	template <typename T = PActor>
-	T* GetActorUnderMouse()
-	{
-		const auto W = GetWorld();
-		for (const auto& Actor : W->GetActors())
-		{
-			const auto TActor = dynamic_cast<T*>(Actor);
-			if (TActor && Actor->mMouseOver)
-			{
-				return TActor;
-			}
-		}
-		return nullptr;
-	}
 };
 
 PEditorGame* GetEditorGame();
