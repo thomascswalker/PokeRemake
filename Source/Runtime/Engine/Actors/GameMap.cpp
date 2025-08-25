@@ -112,19 +112,19 @@ FRect PGameMap::GetWorldBounds() const
 	return {mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
 }
 
-std::vector<STile*> PGameMap::GetTiles()
+TArray<STile*> PGameMap::GetTiles()
 {
-	std::vector<STile*> Tiles;
+	TArray<STile*> Tiles;
 	for (auto& Tile : mTiles)
 	{
-		Tiles.push_back(&Tile);
+		Tiles.Add(&Tile);
 	}
 	return Tiles;
 }
 
 STile* PGameMap::GetTile(int Index)
 {
-	if (Index < 0 || Index >= mTiles.size())
+	if (Index < 0 || Index >= mTiles.Size())
 	{
 		return nullptr;
 	}
@@ -197,6 +197,6 @@ void PGameMap::Deserialize(const JSON& Data)
 		auto Y       = I / mSizeX;
 		auto Index   = Tile.at("Index").get<int>();
 		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
-		mTiles.push_back({Tileset, this, Index, X, Y});
+		mTiles.Add({Tileset, this, Index, X, Y});
 	}
 }

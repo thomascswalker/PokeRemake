@@ -90,6 +90,7 @@ set(SOURCES
         Engine/Components/SelectionComponent.cpp
         Engine/CameraView.cpp
         Renderer/Drawable.cpp
+        Core/Map.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

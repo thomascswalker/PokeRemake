@@ -7,6 +7,8 @@
 
 #include "Texture.h"
 
+#include "Core/Array.h"
+
 #define TILESET_1 "Tileset1"
 #define TILESET_2 "Tileset2"
 #define TILESET_3 "Tileset3"
@@ -29,6 +31,8 @@ struct STileItem
 {
 	STileset* Tileset = nullptr;
 	int32_t Index;
+
+	STileItem() = default;
 
 	STileItem(const int32_t InIndex)
 		: Index(InIndex) {}

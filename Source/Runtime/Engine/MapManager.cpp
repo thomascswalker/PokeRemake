@@ -6,13 +6,13 @@
 #include "Serialization.h"
 #include "World.h"
 
-std::map<std::string, JSON> PMapManager::sMapData         = {};
-std::map<std::string, PGameMap*> PMapManager::sActiveMaps = {};
+TMap<std::string, JSON> PMapManager::sMapData         = {};
+TMap<std::string, PGameMap*> PMapManager::sActiveMaps = {};
 
 PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 {
 	std::string MapName = JsonData["MapName"];
-	if (sActiveMaps.contains(MapName))
+	if (sActiveMaps.Contains(MapName))
 	{
 		LogWarning("Map {} already exists.", MapName.c_str());
 		return sActiveMaps[MapName];
@@ -31,7 +31,7 @@ PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 PGameMap* PMapManager::GetMap(const std::string& Name)
 {
 	// If the map is available in the list of active maps, return it
-	if (sActiveMaps.contains(Name))
+	if (sActiveMaps.Contains(Name))
 	{
 		return sActiveMaps[Name];
 	}
@@ -51,7 +51,7 @@ PGameMap* PMapManager::LoadMap(const JSON& Data)
 PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
 	JSON JsonData;
-	if (Containers::Contains(sMapData, Name) && !ForceReload)
+	if (sMapData.Contains(Name) && !ForceReload)
 	{
 		LogDebug("Loading map from memory: {}", Name.c_str());
 		JsonData = sMapData[Name];
@@ -77,7 +77,7 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 
 		JsonData = JSON::parse(Data.data());
 		Expand(&JsonData);
-		sMapData[Name] = JsonData;
+		sMapData.Add(Name, JsonData);
 	}
 	const std::string MapName = JsonData["MapName"];
 	sMapData[MapName]         = JsonData;
@@ -119,11 +119,7 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	GetWorld()->DestroyActor(GameMap);
 
 	// Remove the map from the list of active maps
-	auto Iter = sActiveMaps.find(Name);
-	if (Iter != sActiveMaps.end())
-	{
-		sActiveMaps.erase(Iter);
-	}
+	sActiveMaps.Remove(Name);
 
 	return true;
 }
@@ -187,5 +183,5 @@ void PMapManager::ClearMaps()
 	{
 		GetWorld()->DestroyActor(GameMap);
 	}
-	sActiveMaps.clear();
+	sActiveMaps.Clear();
 }

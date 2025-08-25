@@ -4,7 +4,7 @@
 
 TEST(ArrayTestSuite, TestArray)
 {
-    Array IntArr = {1, 2, 3, 4, 5};
+    TArray IntArr = {1, 2, 3, 4, 5};
     std::cout << IntArr.ToString() << std::endl;
 
     for (auto& Value : IntArr)
