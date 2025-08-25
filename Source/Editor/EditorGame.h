@@ -18,7 +18,7 @@ class PEditorGame : public PGame
 
 public:
 	// Init
-	PEditorGame() = default;
+	PEditorGame();
 	bool PreStart() override;
 	void Start() override;
 	void PostTick() override;

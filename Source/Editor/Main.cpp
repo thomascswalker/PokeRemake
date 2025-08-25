@@ -5,5 +5,5 @@
 
 int main(int argc, char** argv)
 {
-	CREATE_APP(PEditorGame, PGameMode, PEditorHUD);
+	CREATE_APP(PEditorGame, PEditorHUD);
 }

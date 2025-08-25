@@ -2,6 +2,7 @@
 
 #include "ActorManager.h"
 #include "EditorHUD.h"
+#include "EditorMode.h"
 #include "EditorView.h"
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
@@ -17,9 +18,14 @@ PEditorGame* GetEditorGame()
 	return dynamic_cast<PEditorGame*>(GetGame());
 }
 
+PEditorGame::PEditorGame()
+{
+	AddGameMode<PEditorMode>();
+}
+
 bool PEditorGame::PreStart()
 {
-	mWorld->GetHUD<PEditorHUD>()->PreStart();
+	PGame::PreStart();
 	GetSettings()->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();
@@ -27,6 +33,8 @@ bool PEditorGame::PreStart()
 	{
 		LogError("Failed to create Editor View");
 	}
+
+	UpdateCameraView();
 
 	return true;
 }

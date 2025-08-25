@@ -16,6 +16,7 @@ set(SOURCES
         ActorManager.cpp
         EditorHUD.cpp
         EditorData.h
+        EditorMode.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

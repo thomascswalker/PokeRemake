@@ -31,7 +31,7 @@ void PEditorView::Start()
 void PEditorView::Tick(float DeltaTime)
 {
 	FVector2 Destination;
-	auto View               = GetCameraView();
+	auto View               = mCameraComponent->GetCameraView();
 	const float CameraSpeed = DeltaTime / View->GetZoom(); // Adjust camera speed based on zoom level
 
 	if (mInputState[0]) // W
