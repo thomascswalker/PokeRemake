@@ -15,8 +15,6 @@ public:
         return "DefaultGameMode";
     }
 
-    void Start() override;
-
     virtual bool Load() = 0;
     virtual bool Unload() = 0;
 

@@ -9,7 +9,7 @@
 #include "Engine/MapManager.h"
 #include "Engine/Texture.h"
 
-TestGame::TestGame() : PGame()
+TestGame::TestGame()
 {
 	AddGameMode<PMapMode>();
 	AddGameMode<PBattleMode>();

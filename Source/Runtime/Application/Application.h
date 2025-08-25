@@ -60,8 +60,9 @@ public:
 			if (PGame* Game = mEngine->GetGame())
 			{
 				Game->Start();
-				Game->GetWorld()->CreateHUD<HUDType>();
-				Game->GetWorld()->GetHUD()->PreStart();
+				auto World = Game->GetWorld();
+				auto HUD   = World->CreateHUD<HUDType>();
+				HUD->PreStart();
 
 				mRenderer->PostInitialize();
 			}

@@ -22,7 +22,6 @@ void PGame::Start()
 	assert(mWorld != nullptr);
 	mWorld->Start();
 	assert(mGameMode != nullptr);
-	UpdateCameraView();
 	LoadCurrentGameMode();
 
 	mGameStarted = true;
@@ -113,7 +112,12 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 
 bool PGame::LoadCurrentGameMode()
 {
-	if (mGameMode->GetLoaded() && !mGameMode->Load())
+	if (mGameMode->GetLoaded())
+	{
+		LogWarning("Game mode is already loaded.");
+		return true;
+	}
+	if (!mGameMode->Load())
 	{
 		LogError("Failed to load game mode.");
 		return false;

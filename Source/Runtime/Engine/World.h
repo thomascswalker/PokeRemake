@@ -142,9 +142,10 @@ public:
 	std::vector<PWidget*> GetWidgets() const;
 
 	template <typename T = PHUD>
-	void CreateHUD()
+	T* CreateHUD()
 	{
 		mHUD = std::make_shared<T>();
+		return dynamic_cast<T*>(mHUD.get());
 	}
 
 	template <typename T = PHUD>
