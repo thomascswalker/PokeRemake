@@ -10,6 +10,12 @@ PGame::PGame()
 	mSettings = std::make_shared<PSettings>();
 }
 
+bool PGame::PreStart()
+{
+	mWorld->GetHUD()->PreStart();
+	return true;
+}
+
 void PGame::Start()
 {
 	mWorld->Start();

@@ -6,38 +6,49 @@
 #include "Serialization.h"
 #include "World.h"
 
-std::map<std::string, JSON> PMapManager::sMapData = {};
+std::map<std::string, JSON> PMapManager::sMapData         = {};
+std::map<std::string, PGameMap*> PMapManager::sActiveMaps = {};
 
-PMap* PMapManager::GetMapInWorld(const std::string& Name)
+PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 {
-	LogDebug("Finding map: {}", Name.c_str());
-	for (auto Map : GetWorld()->GetActorsOfType<PMap>())
+	std::string MapName = JsonData["MapName"];
+	if (sActiveMaps.contains(MapName))
 	{
-		LogDebug("Comparing map: {}", Map->GetMapName().c_str());
-		if (Map->GetMapName() == Name)
-		{
-			return Map;
-		}
+		LogWarning("Map {} already exists.", MapName.c_str());
+		return sActiveMaps[MapName];
 	}
+	// Create the map
+	const auto GameMap = SpawnActor<PGameMap>(JsonData);
+	if (!GameMap)
+	{
+		LogError("Failed to create map");
+		return nullptr;
+	}
+	sActiveMaps[MapName] = GameMap;
+	return GameMap;
+}
+
+PGameMap* PMapManager::GetMap(const std::string& Name)
+{
+	// If the map is available in the list of active maps, return it
+	if (sActiveMaps.contains(Name))
+	{
+		return sActiveMaps[Name];
+	}
+
 	return nullptr;
 }
 
-PMap* PMapManager::LoadMap(const JSON& Data)
+PGameMap* PMapManager::LoadMap(const JSON& Data)
 {
 	JSON ExpandedData = Data;
 	Expand(&ExpandedData);
 	const std::string MapName = ExpandedData["MapName"];
 	sMapData[MapName]         = ExpandedData;
-	if (ExpandedData.at("Class") != "PMap")
-	{
-		LogError("Invalid class at root level of map data. Must be 'PMap'.");
-		return nullptr;
-	}
-	Serialization::DeserializeActor(ExpandedData);
-	return GetMapInWorld(MapName);
+	return ConstructMap(ExpandedData);
 }
 
-PMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
+PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
 	JSON JsonData;
 	if (Containers::Contains(sMapData, Name) && !ForceReload)
@@ -68,18 +79,12 @@ PMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 		Expand(&JsonData);
 		sMapData[Name] = JsonData;
 	}
-
-	if (JsonData.at("Class") != "PMap")
-	{
-		LogError("Invalid class at root level of map file. Must be 'PMap'.");
-		return nullptr;
-	}
-	Serialization::DeserializeActor(JsonData);
-
-	return GetMapInWorld(Name);
+	const std::string MapName = JsonData["MapName"];
+	sMapData[MapName]         = JsonData;
+	return ConstructMap(JsonData);
 }
 
-PMap* PMapManager::LoadMapFile(const std::string& FileName)
+PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
 {
 	JSON JsonData;
 
@@ -96,27 +101,29 @@ PMap* PMapManager::LoadMapFile(const std::string& FileName)
 	const std::string MapName = JsonData["MapName"];
 	sMapData[MapName]         = JsonData;
 
-	if (JsonData.at("Class") != "PMap")
-	{
-		LogError("Invalid class at root level of map file. Must be 'PMap'.");
-		return nullptr;
-	}
-	Serialization::DeserializeActor(JsonData);
-
-	return GetMapInWorld(MapName);
+	return ConstructMap(JsonData);
 }
 
 bool PMapManager::UnloadMap(const std::string& Name)
 {
-	auto Map = GetMapInWorld(Name);
-	if (!Map)
+	// Get the reference to the map
+	auto GameMap = GetMap(Name);
+	if (!GameMap)
 	{
 		LogError("Unable to find map {} in world.", Name.c_str());
 		return false;
 	}
 
+	// Destroy the map actor
 	LogDebug("Destroying map: {}", Name.c_str());
-	GetWorld()->DestroyActor(Map);
+	GetWorld()->DestroyActor(GameMap);
+
+	// Remove the map from the list of active maps
+	auto Iter = sActiveMaps.find(Name);
+	if (Iter != sActiveMaps.end())
+	{
+		sActiveMaps.erase(Iter);
+	}
 
 	return true;
 }
@@ -125,8 +132,8 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
                             EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
-	PMap* Map = LoadMap(NewMap, false);
-	if (!Map)
+	PGameMap* GameMap = LoadMap(NewMap, false);
+	if (!GameMap)
 	{
 		LogError("Failed to load map: {}", NewMap.c_str());
 		return false;
@@ -135,7 +142,7 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 	if (auto Player = GetWorld()->GetPlayerCharacter())
 	{
 		Player->GetMovementComponent()->SetMovementDirection(ExitDirection);
-		Player->GetMovementComponent()->SnapToPosition(NewPosition, Map);
+		Player->GetMovementComponent()->SnapToPosition(NewPosition, GameMap);
 	}
 	else
 	{
@@ -144,4 +151,41 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 	}
 
 	return true;
+}
+
+PGameMap* PMapManager::GetMapUnderMouse()
+{
+	auto Actors = GetRenderer()->GetActorsUnderMouse();
+	for (auto Actor : Actors)
+	{
+		if (auto GameMap = dynamic_cast<PGameMap*>(Actor))
+		{
+			return GameMap;
+		}
+	}
+	return nullptr;
+}
+
+PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
+{
+	for (const auto GameMap : sActiveMaps | std::views::values)
+	{
+		auto Bounds = GameMap->GetWorldBounds();
+		Bounds.W *= 2.0f;
+		Bounds.H *= 2.0f;
+		if (Bounds.Contains(Position))
+		{
+			return GameMap;
+		}
+	}
+	return nullptr;
+}
+
+void PMapManager::ClearMaps()
+{
+	for (const auto GameMap : sActiveMaps | std::views::values)
+	{
+		GetWorld()->DestroyActor(GameMap);
+	}
+	sActiveMaps.clear();
 }

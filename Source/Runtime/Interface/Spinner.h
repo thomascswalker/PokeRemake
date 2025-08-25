@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Box.h"
+
 #include "Core/Delegate.h"
 
 #include "Button.h"

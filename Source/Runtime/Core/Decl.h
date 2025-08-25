@@ -52,7 +52,7 @@ class PGroup;
 class PHUD;
 class PImage;
 class PInteractionComponent;
-class PMap;
+class PGameMap;
 class PObject;
 class PPanel;
 class PPlayerCharacter;

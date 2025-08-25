@@ -3,7 +3,7 @@
 #include "Component.h"
 #include "Core/Common.h"
 #include "Core/Delegate.h"
-#include "Engine/Actors/Map.h"
+#include "Engine/Actors/GameMap.h"
 
 inline FVector2 DirectionToVector(EOrientation Direction)
 {
@@ -49,7 +49,7 @@ class PCharacterMovementComponent : public PComponent
 	EOrientation mMovementDirection;
 	FVector2 mVelocity;
 	float mDistanceTraveled = 0.0f;
-	PMap* mCurrentMap       = nullptr;
+	PGameMap* mCurrentMap   = nullptr;
 
 public:
 	DDestinationReached DestinationReached;
@@ -71,9 +71,9 @@ public:
 
 	STile* GetCurrentTile() const;
 	STile* GetTargetTile() const;
-	void SetCurrentMap(PMap* Map);
+	void SetCurrentMap(PGameMap* NewMap);
 
-	void SnapToPosition(const FVector2& Position, PMap* Map = nullptr);
+	void SnapToPosition(const FVector2& Position, PGameMap* GameMap = nullptr);
 	void SnapToTile(const IVector2& Position);
 
 	EOrientation GetMovementDirection()

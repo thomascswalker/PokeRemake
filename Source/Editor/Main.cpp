@@ -1,15 +1,16 @@
 #include "Application/Application.h"
 #include "Application/ArgParser.h"
 #include "EditorGame.h"
+#include "EditorHUD.h"
 
 int main(int argc, char** argv)
 {
 	const auto Args = ArgParser::Parse(argc, argv);
-	const auto App = PApplication::GetInstance();
+	const auto App  = PApplication::GetInstance();
 
 	if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor))
 	{
-		if (!App->Start<PEditorGame>())
+		if (!App->Start<PEditorGame, PEditorHUD>())
 		{
 			return 1;
 		}

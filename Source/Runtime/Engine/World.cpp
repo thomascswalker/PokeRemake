@@ -155,20 +155,6 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 	return Drawables;
 }
 
-Array<PActor*> PWorld::GetSelectableActors() const
-{
-	Array<PActor*> Actors;
-	for (const auto& Actor : mActors)
-	{
-		if (!Actor->GetSelectable())
-		{
-			continue;
-		}
-		Actors.Add(Actor.get());
-	}
-	return Actors;
-}
-
 std::vector<PComponent*> PWorld::GetComponents() const
 {
 	std::vector<PComponent*> Components;
@@ -199,30 +185,12 @@ void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
 	mPlayerCharacter = PlayerCharacter;
 }
 
-PMap* PWorld::GetMapAtPosition(const FVector2& Position) const
-{
-	for (const auto& Actor : GetActors())
-	{
-		if (const auto Map = dynamic_cast<PMap*>(Actor))
-		{
-			auto Bounds = Map->GetWorldBounds();
-			Bounds.W *= 2.0f;
-			Bounds.H *= 2.0f;
-			if (Bounds.Contains(Position))
-			{
-				return Map;
-			}
-		}
-	}
-	return nullptr;
-}
-
 PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 {
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (dynamic_cast<PMap*>(Actor.get()))
+		if (dynamic_cast<PGameMap*>(Actor.get()))
 		{
 			continue;
 		}
@@ -274,3 +242,19 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 		}
 	}
 }
+
+#if _EDITOR
+Array<PActor*> PWorld::GetSelectableActors() const
+{
+	Array<PActor*> Actors;
+	for (const auto& Actor : mActors)
+	{
+		if (!Actor->GetSelectable())
+		{
+			continue;
+		}
+		Actors.Add(Actor.get());
+	}
+	return Actors;
+}
+#endif

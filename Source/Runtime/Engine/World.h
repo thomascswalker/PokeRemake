@@ -3,24 +3,20 @@
 #include <memory>
 #include <vector>
 
-#include "Actors/Actor.h"
-#include "Actors/Map.h"
+#include "Actors/GameMap.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
-#include "Components/SelectionComponent.h"
-
 #include "Interface/Widget.h"
 #include "Interface/HUD.h"
 
 #if _EDITOR
 #include "../../Editor/EditorView.h"
+#include "Components/SelectionComponent.h"
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 #endif
 
 class PWorld : public PObject
 {
-	std::map<std::string, PMap*> mMaps;
-
 	PPlayerCharacter* mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>> mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
@@ -112,8 +108,6 @@ public:
 
 	std::vector<IDrawable*> GetDrawables() const;
 
-	Array<PActor*> GetSelectableActors() const;
-
 	template <typename T, typename... ArgsType>
 	T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 	{
@@ -159,11 +153,14 @@ public:
 
 	PPlayerCharacter* GetPlayerCharacter() const;
 	void SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
-	PMap* GetMapAtPosition(const FVector2& Position) const;
 	PActor* GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);
+
+#if _EDITOR
+	Array<PActor*> GetSelectableActors() const;
+#endif
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(World)

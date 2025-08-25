@@ -1,6 +1,6 @@
 // ReSharper disable CppDFAUnreachableCode
 
-#include "Map.h"
+#include "GameMap.h"
 
 #include "Core/Macros.h"
 #include "Engine/World.h"
@@ -15,7 +15,7 @@ bool STile::IsBlocking() const
 
 FVector2 STile::GetPosition() const
 {
-	auto Position = Map->GetWorldPosition2D();
+	auto Position = GameMap->GetWorldPosition2D();
 	Position.X += X * TILE_SIZE;
 	Position.Y += Y * TILE_SIZE;
 	return Position;
@@ -40,22 +40,12 @@ FRect STile::GetDestRect() const
 	};
 }
 
-PMap::PMap()
+PGameMap::PGameMap()
 {
 	mPosition.Z = Drawing::Z_BG;
 }
 
-void PMap::Start()
-{
-#if _EDITOR
-	if (const auto EditorGame = GetEditorGame())
-	{
-		EditorGame->AddMap(this);
-	}
-#endif
-}
-
-bool PMap::Draw(const PRenderer* Renderer) const
+bool PGameMap::Draw(const PRenderer* Renderer) const
 {
 	// Draw each tile
 	for (const auto& Tile : mTiles)
@@ -67,7 +57,7 @@ bool PMap::Draw(const PRenderer* Renderer) const
 	return true;
 }
 
-bool PMap::DebugDraw(const PRenderer* Renderer) const
+bool PGameMap::DebugDraw(const PRenderer* Renderer) const
 {
 	Renderer->SetDrawColor(255, 0, 0, 128);
 	for (const auto& Tile : mTiles)
@@ -112,17 +102,17 @@ bool PMap::DebugDraw(const PRenderer* Renderer) const
 	return true;
 }
 
-FRect PMap::GetLocalBounds() const
+FRect PGameMap::GetLocalBounds() const
 {
 	return {0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
 }
 
-FRect PMap::GetWorldBounds() const
+FRect PGameMap::GetWorldBounds() const
 {
 	return {mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
 }
 
-std::vector<STile*> PMap::GetTiles()
+std::vector<STile*> PGameMap::GetTiles()
 {
 	std::vector<STile*> Tiles;
 	for (auto& Tile : mTiles)
@@ -132,7 +122,7 @@ std::vector<STile*> PMap::GetTiles()
 	return Tiles;
 }
 
-STile* PMap::GetTile(int Index)
+STile* PGameMap::GetTile(int Index)
 {
 	if (Index < 0 || Index >= mTiles.size())
 	{
@@ -141,7 +131,7 @@ STile* PMap::GetTile(int Index)
 	return &mTiles[Index];
 }
 
-STile* PMap::GetTileAtPosition(const FVector2& Position) const
+STile* PGameMap::GetTileAtPosition(const FVector2& Position) const
 {
 	for (auto& Tile : mTiles)
 	{
@@ -154,12 +144,12 @@ STile* PMap::GetTileAtPosition(const FVector2& Position) const
 	return nullptr; // No tile found at the given position
 }
 
-STile* PMap::GetTileUnderMouse() const
+STile* PGameMap::GetTileUnderMouse() const
 {
 	return GetTileAtPosition(GetRenderer()->GetMouseWorldPosition());
 }
 
-STile* PMap::GetTileAt(int X, int Y) const
+STile* PGameMap::GetTileAt(int X, int Y) const
 {
 	if (X < 0 || X >= mSizeX || Y < 0 || Y >= mSizeY)
 	{
@@ -171,7 +161,7 @@ STile* PMap::GetTileAt(int X, int Y) const
 	return const_cast<STile*>(Tile);
 }
 
-JSON PMap::Serialize() const
+JSON PGameMap::Serialize() const
 {
 	JSON Result = PActor::Serialize();
 	SAVE_MEMBER_PROPERTY(MapName);
@@ -190,7 +180,7 @@ JSON PMap::Serialize() const
 	return Result;
 }
 
-void PMap::Deserialize(const JSON& Data)
+void PGameMap::Deserialize(const JSON& Data)
 {
 	PActor::Deserialize(Data);
 	mBlocking = false;
@@ -209,9 +199,4 @@ void PMap::Deserialize(const JSON& Data)
 		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
 		mTiles.push_back({Tileset, this, Index, X, Y});
 	}
-
-#if _EDITOR
-	auto EditorGame = GetEditorGame();
-	EditorGame->SetCurrentMap(this);
-#endif
 }

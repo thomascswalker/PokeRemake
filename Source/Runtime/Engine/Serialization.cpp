@@ -29,7 +29,7 @@ PActor* Serialization::DeserializeActor(const JSON& Data)
 	BEGIN_CONSTRUCT_ACTOR;
 
 	CONSTRUCT_EACH_ACTOR(
-		Map,
+		GameMap,
 		Portal,
 		SceneryActor
 	);

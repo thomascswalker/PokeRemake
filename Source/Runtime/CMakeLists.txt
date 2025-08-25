@@ -35,7 +35,7 @@ set(SOURCES
         Engine/Actors/Character.cpp
         Engine/Actors/Collider.h
         Engine/Actors/Interactable.h
-        Engine/Actors/Map.cpp
+        Engine/Actors/GameMap.cpp
         Engine/Actors/PlayerCharacter.cpp
         Engine/Actors/Portal.cpp
         Engine/Actors/Selectable.h
