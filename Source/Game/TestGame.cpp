@@ -22,7 +22,7 @@ bool TestGame::PreStart()
 	GetWorld()->SetPlayerCharacter(Player);
 	Player->MoveToTile(8, 8);
 
-	GetApplication()->SetInputContext(Game::Context::Default);
+	GetApplication()->SetInputContext(Input::Context::Default);
 
 	return true;
 }

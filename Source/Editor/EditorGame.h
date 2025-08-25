@@ -1,77 +1,24 @@
 #pragma once
 
-#include "Core/Bitmask.h"
+#include "EditorData.h"
+
 #include "Engine/Game.h"
 #include "Interface/Button.h"
 #include "Interface/ButtonGroup.h"
-#include "Interface/Dropdown.h"
-#include "Interface/GridView.h"
-
-#define NEW_GRID_SIZE 5
-
-enum EInputContext : uint8_t
-{
-	IC_None   = 1U << 0,
-	IC_Select = 1U << 2,
-	IC_Tile   = 1U << 3,
-	IC_Actor  = 1U << 4,
-};
-
-DEFINE_BITMASK_OPERATORS(EInputContext);
-
-enum EEditMode
-{
-	EM_None,
-	EM_Select,
-	EM_Tile
-};
-
-enum EBrushSize
-{
-	BS_Small, // 1X1
-	BS_Large, // 2X2
-};
-
-enum EBrushMode
-{
-	BM_Default, // Paint from the source tile into all four quadrants.
-	BM_Copy,    // Paint from the source tile the three adjacent tiles, where the source tile is the top left.
-	BM_Fill     // Fills the entire map with the tile
-};
-
-struct SInputModeData
-{
-	EInputContext InputContext;
-	PGroup* Group;
-};
-
-DECLARE_MULTICAST_DELEGATE(DEditModeChanged, EEditMode);
 
 class PEditorGame : public PGame
 {
-	float mNewMapSizeX = 16.0f;
-	float mNewMapSizeY = 16.0f;
-
 	uint8_t mInputContext;
-
-	DEditModeChanged EditModeChanged;
-	EEditMode mEditMode = EM_Select;
 
 	std::vector<PMap*> mMaps;
 	PMap* mCurrentMap;
 
-	std::map<std::string, PGridView*> mTilesetViews;
-
-	PButtonGroup* mTilesetViewButtonGroup;
-	STileset* mCurrentTileset      = nullptr;
-	STileItem* mCurrentTilesetItem = nullptr;
-
-	PButtonGroup* mActorViewButtonGroup;
-	SActorItem* mCurrentActorItem = nullptr;
-
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
+	STileItem* mCurrentTilesetItem = nullptr;
+	SActorItem* mCurrentActorItem  = nullptr;
+	STileset* mCurrentTileset      = nullptr;
 	Array<PActor*> mSelectionQueue;
 
 public:
@@ -80,10 +27,6 @@ public:
 	bool PreStart() override;
 	void Start() override;
 	void PostTick() override;
-	void SetupInterface();
-
-	PGridView* ConstructTilesetView(STileset* Tileset);
-	PGridView* ConstructActorView();
 
 	// Input
 
@@ -104,60 +47,64 @@ public:
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
 
-	// Interface
-
-	void OnNewButtonClicked();
-	void OnCreateButtonClicked();
-
-	void OnSizeXChanged(float Value)
+	void SetBrushSize(EBrushSize Size)
 	{
-		mNewMapSizeX = Value;
+		mBrushSize = Size;
 	}
 
-	void OnSizeYChanged(float Value)
+	void SetBrushMode(EBrushMode Mode)
 	{
-		mNewMapSizeY = Value;
+		mBrushMode = Mode;
 	}
 
-	void OnSaveButtonClicked();
-	void OnLoadButtonClicked();
-	void OnEditModeClicked(SDropdownItemData* DropdownItemData);
-	void OnTilesetButtonChecked(bool State);
-	void OnActorButtonChecked(bool State);
-	void UpdateSelection(PActor* ClickedActor);
-	void OnActorClicked(PActor* ClickedActor);
-	void OnDropdownClicked(SDropdownItemData* Data) const;
-
-	EBrushSize GetBrushSize()
+	void SetCurrentTilesetItem(STileItem* Item)
 	{
-		return mBrushSize;
+		mCurrentTilesetItem = Item;
+	}
+
+	void SetCurrentActorItem(SActorItem* Item)
+	{
+		mCurrentActorItem = Item;
+	}
+
+	STileset* GetCurrentTileset() const
+	{
+		return mCurrentTileset;
+	}
+
+	void SetCurrentTileset(STileset* Tileset)
+	{
+		mCurrentTileset = Tileset;
 	}
 
 	// Scene
-	void AddMap(PMap* Map);
+
+	void UpdateSelection(PActor* ClickedActor);
+	void OnActorClicked(PActor* ClickedActor);
 
 	size_t GetMapCount() const
 	{
 		return mMaps.size();
 	}
 
+	void AddMap(PMap* Map);
 	void SetCurrentMap(PMap* Map);
 	void ConstructMap(const JSON& JsonData);
-	void ActorSelected(PActor* Actor);
-
-	void SelectAll();
-	void DeselectAll();
-	Array<PActor*> GetSelectedActors();
 
 	PMap* GetCurrentMap() const
 	{
 		return mCurrentMap;
 	}
 
-	STileItem* GetCurrentTilesetItem() const
+	void ClearMaps()
 	{
-		return mCurrentTilesetItem;
+		mMaps.clear();
+		mCurrentMap = nullptr;
 	}
+
+	void SelectAll();
+	void DeselectAll();
+	Array<PActor*> GetSelectedActors();
 
 	void PaintTile(STile* Tile);
 

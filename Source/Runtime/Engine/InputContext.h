@@ -13,7 +13,7 @@ struct SInputContext
 
 static SInputContext DefaultInputContext{"Default", {}, {}, true};
 
-namespace Game::Context
+namespace Input::Context
 {
     static SInputContext Default =
     {

@@ -18,7 +18,7 @@ void PGameHUD::DialogBox(const std::string& Text)
 {
     mDialogBox->GetVisible() ? mDialogBox->SetVisible(false) : mDialogBox->SetVisible(true);
     mDialogBox->GetVisible()
-        ? GetApplication()->SetInputContext(Game::Context::Dialog)
-        : GetApplication()->SetInputContext(Game::Context::Default);
+        ? GetApplication()->SetInputContext(Input::Context::Dialog)
+        : GetApplication()->SetInputContext(Input::Context::Default);
     mDialogBox->SetText(Text);
 }
