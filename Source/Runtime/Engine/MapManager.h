@@ -2,6 +2,8 @@
 
 #include "Actors/GameMap.h"
 
+#include "Core/Map.h"
+
 #define MAP_PALLET_TOWN "PalletTown"
 #define MAP_PALLET_TOWN_ASH_HOUSE_F0 "PalletTownAshHouseF0"
 #define MAP_PALLET_TOWN_ASH_HOUSE_F1 "PalletTownAshHouseF1"
@@ -9,8 +11,8 @@
 
 class PMapManager
 {
-	static std::map<std::string, JSON> sMapData;
-	static std::map<std::string, PGameMap*> sActiveMaps;
+	static TMap<std::string, JSON> sMapData;
+	static TMap<std::string, PGameMap*> sActiveMaps;
 
 public:
 	static PGameMap* ConstructMap(const JSON& JsonData);

@@ -11,16 +11,16 @@
 /**
  * @brief Wrapper around std::map to provide additional functionality.
  * @tparam KeyType The key type.
- * @tparam MappedType The mapped value type.
+ * @tparam ValueType The mapped value type.
  */
-template <typename KeyType, typename MappedType>
+template <typename KeyType, typename ValueType>
 class TMap
 {
 public:
-    using DataType      = std::map<KeyType, MappedType>;
-    using ValueType     = std::pair<KeyType, MappedType>;
-    using RefType       = MappedType&;
-    using ConstRefType  = const MappedType&;
+    using DataType      = std::map<KeyType, ValueType>;
+    using PairType      = std::pair<KeyType, ValueType>;
+    using RefType       = ValueType&;
+    using ConstRefType  = const ValueType&;
     using IterType      = typename DataType::iterator;
     using ConstIterType = typename DataType::const_iterator;
 
@@ -30,12 +30,7 @@ private:
 public:
     TMap() = default;
 
-    TMap(std::initializer_list<ValueType> InList)
-    {
-        mData = DataType(InList.begin(), InList.end());
-    }
-
-    TMap(const std::initializer_list<ValueType>& InList)
+    TMap(std::initializer_list<PairType> InList)
     {
         mData = DataType(InList.begin(), InList.end());
     }
@@ -85,7 +80,7 @@ public:
         return mData[Key];
     }
 
-    RefType Add(const KeyType& Key, const MappedType& Value)
+    RefType Add(const KeyType& Key, const ValueType& Value)
     {
         mData[Key] = Value;
         return mData[Key];
@@ -93,7 +88,7 @@ public:
 
     void Remove(const KeyType& Key)
     {
-        auto Iter = std::find(mData.begin(), mData.end(), Key);
+        auto Iter = TMap::Find(Key);
         mData.erase(Iter);
     }
 
@@ -112,29 +107,37 @@ public:
         return mData.at(Key);
     }
 
-    MappedType* At(const KeyType& Key)
+    ValueType* At(const KeyType& Key)
     {
-        return &mData.at(Key);
-    }
-
-    MappedType* At(const KeyType& Key) const
-    {
-        return &mData.at(Key);
-    }
-
-    size_t Find(const KeyType& Key) const
-    {
-        auto Iter = std::find(mData.begin(), mData.end(), Key);
-        if (Iter != mData.end())
+        if (!mData.contains(Key))
         {
-            return Iter - mData.begin();
+            return nullptr;
         }
-        return mData.size();
+        return &mData.at(Key);
+    }
+
+    ValueType* At(const KeyType& Key) const
+    {
+        if (!mData.contains(Key))
+        {
+            return nullptr;
+        }
+        return &mData.at(Key);
+    }
+
+    IterType Find(const KeyType& Key)
+    {
+        return mData.find(Key);
+    }
+
+    ConstIterType Find(const KeyType& Key) const
+    {
+        return mData.find(Key);
     }
 
     bool Contains(const KeyType& Key) const
     {
-        return std::find(mData.begin(), mData.end(), Key) != mData.end();
+        return mData.contains(Key);
     }
 
     TArray<KeyType> Keys() const
@@ -147,9 +150,9 @@ public:
         return Result;
     }
 
-    TArray<MappedType> Values() const
+    TArray<ValueType> Values() const
     {
-        TArray<MappedType> Result;
+        TArray<ValueType> Result;
         for (const auto& Pair : mData)
         {
             Result.Add(Pair.second);
@@ -177,14 +180,14 @@ public:
         return !(*this == Other);
     }
 
-    RefType operator[](const KeyType& Key)
+    ValueType& operator[](const KeyType& Key)
     {
-        return mData.at(Key);
+        return mData[Key];
     }
 
-    ConstRefType operator[](const KeyType& Key) const
+    ValueType& operator[](KeyType&& Key)
     {
-        return mData.at(Key);
+        return mData[Key];
     }
 
     DataType* operator->()
