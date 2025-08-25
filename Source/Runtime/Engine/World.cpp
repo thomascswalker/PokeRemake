@@ -69,6 +69,14 @@ void PWorld::DestroyActor(PActor* Actor)
 	}
 }
 
+void PWorld::DestroyAllActors()
+{
+	for (auto Actor : mActors)
+	{
+		DestroyActor(Actor.get());
+	}
+}
+
 void PWorld::DestroyActorInternal(const PActor* Actor)
 {
 	if (!Actor)

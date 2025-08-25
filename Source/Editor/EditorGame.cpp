@@ -1,7 +1,7 @@
 #include "EditorGame.h"
 
 #include "ActorManager.h"
-#include "EditorHUD.h"
+#include "EditorMode.h"
 #include "EditorView.h"
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
@@ -17,16 +17,24 @@ PEditorGame* GetEditorGame()
 	return dynamic_cast<PEditorGame*>(GetGame());
 }
 
+PEditorGame::PEditorGame()
+{
+	AddGameMode<PEditorMode>();
+}
+
 bool PEditorGame::PreStart()
 {
-	mWorld->GetHUD<PEditorHUD>()->PreStart();
+	PGame::PreStart();
 	GetSettings()->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();
+
 	if (!EditorView)
 	{
 		LogError("Failed to create Editor View");
 	}
+
+	UpdateCameraView();
 
 	return true;
 }
@@ -36,7 +44,7 @@ void PEditorGame::Start()
 	PGame::Start();
 
 	// Default to selection context
-	AddInputContext(IC_Select);
+	SetInputContext(IC_Select);
 
 	// Bind the world actor clicked event to handle selection within the editor.
 	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
@@ -75,21 +83,6 @@ void PEditorGame::PostTick()
 	mSelectionQueue.Clear();
 }
 
-void PEditorGame::AddInputContext(uint8_t InputContext)
-{
-	mInputContext |= InputContext;
-}
-
-void PEditorGame::RemoveInputContext(uint8_t InputContext)
-{
-	mInputContext &= ~InputContext;
-}
-
-bool PEditorGame::HasInputContext(uint8_t InputContext)
-{
-	return (mInputContext & InputContext) == InputContext;
-}
-
 void PEditorGame::OnKeyDown(SInputEvent* Event)
 {
 	PGame::OnKeyDown(Event);
@@ -100,16 +93,22 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 
 	switch (Event->KeyDown)
 	{
-	case SDLK_LSHIFT: if (HasInputContext(IC_Tile))
+	case SDLK_LSHIFT:
 		{
-			mBrushMode = BM_Copy;
+			if (IsInputContext(IC_Tile))
+			{
+				SetBrushMode(BM_Copy);
+			}
+			break;
 		}
-		break;
-	case SDLK_LCTRL: if (HasInputContext(IC_Tile))
+	case SDLK_LCTRL:
 		{
-			mBrushMode = BM_Fill;
+			if (IsInputContext(IC_Tile))
+			{
+				SetBrushMode(BM_Fill);
+			}
+			break;
 		}
-		break;
 	default: break;
 	}
 }
@@ -126,7 +125,7 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	{
 	case SDLK_DELETE:
 		{
-			if (HasInputContext(IC_Select))
+			if (IsInputContext(IC_Select))
 			{
 				for (auto Actor : GetSelectedActors())
 				{
@@ -139,7 +138,7 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	case SDLK_UP:
 	case SDLK_DOWN:
 		{
-			if (HasInputContext(IC_Tile))
+			if (IsInputContext(IC_Tile))
 			{
 				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
 			}
@@ -148,7 +147,7 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 	case SDLK_LSHIFT:
 	case SDLK_LCTRL:
 		{
-			if (HasInputContext(IC_Tile))
+			if (IsInputContext(IC_Tile))
 			{
 				mBrushMode = BM_Default;
 			}
@@ -176,13 +175,13 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
 {
-	if (HasInputContext(IC_Select))
+	if (IsInputContext(IC_Select))
 	{
 		UpdateSelection(ClickedActor);
 		return;
 	}
 	auto GameMap = PMapManager::GetMapUnderMouse();
-	if (HasInputContext(IC_Tile))
+	if (IsInputContext(IC_Tile))
 	{
 		if (!mCurrentTilesetItem)
 		{
@@ -203,7 +202,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			break;
 		}
 	}
-	else if (HasInputContext(IC_Actor))
+	else if (IsInputContext(IC_Actor))
 	{
 		if (!mCurrentActorItem)
 		{

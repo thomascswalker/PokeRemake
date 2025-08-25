@@ -15,7 +15,6 @@ public:
 	PEditorView();
 	~PEditorView() override = default;
 
-	void Start() override;
 	void Tick(float DeltaTime) override;
 
 	void OnKeyDown(SInputEvent* Event) override;

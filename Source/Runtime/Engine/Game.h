@@ -1,8 +1,12 @@
 #pragma once
 
+#include "GameMode.h"
+
 #include "Components/CameraComponent.h"
 #include "Settings.h"
 #include "World.h"
+
+#include "Core/Map.h"
 
 class PGame : public PObject, public IInputHandler
 {
@@ -10,14 +14,18 @@ protected:
 	/* Actors/Objects */
 	std::shared_ptr<PWorld> mWorld;
 	std::shared_ptr<PSettings> mSettings;
-
 	PCameraView* mActiveCameraView = nullptr;
+
+	/* Game State */
+
+	bool mGameStarted    = false;
+	PGameMode* mGameMode = nullptr;
+	TMap<std::string, std::shared_ptr<PGameMode>> mGameModes;
 
 public:
 	PGame();
 	~PGame() override {}
 
-	bool PreStart() override;
 	void Start() override;
 	void End() override {}
 	void Tick(float DeltaTime) override;
@@ -32,7 +40,7 @@ public:
 		return mWorld.get();
 	}
 
-	void FindActiveCamera();
+	void UpdateCameraView();
 
 	PCameraView* GetCameraView() const
 	{
@@ -45,6 +53,37 @@ public:
 	}
 
 	void OnKeyUp(SInputEvent* Event) override;
+	bool ProcessEvents(SInputEvent* Event) override;
+
+	template <typename T>
+	T* AddGameMode()
+	{
+		auto Mode = std::make_shared<T>();
+		auto Name = Mode->GetName();
+		mGameModes.Add(Name, Mode);
+		if (mGameMode == nullptr)
+		{
+			mGameMode = Mode.get();
+		}
+		return dynamic_cast<T*>(mGameModes[Name].get());
+	}
+
+	PGameMode* GetGameMode(const std::string& Name)
+	{
+		return mGameModes[Name].get();
+	}
+
+	PGameMode* GetCurrentGameMode() const
+	{
+		return mGameMode;
+	}
+
+	bool SetCurrentGameMode(const std::string& Name);
+	bool LoadCurrentGameMode();
+	bool SetAndLoadCurrentGameMode(const std::string& Name);
+
+	virtual void OnGameModeLoaded(PGameMode* GameMode);
+	virtual void OnGameModeUnloaded(PGameMode* GameMode);
 };
 
 DECLARE_STATIC_GLOBAL_GETTER(Game)

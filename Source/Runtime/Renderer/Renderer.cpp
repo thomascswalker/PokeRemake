@@ -130,6 +130,11 @@ bool PRenderer::Render() const
 
 	bool DebugDraw = GetSettings()->DebugDraw;
 
+	if (!GetCameraView())
+	{
+		return false;
+	}
+
 	// Draw all renderables in the world
 	if (const PWorld* World = GetWorld())
 	{
@@ -190,7 +195,7 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 {
 	const auto ScreenSize = GetScreenSize();
 
-	const auto CameraView = GetCameraView();
+	const auto CameraView = GetGame()->GetCameraView();
 	if (CameraView)
 	{
 		const auto ViewPosition = CameraView->GetPosition();

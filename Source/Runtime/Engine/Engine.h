@@ -23,7 +23,7 @@ public:
 	}
 
 	template <typename GameType>
-	void Start()
+	void Initialize()
 	{
 		mGame = std::make_unique<GameType>();
 	}

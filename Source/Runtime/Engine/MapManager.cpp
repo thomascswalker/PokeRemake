@@ -179,9 +179,5 @@ PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
 
 void PMapManager::ClearMaps()
 {
-	for (const auto GameMap : sActiveMaps | std::views::values)
-	{
-		GetWorld()->DestroyActor(GameMap);
-	}
 	sActiveMaps.Clear();
 }

@@ -28,6 +28,7 @@ struct SInputEvent
 
 	EInputEventType Type = IET_None;
 	bool Consumed        = false;
+	bool Valid           = true;
 
 	FVector2 MousePosition = FVector2();
 	bool LeftMouseDown     = false;
@@ -133,6 +134,11 @@ struct SInputEvent
 
 	bool Validate(const SInputContext* Context)
 	{
+		if (!Valid)
+		{
+			return false;
+		}
+
 		if (Context->Any)
 		{
 			return true;
@@ -151,10 +157,16 @@ struct SInputEvent
 			}
 		default:
 			{
-				return false;
+				break;
 			}
 		}
 		return true;
+	}
+
+	void Invalidate()
+	{
+		Consume();
+		Valid = false;
 	}
 };
 

@@ -2,6 +2,7 @@
 
 #include "CFwd.h"
 #include "Constants.h"
+#include "Json.h"
 
 template <typename T>
 class TVector2
@@ -23,6 +24,12 @@ public:
 
 	TVector2(T InX, T InY)
 		: X(InX), Y(InY) {}
+
+	TVector2(const JSON& Json)
+	{
+		X = Json.at(0);
+		Y = Json.at(1);
+	}
 
 	TVector2(const TVector2& Other)                = default;
 	TVector2(TVector2&& Other) noexcept            = default;
@@ -67,6 +74,14 @@ public:
 	std::string ToString() const
 	{
 		return std::format("[{}, {}]", X, Y);
+	}
+
+	JSON ToJson() const
+	{
+		JSON Result = JSON::array();
+		Result.push_back(X);
+		Result.push_back(Y);
+		return Result;
 	}
 
 	static TVector2 Tile()
@@ -230,6 +245,13 @@ public:
 	TVector3(T InX, T InY, T InZ)
 		: X(InX), Y(InY), Z(InZ) {}
 
+	TVector3(const JSON& Json)
+	{
+		X = Json.array().at(0);
+		Y = Json.array().at(1);
+		Z = Json.array().at(2);
+	}
+
 	TVector3(const TVector3& Other)                = default;
 	TVector3(TVector3&& Other) noexcept            = default;
 	TVector3& operator=(const TVector3& Other)     = default;
@@ -271,6 +293,20 @@ public:
 		return std::sqrt(X * X + Y * Y + Z * Z);
 	}
 
+	std::string ToString() const
+	{
+		return std::format("[{}, {}, {}]", X, Y, Z);
+	}
+
+	JSON ToJson() const
+	{
+		JSON Result = JSON::array();
+		Result.push_back(X);
+		Result.push_back(Y);
+		Result.push_back(Z);
+		return Result;
+	}
+
 	T& operator[](int32_t Index)
 	{
 		return XYZ[Index];
@@ -279,11 +315,6 @@ public:
 	T operator[](int32_t Index) const
 	{
 		return XYZ[Index];
-	}
-
-	std::string ToString() const
-	{
-		return std::format("[{}, {}, {}]", X, Y, Z);
 	}
 
 	TVector3 operator+(const TVector3& Other) const
@@ -393,6 +424,14 @@ public:
 	TVector4(T InX, T InY, T InZ, T InW)
 		: X(InX), Y(InY), Z(InZ), W(InW) {}
 
+	TVector4(const JSON& Json)
+	{
+		X = Json.array().at(0);
+		Y = Json.array().at(1);
+		Z = Json.array().at(2);
+		W = Json.array().at(3);
+	}
+
 	TVector4(const TVector4& Other)                = default;
 	TVector4(TVector4&& Other) noexcept            = default;
 	TVector4& operator=(const TVector4& Other)     = default;
@@ -429,6 +468,21 @@ public:
 		return std::sqrt(X * X + Y * Y + Z * Z + W * W);
 	}
 
+	std::string ToString() const
+	{
+		return std::format("[{:.3f}, {:.3f}, {:.3f}, {:.3f}]", X, Y, Z, W);
+	}
+
+	JSON ToJson() const
+	{
+		JSON Result = JSON::array();
+		Result.push_back(X);
+		Result.push_back(Y);
+		Result.push_back(Z);
+		Result.push_back(W);
+		return Result;
+	}
+
 	T& operator[](int32_t Index)
 	{
 		return XYZW[Index];
@@ -437,11 +491,6 @@ public:
 	T operator[](int32_t Index) const
 	{
 		return XYZW[Index];
-	}
-
-	std::string ToString() const
-	{
-		return std::format("[{:.3f}, {:.3f}, {:.3f}, {:.3f}]", X, Y, Z, W);
 	}
 
 	TVector4 operator+(const TVector4& Other) const

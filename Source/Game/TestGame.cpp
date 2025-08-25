@@ -1,39 +1,25 @@
 #include "TestGame.h"
 
+#include "BattleMode.h"
+#include "MapMode.h"
+
 #include "Application/Application.h"
 #include "Core/Logging.h"
 #include "Engine/Actors/PlayerCharacter.h"
 #include "Engine/MapManager.h"
 #include "Engine/Texture.h"
-#include "Engine/InputContext.h"
+
+TestGame::TestGame()
+{
+	AddGameMode<PMapMode>();
+	AddGameMode<PBattleMode>();
+}
 
 bool TestGame::PreStart()
 {
 	LogDebug("PreStart: Loading textures.");
 	PTextureManager::LoadAllTextures();
-
 	LoadAllTilesets();
-
-	// Load the map from JSON
-	PMapManager::LoadMap(MAP_PALLET_TOWN, false);
-
-	LogDebug("PreStart: Constructing actors.");
-	auto Player = ConstructActor<PPlayerCharacter>();
-	GetWorld()->SetPlayerCharacter(Player);
-	Player->MoveToTile(8, 8);
-
-	GetApplication()->SetInputContext(Input::Context::Default);
-
 	return true;
 }
 
-void TestGame::Start()
-{
-	PGame::Start();
-	LogDebug("TestGame started.");
-
-	for (const auto& Name : PTextureManager::GetTextures() | std::views::keys)
-	{
-		LogDebug("Texture: {}", Name.c_str());
-	}
-}

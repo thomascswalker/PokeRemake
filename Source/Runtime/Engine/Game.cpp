@@ -10,16 +10,21 @@ PGame::PGame()
 	mSettings = std::make_shared<PSettings>();
 }
 
-bool PGame::PreStart()
-{
-	mWorld->GetHUD()->PreStart();
-	return true;
-}
-
 void PGame::Start()
 {
+	this->PreStart();
+
+	if (mGameStarted)
+	{
+		LogWarning("Game is already started.");
+		return;
+	}
+	assert(mWorld != nullptr);
 	mWorld->Start();
-	FindActiveCamera();
+	assert(mGameMode != nullptr);
+	LoadCurrentGameMode();
+
+	mGameStarted = true;
 }
 
 void PGame::Tick(float DeltaTime)
@@ -32,7 +37,7 @@ void PGame::PostTick()
 	mWorld->PostTick();
 }
 
-void PGame::FindActiveCamera()
+void PGame::UpdateCameraView()
 {
 	for (auto Comp : mWorld->GetComponents())
 	{
@@ -58,3 +63,84 @@ void PGame::OnKeyUp(SInputEvent* Event)
 	default: break;
 	}
 }
+
+bool PGame::ProcessEvents(SInputEvent* Event)
+{
+	if (IInputHandler::ProcessEvents(Event))
+	{
+		return true;
+	}
+
+	return mGameMode->ProcessEvents(Event);
+}
+
+bool PGame::SetCurrentGameMode(const std::string& Name)
+{
+#if _DEBUG
+	if (!mGameModes.Contains(Name))
+	{
+		LogError("Target game mode {} does not exist.", Name.c_str());
+		return false;
+	}
+#endif
+
+	// Get the new game mode
+	auto NewGameMode = GetGameMode(Name);
+
+	// Unload the current game mode
+	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->GetLoaded())
+	{
+		if (!mGameMode->Unload())
+		{
+			LogError("Failed to unload game mode.");
+			return false;
+		}
+		mGameMode->SetLoaded(false);
+		OnGameModeUnloaded(mGameMode);
+	}
+
+#if _DEBUG
+	if (!NewGameMode)
+	{
+		LogError("New game mode {} cannot be retrieved.", Name.c_str());
+		return false;
+	}
+#endif
+	mGameMode = NewGameMode;
+	return true;
+}
+
+bool PGame::LoadCurrentGameMode()
+{
+	if (mGameMode->GetLoaded())
+	{
+		LogWarning("Game mode is already loaded.");
+		return true;
+	}
+	if (!mGameMode->Load())
+	{
+		LogError("Failed to load game mode.");
+		return false;
+	}
+	mGameMode->SetLoaded(true);
+	OnGameModeLoaded(mGameMode);
+
+	return true;
+}
+
+bool PGame::SetAndLoadCurrentGameMode(const std::string& Name)
+{
+	if (!SetCurrentGameMode(Name))
+	{
+		return false;
+	}
+	return LoadCurrentGameMode();
+}
+
+void PGame::OnGameModeLoaded(PGameMode* GameMode)
+{
+	UpdateCameraView();
+}
+
+void PGame::OnGameModeUnloaded(PGameMode* GameMode) {}
+

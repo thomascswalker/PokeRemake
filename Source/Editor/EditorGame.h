@@ -6,8 +6,6 @@
 
 class PEditorGame : public PGame
 {
-	uint8_t mInputContext;
-
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
@@ -18,26 +16,12 @@ class PEditorGame : public PGame
 
 public:
 	// Init
-	PEditorGame() = default;
+	PEditorGame();
 	bool PreStart() override;
 	void Start() override;
 	void PostTick() override;
 
 	// Input
-
-	uint8_t GetInputContext()
-	{
-		return mInputContext;
-	}
-
-	void ClearInputContext()
-	{
-		mInputContext = IC_None;
-	}
-
-	void AddInputContext(uint8_t InputContext);
-	void RemoveInputContext(uint8_t InputContext);
-	bool HasInputContext(uint8_t InputContext);
 
 	void OnKeyDown(SInputEvent* Event) override;
 	void OnKeyUp(SInputEvent* Event) override;
