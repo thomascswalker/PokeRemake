@@ -21,13 +21,16 @@ public:
 
     void OnSizeYChanged(float Value);
 
-    void OnEditModeClicked(SDropdownItemData* DropdownItemData);
-
     void OnNewButtonClicked();
 
     void OnCreateButtonClicked();
     void OnSaveButtonClicked();
     void OnLoadButtonClicked();
+    void OnSelectButtonClicked();
+    void OnTilesButtonClicked();
+    void OnActorsButtonClicked();
+    void OnExitButtonClicked();
+
     void OnTilesetButtonChecked(bool State);
     void OnActorButtonChecked(bool State);
 };

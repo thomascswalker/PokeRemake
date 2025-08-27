@@ -5,24 +5,37 @@
 #include "Button.h"
 #include "Engine/World.h"
 
+using TMenuItemAction = std::function<void()>;
+
 class PMenuView;
 class PMenu;
 
+struct SMenuItemData;
+
+DECLARE_MULTICAST_DELEGATE(DMenuItemClicked);
+
 struct SMenuItemData
 {
-    int32_t Index;
-    void* Data;
-};
+    DMenuItemClicked Clicked;
+    int32_t Index = 0;
+    std::string Name;
 
-DECLARE_MULTICAST_DELEGATE(DMenuItemClicked, SMenuItemData*);
+    template <typename T>
+    SMenuItemData(const std::string& InName, T* InObject, void (T::*Delegate)()) :
+        Name(InName)
+    {
+        Clicked.AddRaw(InObject, Delegate);
+    }
+};
 
 class PMenuView : public PPanel
 {
-    PMenu* mMenu                = nullptr;
-    DMenuItemClicked* mDelegate = nullptr;
+    PMenu* mMenu                      = nullptr;
+    DMenuItemClicked* mDelegate       = nullptr;
+    std::vector<SMenuItemData>* mData = nullptr;
 
 public:
-    PMenuView(const std::vector<std::string>& InStrings, DMenuItemClicked* InDelegate);
+    PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDelegate);
     void OnMouseEvent(SInputEvent* Event) override;
     void OnItemClicked();
 
@@ -31,16 +44,16 @@ public:
 
 class PMenu : public PButton
 {
-    std::vector<std::string> mItems;
+    std::vector<SMenuItemData> mItems;
     PMenuView* mView;
     DMenuItemClicked ItemClicked;
 
-    void OnItemClicked(SMenuItemData* Data);
+    void OnItemClicked();
 
 public:
-    PMenu(const std::string& Name, const std::vector<std::string>& InItems);
+    PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
 
-    void AddItem(const std::string& Item);
+    void AddItem(const SMenuItemData& Item);
     void ShowView(bool State);
     void HideView();
 };
@@ -52,5 +65,5 @@ class PMenuBar : public PPanel
 public:
     PMenuBar();
 
-    PMenu* AddMenu(const std::string& Name, const std::vector<std::string>& InItems);
+    PMenu* AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
 };

@@ -1,23 +1,31 @@
 #include "Menu.h"
 
-PMenuView::PMenuView(const std::vector<std::string>& InStrings, DMenuItemClicked* InDelegate) : mDelegate(InDelegate)
+PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDelegate)
+	: mDelegate(InDelegate),
+	  mData(InData)
 {
 	mLayoutMode  = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
 	mFloating    = true;
+	mPadding     = {0};
 
 	// Add each item to the view
-	for (int32_t Index = 0; Index < InStrings.size(); Index++)
+	for (int32_t Index = 0; Index < mData->size(); Index++)
 	{
-		auto Item       = InStrings[Index];
-		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item);
+		auto Item       = &InData->at(Index);
+		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item->Name);
 		Button->SetResizeModeW(RM_Grow);
 		Button->SetResizeModeH(RM_Fixed);
 		Button->SetFixedHeight(20);
-		SMenuItemData ItemData(Index);
-		Button->SetCustomData(&ItemData);
-		Button->Clicked.AddRaw(this, &PMenuView::OnItemClicked);
+		Button->mPadding = {0};
+
+		Item->Index = Index;
+		Button->SetCustomData(Item);
+		Button->Clicked.AddLambda([=]
+		{
+			InDelegate->Broadcast();
+		});
 		PWidget::AddChild(Button);
 	}
 }
@@ -41,18 +49,20 @@ void PMenuView::OnItemClicked()
 		LogError("Delegate is invalid.");
 		return;
 	}
-	auto Sender = GetSender();
-	mDelegate->Broadcast(Sender->GetCustomData<SMenuItemData>());
+
+	mDelegate->Broadcast();
 }
 
-void PMenu::OnItemClicked(SMenuItemData* Data)
+void PMenu::OnItemClicked()
 {
-	LogDebug("{}", Data->Index);
+	auto Data = GetSender()->GetCustomData<SMenuItemData>();
+	SetCustomData(Data);
+	Data->Clicked.Broadcast();
 	HideView();
 }
 
-PMenu::PMenu(const std::string& Name, const std::vector<std::string>& InItems)
-	: PButton(this, &PMenu::ShowView)
+PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
+	: PButton(this, &PMenu::ShowView), mItems(InItems)
 {
 	mPadding     = {0};
 	mResizeModeW = RM_Fixed;
@@ -60,26 +70,25 @@ PMenu::PMenu(const std::string& Name, const std::vector<std::string>& InItems)
 	mText        = Name;
 	mCheckable   = true;
 
-	for (auto& Item : InItems)
-	{
-		mItems.emplace_back(Item);
-	}
-
-	mView = GetWorld()->ConstructWidget<PMenuView>(mItems, &ItemClicked);
-	mView->SetVisible(false);
-	mView->mMenu = this;
-
 	HoverEnd.AddRaw(this, &PMenu::HideView);
 	ItemClicked.AddRaw(this, &PMenu::OnItemClicked);
+
+	mView = GetWorld()->ConstructWidget<PMenuView>(&mItems, &ItemClicked);
+	mView->SetVisible(false);
+	mView->mMenu = this;
 }
 
-void PMenu::AddItem(const std::string& Item)
+void PMenu::AddItem(const SMenuItemData& Item)
 {
 	mItems.emplace_back(Item);
 }
 
 void PMenu::ShowView(bool State)
 {
+	if (mItems.empty())
+	{
+		return;
+	}
 	mView->SetVisible(true);
 	PWidget::AddChild(mView);
 	mView->HoverEnd.AddRaw(this, &PMenu::HideView);
@@ -100,7 +109,7 @@ PMenuBar::PMenuBar()
 	mResizeModeH = RM_Fit;
 }
 
-PMenu* PMenuBar::AddMenu(const std::string& Name, const std::vector<std::string>& InItems)
+PMenu* PMenuBar::AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 {
 	auto Menu = ConstructWidget<PMenu>(Name, InItems);
 	if (!Menu)

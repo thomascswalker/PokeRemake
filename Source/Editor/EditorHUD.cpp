@@ -31,11 +31,6 @@ std::vector<SActorItem> gPlaceableActors{};
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{"JSON", "JSON"},
 };
-static std::vector<std::string> gEditModeStrings = {
-	"Select",
-	"Tiles",
-	"Actors",
-};
 
 bool PEditorHUD::PreStart()
 {
@@ -63,46 +58,36 @@ void PEditorHUD::SetupInterface()
 {
 	// Vertical layout to force the file menu to the top
 	mLayoutMode = LM_Vertical;
+	// Zero padding to allow file menu to expand to the border
+	mPadding = {0};
 
 	// File Menu
 	auto MenuBar = ConstructWidget<PMenuBar>();
-	MenuBar->AddMenu("File", {"New", "Load", "Save", "Exit"});
-	MenuBar->AddMenu("Edit", {"Select", "Tile", "Actor"});
+	MenuBar->AddMenu("File",
+	                 {
+		                 {"New", this, &PEditorHUD::OnNewButtonClicked},
+		                 {"Load", this, &PEditorHUD::OnLoadButtonClicked},
+		                 {"Save", this, &PEditorHUD::OnSaveButtonClicked},
+		                 {"Exit", this, &PEditorHUD::OnExitButtonClicked},
+	                 });
+	MenuBar->AddMenu("Edit",
+	                 {
+		                 {"Create", this, &PEditorHUD::OnCreateButtonClicked},
+		                 {"Select", this, &PEditorHUD::OnSelectButtonClicked},
+		                 {"Tiles", this, &PEditorHUD::OnTilesButtonClicked},
+		                 {"Actors", this, &PEditorHUD::OnActorsButtonClicked},
+	                 });
 
 	AddChild(MenuBar);
 
 	// Main panel
-	MainPanel = World->ConstructWidget<PPanel>();
+	MainPanel           = World->ConstructWidget<PPanel>();
+	MainPanel->mPadding = {5};
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
-	// Files
-	const auto FileGroup = World->ConstructWidget<PGroup>("File");
-	FileGroup->SetResizeModeH(RM_Fit);
-	FileGroup->SetLayoutMode(LM_Vertical);
-	const auto NewButton    = World->ConstructWidget<PButton>("New", this, &PEditorHUD::OnNewButtonClicked);
-	const auto CreateButton = World->ConstructWidget<PButton>("Create", this, &PEditorHUD::OnCreateButtonClicked);
-	const auto SizeXSpinner = World->ConstructWidget<PSpinner>(mNewMapSizeX);
-	SizeXSpinner->ValueChanged.AddRaw(this, &PEditorHUD::OnSizeXChanged);
-	const auto SizeYSpinner = World->ConstructWidget<PSpinner>(mNewMapSizeY);
-	SizeYSpinner->ValueChanged.AddRaw(this, &PEditorHUD::OnSizeYChanged);
-	const auto SaveButton = World->ConstructWidget<PButton>("Save", this, &PEditorHUD::OnSaveButtonClicked);
-	const auto LoadButton = World->ConstructWidget<PButton>("Load", this, &PEditorHUD::OnLoadButtonClicked);
-	FileGroup->AddChild(NewButton);
-	FileGroup->AddChild(CreateButton);
-	FileGroup->AddChild(SizeXSpinner);
-	FileGroup->AddChild(SizeYSpinner);
-	FileGroup->AddChild(SaveButton);
-	FileGroup->AddChild(LoadButton);
-	// Edit
-	EditGroup = World->ConstructWidget<PGroup>("Edit");
-	EditGroup->SetResizeModeH(RM_Fit);
-	EditGroup->SetLayoutMode(LM_Vertical);
-	const auto EditMode = World->ConstructWidget<PDropdown>(gEditModeStrings);
-	EditGroup->AddChild(EditMode);
-	EditMode->SetResizeModeH(RM_Fixed);
-	EditMode->SetFixedHeight(20);
-	EditMode->ItemClicked.AddRaw(this, &PEditorHUD::OnEditModeClicked);
+	MainPanel->SetVisible(false);
+
 	// Tiles
 	TileGroup = World->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
@@ -124,9 +109,6 @@ void PEditorHUD::SetupInterface()
 	auto ActorView = ConstructActorView();
 	ActorGroup->AddChild(ActorView);
 	// Main panel
-
-	MainPanel->AddChild(FileGroup);
-	MainPanel->AddChild(EditGroup);
 
 	AddChild(MainPanel);
 }
@@ -207,31 +189,6 @@ void PEditorHUD::OnSizeYChanged(float Value)
 	mNewMapSizeY = Value;
 }
 
-void PEditorHUD::OnEditModeClicked(SDropdownItemData* DropdownItemData)
-{
-	switch (DropdownItemData->Index)
-	{
-	case 0: // IC_Select
-		SetInputContext(IC_Select);
-		MainPanel->RemoveChild(TileGroup);
-		MainPanel->RemoveChild(ActorGroup);
-		break;
-	case 1: // IC_Tile
-		SetInputContext(IC_Tile);
-		MainPanel->AddChild(TileGroup);
-		MainPanel->RemoveChild(ActorGroup);
-		break;
-	case 2: // IC_Actor
-		SetInputContext(IC_Actor);
-		MainPanel->RemoveChild(TileGroup);
-		MainPanel->AddChild(ActorGroup);
-		break;
-	default:
-		LogError("Invalid dropdown item: {}", DropdownItemData->Index);
-		break;
-	}
-}
-
 void PEditorHUD::OnNewButtonClicked()
 {
 	World->DestroyAllActors();
@@ -297,6 +254,35 @@ void PEditorHUD::OnLoadButtonClicked()
 	}
 
 	PMapManager::LoadMap(FileName, true);
+}
+
+void PEditorHUD::OnSelectButtonClicked()
+{
+	SetInputContext(IC_Select);
+	MainPanel->RemoveChild(TileGroup);
+	MainPanel->RemoveChild(ActorGroup);
+	MainPanel->SetVisible(false);
+}
+
+void PEditorHUD::OnTilesButtonClicked()
+{
+	SetInputContext(IC_Tile);
+	MainPanel->RemoveChild(ActorGroup);
+	MainPanel->AddChild(TileGroup);
+	MainPanel->SetVisible(true);
+}
+
+void PEditorHUD::OnActorsButtonClicked()
+{
+	SetInputContext(IC_Actor);
+	MainPanel->RemoveChild(TileGroup);
+	MainPanel->AddChild(ActorGroup);
+	MainPanel->SetVisible(true);
+}
+
+void PEditorHUD::OnExitButtonClicked()
+{
+	GetGame()->End();
 }
 
 void PEditorHUD::OnTilesetButtonChecked(bool State)

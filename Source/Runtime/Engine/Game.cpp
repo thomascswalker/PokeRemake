@@ -25,6 +25,12 @@ void PGame::Start()
 	LoadCurrentGameMode();
 
 	mGameStarted = true;
+	GameStarted.Broadcast();
+}
+
+void PGame::End()
+{
+	GameEnded.Broadcast();
 }
 
 void PGame::Tick(float DeltaTime)
