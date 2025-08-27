@@ -2,15 +2,15 @@
 
 PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 {
-	mLayoutMode = LM_Vertical;
+	mLayoutMode  = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
-	mFloating = true;
+	mFloating    = true;
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < InStrings.size(); Index++)
 	{
-		auto	 Item = InStrings[Index];
+		auto Item       = InStrings[Index];
 		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item);
 		Button->SetResizeModeW(RM_Grow);
 		Button->SetResizeModeH(RM_Fixed);
@@ -22,11 +22,12 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 		PWidget::AddChild(Button);
 	}
 }
+
 void PDropdownView::OnMouseEvent(SInputEvent* Event)
 {
 	bool OldMouseOver = mMouseOver;
-	mMouseOver = GetGeometry().Contains(Event->MousePosition);
-	bool ParentOver = mDropdown->GetGeometry().Contains(Event->MousePosition);
+	mMouseOver        = GetGeometry().Contains(Event->MousePosition);
+	bool ParentOver   = mDropdown->GetGeometry().Contains(Event->MousePosition);
 	if (OldMouseOver && !mMouseOver && !ParentOver)
 	{
 		HoverEnd.Broadcast();
@@ -36,7 +37,7 @@ void PDropdownView::OnMouseEvent(SInputEvent* Event)
 
 void PDropdownView::OnItemClicked()
 {
-	auto Sender = GetSender();
+	auto Sender   = GetSender();
 	auto Dropdown = dynamic_cast<PDropdown*>(GetParent());
 	if (!Dropdown)
 	{
@@ -49,13 +50,14 @@ void PDropdownView::OnItemClicked()
 PDropdown::PDropdown()
 	: PButton(this, &PDropdown::ShowDropdownView), mCurrentIndex(0)
 {
-	mText = "";
+	mText      = "";
 	mCheckable = true;
 
 	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
 	mDropdownView->SetVisible(false);
 
 	ItemClicked.AddRaw(this, &PDropdown::OnItemClicked);
+	HoverEnd.AddRaw(this, &PDropdown::HideDropdownView);
 }
 
 PDropdown::PDropdown(const std::vector<std::string>& InItems)
@@ -88,24 +90,24 @@ void PDropdown::Draw(const PRenderer* Renderer) const
 {
 	PButton::Draw(Renderer);
 
-	float	 TriangleSize = 10.0f;
-	auto	 Pos = GetGeometry().GetPosition();
-	auto	 Size = GetGeometry().GetSize();
-	FVector2 Offset = Pos + Size;
+	float TriangleSize = 10.0f;
+	auto Pos           = GetGeometry().GetPosition();
+	auto Size          = GetGeometry().GetSize();
+	FVector2 Offset    = Pos + Size;
 	Offset.Y -= ((Size.Y / 2) + (TriangleSize / 2));
 	Offset.X -= 20;
 
 	std::vector TriangleVerts = //
-		{
-			FVector2{ 0.0f,				0.0f		 }
-				+ Offset, //
-			FVector2{ TriangleSize / 2.0f, TriangleSize }
-				+ Offset, //
-			FVector2{ TriangleSize,		0.0f		 }
-				+ Offset	 //
+	{
+		FVector2{0.0f, 0.0f}
+		+ Offset, //
+		FVector2{TriangleSize / 2.0f, TriangleSize}
+		+ Offset, //
+		FVector2{TriangleSize, 0.0f}
+		+ Offset //
 	};
 	Renderer->SetDrawColor(PColor::OffWhite);
-	Renderer->DrawPolygon(TriangleVerts, { 0, 1, 2 });
+	Renderer->DrawPolygon(TriangleVerts, {0, 1, 2});
 }
 
 void PDropdown::AddItem(const std::string& Item)
@@ -116,7 +118,7 @@ void PDropdown::AddItem(const std::string& Item)
 void PDropdown::OnItemClicked(SDropdownItemData* Data)
 {
 	mCurrentIndex = Data->Index;
-	mText = mItems[mCurrentIndex];
+	mText         = mItems[mCurrentIndex];
 	HideDropdownView();
 }
 

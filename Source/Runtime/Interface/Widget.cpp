@@ -12,6 +12,7 @@ bool PWidget::ProcessEvents(SInputEvent* Event)
 	{
 		if (Child->ProcessEvents(Event))
 		{
+			// Event is consumed
 			return true;
 		}
 	}

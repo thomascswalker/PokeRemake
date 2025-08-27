@@ -14,7 +14,7 @@ public:
 	{
 		mLayoutMode = LM_Grid;
 		mResizeModeH = RM_Grow;
-		Padding = { 0 };
+		mPadding = { 0 };
 	}
 
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward

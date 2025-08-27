@@ -102,12 +102,12 @@ public:
 	float W = 0.0f;
 	float H = 0.0f;
 
-	FPadding Padding;
+	FPadding mPadding;
 	DHoverBegin HoverBegin;
 	DHoverEnd HoverEnd;
 
 	PWidget()
-		: Padding(5.0f)
+		: mPadding(5.0f)
 	{
 		GenerateInternalName();
 	}
@@ -354,6 +354,13 @@ public:
 	void SetMaxHeight(float H)
 	{
 		mMaxSize.Y = H;
+	}
+
+	// Events
+
+	bool GetMouseOver() const
+	{
+		return mMouseOver;
 	}
 
 	// Custom data

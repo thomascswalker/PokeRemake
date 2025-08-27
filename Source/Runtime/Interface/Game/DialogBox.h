@@ -13,7 +13,7 @@ class PDialogBox : public PBox
 public:
     PDialogBox(const std::string& Text = "")
     {
-        Padding = {0};
+        mPadding = {0};
         SetFixedHeight(100);
         SetResizeModeH(RM_Fixed);
 

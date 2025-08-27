@@ -15,12 +15,12 @@ namespace Layout
 			return;
 		}
 		const auto LayoutMode = Widget->GetLayoutMode();
-		float	   ChildGap = Widget->Padding.Left;
+		float	   ChildGap = Widget->mPadding.Left;
 		float	   RemainingWidth = Widget->W;
 		float	   RemainingHeight = Widget->H;
 
-		RemainingWidth -= Widget->Padding.Left + Widget->Padding.Right;
-		RemainingHeight -= Widget->Padding.Top + Widget->Padding.Bottom;
+		RemainingWidth -= Widget->mPadding.Left + Widget->mPadding.Right;
+		RemainingHeight -= Widget->mPadding.Top + Widget->mPadding.Bottom;
 
 		for (auto Child : Widget->GetChildren())
 		{
@@ -107,7 +107,7 @@ namespace Layout
 
 		if (RMW == RM_Fit || RMH == RM_Fit)
 		{
-			const float Padding = Widget->Padding.Left;
+			const float Padding = Widget->mPadding.Left;
 
 			if (RMW == RM_Fit)
 			{
@@ -211,7 +211,7 @@ namespace Layout
 		const FVector2 Origin = { Rect.X, Rect.Y };
 
 		// Uniform padding
-		const float Padding = Widget->Padding.Left;
+		const float Padding = Widget->mPadding.Left;
 
 		// Change in X and Y as we lay out children
 		float DX = Padding;
