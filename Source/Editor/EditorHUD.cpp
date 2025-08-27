@@ -20,7 +20,6 @@ static PWorld* World           = nullptr;
 static PEditorGame* EditorGame = nullptr;
 
 static PPanel* MainPanel  = nullptr;
-static PGroup* EditGroup  = nullptr;
 static PGroup* TileGroup  = nullptr;
 static PGroup* ActorGroup = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
