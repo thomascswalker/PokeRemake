@@ -62,13 +62,13 @@ public:
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-		Padding      = {0};
+		mPadding      = {0};
 
 		mText.SetText(std::format("{}", mValue));
 
 		mButtonBox.SetLayoutMode(LM_Vertical);
 		mButtonBox.SetResizeMode(RM_Fit, RM_Fit);
-		mButtonBox.Padding = {0};
+		mButtonBox.mPadding = {0};
 
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
 		mUpButton.SetResizeMode(RM_Fixed, RM_Fixed);

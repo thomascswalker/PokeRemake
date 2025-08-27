@@ -15,7 +15,7 @@ public:
 	{
 		mLayoutMode  = LM_Vertical;
 		mResizeModeH = RM_Grow;
-		Padding      = {0};
+		mPadding      = {0};
 	}
 
 	void OnMouseEvent(SInputEvent* Event) override
@@ -47,9 +47,9 @@ public:
 		for (auto Child : mChildren)
 		{
 			MaximumScrollValue += Child->H;
-			MaximumScrollValue += Child->Padding.Top;
+			MaximumScrollValue += Child->mPadding.Top;
 		}
-		MaximumScrollValue += mChildren[mChildren.size() - 1]->Padding.Bottom;
+		MaximumScrollValue += mChildren[mChildren.size() - 1]->mPadding.Bottom;
 		return std::max(0.0f, MaximumScrollValue - H);
 	}
 

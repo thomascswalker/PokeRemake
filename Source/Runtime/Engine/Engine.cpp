@@ -5,6 +5,8 @@
 PEngine::PEngine()
 	: mIsRunning(true), mGame(nullptr) {}
 
+void PEngine::Start() {}
+
 void PEngine::Stop()
 {
 	mIsRunning = false;

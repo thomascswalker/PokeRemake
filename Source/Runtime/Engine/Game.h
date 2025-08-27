@@ -8,6 +8,9 @@
 
 #include "Core/Map.h"
 
+DECLARE_MULTICAST_DELEGATE(DGameStarted);
+DECLARE_MULTICAST_DELEGATE(DGameEnded);
+
 class PGame : public PObject, public IInputHandler
 {
 protected:
@@ -23,11 +26,14 @@ protected:
 	TMap<std::string, std::shared_ptr<PGameMode>> mGameModes;
 
 public:
+	DGameStarted GameStarted;
+	DGameEnded GameEnded;
+
 	PGame();
 	~PGame() override {}
 
 	void Start() override;
-	void End() override {}
+	void End() override;
 	void Tick(float DeltaTime) override;
 	void PostTick() override;
 

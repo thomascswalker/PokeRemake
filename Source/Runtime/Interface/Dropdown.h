@@ -11,7 +11,7 @@ class PDropdown;
 struct SDropdownItemData
 {
 	int32_t Index;
-	void*	Data;
+	void* Data;
 };
 
 DECLARE_MULTICAST_DELEGATE(DItemClicked, SDropdownItemData*);
@@ -31,9 +31,8 @@ public:
 class PDropdown : public PButton
 {
 	std::vector<std::string> mItems;
-	int						 mCurrentIndex;
-	PDropdownView*			 mDropdownView;
-	// DelegateHandle			 mHideDelegate;
+	int mCurrentIndex;
+	PDropdownView* mDropdownView;
 
 public:
 	DItemClicked ItemClicked;

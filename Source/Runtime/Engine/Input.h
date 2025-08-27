@@ -132,6 +132,11 @@ struct SInputEvent
 		Consumed = true;
 	}
 
+	void Unconsume()
+	{
+		Consumed = false;
+	}
+
 	bool Validate(const SInputContext* Context)
 	{
 		if (!Valid)

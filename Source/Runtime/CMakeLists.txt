@@ -94,6 +94,9 @@ set(SOURCES
         Engine/GameMode.h
         Engine/SaveState.h
         Engine/GameMode.cpp
+        Interface/Menu.h
+        Interface/Menu.cpp
+        Interface/Popup.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

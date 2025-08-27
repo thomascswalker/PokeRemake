@@ -13,6 +13,7 @@ class PEngine
 public:
 	PEngine();
 	~PEngine() = default;
+	void Start();
 	void Stop();
 	void Tick(float DeltaTime) const;
 	void PostTick() const;
@@ -26,6 +27,8 @@ public:
 	void Initialize()
 	{
 		mGame = std::make_unique<GameType>();
+		mGame->GameStarted.AddRaw(this, &PEngine::Start);
+		mGame->GameEnded.AddRaw(this, &PEngine::Stop);
 	}
 
 	PGame* GetGame() const

@@ -42,6 +42,11 @@ public:
 		return TVector2<T>(X, Y);
 	}
 
+	TVector2<T> GetCenter() const
+	{
+		return TVector2<T>(X + W / 2.0f, Y + H / 2.0f);
+	}
+
 	TVector2<T> GetSize() const
 	{
 		return TVector2<T>(W, H);
