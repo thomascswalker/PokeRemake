@@ -17,14 +17,16 @@ struct SButtonClickedParams
 
 	SButtonClickedParams()
 		: Sender(nullptr), Delegate(nullptr) {}
+
 	SButtonClickedParams(T* Sender, void (T::*Delegate)())
 		: Sender(Sender), Delegate(Delegate) {}
+
 	SButtonClickedParams(std::initializer_list<void*> init)
 	{
 		auto it = init.begin();
 		if (init.size() == 2)
 		{
-			Sender = static_cast<T*>(*it);
+			Sender   = static_cast<T*>(*it);
 			Delegate = reinterpret_cast<void (T::*)()>(*(it + 1));
 		}
 	}
@@ -43,14 +45,16 @@ struct SButtonCheckedParams
 
 	SButtonCheckedParams()
 		: Sender(nullptr), Delegate(nullptr) {}
+
 	SButtonCheckedParams(T* Sender, void (T::*Delegate)(bool))
 		: Sender(Sender), Delegate(Delegate) {}
+
 	SButtonCheckedParams(std::initializer_list<void*> init)
 	{
 		auto it = init.begin();
 		if (init.size() == 2)
 		{
-			Sender = static_cast<T*>(*it);
+			Sender   = static_cast<T*>(*it);
 			Delegate = reinterpret_cast<void (T::*)()>(*(it + 1));
 		}
 	}
@@ -64,12 +68,12 @@ struct SButtonCheckedStaticParams
 class PAbstractButton : public PWidget
 {
 protected:
-	bool mChecked = false;
+	bool mChecked   = false;
 	bool mCheckable = false;
 	bool mMouseDown = false;
 
 	PButtonGroup* mButtonGroup = nullptr;
-	void		  OnMouseEvent(SInputEvent* Event) override;
+	void OnMouseEvent(SInputEvent* Event) override;
 
 public:
 	DButtonClicked Clicked;
@@ -82,11 +86,30 @@ public:
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
 	}
 
-	bool GetCheckable() const { return mCheckable; }
-	void SetCheckable(bool State) { mCheckable = State; }
-	bool GetChecked() const { return mChecked; }
-	void SetChecked(bool State) { mChecked = State; }
-	void ToggleChecked() { mChecked = !mChecked; }
+	bool GetCheckable() const
+	{
+		return mCheckable;
+	}
+
+	void SetCheckable(bool State)
+	{
+		mCheckable = State;
+	}
+
+	bool GetChecked() const
+	{
+		return mChecked;
+	}
+
+	void SetChecked(bool State)
+	{
+		mChecked = State;
+	}
+
+	void ToggleChecked()
+	{
+		mChecked = !mChecked;
+	}
 
 	void SetButtonGroup(PButtonGroup* Group);
 };

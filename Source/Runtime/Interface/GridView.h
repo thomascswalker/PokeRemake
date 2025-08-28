@@ -12,9 +12,9 @@ class PGridView : public PWidget
 public:
 	PGridView()
 	{
-		mLayoutMode = LM_Grid;
+		mLayoutMode  = LM_Grid;
 		mResizeModeH = RM_Grow;
-		mPadding = { 0 };
+		mPadding     = {0};
 	}
 
 	// Adds a new item to this view. This will instantiate a new widget of type T, forward
@@ -22,7 +22,7 @@ public:
 	template <typename T, typename... ArgsType>
 	SViewItem* AddItem(ArgsType&&... Args)
 	{
-		T*		   Widget = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+		T* Widget       = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
 		SViewItem* Item = &mItems.emplace_back(Widget);
 		this->AddChild(Item->GetWidget<T>());
 		return Item;

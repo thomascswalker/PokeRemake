@@ -18,7 +18,8 @@ protected:
 	bool mUseSourceRect = false;
 
 public:
-	PButton() = default;
+	PButton()
+	{}
 
 	template <typename T>
 	PButton(T* Sender, void (T::*Delegate)())
@@ -33,7 +34,8 @@ public:
 	}
 
 	PButton(const std::string& Label)
-		: mText(Label) {}
+		: mText(Label)
+	{}
 
 	PButton(const std::string& Label, void (*Delegate)())
 		: mText(Label)
@@ -56,7 +58,8 @@ public:
 	}
 
 	PButton(PTexture* Texture)
-		: mTexture(Texture) {}
+		: mTexture(Texture)
+	{}
 
 	PButton(PTexture* Texture, void (*Delegate)())
 		: mTexture(Texture)
@@ -90,17 +93,17 @@ public:
 			Renderer->DrawTexture(mTexture, TextureRect, R);
 			if (mMouseDown && mMouseOver)
 			{
-				Color = (mChecked ? PColor::UISecondaryClicked.WithAlpha(128) : PColor::Black.WithAlpha(100));
+				Color = (mChecked ? mStyle.SecondaryClicked.WithAlpha(128) : PColor::Black.WithAlpha(100));
 			}
 			// Hovered and not clicked
 			else if (mMouseOver)
 			{
-				Color = (mChecked ? PColor::UISecondaryHover.WithAlpha(128) : PColor::Black.WithAlpha(50));
+				Color = (mChecked ? mStyle.SecondaryHover.WithAlpha(128) : PColor::Black.WithAlpha(50));
 			}
 			// Not hovered and not clicked
 			else
 			{
-				Color = (mChecked ? PColor::UISecondary.WithAlpha(128) : PColor::Black.WithAlpha(0));
+				Color = (mChecked ? mStyle.Secondary.WithAlpha(128) : PColor::Black.WithAlpha(0));
 			}
 			Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_BLEND);
 		}
@@ -108,17 +111,17 @@ public:
 		{
 			if (mMouseDown && mMouseOver)
 			{
-				Color = (mChecked ? PColor::UISecondaryClicked : PColor::UIPrimaryClicked);
+				Color = (mChecked ? mStyle.SecondaryClicked : mStyle.PrimaryClicked);
 			}
 			// Hovered and not clicked
 			else if (mMouseOver)
 			{
-				Color = (mChecked ? PColor::UISecondaryHover : PColor::UIPrimaryHover);
+				Color = (mChecked ? mStyle.SecondaryHover : mStyle.PrimaryHover);
 			}
 			// Not hovered and not clicked
 			else
 			{
-				Color = (mChecked ? PColor::UISecondary : PColor::UIPrimary);
+				Color = (mChecked ? mStyle.Secondary : mStyle.Primary);
 			}
 		}
 
@@ -129,12 +132,12 @@ public:
 		// Draw text
 		if (!mText.empty())
 		{
-			Renderer->SetDrawColor(PColor::White);
+			Renderer->SetDrawColor(mStyle.Text);
 			Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), gButtonTextSize);
 		}
 
 		// Border
-		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->SetDrawColor(mStyle.Border);
 		Renderer->DrawRect(R);
 	}
 

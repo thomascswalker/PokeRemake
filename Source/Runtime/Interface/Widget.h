@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <limits>
 
+#include "Style.h"
 #include "Core/Containers.h"
 #include "Engine/Input.h"
 #include "Engine/Object.h"
@@ -96,6 +97,9 @@ protected:
 	bool mFloating      = false;
 	EWidgetDepth mDepth = WD_Default;
 
+	static std::shared_ptr<CSS::Stylesheet> sStylesheet;
+	SStyle mStyle;
+
 public:
 	float X = 0.0f;
 	float Y = 0.0f;
@@ -106,11 +110,7 @@ public:
 	DHoverBegin HoverBegin;
 	DHoverEnd HoverEnd;
 
-	PWidget()
-		: mPadding(5.0f)
-	{
-		GenerateInternalName();
-	}
+	PWidget();
 
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
 	virtual ~PWidget() override = default;

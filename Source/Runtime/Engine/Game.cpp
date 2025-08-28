@@ -4,10 +4,21 @@
 
 #include <memory>
 
+#include "Core/CSS.h"
+
 PGame::PGame()
 {
 	mWorld    = std::make_shared<PWorld>();
 	mSettings = std::make_shared<PSettings>();
+}
+
+bool PGame::PreStart()
+{
+	TextureManager::LoadAllTextures();
+	TilesetManager::LoadAllTilesets();
+	StyleManager::LoadAllStylesheets();
+
+	return true;
 }
 
 void PGame::Start()

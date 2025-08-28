@@ -91,7 +91,7 @@ int32_t STileset::IndexOf(const STileItem* Ptr)
 	return -1;
 }
 
-bool LoadTileset(const std::string& Name)
+bool TilesetManager::LoadTileset(const std::string& Name)
 {
 	auto Tileset = &gTilesets.at(Name);
 	if (!Tileset)
@@ -99,11 +99,11 @@ bool LoadTileset(const std::string& Name)
 		LogError("No tileset with name {}", Name.c_str());
 		return false;
 	}
-	auto Tex = PTextureManager::Get(Name);
+	auto Tex = TextureManager::Get(Name);
 	if (!Tex)
 	{
 		// If not found, force a reload
-		Tex = PTextureManager::Load(Name + ".png");
+		Tex = TextureManager::Load(Name + ".png");
 		if (!Tex)
 		{
 			LogError("Failed to load tileset {}", Name.c_str());
@@ -118,7 +118,7 @@ bool LoadTileset(const std::string& Name)
 	return true;
 }
 
-STileset* GetTileset(const std::string& Name)
+STileset* TilesetManager::GetTileset(const std::string& Name)
 {
 	auto Tileset = &gTilesets.at(Name);
 	if (!Tileset)
@@ -135,7 +135,7 @@ STileset* GetTileset(const std::string& Name)
 	return Tileset;
 }
 
-std::vector<STileset*> GetTilesets()
+std::vector<STileset*> TilesetManager::GetTilesets()
 {
 	std::vector<STileset*> Tilesets;
 	for (auto& Tileset : gTilesets | std::views::values)
@@ -145,12 +145,12 @@ std::vector<STileset*> GetTilesets()
 	return Tilesets;
 }
 
-STileset* GetDefaultTileset()
+STileset* TilesetManager::GetDefaultTileset()
 {
 	return &gTilesets.at(TILESET_1);
 }
 
-bool LoadAllTilesets()
+bool TilesetManager::LoadAllTilesets()
 {
 	for (const auto& Tileset : gTilesets | std::views::values)
 	{
@@ -162,7 +162,7 @@ bool LoadAllTilesets()
 	return true;
 }
 
-std::vector<std::string> GetTilesetNames()
+std::vector<std::string> TilesetManager::GetTilesetNames()
 {
 	std::vector<std::string> Names;
 	for (const auto& Name : gTilesets | std::views::keys)

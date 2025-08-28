@@ -13,7 +13,7 @@ PPlayerCharacter::PPlayerCharacter()
 {
 	mPosition.Z      = Drawing::Z_Player;
 	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
-	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
+	mSpriteComponent->GetSprite()->SetTexture(TextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)

@@ -1,3 +1,4 @@
+// ReSharper disable CppDFAUnreachableCode
 #include "EditorGame.h"
 
 #include "ActorManager.h"
@@ -97,7 +98,7 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 		{
 			if (IsInputContext(IC_Tile))
 			{
-				SetBrushMode(BM_Copy);
+				mBrushMode = BM_Copy;
 			}
 			break;
 		}
@@ -105,7 +106,7 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 		{
 			if (IsInputContext(IC_Tile))
 			{
-				SetBrushMode(BM_Fill);
+				mBrushMode = BM_Fill;
 			}
 			break;
 		}
@@ -270,7 +271,7 @@ TArray<PActor*> PEditorGame::GetSelectedActors()
 
 void PEditorGame::PaintTile(STile* Tile)
 {
-	if (!Tile)
+	if (!Tile || !mCurrentTilesetItem)
 	{
 		return;
 	}

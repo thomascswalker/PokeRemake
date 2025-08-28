@@ -32,6 +32,7 @@ public:
 	PGame();
 	~PGame() override {}
 
+	bool PreStart() override;
 	void Start() override;
 	void End() override;
 	void Tick(float DeltaTime) override;

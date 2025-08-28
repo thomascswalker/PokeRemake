@@ -25,7 +25,7 @@ PCharacter::PCharacter()
 
 		auto Sprite = mSpriteComponent->GetSprite();
 
-		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
+		Sprite->SetTexture(TextureManager::Get(TEXTURE_GARY));
 		Sprite->SetSize(16.0f);
 		Sprite->SetIndexSize(16.0f);
 

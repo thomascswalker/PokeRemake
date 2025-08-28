@@ -44,10 +44,6 @@ bool PEditorHUD::PreStart()
 		gPlaceableActors.push_back(SActorItem(K, V));
 	}
 
-	if (!LoadAllTilesets())
-	{
-		return false;
-	}
 	SetupInterface();
 
 	return true;
@@ -97,7 +93,7 @@ void PEditorHUD::SetupInterface()
 	// Create a button group for all tiles across all tilesets
 	TilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
 	// Construct each widget for each tile in each tileset
-	for (const auto Tileset : GetTilesets())
+	for (const auto Tileset : TilesetManager::GetTilesets())
 	{
 		auto TilesetView = ConstructTilesetView(Tileset);
 		ScrollArea->AddChild(TilesetView);

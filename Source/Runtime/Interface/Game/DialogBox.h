@@ -23,7 +23,7 @@ public:
 
     void Draw(const PRenderer* Renderer) const override
     {
-        PTexture* Tex  = PTextureManager::Get("DialogBox");
+        PTexture* Tex  = TextureManager::Get("DialogBox");
         FRect Geometry = GetGeometry();
         Renderer->DrawTexture(Tex, Tex->GetRect(), Geometry);
         // mText.Draw(Renderer);

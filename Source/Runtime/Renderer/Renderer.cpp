@@ -60,7 +60,7 @@ void PRenderer::PostInitialize() const {}
 
 void PRenderer::Uninitialize() const
 {
-	PTextureManager::UnloadSDL();
+	TextureManager::UnloadSDL();
 }
 
 void PRenderer::OnResize(const FVector2& Size)

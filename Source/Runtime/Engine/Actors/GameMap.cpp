@@ -196,7 +196,9 @@ void PGameMap::Deserialize(const JSON& Data)
 		auto X       = I % mSizeX;
 		auto Y       = I / mSizeX;
 		auto Index   = Tile.at("Index").get<int>();
-		auto Tileset = Tile.contains("Tileset") ? GetTileset(Tile.at("Tileset")) : GetDefaultTileset();
+		auto Tileset = Tile.contains("Tileset")
+			               ? TilesetManager::GetTileset(Tile.at("Tileset"))
+			               : TilesetManager::GetDefaultTileset();
 		mTiles.Add({Tileset, this, Index, X, Y});
 	}
 }

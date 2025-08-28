@@ -15,7 +15,7 @@ public:
 	PImage(const std::string& Name)
 		: mUseSourceRect(false)
 	{
-		mTexture = PTextureManager::Get(Name);
+		mTexture = TextureManager::Get(Name);
 	}
 
 	void Draw(const PRenderer* Renderer) const override
