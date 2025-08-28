@@ -13,20 +13,35 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 	// Add each item to the view
 	for (int32_t Index = 0; Index < mData->size(); Index++)
 	{
-		auto Item       = &InData->at(Index);
-		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item->Name);
-		Button->SetResizeModeW(RM_Grow);
-		Button->SetResizeModeH(RM_Fixed);
-		Button->SetFixedHeight(20);
-		Button->mPadding = {0};
+		auto Item = &InData->at(Index);
 
-		Item->Index = Index;
-		Button->SetCustomData(Item);
-		Button->Clicked.AddLambda([=]
+		// Construct a separator
+		if (Item->IsSeparator)
 		{
-			InDelegate->Broadcast();
-		});
-		PWidget::AddChild(Button);
+			PBox* Separator = ConstructWidget<PBox>();
+			Separator->SetResizeModeW(RM_Grow);
+			Separator->SetResizeModeH(RM_Fixed);
+			Separator->SetFixedHeight(2);
+			Separator->mPadding = {2};
+			PWidget::AddChild(Separator);
+		}
+		// Otherwise construct the button for this menu item
+		else
+		{
+			PButton* Button = ConstructWidget<PButton>(Item->Name);
+			Button->SetResizeModeW(RM_Grow);
+			Button->SetResizeModeH(RM_Fixed);
+			Button->SetFixedHeight(20);
+			Button->mPadding = {0};
+
+			Item->Index = Index;
+			Button->SetCustomData(Item);
+			Button->Clicked.AddLambda([=]
+			{
+				InDelegate->Broadcast();
+			});
+			PWidget::AddChild(Button);
+		}
 	}
 }
 

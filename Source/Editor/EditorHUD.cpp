@@ -67,11 +67,13 @@ void PEditorHUD::SetupInterface()
 		                 {"New", this, &PEditorHUD::OnNewButtonClicked},
 		                 {"Load", this, &PEditorHUD::OnLoadButtonClicked},
 		                 {"Save", this, &PEditorHUD::OnSaveButtonClicked},
+		                 {},
 		                 {"Exit", this, &PEditorHUD::OnExitButtonClicked},
 	                 });
 	MenuBar->AddMenu("Edit",
 	                 {
 		                 {"Create", this, &PEditorHUD::OnCreateButtonClicked},
+		                 {},
 		                 {"Select", this, &PEditorHUD::OnSelectButtonClicked},
 		                 {"Tiles", this, &PEditorHUD::OnTilesButtonClicked},
 		                 {"Actors", this, &PEditorHUD::OnActorsButtonClicked},

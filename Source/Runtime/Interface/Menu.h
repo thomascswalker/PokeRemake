@@ -17,8 +17,11 @@ DECLARE_MULTICAST_DELEGATE(DMenuItemClicked);
 struct SMenuItemData
 {
     DMenuItemClicked Clicked;
-    int32_t Index = 0;
-    std::string Name;
+    int32_t Index    = 0;
+    std::string Name = "";
+    bool IsSeparator = false;
+
+    SMenuItemData() : IsSeparator(true) {}
 
     template <typename T>
     SMenuItemData(const std::string& InName, T* InObject, void (T::*Delegate)()) :
