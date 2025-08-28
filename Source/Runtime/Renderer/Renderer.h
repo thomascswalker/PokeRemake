@@ -85,6 +85,7 @@ public:
 
 	void DrawPoint(const FVector2& V, float Thickness = 0.0f) const;
 	void DrawLine(float X1, float Y1, float X2, float Y2) const;
+	void DrawLine(const FVector2& Start, const FVector2& End) const;
 	void DrawRect(const FRect& Rect, float Thickness = 0.0f) const;
 	void DrawFillRect(const FRect& Rect) const;
 	void DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;

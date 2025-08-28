@@ -1,5 +1,7 @@
 #include "Menu.h"
 
+#include "Divider.h"
+
 PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDelegate)
 	: mDelegate(InDelegate),
 	  mData(InData)
@@ -13,20 +15,31 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 	// Add each item to the view
 	for (int32_t Index = 0; Index < mData->size(); Index++)
 	{
-		auto Item       = &InData->at(Index);
-		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item->Name);
-		Button->SetResizeModeW(RM_Grow);
-		Button->SetResizeModeH(RM_Fixed);
-		Button->SetFixedHeight(20);
-		Button->mPadding = {0};
+		auto Item = &InData->at(Index);
 
-		Item->Index = Index;
-		Button->SetCustomData(Item);
-		Button->Clicked.AddLambda([=]
+		// Construct a separator
+		if (Item->IsSeparator)
 		{
-			InDelegate->Broadcast();
-		});
-		PWidget::AddChild(Button);
+			PHDivider* Separator = ConstructWidget<PHDivider>();
+			PWidget::AddChild(Separator);
+		}
+		// Otherwise construct the button for this menu item
+		else
+		{
+			PButton* Button = ConstructWidget<PButton>(Item->Name);
+			Button->SetResizeModeW(RM_Grow);
+			Button->SetResizeModeH(RM_Fixed);
+			Button->SetFixedHeight(20);
+			Button->mPadding = {0};
+
+			Item->Index = Index;
+			Button->SetCustomData(Item);
+			Button->Clicked.AddLambda([=]
+			{
+				InDelegate->Broadcast();
+			});
+			PWidget::AddChild(Button);
+		}
 	}
 }
 
@@ -38,8 +51,8 @@ void PMenuView::OnMouseEvent(SInputEvent* Event)
 	if (OldMouseOver && !mMouseOver && !ParentOver)
 	{
 		HoverEnd.Broadcast();
+		Event->Consume();
 	}
-	Event->Consume();
 }
 
 void PMenuView::OnItemClicked()
@@ -70,7 +83,7 @@ PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 	mText        = Name;
 	mCheckable   = true;
 
-	HoverEnd.AddRaw(this, &PMenu::HideView);
+	// HoverEnd.AddRaw(this, &PMenu::HideView);
 	ItemClicked.AddRaw(this, &PMenu::OnItemClicked);
 
 	mView = GetWorld()->ConstructWidget<PMenuView>(&mItems, &ItemClicked);
@@ -92,6 +105,7 @@ void PMenu::ShowView(bool State)
 	mView->SetVisible(true);
 	PWidget::AddChild(mView);
 	mView->HoverEnd.AddRaw(this, &PMenu::HideView);
+	MenuOpened.Broadcast(this);
 }
 
 void PMenu::HideView()
@@ -99,6 +113,7 @@ void PMenu::HideView()
 	mView->SetVisible(false);
 	PWidget::RemoveChild(mView);
 	mChecked = false;
+	MenuClosed.Broadcast(this);
 }
 
 PMenuBar::PMenuBar()
@@ -112,12 +127,49 @@ PMenuBar::PMenuBar()
 PMenu* PMenuBar::AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 {
 	auto Menu = ConstructWidget<PMenu>(Name, InItems);
-	if (!Menu)
-	{
-		LogError("Failed to construct menu: {}", Name.c_str());
-		return nullptr;
-	}
+	Menu->HoverBegin.AddRaw(this, &PMenuBar::OnMenuHoverBegin);
+	Menu->MenuOpened.AddRaw(this, &PMenuBar::OnMenuOpened);
+	Menu->MenuClosed.AddRaw(this, &PMenuBar::OnMenuClosed);
 	mMenus.Add(Menu);
 	PWidget::AddChild(Menu);
 	return Menu;
+}
+
+void PMenuBar::OnMenuOpened(PMenu* Menu)
+{
+	if (mOpenMenu)
+	{
+		mOpenMenu->SetChecked(false);
+		mOpenMenu->HideView();
+	}
+	mOpenMenu = Menu;
+}
+
+void PMenuBar::OnMenuClosed(PMenu* Menu)
+{
+	for (auto M : mMenus)
+	{
+		if (M == Menu)
+		{
+			continue;
+		}
+		M->SetChecked(false);
+	}
+	mOpenMenu = nullptr;
+}
+
+void PMenuBar::OnMenuHoverBegin()
+{
+	auto Menu = dynamic_cast<PMenu*>(GetSender());
+
+	// If there is no open menu OR the menu we are now hovering is the current menu
+	// do an early exit.
+	if (!mOpenMenu || mOpenMenu == Menu)
+	{
+		return;
+	}
+
+	// Hide the current menu
+	mOpenMenu->HideView();
+	mOpenMenu = nullptr;
 }

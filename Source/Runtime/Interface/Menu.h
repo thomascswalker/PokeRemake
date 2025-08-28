@@ -13,12 +13,17 @@ class PMenu;
 struct SMenuItemData;
 
 DECLARE_MULTICAST_DELEGATE(DMenuItemClicked);
+DECLARE_MULTICAST_DELEGATE(DMenuOpened, PMenu*);
+DECLARE_MULTICAST_DELEGATE(DMenuClosed, PMenu*);
 
 struct SMenuItemData
 {
     DMenuItemClicked Clicked;
-    int32_t Index = 0;
-    std::string Name;
+    int32_t Index    = 0;
+    std::string Name = "";
+    bool IsSeparator = false;
+
+    SMenuItemData() : IsSeparator(true) {}
 
     template <typename T>
     SMenuItemData(const std::string& InName, T* InObject, void (T::*Delegate)()) :
@@ -44,9 +49,12 @@ public:
 
 class PMenu : public PButton
 {
+    DMenuOpened MenuOpened;
+    DMenuClosed MenuClosed;
+    DMenuItemClicked ItemClicked;
+
     std::vector<SMenuItemData> mItems;
     PMenuView* mView;
-    DMenuItemClicked ItemClicked;
 
     void OnItemClicked();
 
@@ -56,14 +64,25 @@ public:
     void AddItem(const SMenuItemData& Item);
     void ShowView(bool State);
     void HideView();
+
+    std::string GetDisplayName() const override
+    {
+        return mText;
+    }
+
+    friend class PMenuBar;
 };
 
 class PMenuBar : public PPanel
 {
     TArray<PMenu*> mMenus;
+    PMenu* mOpenMenu = nullptr;
 
 public:
     PMenuBar();
 
     PMenu* AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
+    void OnMenuOpened(PMenu* Menu);
+    void OnMenuClosed(PMenu* Menu);
+    void OnMenuHoverBegin();
 };

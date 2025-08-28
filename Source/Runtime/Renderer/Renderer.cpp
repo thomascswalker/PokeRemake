@@ -295,6 +295,11 @@ void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 	SDL_RenderLine(mContext->Renderer, X1, Y1, X2, Y2);
 }
 
+void PRenderer::DrawLine(const FVector2& Start, const FVector2& End) const
+{
+	SDL_RenderLine(mContext->Renderer, Start.X, Start.Y, End.X, End.Y);
+}
+
 void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 {
 	if (!Rect.Overlaps(GetScreenRect()))
