@@ -80,23 +80,18 @@ set(SOURCES
         Interface/Game/GameHUD.cpp
         Interface/Game/DialogBox.h
         Engine/Components/SpriteComponent.cpp
-        Engine/Components/SpriteComponent.h
         Core/String.h
         Core/Array.h
         Core/Json.cpp
-        Engine/Components/InteractionComponent.h
         Engine/Components/InteractionComponent.cpp
-        Engine/Components/SelectionComponent.h
         Engine/Components/SelectionComponent.cpp
         Engine/CameraView.cpp
         Renderer/Drawable.cpp
         Core/Map.h
-        Engine/GameMode.h
         Engine/SaveState.h
         Engine/GameMode.cpp
-        Interface/Menu.h
         Interface/Menu.cpp
-        Interface/Popup.h
+        Interface/Divider.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
