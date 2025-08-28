@@ -62,7 +62,7 @@ public:
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-		mPadding      = {0};
+		mPadding     = {0};
 
 		mText.SetText(std::format("{}", mValue));
 

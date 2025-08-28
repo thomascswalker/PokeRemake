@@ -12,7 +12,7 @@
 #include <cstring>
 #include <map>
 
-TextureMap PTextureManager::sTextures = {};
+TextureMap TextureManager::sTextures = {};
 
 uint32_t gNextTextureID = 0;
 
@@ -22,7 +22,7 @@ PTexture::PTexture()
 
 PTexture::~PTexture() {}
 
-PTexture* PTextureManager::Load(const std::string& FileName)
+PTexture* TextureManager::Load(const std::string& FileName)
 {
 	LogDebug("Finding texture: {}", FileName.c_str());
 	const auto AbsFileName = Files::FindFile(FileName);
@@ -53,7 +53,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	return NewTexture;
 }
 
-void PTextureManager::LoadAllTextures()
+void TextureManager::LoadAllTextures()
 {
 	const auto Textures = Files::GetFilesInDirectory("Resources/Textures");
 	for (const auto& Texture : Textures)
@@ -62,7 +62,7 @@ void PTextureManager::LoadAllTextures()
 	}
 }
 
-bool PTextureManager::LoadSDL(PTexture* Texture)
+bool TextureManager::LoadSDL(PTexture* Texture)
 {
 	const auto Renderer   = GetRenderer()->GetSDLRenderer();
 	const auto Width      = Texture->GetWidth();
@@ -87,7 +87,7 @@ bool PTextureManager::LoadSDL(PTexture* Texture)
 	return false;
 }
 
-void PTextureManager::UnloadSDL()
+void TextureManager::UnloadSDL()
 {
 	LogDebug("Destroying all SDL textures");
 	for (const auto& V : GetTextures() | std::views::values)
@@ -96,7 +96,7 @@ void PTextureManager::UnloadSDL()
 	}
 }
 
-PTexture* PTextureManager::Get(const std::string& Name)
+PTexture* TextureManager::Get(const std::string& Name)
 {
 	for (auto Key : GetTextures() | std::views::keys)
 	{
@@ -116,7 +116,7 @@ PTexture* PTextureManager::Get(const std::string& Name)
 	return nullptr;
 }
 
-PTexture* PTextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
+PTexture* TextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
 {
 	PTexture Tex;
 	const auto DataSize = Width * Height * Channels;
@@ -146,7 +146,7 @@ PTexture* PTextureManager::Create(const std::string& FileName, float Width, floa
 	return sTextures[BaseName].get();
 }
 
-void PTextureManager::Destroy(const PTexture* Texture)
+void TextureManager::Destroy(const PTexture* Texture)
 {
 	auto Iter = sTextures.find(Texture->GetName());
 	if (Iter != sTextures.end())
@@ -159,7 +159,7 @@ void PTextureManager::Destroy(const PTexture* Texture)
 	}
 }
 
-TextureMap& PTextureManager::GetTextures()
+TextureMap& TextureManager::GetTextures()
 {
 	return sTextures;
 }

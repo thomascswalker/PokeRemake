@@ -5,6 +5,9 @@
 class PPanel : public PBox
 {
 public:
+	PPanel()
+	{}
+
 	void Draw(const PRenderer* Renderer) const override
 	{
 		FRect Rect = GetGeometry();

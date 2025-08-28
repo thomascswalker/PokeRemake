@@ -14,6 +14,7 @@ set(SOURCES
         Application/Application.cpp
         Application/ArgParser.h
         Application/Context.h
+        Core/Array.h
         Core/Bitmask.h
         Core/CFwd.h
         Core/Color.cpp
@@ -24,33 +25,42 @@ set(SOURCES
         Core/Decl.h
         Core/Delegate.cpp
         Core/Files.h
+        Core/Json.cpp
         Core/Json.h
         Core/Logging.h
         Core/Macros.h
+        Core/Map.h
         Core/Matrix.h
         Core/Meta.cpp
+        Core/String.h
         Core/Time.h
         Core/Vector.h
         Engine/Actors/Actor.cpp
         Engine/Actors/Character.cpp
         Engine/Actors/Collider.h
-        Engine/Actors/Interactable.h
         Engine/Actors/GameMap.cpp
+        Engine/Actors/Interactable.h
         Engine/Actors/PlayerCharacter.cpp
         Engine/Actors/Portal.cpp
-        Engine/Actors/Selectable.h
         Engine/Actors/SceneryActor.cpp
+        Engine/Actors/Selectable.h
+        Engine/CameraView.cpp
         Engine/CameraView.h
         Engine/Components/CameraComponent.cpp
         Engine/Components/CharacterMovementComponent.cpp
         Engine/Components/CollisionComponent.cpp
         Engine/Components/Component.cpp
+        Engine/Components/InteractionComponent.cpp
+        Engine/Components/SelectionComponent.cpp
+        Engine/Components/SpriteComponent.cpp
         Engine/Engine.cpp
         Engine/Game.cpp
+        Engine/GameMode.cpp
         Engine/Input.cpp
         Engine/InputContext.cpp
         Engine/MapManager.cpp
         Engine/Object.cpp
+        Engine/SaveState.h
         Engine/Serialization.cpp
         Engine/Settings.h
         Engine/Sprite.h
@@ -61,37 +71,29 @@ set(SOURCES
         Interface/Box.h
         Interface/Button.h
         Interface/ButtonGroup.h
+        Interface/Divider.h
         Interface/Dropdown.cpp
+        Interface/Game/DialogBox.h
+        Interface/Game/GameHUD.cpp
         Interface/GridView.h
         Interface/Group.h
         Interface/HUD.h
         Interface/Image.h
         Interface/ItemView.h
         Interface/Layout.h
+        Interface/Menu.cpp
         Interface/Panel.h
         Interface/ScrollArea.h
         Interface/Spacer.h
         Interface/Spinner.h
+        Interface/Style.cpp
         Interface/Text.h
         Interface/Widget.cpp
         Interface/Widget.h
+        Renderer/Drawable.cpp
         Renderer/Drawable.h
         Renderer/Renderer.cpp
-        Interface/Game/GameHUD.cpp
-        Interface/Game/DialogBox.h
-        Engine/Components/SpriteComponent.cpp
-        Core/String.h
-        Core/Array.h
-        Core/Json.cpp
-        Engine/Components/InteractionComponent.cpp
-        Engine/Components/SelectionComponent.cpp
-        Engine/CameraView.cpp
-        Renderer/Drawable.cpp
-        Core/Map.h
-        Engine/SaveState.h
-        Engine/GameMode.cpp
-        Interface/Menu.cpp
-        Interface/Divider.h
+        Core/CSS.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

@@ -1,0 +1,32 @@
+.PWidget {
+    color: #fff;
+    background: #575757
+}
+
+.PWidget:hover {
+    background: #8b8b8b
+}
+
+.PWidget:active {
+    background: #282828
+}
+
+.PWidget.border {
+    background: #717171
+}
+
+.Panel {
+    background: #3f3f3f
+}
+
+.PAbstractButton:checked {
+    background: #39f
+}
+
+.PAbstractButton:hover:checked {
+    background: #9cf
+}
+
+.PAbstractButton:hover:active {
+    background: #0059b3
+}

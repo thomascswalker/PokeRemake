@@ -84,9 +84,13 @@ struct STileset
 	}
 };
 
-bool LoadTileset(const std::string& Name);
-STileset* GetTileset(const std::string& Name);
-std::vector<STileset*> GetTilesets();
-STileset* GetDefaultTileset();
-bool LoadAllTilesets();
-std::vector<std::string> GetTilesetNames();
+class TilesetManager
+{
+public:
+	static bool LoadTileset(const std::string& Name);
+	static STileset* GetTileset(const std::string& Name);
+	static std::vector<STileset*> GetTilesets();
+	static STileset* GetDefaultTileset();
+	static bool LoadAllTilesets();
+	static std::vector<std::string> GetTilesetNames();
+};

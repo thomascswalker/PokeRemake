@@ -11,7 +11,7 @@
 
 inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Shaders", "Resources\\Textures",
-	"Resources\\Fonts", "Resources\\Maps", "Resources\\ActorDefs",
+	"Resources\\Fonts", "Resources\\Maps", "Resources\\ActorDefs", "Resources\\Styles",
 };
 
 namespace Files

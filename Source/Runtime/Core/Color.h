@@ -1,5 +1,7 @@
 #pragma once
 
+#include <format>
+
 #include "Core/CoreFwd.h"
 
 struct PColor
@@ -44,9 +46,14 @@ struct PColor
 		A                   = 255;
 	}
 
-	PColor WithAlpha(uint8_t Alpha)
+	PColor WithAlpha(uint8_t Alpha) const
 	{
 		return PColor(R, G, B, Alpha);
+	}
+
+	std::string ToString() const
+	{
+		return std::format("[{}, {}, {}, {}]", R, G, B, A);
 	}
 
 	// Standard colors

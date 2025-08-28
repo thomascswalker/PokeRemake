@@ -83,12 +83,12 @@ public:
 		mSDLTexture = SDLTex;
 	}
 
-	friend class PTextureManager;
+	friend class TextureManager;
 };
 
 using TextureMap = std::map<std::string, std::shared_ptr<PTexture>>;
 
-class PTextureManager
+class TextureManager
 {
 	static TextureMap sTextures;
 
