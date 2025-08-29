@@ -94,6 +94,7 @@ set(SOURCES
         Renderer/Drawable.h
         Renderer/Renderer.cpp
         Core/CSS.h
+        Engine/ParamBlock.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
