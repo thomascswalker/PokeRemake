@@ -47,4 +47,9 @@ EXPAND(FOR_EACH_7(what,  __VA_ARGS__))
 		return false;                            \
 	}
 
-//
+#define ASSERT(condition, message) \
+	if (! (condition)) { \
+	std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+	<< " line " << __LINE__ << ": " << message << std::endl; \
+	std::terminate(); \
+}
