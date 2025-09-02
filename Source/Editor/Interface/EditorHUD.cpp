@@ -15,6 +15,7 @@
 #include "Interface/Spinner.h"
 
 #include "EditorGame.h"
+#include "MultiSpinner.h"
 
 static PWorld*		World = nullptr;
 static PEditorGame* EditorGame = nullptr;
@@ -225,7 +226,9 @@ PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 				}
 			case PT_FVector3:
 				{
-					ParamRow->AddChild(ConstructWidget<PSpinner>());
+					auto V3Spinner = ConstructWidget<PMultiSpinner<3>>();
+					V3Spinner->Bind(Param);
+					ParamRow->AddChild(V3Spinner);
 					break;
 				}
 			default:

@@ -17,6 +17,7 @@ set(SOURCES
         Interface/EditorHUD.cpp
         EditorData.h
         EditorMode.h
+        Interface/MultiSpinner.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

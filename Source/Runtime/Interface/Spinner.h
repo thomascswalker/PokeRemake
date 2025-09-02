@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Box.h"
-
 #include "Core/Delegate.h"
 
+#include "Box.h"
 #include "Button.h"
-#include "Widget.h"
 #include "Text.h"
+#include "Widget.h"
 
 enum ESpinnerMode
 {
@@ -24,19 +23,18 @@ public:
 	DValueChanged ValueChanged;
 
 protected:
-	float mValue    = 0.0f;
+	float mValue = 0.0f;
 	float mMinValue = std::numeric_limits<float>::min();
 	float mMaxValue = std::numeric_limits<float>::max();
 
 	ESpinnerMode mMode = SM_Integer;
 
-	PWidget mLayoutWidget;
-	PText mText;
-	PBox mButtonBox;
+	PText	mText;
+	PBox	mButtonBox;
 	PButton mUpButton;
 	PButton mDownButton;
 
-	DValueChangedUp ValueChangedUp;
+	DValueChangedUp	  ValueChangedUp;
 	DValueChangedDown ValueChangedDown;
 
 	void OnValueChangedUpInternal()
@@ -62,21 +60,21 @@ public:
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-		mPadding     = {0};
+		mPadding = { 0 };
 
 		mText.SetText(std::format("{}", mValue));
 
 		mButtonBox.SetLayoutMode(LM_Vertical);
 		mButtonBox.SetResizeMode(RM_Fit, RM_Fit);
-		mButtonBox.mPadding = {0};
+		mButtonBox.mPadding = { 0 };
 
 		mUpButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedUpInternal);
 		mUpButton.SetResizeMode(RM_Fixed, RM_Fixed);
-		mUpButton.SetFixedSize({DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2});
+		mUpButton.SetFixedSize({ DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2 });
 
 		mDownButton.Clicked.AddRaw(this, &PSpinner::OnValueChangedDownInternal);
 		mDownButton.SetResizeMode(RM_Fixed, RM_Fixed);
-		mDownButton.SetFixedSize({DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2});
+		mDownButton.SetFixedSize({ DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_HEIGHT / 2 });
 
 		mButtonBox.AddChild(&mUpButton);
 		mButtonBox.AddChild(&mDownButton);
@@ -101,4 +99,7 @@ public:
 		mMinValue = Min;
 		mMaxValue = Max;
 	}
+
+	float GetValue() const { return mValue; }
+	void  SetValue(float Value) { mValue = Value; }
 };
