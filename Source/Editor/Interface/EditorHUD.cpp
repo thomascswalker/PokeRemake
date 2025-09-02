@@ -201,15 +201,28 @@ PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 
 	for (auto [Name, Param] : Actor->GetAllParameters())
 	{
+		// Row
 		auto ParamRow = ConstructWidget<PWidget>();
 		ParamRow->SetResizeModeH(RM_Fixed);
 		ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+
+		// Left-hand label
 		auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
+		ParamLabel->SetAlignment(AL_Left);
 		ParamLabel->SetResizeModeW(RM_Fixed);
-		ParamLabel->SetFixedWidth(50);
+		ParamLabel->SetFixedWidth(75);
+
+		// Right-hand widget
 		ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
+			case PT_String:
+				{
+					auto EditText = ConstructWidget<PEditText>();
+					EditText->Bind(Param);
+					ParamRow->AddChild(EditText);
+					break;
+				}
 			case PT_FVector3:
 				{
 					ParamRow->AddChild(ConstructWidget<PSpinner>());
@@ -218,6 +231,8 @@ PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 			default:
 				continue;
 		}
+
+		// Add row
 		SelectionView->AddChild(ParamRow);
 	}
 

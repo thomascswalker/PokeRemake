@@ -83,6 +83,11 @@ public:
 		return Type;
 	}
 
+	void SetType(EParamType NewType)
+	{
+		Type = NewType;
+	}
+
 	void Set(float NewValue)
 	{
 		auto Ptr = reinterpret_cast<float*>(Ref);
@@ -94,6 +99,12 @@ public:
 	{
 		auto Ptr = reinterpret_cast<T*>(Ref);
 		*Ptr = NewValue;
+	}
+
+	template <typename T>
+	void SetRef(T* NewRef)
+	{
+		Ref = reinterpret_cast<size_t>(NewRef);
 	}
 
 	template <typename T>

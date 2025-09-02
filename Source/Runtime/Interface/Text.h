@@ -4,10 +4,11 @@
 
 class PText : public PWidget
 {
-	std::string mText     = "";
-	PColor mColor         = PColor::UIText;
-	float mFontSize       = FONT_RENDER_SCALE;
-	EAlignment mAlignment = AL_Center;
+protected:
+	std::string mText = "";
+	PColor		mColor = PColor::UIText;
+	float		mFontSize = FONT_RENDER_SCALE;
+	EAlignment	mAlignment = AL_Center;
 
 public:
 	PText() = default;
@@ -21,33 +22,35 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
+		std::string Text = Param == nullptr ? mText : Param->Get<std::string>();
+
 		Renderer->SetDrawColor(mColor);
-		float HalfHeight      = H / 2.0f;
-		float HalfWidth       = W / 2.0f;
-		float QuarterFontSize = mFontSize / 4.0f;
-		FVector2 TextPos      = {X, Y + HalfHeight + QuarterFontSize};
-		auto TextWidth        = Renderer->GetTextWidth(mText, mFontSize);
+		float	 HalfHeight = H / 2.0f;
+		float	 HalfWidth = W / 2.0f;
+		float	 QuarterFontSize = mFontSize / 4.0f;
+		FVector2 TextPos = { X + 2, Y + HalfHeight + QuarterFontSize };
+		auto	 TextWidth = Renderer->GetTextWidth(Text, mFontSize);
 
 		float HalfTextWidth = TextWidth / 2.0f;
 		switch (mAlignment)
 		{
-		case AL_Left:
-			{
-				break;
-			}
-		case AL_Center:
-			{
-				TextPos.X += HalfWidth - HalfTextWidth;
-				break;
-			}
-		case AL_Right:
-			{
-				TextPos.X += W;
-				TextPos.X -= TextWidth;
-				break;
-			}
+			case AL_Left:
+				{
+					break;
+				}
+			case AL_Center:
+				{
+					TextPos.X += HalfWidth - HalfTextWidth;
+					break;
+				}
+			case AL_Right:
+				{
+					TextPos.X += W;
+					TextPos.X -= TextWidth;
+					break;
+				}
 		}
-		Renderer->DrawText(mText, TextPos, mFontSize);
+		Renderer->DrawText(Text, TextPos, mFontSize);
 	}
 
 	float GetFontSize() const
@@ -116,5 +119,10 @@ public:
 	void SetAlignment(EAlignment Alignment)
 	{
 		mAlignment = Alignment;
+	}
+
+	std::string* GetTextAddress()
+	{
+		return &mText;
 	}
 };

@@ -3,103 +3,123 @@
 #include "Text.h"
 #include "Widget.h"
 
-class PEditText : public PWidget
+DECLARE_MULTICAST_DELEGATE(DOnTextChange, std::string);
+
+class PEditText : public PText
 {
+	EInputContext mPrevInputContext;
+
 protected:
-    /** Text which is displayed in the widget. */
-    PText* mText;
-    /** Current position of the edit cursor. */
-    int32_t mCursorPos = 0;
+	/** Current position of the edit cursor. */
+	int32_t mCursorPos = 0;
 
 public:
-    PEditText(): mText()
-    {
-        mResizeModeH = RM_Fixed;
-        mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-        mResizeModeW = RM_Grow;
+	DOnTextChange OnTextChange;
 
-        mText = ConstructWidget<PText>();
-        mText->SetAlignment(AL_Left);
-        PWidget::AddChild(mText);
-    }
+	PEditText()
+	{
+		mResizeModeH = RM_Fixed;
+		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
+		mResizeModeW = RM_Grow;
 
-    ~PEditText() override = default;
+		SetAlignment(AL_Left);
+	}
 
-    void Draw(const PRenderer* Renderer) const override
-    {
-        auto G = GetGeometry();
+	~PEditText() override = default;
 
-        // Background
-        Renderer->SetDrawColor(PColor::UIBackground);
-        Renderer->DrawFillRect(G);
+	void Draw(const PRenderer* Renderer) const override
+	{
+		auto G = GetGeometry();
 
-        // Outline
-        Renderer->SetDrawColor(mFocused ? PColor::UISecondary : PColor::UIBorder);
-        Renderer->DrawRect(G);
+		// Background
+		Renderer->SetDrawColor(PColor::UIBackground);
+		Renderer->DrawFillRect(G);
 
-        // Cursor
-        if (mFocused)
-        {
-            Renderer->SetDrawColor(PColor::UIText);
-            FVector2 CursorStart = G.Min();
-            // X offset for char position
-            float XOffset = Renderer->GetTextWidth(mText->GetText().substr(0, mCursorPos));
-            CursorStart.X += XOffset + 5;
-            FVector2 CursorEnd = {CursorStart.X, CursorStart.Y + G.H};
-            CursorStart.Y += 3;
-            CursorEnd.Y -= 3;
-            Renderer->DrawLine(CursorStart, CursorEnd);
-        }
-    }
+		// Outline
+		Renderer->SetDrawColor(mFocused ? PColor::UISecondary : PColor::UIBorder);
+		Renderer->DrawRect(G);
 
-    void HandleClick(const FVector2& MousePos)
-    {
-        if (GetGeometry().Contains(MousePos))
-        {
-            mFocused = !mFocused;
-            SetInputContext(IC_Text);
-        }
-        else if (mFocused)
-        {
-            mFocused = false;
-            RestoreInputContext();
-        }
-    }
+		// Cursor
+		if (mFocused)
+		{
+			Renderer->SetDrawColor(PColor::UIText);
+			FVector2 CursorStart = G.Min();
+			// X offset for char position
+			float XOffset = Renderer->GetTextWidth(mText.substr(0, mCursorPos));
+			CursorStart.X += XOffset + 2;
+			FVector2 CursorEnd = { CursorStart.X, CursorStart.Y + G.H };
+			CursorStart.Y += 3;
+			CursorEnd.Y -= 3;
+			Renderer->DrawLine(CursorStart, CursorEnd);
+		}
 
-    void OnMouseEvent(SInputEvent* Event) override
-    {
-        switch (Event->Type)
-        {
-        case IET_MouseUp:
-            {
-                HandleClick(Event->MousePosition);
-                Event->Consume();
-                break;
-            }
-        default:
-            {
-                break;
-            }
-        }
-    }
+		// Text
+		PText::Draw(Renderer);
+	}
 
-    void OnKeyDown(SInputEvent* Event) override
-    {
-        auto Key = Event->KeyDown;
-        if (!mFocused && isascii(Key))
-        {
-            return;
-        }
-        if (Key == SDLK_DELETE || Key == SDLK_BACKSPACE)
-        {
-            mCursorPos = std::max(0, mCursorPos - 1);
-            mText->Remove(mCursorPos);
-        }
-        else
-        {
-            mText->Add(Key, mCursorPos);
-            mCursorPos++;
-        }
-        Event->Consume();
-    }
+	void HandleClick(const FVector2& MousePos)
+	{
+		if (GetGeometry().Contains(MousePos))
+		{
+			mCursorPos = mText.size();
+			mFocused = !mFocused;
+			mPrevInputContext = GetInputContext()->Type;
+			SetInputContext(IC_Text);
+		}
+		else if (mFocused)
+		{
+			mFocused = false;
+			SetInputContext(mPrevInputContext);
+		}
+	}
+
+	void OnMouseEvent(SInputEvent* Event) override
+	{
+		switch (Event->Type)
+		{
+			case IET_MouseUp:
+				{
+					HandleClick(Event->MousePosition);
+					Event->Consume();
+					break;
+				}
+			default:
+				{
+					break;
+				}
+		}
+	}
+
+	void OnKeyDown(SInputEvent* Event) override
+	{
+		auto Key = Event->KeyDown;
+		if (!mFocused && isascii(Key))
+		{
+			return;
+		}
+		if (Key == SDLK_DELETE || Key == SDLK_BACKSPACE)
+		{
+			mCursorPos = std::max(0, mCursorPos - 1);
+			Remove(mCursorPos);
+		}
+		else
+		{
+			Add(Key, mCursorPos);
+			mCursorPos++;
+		}
+		OnTextChange.Broadcast(mText);
+		Event->Consume();
+	}
+
+	void Bind(PParameter* Param) override
+	{
+		// Set the parameter reference
+		PWidget::Bind(Param);
+
+		// Override the existing text with the parameter's current text
+		mText = Param->Get<std::string>();
+
+		// Bind events from this widget to set the parameter value
+		OnTextChange.AddRaw(Param, &PParameter::Set<std::string>);
+	}
 };
