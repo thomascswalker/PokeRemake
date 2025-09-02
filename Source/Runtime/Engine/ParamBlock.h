@@ -159,9 +159,12 @@ public:
 
 class IParamBlock
 {
+protected:
     std::map<std::string, PParameter> Parameters;
 
 public:
+    virtual ~IParamBlock() = default;
+
     template <typename T>
     void AddParameter(const std::string& Name, T* Ref, EParamType Type)
     {
@@ -176,6 +179,18 @@ public:
         }
         return nullptr;
     }
+
+    std::map<std::string, PParameter*> GetAllParameters() const
+    {
+        std::map<std::string, PParameter*> Result;
+        for (auto& [fst, snd] : Parameters)
+        {
+            Result.emplace(fst, const_cast<PParameter*>(&snd));
+        }
+        return Result;
+    }
+
+    virtual void InitializeParameters() = 0;
 };
 
 #define DECLARE_PARAMETER(Name, Type) AddParameter(#Name, &m##Name, PT_##Type)

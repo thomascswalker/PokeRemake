@@ -152,3 +152,11 @@ void PActor::Deserialize(const JSON& Data)
 	}
 	LogDebug("Finished deserializing {}", mInternalName.c_str());
 }
+
+#if _EDITOR
+void PActor::InitializeParameters()
+{
+	AddParameter("InternalName", &mInternalName, PT_String);
+	AddParameter("Position", &mPosition, PT_FVector3);
+}
+#endif

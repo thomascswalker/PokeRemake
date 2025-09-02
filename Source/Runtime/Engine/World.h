@@ -10,7 +10,7 @@
 #include "Interface/HUD.h"
 
 #if _EDITOR
-#include "../../Editor/EditorView.h"
+#include "../../Editor/Actors/EditorView.h"
 #include "Components/SelectionComponent.h"
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 #endif
@@ -62,6 +62,8 @@ public:
 		mActors.push_back(Actor);
 
 #if _EDITOR
+		Actor->InitializeParameters();
+
 		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
 
 		if (Actor->GetSelectable())

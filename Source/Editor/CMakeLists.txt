@@ -12,9 +12,9 @@ include_directories(
 
 set(SOURCES
         EditorGame.cpp
-        EditorView.cpp
-        ActorManager.cpp
-        EditorHUD.cpp
+        Actors/EditorView.cpp
+        Actors/ActorManager.cpp
+        Interface/EditorHUD.cpp
         EditorData.h
         EditorMode.h
 )

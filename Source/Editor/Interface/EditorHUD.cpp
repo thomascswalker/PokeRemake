@@ -1,7 +1,7 @@
 // ReSharper disable CppDFANullDereference
 #include "EditorHUD.h"
 
-#include "ActorManager.h"
+#include "Actors/ActorManager.h"
 #include "EditorGame.h"
 
 #include "Application/Application.h"

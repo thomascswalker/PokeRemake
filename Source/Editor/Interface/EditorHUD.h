@@ -1,5 +1,5 @@
 #pragma once
-#include "EditorGame.h"
+#include "../EditorGame.h"
 
 #include "Interface/Dropdown.h"
 #include "Interface/HUD.h"

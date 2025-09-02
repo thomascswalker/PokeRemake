@@ -1,9 +1,9 @@
 // ReSharper disable CppDFAUnreachableCode
 #include "EditorGame.h"
 
-#include "ActorManager.h"
+#include "Actors/ActorManager.h"
 #include "EditorMode.h"
-#include "EditorView.h"
+#include "Actors/EditorView.h"
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
 #include "Engine/Input.h"
@@ -172,6 +172,12 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 	// Add the clicked actor to the selection queue. The queue will be processed within
 	// PEditorGame::PostTick().
 	mSelectionQueue.Add(ClickedActor);
+
+	// Update the selection panel to construct widgets for each parameter
+	for (auto& [Name, Param] : ClickedActor->GetAllParameters())
+	{
+		LogInfo("{}: {}", Name.c_str(), Param->ToString().c_str());
+	}
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)
