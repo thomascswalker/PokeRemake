@@ -10,6 +10,7 @@
 #include "Engine/MapManager.h"
 #include "Engine/World.h"
 #include "Interface/ButtonGroup.h"
+#include "Interface/EditText.h"
 #include "Interface/Group.h"
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
@@ -19,9 +20,10 @@
 static PWorld* World           = nullptr;
 static PEditorGame* EditorGame = nullptr;
 
-static PPanel* MainPanel  = nullptr;
-static PGroup* TileGroup  = nullptr;
-static PGroup* ActorGroup = nullptr;
+static PPanel* MainPanel   = nullptr;
+static PGroup* SelectGroup = nullptr;
+static PGroup* TileGroup   = nullptr;
+static PGroup* ActorGroup  = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
 static PButtonGroup* TilesetViewButtonGroup = nullptr;
 static PButtonGroup* ActorViewButtonGroup   = nullptr;
@@ -85,7 +87,13 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetFixedWidth(340);
 	MainPanel->SetVisible(false);
 
+	// Select
+	SelectGroup   = World->ConstructWidget<PGroup>("Properties");
+	auto EditText = ConstructWidget<PEditText>();
+	SelectGroup->AddChild(EditText);
+
 	// Tiles
+
 	TileGroup = World->ConstructWidget<PGroup>("Tiles");
 	TileGroup->SetLayoutMode(LM_Vertical);
 	auto ScrollArea = World->ConstructWidget<PScrollArea>();
@@ -99,12 +107,14 @@ void PEditorHUD::SetupInterface()
 		ScrollArea->AddChild(TilesetView);
 		TilesetViews[Tileset->Name] = TilesetView;
 	}
+
 	// Actors
 	ActorViewButtonGroup = ConstructWidget<PButtonGroup>();
 	ActorGroup           = World->ConstructWidget<PGroup>("Actors");
 	ActorGroup->SetLayoutMode(LM_Vertical);
 	auto ActorView = ConstructActorView();
 	ActorGroup->AddChild(ActorView);
+
 	// Main panel
 
 	AddChild(MainPanel);
@@ -256,14 +266,16 @@ void PEditorHUD::OnLoadButtonClicked()
 void PEditorHUD::OnSelectButtonClicked()
 {
 	SetInputContext(IC_Select);
+	MainPanel->AddChild(SelectGroup);
 	MainPanel->RemoveChild(TileGroup);
 	MainPanel->RemoveChild(ActorGroup);
-	MainPanel->SetVisible(false);
+	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnTilesButtonClicked()
 {
 	SetInputContext(IC_Tile);
+	MainPanel->RemoveChild(SelectGroup);
 	MainPanel->RemoveChild(ActorGroup);
 	MainPanel->AddChild(TileGroup);
 	MainPanel->SetVisible(true);
@@ -272,8 +284,9 @@ void PEditorHUD::OnTilesButtonClicked()
 void PEditorHUD::OnActorsButtonClicked()
 {
 	SetInputContext(IC_Actor);
-	MainPanel->RemoveChild(TileGroup);
+	MainPanel->RemoveChild(SelectGroup);
 	MainPanel->AddChild(ActorGroup);
+	MainPanel->RemoveChild(TileGroup);
 	MainPanel->SetVisible(true);
 }
 

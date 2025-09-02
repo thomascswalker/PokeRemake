@@ -95,6 +95,7 @@ set(SOURCES
         Renderer/Renderer.cpp
         Core/CSS.h
         Engine/ParamBlock.h
+        Interface/EditText.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

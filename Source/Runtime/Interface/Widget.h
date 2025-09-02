@@ -15,7 +15,6 @@
 #define WIDGET_DARK 50, 50, 50, 255
 
 #define WIDGET_WIDTH 50
-#define WIDGET_HEIGHT 20
 #define WIDGET_SPACING 5
 #define WIDGET_FONT_SIZE 16.0f
 
@@ -91,6 +90,7 @@ protected:
 
 	bool mMouseOver = false;
 	bool mVisible   = true;
+	bool mFocused   = false;
 
 	// Floating widgets
 
@@ -207,6 +207,18 @@ public:
 	size_t GetChildCount() const
 	{
 		return mChildren.size();
+	}
+
+	// Interaction
+
+	bool GetFocused() const
+	{
+		return mFocused;
+	}
+
+	void SetFocused(bool State)
+	{
+		mFocused = State;
 	}
 
 	// Layout

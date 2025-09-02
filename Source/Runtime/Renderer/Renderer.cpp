@@ -27,8 +27,8 @@ float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Posit
 	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
 	const float Width  = GetTextWidth(Text, FontSize);
 
-	float X       = Position.X - Width / 2.0f;
-	const float Y = Position.Y + FONT_RENDER_SCALE / 4.0f;
+	float X       = Position.X;
+	const float Y = Position.Y;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
@@ -395,18 +395,20 @@ void PRenderer::DrawGrid() const
 
 float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const
 {
+	FVector2 AlignedPosition = Position;
+
 	// uint8_t R, G, B, A;
 	if (Shadow)
 	{
 		auto Color = GetDrawColor();
 		SetDrawColor(0, 0, 0, 255);
-		DrawTextInternal(Text, Position + FVector2{-1, -1}, FontSize);
-		DrawTextInternal(Text, Position + FVector2{-1, 1}, FontSize);
-		DrawTextInternal(Text, Position + FVector2{1, -1}, FontSize);
-		DrawTextInternal(Text, Position + FVector2{1, 1}, FontSize);
+		DrawTextInternal(Text, AlignedPosition + FVector2{-1, -1}, FontSize);
+		DrawTextInternal(Text, AlignedPosition + FVector2{-1, 1}, FontSize);
+		DrawTextInternal(Text, AlignedPosition + FVector2{1, -1}, FontSize);
+		DrawTextInternal(Text, AlignedPosition + FVector2{1, 1}, FontSize);
 		SetDrawColor(Color);
 	}
-	return DrawTextInternal(Text, Position, FontSize);
+	return DrawTextInternal(Text, AlignedPosition, FontSize);
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
