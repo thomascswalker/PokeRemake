@@ -1,5 +1,7 @@
 #include "Dropdown.h"
 
+#include "Text.h"
+
 PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 {
 	mLayoutMode  = LM_Vertical;
@@ -50,7 +52,7 @@ void PDropdownView::OnItemClicked()
 PDropdown::PDropdown()
 	: PButton(this, &PDropdown::ShowDropdownView), mCurrentIndex(0)
 {
-	mText      = "";
+	mText->SetText("");
 	mCheckable = true;
 
 	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
@@ -72,11 +74,11 @@ PDropdown::PDropdown(const std::vector<std::string>& InItems)
 
 	if (mItems.size())
 	{
-		mText = mItems[mCurrentIndex];
+		mText->SetText(mItems[mCurrentIndex]);
 	}
 	else
 	{
-		mText = "";
+		mText->SetText("");
 	}
 
 	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
@@ -118,7 +120,7 @@ void PDropdown::AddItem(const std::string& Item)
 void PDropdown::OnItemClicked(SDropdownItemData* Data)
 {
 	mCurrentIndex = Data->Index;
-	mText         = mItems[mCurrentIndex];
+	mText->SetText(mItems[mCurrentIndex]);
 	HideDropdownView();
 }
 

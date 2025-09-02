@@ -2,6 +2,8 @@
 
 #include "Core/Color.h"
 #include "Core/Delegate.h"
+#include "Text.h"
+#include "Engine/World.h"
 
 #include "AbstractButton.h"
 #include "Widget.h"
@@ -11,73 +13,87 @@ constexpr float gButtonTextSize = 16.0f;
 class PButton : public PAbstractButton
 {
 protected:
-	std::string mText;
+	PText* mText;
 	PTexture* mTexture = nullptr;
 
 	FRect mSourceRect;
 	bool mUseSourceRect = false;
 
 public:
-	PButton()
-	{}
+	PButton() : mText(ConstructWidget<PText>())
+	{
+		PWidget::AddChild(mText);
+	}
 
 	template <typename T>
-	PButton(T* Sender, void (T::*Delegate)())
+	PButton(T* Sender, void (T::*Delegate)()) : mText(ConstructWidget<PText>())
 	{
+		PWidget::AddChild(mText);
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
 	template <typename T>
-	PButton(T* Sender, void (T::*Delegate)(bool))
+	PButton(T* Sender, void (T::*Delegate)(bool)) : mText(ConstructWidget<PText>())
 	{
+		PWidget::AddChild(mText);
 		Checked.AddRaw(Sender, Delegate);
 	}
 
 	PButton(const std::string& Label)
-		: mText(Label)
-	{}
+		: mText(ConstructWidget<PText>(Label))
+	{
+		PWidget::AddChild(mText);
+	}
 
 	PButton(const std::string& Label, void (*Delegate)())
-		: mText(Label)
+		: mText(ConstructWidget<PText>(Label))
 	{
+		PWidget::AddChild(mText);
 		Clicked.AddStatic(Delegate);
 	}
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)())
-		: mText(Label)
+		: mText(ConstructWidget<PText>(Label))
 	{
+		PWidget::AddChild(mText);
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
 	template <typename T>
 	PButton(const std::string& Label, T* Sender, void (T::*Delegate)(bool))
-		: mText(Label)
+		: mText(ConstructWidget<PText>(Label))
 	{
+		PWidget::AddChild(mText);
 		Checked.AddRaw(Sender, Delegate);
 	}
 
 	PButton(PTexture* Texture)
-		: mTexture(Texture)
-	{}
+		: mText(ConstructWidget<PText>()), mTexture(Texture)
+	{
+		PWidget::AddChild(mText);
+	}
 
 	PButton(PTexture* Texture, void (*Delegate)())
-		: mTexture(Texture)
+		: mText(ConstructWidget<PText>()), mTexture(Texture)
 	{
+		PWidget::AddChild(mText);
 		Clicked.AddStatic(Delegate);
 	}
 
 	template <typename T>
 	PButton(PTexture* Texture, T* Sender, void (T::*Delegate)())
-		: mTexture(Texture)
+		: mText(ConstructWidget<PText>()), mTexture(Texture)
 	{
+		PWidget::AddChild(mText);
 		Clicked.AddRaw(Sender, Delegate);
 	}
 
 	template <typename T>
 	PButton(PTexture* Texture, T* Sender, void (T::*Delegate)(bool))
-		: mTexture(Texture)
+		: mText(ConstructWidget<PText>()), mTexture(Texture)
 	{
+		PWidget::AddChild(mText);
 		Checked.AddRaw(Sender, Delegate);
 	}
 
@@ -128,13 +144,6 @@ public:
 		Renderer->SetDrawColor(Color);
 		Renderer->DrawFillRect(R);
 		Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_NONE);
-
-		// Draw text
-		if (!mText.empty())
-		{
-			Renderer->SetDrawColor(mStyle.Text);
-			Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), gButtonTextSize);
-		}
 
 		// Border
 		Renderer->SetDrawColor(mStyle.Border);

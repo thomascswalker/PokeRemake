@@ -22,11 +22,12 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		Renderer->SetDrawColor(mColor);
-		float HalfHeight    = H / 2.0f;
-		float HalfWidth     = W / 2.0f;
-		float HalfSize      = mFontSize / 2.0f;
-		FVector2 TextPos    = {X, Y + (HalfHeight + HalfSize)};
-		auto TextWidth      = Renderer->GetTextWidth(mText, mFontSize);
+		float HalfHeight      = H / 2.0f;
+		float HalfWidth       = W / 2.0f;
+		float QuarterFontSize = mFontSize / 4.0f;
+		FVector2 TextPos      = {X, Y + HalfHeight + QuarterFontSize};
+		auto TextWidth        = Renderer->GetTextWidth(mText, mFontSize);
+
 		float HalfTextWidth = TextWidth / 2.0f;
 		switch (mAlignment)
 		{

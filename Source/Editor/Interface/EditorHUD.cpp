@@ -20,10 +20,10 @@
 static PWorld* World           = nullptr;
 static PEditorGame* EditorGame = nullptr;
 
-static PPanel* MainPanel   = nullptr;
-static PGroup* SelectGroup = nullptr;
-static PGroup* TileGroup   = nullptr;
-static PGroup* ActorGroup  = nullptr;
+static PWidget* MainPanel  = nullptr;
+static PPanel* SelectPanel = nullptr;
+static PPanel* TilePanel   = nullptr;
+static PPanel* ActorPanel  = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
 static PButtonGroup* TilesetViewButtonGroup = nullptr;
 static PButtonGroup* ActorViewButtonGroup   = nullptr;
@@ -80,7 +80,7 @@ void PEditorHUD::SetupInterface()
 	AddChild(MenuBar);
 
 	// Main panel
-	MainPanel           = World->ConstructWidget<PPanel>();
+	MainPanel           = World->ConstructWidget<PWidget>();
 	MainPanel->mPadding = {5};
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
@@ -88,16 +88,16 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetVisible(false);
 
 	// Select
-	SelectGroup   = World->ConstructWidget<PGroup>("Properties");
+	SelectPanel   = World->ConstructWidget<PPanel>();
 	auto EditText = ConstructWidget<PEditText>();
-	SelectGroup->AddChild(EditText);
+	SelectPanel->AddChild(EditText);
 
 	// Tiles
 
-	TileGroup = World->ConstructWidget<PGroup>("Tiles");
-	TileGroup->SetLayoutMode(LM_Vertical);
+	TilePanel = World->ConstructWidget<PPanel>();
+	TilePanel->SetLayoutMode(LM_Vertical);
 	auto ScrollArea = World->ConstructWidget<PScrollArea>();
-	TileGroup->AddChild(ScrollArea);
+	TilePanel->AddChild(ScrollArea);
 	// Create a button group for all tiles across all tilesets
 	TilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
 	// Construct each widget for each tile in each tileset
@@ -110,10 +110,10 @@ void PEditorHUD::SetupInterface()
 
 	// Actors
 	ActorViewButtonGroup = ConstructWidget<PButtonGroup>();
-	ActorGroup           = World->ConstructWidget<PGroup>("Actors");
-	ActorGroup->SetLayoutMode(LM_Vertical);
+	ActorPanel           = World->ConstructWidget<PPanel>();
+	ActorPanel->SetLayoutMode(LM_Vertical);
 	auto ActorView = ConstructActorView();
-	ActorGroup->AddChild(ActorView);
+	ActorPanel->AddChild(ActorView);
 
 	// Main panel
 
@@ -266,27 +266,27 @@ void PEditorHUD::OnLoadButtonClicked()
 void PEditorHUD::OnSelectButtonClicked()
 {
 	SetInputContext(IC_Select);
-	MainPanel->AddChild(SelectGroup);
-	MainPanel->RemoveChild(TileGroup);
-	MainPanel->RemoveChild(ActorGroup);
+	MainPanel->AddChild(SelectPanel);
+	MainPanel->RemoveChild(TilePanel);
+	MainPanel->RemoveChild(ActorPanel);
 	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnTilesButtonClicked()
 {
 	SetInputContext(IC_Tile);
-	MainPanel->RemoveChild(SelectGroup);
-	MainPanel->RemoveChild(ActorGroup);
-	MainPanel->AddChild(TileGroup);
+	MainPanel->RemoveChild(SelectPanel);
+	MainPanel->RemoveChild(ActorPanel);
+	MainPanel->AddChild(TilePanel);
 	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnActorsButtonClicked()
 {
 	SetInputContext(IC_Actor);
-	MainPanel->RemoveChild(SelectGroup);
-	MainPanel->AddChild(ActorGroup);
-	MainPanel->RemoveChild(TileGroup);
+	MainPanel->RemoveChild(SelectPanel);
+	MainPanel->AddChild(ActorPanel);
+	MainPanel->RemoveChild(TilePanel);
 	MainPanel->SetVisible(true);
 }
 
