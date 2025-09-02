@@ -11,6 +11,7 @@
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
+#include "Interface/Spacer.h"
 #include "Interface/Spinner.h"
 
 #include "EditorGame.h"
@@ -22,6 +23,7 @@ static PWidget*							 MainPanel = nullptr;
 static PPanel*							 SelectPanel = nullptr;
 static PPanel*							 TilePanel = nullptr;
 static PPanel*							 ActorPanel = nullptr;
+static PPanel*							 SelectionView = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
 static PButtonGroup*					 TilesetViewButtonGroup = nullptr;
 static PButtonGroup*					 ActorViewButtonGroup = nullptr;
@@ -48,6 +50,7 @@ bool PEditorHUD::PreStart()
 
 	// Default edit menu
 	OnSelectButtonClicked();
+	EditorGame->SelectionChanged.AddRaw(this, &PEditorHUD::OnSelectionChange);
 
 	return true;
 }
@@ -90,8 +93,7 @@ void PEditorHUD::SetupInterface()
 
 	// Select
 	SelectPanel = World->ConstructWidget<PPanel>();
-	auto EditText = ConstructWidget<PEditText>();
-	SelectPanel->AddChild(EditText);
+	SelectPanel->SetLayoutMode(LM_Vertical);
 
 	// Tiles
 
@@ -185,6 +187,42 @@ PGridView* PEditorHUD::ConstructActorView()
 	}
 
 	return GridView;
+}
+
+PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
+{
+	auto SelectionView = ConstructWidget<PPanel>();
+	SelectionView->SetLayoutMode(LM_Vertical);
+
+	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
+	Label->SetResizeModeH(RM_Fixed);
+	Label->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+	SelectionView->AddChild(Label);
+
+	for (auto [Name, Param] : Actor->GetAllParameters())
+	{
+		auto ParamRow = ConstructWidget<PWidget>();
+		ParamRow->SetResizeModeH(RM_Fixed);
+		ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+		auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
+		ParamLabel->SetResizeModeW(RM_Fixed);
+		ParamLabel->SetFixedWidth(50);
+		ParamRow->AddChild(ParamLabel);
+		switch (Param->GetType())
+		{
+			case PT_FVector3:
+				{
+					ParamRow->AddChild(ConstructWidget<PSpinner>());
+					break;
+				}
+			default:
+				continue;
+		}
+		SelectionView->AddChild(ParamRow);
+	}
+
+	SelectionView->AddChild(ConstructWidget<PSpacer>());
+	return SelectionView;
 }
 
 void PEditorHUD::OnSizeXChanged(float Value)
@@ -294,6 +332,20 @@ void PEditorHUD::OnActorsButtonClicked()
 void PEditorHUD::OnExitButtonClicked()
 {
 	GetGame()->End();
+}
+
+void PEditorHUD::OnSelectionChange(const PActor* Actor)
+{
+	SelectPanel->RemoveAllChildren();
+	if (!Actor && SelectionView != nullptr)
+	{
+		GetWorld()->DestroyWidget(SelectionView);
+	}
+	else
+	{
+		SelectionView = ConstructSelectionView(Actor);
+		SelectPanel->AddChild(SelectionView);
+	}
 }
 
 void PEditorHUD::OnTilesetButtonChecked(bool State)

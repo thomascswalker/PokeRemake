@@ -58,29 +58,28 @@ void PEditorGame::PostTick()
 	{
 		return;
 	}
-	if (mSelectionQueue.Size() == 1)
+
+	PSelectionComponent* Comp = nullptr;
+
+	if (mSelectionQueue.Size() > 1)
 	{
-		auto Comp = mSelectionQueue[0]->GetSelectionComponent();
-		bool NewState = !Comp->GetSelected();
-		DeselectAll();
-		Comp->SetSelected(NewState);
-		mSelectionQueue.Clear();
-		return;
+		auto TempQueue = mSelectionQueue.Sorted(DepthSort);
+		Comp = TempQueue[0]->GetSelectionComponent();
+	}
+	else
+	{
+		Comp = mSelectionQueue[0]->GetSelectionComponent();
 	}
 
-	// Sort the selection queue by Z depth.
-	auto TempQueue = mSelectionQueue.Sorted(DepthSort);
-
-	// Store the opposite selection state of the first actor.
-	auto Comp = TempQueue[0]->GetSelectionComponent();
 	bool NewState = !Comp->GetSelected();
 
 	// Deselect all actors, then set the new state of the first actor.
 	DeselectAll();
-	TempQueue[0]->GetSelectionComponent()->SetSelected(NewState);
+	Comp->SetSelected(NewState);
 
 	// Clear the selection queue.
 	mSelectionQueue.Clear();
+	SelectionChanged.Broadcast(NewState ? Comp->GetOwner() : nullptr);
 }
 
 void PEditorGame::OnKeyDown(SInputEvent* Event)
@@ -173,12 +172,6 @@ void PEditorGame::UpdateSelection(PActor* ClickedActor)
 	// Add the clicked actor to the selection queue. The queue will be processed within
 	// PEditorGame::PostTick().
 	mSelectionQueue.Add(ClickedActor);
-
-	// Update the selection panel to construct widgets for each parameter
-	for (auto& [Name, Param] : ClickedActor->GetAllParameters())
-	{
-		LogInfo("{}: {}", Name.c_str(), Param->ToString().c_str());
-	}
 }
 
 void PEditorGame::OnActorClicked(PActor* ClickedActor)

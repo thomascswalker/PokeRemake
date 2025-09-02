@@ -1,11 +1,10 @@
 #include "World.h"
 
+#include "../Interface/Game/GameHUD.h"
 #include "Actors/Character.h"
 #include "Core/Logging.h"
 #include "Engine/Input.h"
 #include "Interface/Layout.h"
-
-#include "../Interface/Game/GameHUD.h"
 
 void PWorld::Start()
 {
@@ -33,7 +32,7 @@ void PWorld::Tick(float DeltaTime)
 	{
 		// Resize the main root widget to fit the screen size
 		auto ScreenSize = R->GetScreenSize();
-		mHUD->SetFixedSize({ScreenSize.X, ScreenSize.Y});
+		mHUD->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
 
 		// Recursively construct the layout of all widgets
 		Layout::Layout(mHUD.get());
@@ -58,6 +57,17 @@ void PWorld::PostTick()
 		DestroyActorInternal(Actor);
 	}
 	mDestroyableActors.clear();
+
+	for (auto Widget : mDestroyableWidgets)
+	{
+		DestroyWidgetInternal(Widget);
+	}
+	mDestroyableWidgets.clear();
+}
+
+void PWorld::DestroyObject(PObject* Object)
+{
+	mDestroyableObjects.emplace_back(Object);
 }
 
 void PWorld::DestroyActor(PActor* Actor)
@@ -124,6 +134,24 @@ void PWorld::DestroyComponentInternal(const PComponent* Component)
 
 	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
 }
+void PWorld::DestroyWidgetInternal(PWidget* Widget)
+{
+	std::shared_ptr<PWidget> SharedWidget;
+	for (auto Ptr : mWidgets)
+	{
+		if (Ptr.get() == Widget)
+		{
+			SharedWidget = Ptr;
+			break;
+		}
+	}
+	if (!SharedWidget)
+	{
+		return;
+	}
+
+	mWidgets.erase(std::ranges::find(mWidgets, SharedWidget));
+}
 
 std::vector<PActor*> PWorld::GetActors() const
 {
@@ -154,8 +182,7 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 		}
 	}
 
-	auto DepthSort = [](const IDrawable* A, const IDrawable* B)
-	{
+	auto DepthSort = [](const IDrawable* A, const IDrawable* B) {
 		return A->GetDepth() < B->GetDepth();
 	};
 
@@ -181,6 +208,15 @@ std::vector<PWidget*> PWorld::GetWidgets() const
 		Widgets.push_back(Widget.get());
 	}
 	return Widgets;
+}
+
+void PWorld::DestroyWidget(PWidget* Widget)
+{
+	mDestroyableWidgets.emplace_back(Widget);
+	for (auto Child : Widget->GetChildren())
+	{
+		DestroyWidget(Child);
+	}
 }
 
 PPlayerCharacter* PWorld::GetPlayerCharacter() const

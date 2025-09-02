@@ -198,6 +198,7 @@ public:
 
 	virtual void AddChild(PWidget* Child);
 	virtual void RemoveChild(PWidget* Child);
+	virtual void RemoveAllChildren();
 
 	std::vector<PWidget*> GetChildren() const
 	{

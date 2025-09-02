@@ -4,6 +4,8 @@
 
 #include "EditorData.h"
 
+DECLARE_MULTICAST_DELEGATE(DSelectionChanged, const PActor*);
+
 class PEditorGame : public PGame
 {
 	EBrushSize mBrushSize = BS_Small;
@@ -15,6 +17,8 @@ class PEditorGame : public PGame
 	TArray<PActor*> mSelectionQueue;
 
 public:
+	DSelectionChanged SelectionChanged;
+
 	// Init
 	PEditorGame();
 	bool PreStart() override;
