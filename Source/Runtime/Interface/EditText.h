@@ -111,6 +111,7 @@ public:
 		Event->Consume();
 	}
 
+#if _EDITOR
 	void Bind(PParameter* Param) override
 	{
 		// Set the parameter reference
@@ -122,4 +123,5 @@ public:
 		// Bind events from this widget to set the parameter value
 		OnTextChange.AddRaw(Param, &PParameter::Set<std::string>);
 	}
+#endif
 };

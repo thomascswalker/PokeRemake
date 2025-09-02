@@ -22,8 +22,11 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
+#if _EDITOR
 		std::string Text = Param == nullptr ? mText : Param->Get<std::string>();
-
+#else
+		std::string Text = mText;
+#endif
 		Renderer->SetDrawColor(mColor);
 		float	 HalfHeight = H / 2.0f;
 		float	 HalfWidth = W / 2.0f;

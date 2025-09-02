@@ -371,14 +371,6 @@ public:
 		mMaxSize.Y = H;
 	}
 
-	// Param blocks
-
-protected:
-	PParameter* Param = nullptr;
-
-public:
-	virtual void Bind(PParameter* NewParam) { Param = NewParam; }
-
 	// Events
 
 	bool GetMouseOver() const
@@ -407,4 +399,14 @@ public:
 	{
 		return static_cast<T*>(mSender);
 	}
+
+	// Param blocks
+
+#if _EDITOR
+protected:
+	PParameter* Param = nullptr;
+
+public:
+	virtual void Bind(PParameter* NewParam) { Param = NewParam; }
+#endif
 };
