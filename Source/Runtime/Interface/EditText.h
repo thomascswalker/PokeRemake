@@ -73,6 +73,7 @@ public:
         case IET_MouseUp:
             {
                 HandleClick(Event->MousePosition);
+                Event->Consume();
                 break;
             }
         default:
@@ -85,22 +86,20 @@ public:
     void OnKeyDown(SInputEvent* Event) override
     {
         auto Key = Event->KeyDown;
-        LogInfo("Key: {}, {}", Key, mFocused ? "true" : "false");
         if (!mFocused && isascii(Key))
         {
             return;
         }
         if (Key == SDLK_DELETE || Key == SDLK_BACKSPACE)
         {
-            LogInfo("Removing char");
             mCursorPos = std::max(0, mCursorPos - 1);
-            mText->RemoveChar(mCursorPos);
+            mText->Remove(mCursorPos);
         }
         else
         {
-            LogInfo("Adding char: {}", static_cast<char>(Key));
-            mText->AddChar(Key, mCursorPos);
+            mText->Add(Key, mCursorPos);
             mCursorPos++;
         }
+        Event->Consume();
     }
 };

@@ -70,7 +70,7 @@ public:
 		mText = Text;
 	}
 
-	void AddChar(char C, size_t Pos = std::string::npos)
+	void Add(char C, size_t Pos = std::string::npos)
 	{
 		if (Pos == std::string::npos)
 		{
@@ -80,10 +80,9 @@ public:
 		{
 			mText.insert(Pos, 1, C);
 		}
-		LogInfo("{}", mText.c_str());
 	}
 
-	void RemoveChar(size_t Pos = std::string::npos)
+	void Remove(size_t Pos = std::string::npos)
 	{
 		if (mText.empty())
 		{
@@ -97,7 +96,6 @@ public:
 		{
 			mText.erase(Pos, 1);
 		}
-		LogInfo("{}", mText.c_str());
 	}
 
 	PColor GetColor() const

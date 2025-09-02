@@ -1,17 +1,19 @@
 // ReSharper disable CppDFAUnreachableCode
+
 #include "EditorGame.h"
 
 #include "Actors/ActorManager.h"
-#include "EditorMode.h"
 #include "Actors/EditorView.h"
 #include "Application/Application.h"
 #include "Core/CoreFwd.h"
-#include "Engine/Input.h"
-#include "Engine/MapManager.h"
 #include "Engine/Actors/Portal.h"
 #include "Engine/Actors/SceneryActor.h"
+#include "Engine/Input.h"
+#include "Engine/MapManager.h"
 #include "Interface/Group.h"
 #include "Interface/Spinner.h"
+
+#include "EditorMode.h"
 
 PEditorGame* GetEditorGame()
 {
@@ -44,9 +46,6 @@ void PEditorGame::Start()
 {
 	PGame::Start();
 
-	// Default to selection context
-	SetInputContext(IC_Select);
-
 	// Bind the world actor clicked event to handle selection within the editor.
 	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 }
@@ -61,7 +60,7 @@ void PEditorGame::PostTick()
 	}
 	if (mSelectionQueue.Size() == 1)
 	{
-		auto Comp     = mSelectionQueue[0]->GetSelectionComponent();
+		auto Comp = mSelectionQueue[0]->GetSelectionComponent();
 		bool NewState = !Comp->GetSelected();
 		DeselectAll();
 		Comp->SetSelected(NewState);
@@ -73,7 +72,7 @@ void PEditorGame::PostTick()
 	auto TempQueue = mSelectionQueue.Sorted(DepthSort);
 
 	// Store the opposite selection state of the first actor.
-	auto Comp     = TempQueue[0]->GetSelectionComponent();
+	auto Comp = TempQueue[0]->GetSelectionComponent();
 	bool NewState = !Comp->GetSelected();
 
 	// Deselect all actors, then set the new state of the first actor.
@@ -94,23 +93,24 @@ void PEditorGame::OnKeyDown(SInputEvent* Event)
 
 	switch (Event->KeyDown)
 	{
-	case SDLK_LSHIFT:
-		{
-			if (IsInputContext(IC_Tile))
+		case SDLK_LSHIFT:
 			{
-				mBrushMode = BM_Copy;
+				if (IsInputContext(IC_Tile))
+				{
+					mBrushMode = BM_Copy;
+				}
+				break;
 			}
-			break;
-		}
-	case SDLK_LCTRL:
-		{
-			if (IsInputContext(IC_Tile))
+		case SDLK_LCTRL:
 			{
-				mBrushMode = BM_Fill;
+				if (IsInputContext(IC_Tile))
+				{
+					mBrushMode = BM_Fill;
+				}
+				break;
 			}
+		default:
 			break;
-		}
-	default: break;
 	}
 }
 
@@ -124,46 +124,47 @@ void PEditorGame::OnKeyUp(SInputEvent* Event)
 
 	switch (Event->KeyUp)
 	{
-	case SDLK_DELETE:
-		{
-			if (IsInputContext(IC_Select))
+		case SDLK_DELETE:
 			{
-				for (auto Actor : GetSelectedActors())
+				if (IsInputContext(IC_Select))
 				{
-					mWorld->DestroyActor(Actor);
+					for (auto Actor : GetSelectedActors())
+					{
+						mWorld->DestroyActor(Actor);
+					}
 				}
-			}
-			Event->Consume();
-		}
-		break;
-	case SDLK_UP:
-	case SDLK_DOWN:
-		{
-			if (IsInputContext(IC_Tile))
-			{
-				mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
+				Event->Consume();
 			}
 			break;
-		}
-	case SDLK_LSHIFT:
-	case SDLK_LCTRL:
-		{
-			if (IsInputContext(IC_Tile))
+		case SDLK_UP:
+		case SDLK_DOWN:
 			{
-				mBrushMode = BM_Default;
+				if (IsInputContext(IC_Tile))
+				{
+					mBrushSize = Event->KeyUp == SDLK_UP ? BS_Large : BS_Small;
+				}
+				break;
 			}
-			break;
-		}
-	case SDLK_F:
-		{
-			if (mActiveCameraView)
+		case SDLK_LSHIFT:
+		case SDLK_LCTRL:
 			{
-				mActiveCameraView->GetComponent()->GetOwner()->SetPosition2D({0, 0});
-				mActiveCameraView->SetZoom(1.0f);
+				if (IsInputContext(IC_Tile))
+				{
+					mBrushMode = BM_Default;
+				}
+				break;
 			}
+		case SDLK_F:
+			{
+				if (!IsInputContext(IC_Text) && mActiveCameraView != nullptr)
+				{
+					mActiveCameraView->GetComponent()->GetOwner()->SetPosition2D({ 0, 0 });
+					mActiveCameraView->SetZoom(1.0f);
+				}
+				break;
+			}
+		default:
 			break;
-		}
-	default: break;
 	}
 }
 
@@ -198,15 +199,17 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 
 		switch (mBrushMode)
 		{
-		case BM_Default:
-		case BM_Copy: PaintTile(GameMap->GetTileUnderMouse());
-			break;
-		case BM_Fill: for (auto Tile : GameMap->GetTiles())
-			{
-				Tile->Index   = mCurrentTilesetItem->Index;
-				Tile->Tileset = mCurrentTileset;
-			}
-			break;
+			case BM_Default:
+			case BM_Copy:
+				PaintTile(GameMap->GetTileUnderMouse());
+				break;
+			case BM_Fill:
+				for (auto Tile : GameMap->GetTiles())
+				{
+					Tile->Index = mCurrentTilesetItem->Index;
+					Tile->Tileset = mCurrentTileset;
+				}
+				break;
 		}
 	}
 	else if (IsInputContext(IC_Actor))
@@ -217,9 +220,8 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 			return;
 		}
 		auto Position = GameMap->GetTileUnderMouse()->GetPosition();
-		auto Actors   = mWorld->GetActorsAtPosition(Position);
-		Actors        = Containers::Filter(Actors, [](PActor* Actor)
-		{
+		auto Actors = mWorld->GetActorsAtPosition(Position);
+		Actors = Containers::Filter(Actors, [](PActor* Actor) {
 			return dynamic_cast<PGameMap*>(Actor) == nullptr;
 		});
 		if (Actors.size() == 0)
@@ -287,7 +289,7 @@ void PEditorGame::PaintTile(STile* Tile)
 
 	// Set hit tile
 	Tile->Tileset = mCurrentTileset;
-	Tile->Index   = mCurrentTilesetItem->Index;
+	Tile->Index = mCurrentTilesetItem->Index;
 
 	// Set adjacent tiles
 	if (mBrushSize == BS_Large)
@@ -298,21 +300,21 @@ void PEditorGame::PaintTile(STile* Tile)
 		if (auto Tile2 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
 		{
 			Tile2->Tileset = mCurrentTileset;
-			Tile2->Index   = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
+			Tile2->Index = mBrushMode == BM_Copy ? mCurrentTilesetItem->Index + 1 : mCurrentTilesetItem->Index;
 		}
 		if (auto Tile3 = GameMap->GetTileAtPosition(MousePosition + FVector2(0, TILE_SIZE)))
 		{
 			Tile3->Tileset = mCurrentTileset;
-			Tile3->Index   = mBrushMode == BM_Copy
-				               ? mCurrentTilesetItem->Index + Tile->Tileset->Width
-				               : mCurrentTilesetItem->Index;
+			Tile3->Index = mBrushMode == BM_Copy
+							   ? mCurrentTilesetItem->Index + Tile->Tileset->Width
+							   : mCurrentTilesetItem->Index;
 		}
 		if (auto Tile4 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, TILE_SIZE)))
 		{
 			Tile4->Tileset = mCurrentTileset;
-			Tile4->Index   = mBrushMode == BM_Copy
-				               ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1
-				               : mCurrentTilesetItem->Index;
+			Tile4->Index = mBrushMode == BM_Copy
+							   ? mCurrentTilesetItem->Index + Tile->Tileset->Width + 1
+							   : mCurrentTilesetItem->Index;
 		}
 	}
 }
