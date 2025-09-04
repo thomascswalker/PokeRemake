@@ -187,6 +187,15 @@ public:
 		return mChildren.size();
 	}
 
+	std::vector<PWidget*> GetGrowable(ELayoutMode Direction) const
+	{
+		return Containers::Filter(
+			mChildren,
+			[Direction](const PWidget* Child) {
+				return Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow;
+			});
+	}
+
 	// Interaction
 
 	bool GetFocused() const

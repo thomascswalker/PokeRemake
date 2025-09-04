@@ -14,7 +14,6 @@ namespace Layout
 			return;
 		}
 		const auto LayoutMode = Parent->GetLayoutMode();
-		float	   ChildGap = Parent->Padding.Left;
 		auto	   ChildCount = Parent->GetChildCount();
 
 		// Track the remaining width and height we can grow to within this widget
@@ -49,11 +48,11 @@ namespace Layout
 		// Remove width/height for the gap between each child
 		if (LayoutMode == LM_Horizontal)
 		{
-			RemainingWidth -= (ChildCount - 1) * ChildGap;
+			RemainingWidth -= (ChildCount - 1) * Parent->Padding.Left;
 		}
 		else
 		{
-			RemainingHeight -= (ChildCount - 1) * ChildGap;
+			RemainingHeight -= (ChildCount - 1) * Parent->Padding.Top;
 		}
 
 		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Parent->GetGridCount()) : 0;
