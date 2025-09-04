@@ -5,7 +5,7 @@
 PWidget*						 PWidget::mSender = nullptr;
 std::shared_ptr<CSS::Stylesheet> PWidget::sStylesheet = nullptr;
 
-PWidget::PWidget() : mPadding(5.0f)
+PWidget::PWidget()
 {
 	GenerateInternalName();
 }

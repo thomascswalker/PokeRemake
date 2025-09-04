@@ -14,7 +14,7 @@ public:
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-		mPadding = { 0 };
+		Padding = { 0 };
 
 		for (int32_t Index = 0; Index < N; Index++)
 		{

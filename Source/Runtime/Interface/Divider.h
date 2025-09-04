@@ -8,7 +8,7 @@ class PDivider : public PWidget
 public:
     PDivider()
     {
-        mPadding = {0};
+        Padding = {0};
         switch (Direction)
         {
         case DR_Horizontal:

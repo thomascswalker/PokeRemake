@@ -61,7 +61,7 @@ void PEditorHUD::SetupInterface()
 	// Vertical layout to force the file menu to the top
 	mLayoutMode = LM_Vertical;
 	// Zero padding to allow file menu to expand to the border
-	mPadding = { 0 };
+	Padding = { 0 };
 
 	// File Menu
 	auto MenuBar = ConstructWidget<PMenuBar>();
@@ -86,7 +86,6 @@ void PEditorHUD::SetupInterface()
 
 	// Main panel
 	MainPanel = World->ConstructWidget<PWidget>();
-	MainPanel->mPadding = { 5 };
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
@@ -147,7 +146,7 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
 		auto Button = GridItem->GetWidget<PButton>();
-		Button->mPadding = { 0 };
+		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
@@ -169,7 +168,7 @@ PGridView* PEditorHUD::ConstructActorView()
 		return nullptr;
 	}
 	PGridView* GridView = World->ConstructWidget<PGridView>();
-	GridView->mPadding = { 5 };
+	GridView->Padding = { 5 };
 	GridView->SetGridCount(1);
 
 	for (auto& ActorItem : gPlaceableActors)
@@ -193,7 +192,7 @@ PGridView* PEditorHUD::ConstructActorView()
 PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 {
 	auto SelectionView = ConstructWidget<PWidget>();
-	SelectionView->mPadding = { 0 };
+	SelectionView->Padding = { 0 };
 	SelectionView->SetLayoutMode(LM_Vertical);
 
 	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());

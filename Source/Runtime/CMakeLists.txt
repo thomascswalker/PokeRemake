@@ -96,6 +96,7 @@ set(SOURCES
         Core/CSS.h
         Engine/ParamBlock.h
         Interface/EditText.h
+        Interface/Padding.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

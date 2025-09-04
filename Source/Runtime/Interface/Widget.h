@@ -1,6 +1,5 @@
 #pragma once
 
-#include <initializer_list>
 #include <limits>
 
 #include "Core/Containers.h"
@@ -9,6 +8,7 @@
 #include "Engine/ParamBlock.h"
 #include "Renderer/Renderer.h"
 
+#include "Padding.h"
 #include "Style.h"
 
 #define WIDGET_TEXT	 255, 255, 255, 255
@@ -41,32 +41,6 @@ enum EWidgetDepth
 	WD_Floating,
 	WD_Default
 };
-
-template <typename T>
-struct TPadding
-{
-	T Left;
-	T Bottom;
-	T Right;
-	T Top;
-
-	explicit TPadding(T Value)
-		: Left(Value), Bottom(Value), Right(Value), Top(Value) {}
-
-	explicit TPadding(T InLeft, T InBottom, T InRight, T InTop)
-		: Left(InLeft), Bottom(InBottom), Right(InRight), Top(InTop) {}
-
-	TPadding(std::initializer_list<T> Values)
-	{
-		T* P = &Left;
-		for (auto it = Values.begin(); it != Values.end(); ++it)
-		{
-			*P++ = *it;
-		}
-	}
-};
-
-using FPadding = TPadding<float>;
 
 class PWidget : public PObject, public IInputHandler
 {
@@ -103,12 +77,13 @@ protected:
 	SStyle									mStyle;
 
 public:
-	float X = 0.0f;
-	float Y = 0.0f;
-	float W = 0.0f;
-	float H = 0.0f;
+	float	X = 0.0f;
+	float	Y = 0.0f;
+	float	W = 0.0f;
+	float	H = 0.0f;
+	FBounds Padding;
+	FBounds Margin;
 
-	FPadding	mPadding;
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 
