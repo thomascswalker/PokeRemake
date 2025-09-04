@@ -6,6 +6,10 @@
 
 namespace Layout
 {
+	inline void SizeGrowDirection(const PWidget* Child)
+	{
+	}
+
 	// Grow this widget's children to fit the space of this widget
 	inline void SizeGrowChildren(const PWidget* Parent)
 	{

@@ -60,8 +60,6 @@ void PEditorHUD::SetupInterface()
 {
 	// Vertical layout to force the file menu to the top
 	mLayoutMode = LM_Vertical;
-	// Zero padding to allow file menu to expand to the border
-	Padding = { 0 };
 
 	// File Menu
 	auto MenuBar = ConstructWidget<PMenuBar>();
@@ -89,11 +87,12 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
-	MainPanel->SetVisible(false);
+	MainPanel->SetVisible(true);
 
 	// Select
 	SelectPanel = World->ConstructWidget<PPanel>();
 	SelectPanel->SetLayoutMode(LM_Vertical);
+	MainPanel->AddChild(SelectPanel);
 
 	// Tiles
 
@@ -330,7 +329,6 @@ void PEditorHUD::OnSelectButtonClicked()
 	MainPanel->AddChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);
 	MainPanel->RemoveChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnTilesButtonClicked()
@@ -343,7 +341,6 @@ void PEditorHUD::OnTilesButtonClicked()
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->AddChild(TilePanel);
 	MainPanel->RemoveChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnActorsButtonClicked()
@@ -356,7 +353,6 @@ void PEditorHUD::OnActorsButtonClicked()
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);
 	MainPanel->AddChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnExitButtonClicked()

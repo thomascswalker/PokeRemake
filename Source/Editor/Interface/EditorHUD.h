@@ -17,12 +17,8 @@ public:
 	PGridView* ConstructActorView();
 	PWidget*   ConstructSelectionView(const PActor* Actor);
 
-	void OnSizeXChanged(float Value);
-
-	void OnSizeYChanged(float Value);
-
+	// Menu bar
 	void OnNewButtonClicked();
-
 	void OnCreateButtonClicked();
 	void OnSaveButtonClicked();
 	void OnLoadButtonClicked();
@@ -30,6 +26,9 @@ public:
 	void OnTilesButtonClicked();
 	void OnActorsButtonClicked();
 	void OnExitButtonClicked();
+
+	void OnSizeXChanged(float Value);
+	void OnSizeYChanged(float Value);
 
 	void OnSelectionChange(const PActor* Actor);
 	void OnTilesetButtonChecked(bool State);

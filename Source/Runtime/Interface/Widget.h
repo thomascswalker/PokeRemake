@@ -192,8 +192,14 @@ public:
 		return Containers::Filter(
 			mChildren,
 			[Direction](const PWidget* Child) {
-				return Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow;
+				return (Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow)
+					   && Child->GetVisible();
 			});
+	}
+
+	bool IsGrowable(ELayoutMode Direction) const
+	{
+		return Direction == LM_Horizontal ? mResizeModeW == RM_Grow : mResizeModeH == RM_Grow;
 	}
 
 	// Interaction
