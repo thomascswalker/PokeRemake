@@ -24,7 +24,7 @@ static PWidget*							 MainPanel = nullptr;
 static PPanel*							 SelectPanel = nullptr;
 static PPanel*							 TilePanel = nullptr;
 static PPanel*							 ActorPanel = nullptr;
-static PPanel*							 SelectionView = nullptr;
+static PWidget*							 SelectionView = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
 static PButtonGroup*					 TilesetViewButtonGroup = nullptr;
 static PButtonGroup*					 ActorViewButtonGroup = nullptr;
@@ -190,9 +190,10 @@ PGridView* PEditorHUD::ConstructActorView()
 	return GridView;
 }
 
-PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
+PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 {
-	auto SelectionView = ConstructWidget<PPanel>();
+	auto SelectionView = ConstructWidget<PWidget>();
+	SelectionView->mPadding = { 0 };
 	SelectionView->SetLayoutMode(LM_Vertical);
 
 	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
@@ -214,7 +215,7 @@ PPanel* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		ParamLabel->SetFixedWidth(75);
 
 		// Right-hand widget
-		ParamRow->AddChild(ParamLabel);
+		// ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
 			case PT_String:
@@ -322,6 +323,10 @@ void PEditorHUD::OnLoadButtonClicked()
 
 void PEditorHUD::OnSelectButtonClicked()
 {
+	if (IsInputContext(IC_Select))
+	{
+		return;
+	}
 	SetInputContext(IC_Select);
 	MainPanel->AddChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);
@@ -331,6 +336,10 @@ void PEditorHUD::OnSelectButtonClicked()
 
 void PEditorHUD::OnTilesButtonClicked()
 {
+	if (IsInputContext(IC_Tile))
+	{
+		return;
+	}
 	SetInputContext(IC_Tile);
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->AddChild(TilePanel);
@@ -340,6 +349,10 @@ void PEditorHUD::OnTilesButtonClicked()
 
 void PEditorHUD::OnActorsButtonClicked()
 {
+	if (IsInputContext(IC_Actor))
+	{
+		return;
+	}
 	SetInputContext(IC_Actor);
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);

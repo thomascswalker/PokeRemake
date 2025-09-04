@@ -15,7 +15,7 @@ public:
 	void	   SetupInterface();
 	PGridView* ConstructTilesetView(STileset* Tileset);
 	PGridView* ConstructActorView();
-	PPanel*	   ConstructSelectionView(const PActor* Actor);
+	PWidget*   ConstructSelectionView(const PActor* Actor);
 
 	void OnSizeXChanged(float Value);
 

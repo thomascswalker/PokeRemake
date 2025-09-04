@@ -16,12 +16,18 @@ namespace Layout
 		}
 		const auto LayoutMode = Widget->GetLayoutMode();
 		float	   ChildGap = Widget->mPadding.Left;
-		float	   RemainingWidth = Widget->W;
-		float	   RemainingHeight = Widget->H;
+		auto	   ChildCount = Widget->GetChildCount();
 
+		// Track the remaining width and height we can grow to within this widget
+		float RemainingWidth = Widget->W;
+		float RemainingHeight = Widget->H;
+
+		// Remove width and height with the widget's padding
 		RemainingWidth -= Widget->mPadding.Left + Widget->mPadding.Right;
 		RemainingHeight -= Widget->mPadding.Top + Widget->mPadding.Bottom;
 
+		// Remove width/height (depending on the layout mode) for each
+		// child within this widget (as long as it's visible).
 		for (auto Child : Widget->GetChildren())
 		{
 			if (!Child->GetVisible())
@@ -40,18 +46,20 @@ namespace Layout
 					break;
 			}
 		}
-		if (LayoutMode == LM_Horizontal)
-		{
-			RemainingWidth -= (Widget->GetChildCount() - 1) * ChildGap;
-		}
-		else
-		{
-			RemainingHeight -= (Widget->GetChildCount() - 1) * ChildGap;
-		}
 
-		const int	GridCount = Widget->GetGridCount();
+		// // Remove width/height for the gap between each child
+		// if (LayoutMode == LM_Horizontal)
+		// {
+		// 	RemainingWidth -= (ChildCount - 1) * ChildGap;
+		// }
+		// else
+		// {
+		// 	RemainingHeight -= (ChildCount - 1) * ChildGap;
+		// }
+
 		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Widget->GetGridCount()) : 0;
 
+		// Grow the children to fit the remaining width/height
 		for (auto Child : Widget->GetChildren())
 		{
 			if (!Child->GetVisible())
@@ -67,7 +75,7 @@ namespace Layout
 					}
 					if (Child->GetResizeModeH() == RM_Grow)
 					{
-						Child->H += (RemainingHeight - Child->H);
+						Child->H += RemainingHeight - Child->H;
 					}
 					break;
 				case LM_Vertical:
@@ -77,7 +85,7 @@ namespace Layout
 					}
 					if (Child->GetResizeModeW() == RM_Grow)
 					{
-						Child->W += (RemainingWidth - Child->W);
+						Child->W += RemainingWidth - Child->W;
 					}
 					break;
 				case LM_Grid:
