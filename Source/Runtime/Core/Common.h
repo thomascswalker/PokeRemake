@@ -14,3 +14,10 @@ enum EOrientation
 	OR_West  = 3,
 	OR_Same  = 4
 };
+
+enum EAlignment
+{
+	AL_Left,
+	AL_Center,
+	AL_Right,
+};

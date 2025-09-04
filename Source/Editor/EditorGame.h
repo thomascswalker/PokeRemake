@@ -1,20 +1,24 @@
 #pragma once
 
+#include "Engine/Game.h"
+
 #include "EditorData.h"
 
-#include "Engine/Game.h"
+DECLARE_MULTICAST_DELEGATE(DSelectionChanged, const PActor*);
 
 class PEditorGame : public PGame
 {
 	EBrushSize mBrushSize = BS_Small;
 	EBrushMode mBrushMode = BM_Default;
 
-	STileItem* mCurrentTilesetItem = nullptr;
-	SActorItem* mCurrentActorItem  = nullptr;
-	STileset* mCurrentTileset      = nullptr;
+	STileItem*		mCurrentTilesetItem = nullptr;
+	SActorItem*		mCurrentActorItem = nullptr;
+	STileset*		mCurrentTileset = nullptr;
 	TArray<PActor*> mSelectionQueue;
 
 public:
+	DSelectionChanged SelectionChanged;
+
 	// Init
 	PEditorGame();
 	bool PreStart() override;
@@ -61,8 +65,8 @@ public:
 	void UpdateSelection(PActor* ClickedActor);
 	void OnActorClicked(PActor* ClickedActor);
 
-	void SelectAll();
-	void DeselectAll();
+	void			SelectAll();
+	void			DeselectAll();
 	TArray<PActor*> GetSelectedActors();
 
 	void PaintTile(STile* Tile);

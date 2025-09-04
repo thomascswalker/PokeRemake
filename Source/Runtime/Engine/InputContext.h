@@ -13,6 +13,8 @@ enum EInputContext
     IC_Select = 100,
     IC_Tile,
     IC_Actor,
+    // Widgets
+    IC_Text = 200,
 };
 
 struct SInputContext
@@ -28,3 +30,4 @@ static SInputContext DefaultInputContext{IC_Default, {}, {}, true};
 void SetInputContext(EInputContext Type);
 SInputContext* GetInputContext();
 bool IsInputContext(EInputContext Type);
+void RestoreInputContext();

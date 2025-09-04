@@ -4,13 +4,18 @@
 #include "Core/Json.h"
 #include "Core/Meta.h"
 #include "Core/Vector.h"
+#include "Engine/Components/Component.h"
 #include "Engine/Input.h"
 #include "Engine/Object.h"
 #include "Engine/Sprite.h"
 #include "Interface/Layout.h"
 #include "Renderer/Drawable.h"
+
+#if _EDITOR
+#include "Engine/ParamBlock.h"
+
 #include "Selectable.h"
-#include "Engine/Components/Component.h"
+#endif
 
 class PActor;
 class PComponent;
@@ -20,22 +25,23 @@ DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
 struct SActorItem
 {
 	std::string Name;
-	JSON Data;
+	JSON		Data;
 };
 
 class PActor :
-	public PObject,
 #if _EDITOR
 	public ISelectable,
+	public IParamBlock,
 #endif
+	public PObject,
 	public IInputHandler
 {
 protected:
-	PActor* mParent = nullptr;
-	FVector3 mPosition;
-	FVector2 mSize;
-	bool mBlocking = true;
-	std::vector<PActor*> mChildren;
+	PActor*					 mParent = nullptr;
+	FVector3				 mPosition;
+	FVector2				 mSize;
+	bool					 mBlocking = true;
+	std::vector<PActor*>	 mChildren;
 	std::vector<PComponent*> mComponents;
 
 	PCollisionComponent* mCollisionComponent = nullptr;
@@ -44,21 +50,21 @@ protected:
 
 public:
 	FVector2 mMousePosition;
-	bool mMouseOver = false;
-	bool mMouseDown = false;
+	bool	 mMouseOver = false;
+	bool	 mMouseDown = false;
 
 	DHoverBegin HoverBegin;
-	DHoverEnd HoverEnd;
-	DClicked Clicked;
+	DHoverEnd	HoverEnd;
+	DClicked	Clicked;
 
 	PActor() = default;
 
 	PActor(const PActor& other)
-		: PObject{other}, mPosition{other.mPosition}, mSize{other.mSize} {}
+		: PObject{ other }, mPosition{ other.mPosition }, mSize{ other.mSize } {}
 
 	PActor(PActor&& other) noexcept
-		: PObject{std::move(other)},
-		  mPosition{std::move(other.mPosition)}, mSize{std::move(other.mSize)} {}
+		: PObject{ std::move(other) },
+		  mPosition{ std::move(other.mPosition) }, mSize{ std::move(other.mSize) } {}
 
 	PActor& operator=(const PActor& other)
 	{
@@ -66,7 +72,7 @@ public:
 			return *this;
 		PObject::operator=(other);
 		mPosition = other.mPosition;
-		mSize     = other.mSize;
+		mSize = other.mSize;
 		return *this;
 	}
 
@@ -76,7 +82,7 @@ public:
 			return *this;
 		PObject::operator=(std::move(other));
 		mPosition = std::move(other.mPosition);
-		mSize     = std::move(other.mSize);
+		mSize = std::move(other.mSize);
 		return *this;
 	}
 
@@ -149,7 +155,7 @@ public:
 	virtual FRect GetWorldBounds() const
 	{
 		auto Local = GetLocalBounds();
-		return {mPosition.X, mPosition.Y, Local.W, Local.H};
+		return { mPosition.X, mPosition.Y, Local.W, Local.H };
 	}
 
 	virtual bool IsMouseOver() const
@@ -159,7 +165,7 @@ public:
 
 	virtual FVector2 GetPosition2D() const
 	{
-		return {mPosition.X, mPosition.Y};
+		return { mPosition.X, mPosition.Y };
 	}
 
 	virtual FVector2 GetWorldPosition2D() const
@@ -168,7 +174,7 @@ public:
 		{
 			return mParent->GetWorldPosition2D() + FVector2(mPosition.X, mPosition.Y);
 		}
-		return {mPosition.X, mPosition.Y};
+		return { mPosition.X, mPosition.Y };
 	}
 
 	void SetPosition2D(const FVector2& Position)
@@ -191,7 +197,7 @@ public:
 	FVector2 GetCenter2D() const
 	{
 		auto Bounds = GetWorldBounds();
-		return {Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f)};
+		return { Bounds.X + (Bounds.W / 2.0f), Bounds.Y + (Bounds.H / 2.0f) };
 	}
 
 	bool operator<(const PActor& Other) const
@@ -211,8 +217,8 @@ public:
 		return mBlocking;
 	}
 
-	JSON Serialize() const override;
-	void Deserialize(const JSON& Data) override;
+	JSON		 Serialize() const override;
+	void		 Deserialize(const JSON& Data) override;
 	virtual void BindComponent(PComponent* Component) {}
 
 	// Overlap
@@ -242,6 +248,8 @@ protected:
 	PSelectionComponent* mSelectionComponent = nullptr;
 
 public:
+	void InitializeParameters() override;
+
 	PSelectionComponent* GetSelectionComponent() const override
 	{
 		return mSelectionComponent;
@@ -254,13 +262,21 @@ public:
 #endif
 };
 
-#define BEGIN_CONSTRUCT_ACTOR \
+#define BEGIN_CONSTRUCT_ACTOR                                                         \
 	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str()); \
-	auto ClassName   = Data.at("Class").get<std::string>();
+	auto ClassName = Data.at("Class").get<std::string>();
 
-#define CONSTRUCT_ACTOR(Class) if (ClassName == PREPEND(P, Class)) { if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) {NewActor->Deserialize(Data); return NewActor;} }
+#define CONSTRUCT_ACTOR(Class)                                         \
+	if (ClassName == PREPEND(P, Class))                                \
+	{                                                                  \
+		if (PCLASS(Class)* NewActor = ConstructActor<PCLASS(Class)>()) \
+		{                                                              \
+			NewActor->Deserialize(Data);                               \
+			return NewActor;                                           \
+		}                                                              \
+	}
 
 #define CONSTRUCT_EACH_ACTOR(...) FOR_EACH(CONSTRUCT_ACTOR, __VA_ARGS__)
 
-#define MAP_COMPONENT(Component) \
+#define MAP_COMPONENT(Component)                     \
 	m##Component = GetComponent<PCLASS(Component)>()

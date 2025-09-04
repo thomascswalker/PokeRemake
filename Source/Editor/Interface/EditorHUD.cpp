@@ -1,34 +1,37 @@
 // ReSharper disable CppDFANullDereference
 #include "EditorHUD.h"
 
-#include "ActorManager.h"
-#include "EditorGame.h"
-
+#include "Actors/ActorManager.h"
 #include "Application/Application.h"
-
 #include "Engine/Game.h"
 #include "Engine/MapManager.h"
 #include "Engine/World.h"
 #include "Interface/ButtonGroup.h"
-#include "Interface/Group.h"
+#include "Interface/EditText.h"
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
+#include "Interface/Spacer.h"
 #include "Interface/Spinner.h"
 
-static PWorld* World           = nullptr;
+#include "EditorGame.h"
+#include "MultiSpinner.h"
+
+static PWorld*		World = nullptr;
 static PEditorGame* EditorGame = nullptr;
 
-static PPanel* MainPanel  = nullptr;
-static PGroup* TileGroup  = nullptr;
-static PGroup* ActorGroup = nullptr;
+static PWidget*							 MainPanel = nullptr;
+static PPanel*							 SelectPanel = nullptr;
+static PPanel*							 TilePanel = nullptr;
+static PPanel*							 ActorPanel = nullptr;
+static PWidget*							 SelectionView = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
-static PButtonGroup* TilesetViewButtonGroup = nullptr;
-static PButtonGroup* ActorViewButtonGroup   = nullptr;
+static PButtonGroup*					 TilesetViewButtonGroup = nullptr;
+static PButtonGroup*					 ActorViewButtonGroup = nullptr;
 
-std::vector<SActorItem> gPlaceableActors{};
+std::vector<SActorItem>							 gPlaceableActors{};
 std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
-	{"JSON", "JSON"},
+	{ "JSON", "JSON" },
 };
 
 bool PEditorHUD::PreStart()
@@ -46,6 +49,10 @@ bool PEditorHUD::PreStart()
 
 	SetupInterface();
 
+	// Default edit menu
+	OnSelectButtonClicked();
+	EditorGame->SelectionChanged.AddRaw(this, &PEditorHUD::OnSelectionChange);
+
 	return true;
 }
 
@@ -54,42 +61,47 @@ void PEditorHUD::SetupInterface()
 	// Vertical layout to force the file menu to the top
 	mLayoutMode = LM_Vertical;
 	// Zero padding to allow file menu to expand to the border
-	mPadding = {0};
+	mPadding = { 0 };
 
 	// File Menu
 	auto MenuBar = ConstructWidget<PMenuBar>();
 	MenuBar->AddMenu("File",
-	                 {
-		                 {"New", this, &PEditorHUD::OnNewButtonClicked},
-		                 {"Load", this, &PEditorHUD::OnLoadButtonClicked},
-		                 {"Save", this, &PEditorHUD::OnSaveButtonClicked},
-		                 {},
-		                 {"Exit", this, &PEditorHUD::OnExitButtonClicked},
-	                 });
+					 {
+						 { "New", this, &PEditorHUD::OnNewButtonClicked },
+						 { "Load", this, &PEditorHUD::OnLoadButtonClicked },
+						 { "Save", this, &PEditorHUD::OnSaveButtonClicked },
+						 {},
+						 { "Exit", this, &PEditorHUD::OnExitButtonClicked },
+	 });
 	MenuBar->AddMenu("Edit",
-	                 {
-		                 {"Create", this, &PEditorHUD::OnCreateButtonClicked},
-		                 {},
-		                 {"Select", this, &PEditorHUD::OnSelectButtonClicked},
-		                 {"Tiles", this, &PEditorHUD::OnTilesButtonClicked},
-		                 {"Actors", this, &PEditorHUD::OnActorsButtonClicked},
-	                 });
+					 {
+						 { "Create", this, &PEditorHUD::OnCreateButtonClicked },
+						 {},
+						 { "Select", this, &PEditorHUD::OnSelectButtonClicked },
+						 { "Tiles", this, &PEditorHUD::OnTilesButtonClicked },
+						 { "Actors", this, &PEditorHUD::OnActorsButtonClicked },
+	 });
 
 	AddChild(MenuBar);
 
 	// Main panel
-	MainPanel           = World->ConstructWidget<PPanel>();
-	MainPanel->mPadding = {5};
+	MainPanel = World->ConstructWidget<PWidget>();
+	MainPanel->mPadding = { 5 };
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
 	MainPanel->SetVisible(false);
 
+	// Select
+	SelectPanel = World->ConstructWidget<PPanel>();
+	SelectPanel->SetLayoutMode(LM_Vertical);
+
 	// Tiles
-	TileGroup = World->ConstructWidget<PGroup>("Tiles");
-	TileGroup->SetLayoutMode(LM_Vertical);
+
+	TilePanel = World->ConstructWidget<PPanel>();
+	TilePanel->SetLayoutMode(LM_Vertical);
 	auto ScrollArea = World->ConstructWidget<PScrollArea>();
-	TileGroup->AddChild(ScrollArea);
+	TilePanel->AddChild(ScrollArea);
 	// Create a button group for all tiles across all tilesets
 	TilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
 	// Construct each widget for each tile in each tileset
@@ -99,12 +111,14 @@ void PEditorHUD::SetupInterface()
 		ScrollArea->AddChild(TilesetView);
 		TilesetViews[Tileset->Name] = TilesetView;
 	}
+
 	// Actors
 	ActorViewButtonGroup = ConstructWidget<PButtonGroup>();
-	ActorGroup           = World->ConstructWidget<PGroup>("Actors");
-	ActorGroup->SetLayoutMode(LM_Vertical);
+	ActorPanel = World->ConstructWidget<PPanel>();
+	ActorPanel->SetLayoutMode(LM_Vertical);
 	auto ActorView = ConstructActorView();
-	ActorGroup->AddChild(ActorView);
+	ActorPanel->AddChild(ActorView);
+
 	// Main panel
 
 	AddChild(MainPanel);
@@ -116,8 +130,8 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 	{
 		return nullptr;
 	}
-	const int ItemSize   = 20;
-	const int ViewWidth  = Tileset->Width * ItemSize;
+	const int ItemSize = 20;
+	const int ViewWidth = Tileset->Width * ItemSize;
 	const int ViewHeight = Tileset->Height * ItemSize;
 
 	PGridView* GridView = World->ConstructWidget<PGridView>();
@@ -131,9 +145,9 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 	for (auto& Item : Tileset->Tiles)
 	{
 		// Create the button item
-		auto GridItem    = GridView->AddItem<PButton>(TilesetTexture);
-		auto Button      = GridItem->GetWidget<PButton>();
-		Button->mPadding = {0};
+		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
+		auto Button = GridItem->GetWidget<PButton>();
+		Button->mPadding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
@@ -155,7 +169,7 @@ PGridView* PEditorHUD::ConstructActorView()
 		return nullptr;
 	}
 	PGridView* GridView = World->ConstructWidget<PGridView>();
-	GridView->mPadding  = {5};
+	GridView->mPadding = { 5 };
 	GridView->SetGridCount(1);
 
 	for (auto& ActorItem : gPlaceableActors)
@@ -163,7 +177,7 @@ PGridView* PEditorHUD::ConstructActorView()
 		const int ItemSize = 40;
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(ActorItem.Name);
-		auto Button   = GridItem->GetWidget<PButton>();
+		auto Button = GridItem->GetWidget<PButton>();
 		Button->SetResizeMode(RM_Grow, RM_Fixed);
 		Button->SetFixedHeight(ItemSize);
 		Button->SetCheckable(true);
@@ -174,6 +188,60 @@ PGridView* PEditorHUD::ConstructActorView()
 	}
 
 	return GridView;
+}
+
+PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
+{
+	auto SelectionView = ConstructWidget<PWidget>();
+	SelectionView->mPadding = { 0 };
+	SelectionView->SetLayoutMode(LM_Vertical);
+
+	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
+	Label->SetResizeModeH(RM_Fixed);
+	Label->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+	SelectionView->AddChild(Label);
+
+	for (auto [Name, Param] : Actor->GetAllParameters())
+	{
+		// Row
+		auto ParamRow = ConstructWidget<PWidget>();
+		ParamRow->SetResizeModeH(RM_Fixed);
+		ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+
+		// Left-hand label
+		auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
+		ParamLabel->SetAlignment(AL_Left);
+		ParamLabel->SetResizeModeW(RM_Fixed);
+		ParamLabel->SetFixedWidth(75);
+
+		// Right-hand widget
+		// ParamRow->AddChild(ParamLabel);
+		switch (Param->GetType())
+		{
+			case PT_String:
+				{
+					auto EditText = ConstructWidget<PEditText>();
+					EditText->Bind(Param);
+					ParamRow->AddChild(EditText);
+					break;
+				}
+			case PT_FVector3:
+				{
+					auto V3Spinner = ConstructWidget<PMultiSpinner<3>>();
+					V3Spinner->Bind(Param);
+					ParamRow->AddChild(V3Spinner);
+					break;
+				}
+			default:
+				continue;
+		}
+
+		// Add row
+		SelectionView->AddChild(ParamRow);
+	}
+
+	SelectionView->AddChild(ConstructWidget<PSpacer>());
+	return SelectionView;
 }
 
 void PEditorHUD::OnSizeXChanged(float Value)
@@ -195,15 +263,15 @@ void PEditorHUD::OnNewButtonClicked()
 void PEditorHUD::OnCreateButtonClicked()
 {
 	auto CurrentTileset = EditorGame->GetCurrentTileset();
-	int TileCountX      = mNewMapSizeX * 2;
-	int TileCountY      = mNewMapSizeY * 2;
+	int	 TileCountX = mNewMapSizeX * 2;
+	int	 TileCountY = mNewMapSizeY * 2;
 	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
 
 	JSON JsonData = {
-		{"MapName", "NewMap"},
-		{"Position", {0, 0}},
-		{"SizeX", TileCountX},
-		{"SizeY", TileCountY},
+		{  "MapName",	 "NewMap" },
+		{ "Position",	  { 0, 0 } },
+		{	  "SizeX", TileCountX },
+		{	  "SizeY", TileCountY },
 	};
 	for (int X = 0; X < TileCountX; ++X)
 	{
@@ -211,9 +279,9 @@ void PEditorHUD::OnCreateButtonClicked()
 		{
 			auto Tileset = CurrentTileset ? CurrentTileset->Name : TILESET_1;
 			JsonData["Tiles"].push_back({
-				{"Index", 0},
-				{"Tileset", Tileset}
-			});
+				{	  "Index",	   0 },
+				{ "Tileset", Tileset }
+			   });
 		}
 	}
 
@@ -255,25 +323,40 @@ void PEditorHUD::OnLoadButtonClicked()
 
 void PEditorHUD::OnSelectButtonClicked()
 {
+	if (IsInputContext(IC_Select))
+	{
+		return;
+	}
 	SetInputContext(IC_Select);
-	MainPanel->RemoveChild(TileGroup);
-	MainPanel->RemoveChild(ActorGroup);
-	MainPanel->SetVisible(false);
+	MainPanel->AddChild(SelectPanel);
+	MainPanel->RemoveChild(TilePanel);
+	MainPanel->RemoveChild(ActorPanel);
+	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnTilesButtonClicked()
 {
+	if (IsInputContext(IC_Tile))
+	{
+		return;
+	}
 	SetInputContext(IC_Tile);
-	MainPanel->RemoveChild(ActorGroup);
-	MainPanel->AddChild(TileGroup);
+	MainPanel->RemoveChild(SelectPanel);
+	MainPanel->AddChild(TilePanel);
+	MainPanel->RemoveChild(ActorPanel);
 	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnActorsButtonClicked()
 {
+	if (IsInputContext(IC_Actor))
+	{
+		return;
+	}
 	SetInputContext(IC_Actor);
-	MainPanel->RemoveChild(TileGroup);
-	MainPanel->AddChild(ActorGroup);
+	MainPanel->RemoveChild(SelectPanel);
+	MainPanel->RemoveChild(TilePanel);
+	MainPanel->AddChild(ActorPanel);
 	MainPanel->SetVisible(true);
 }
 
@@ -282,10 +365,24 @@ void PEditorHUD::OnExitButtonClicked()
 	GetGame()->End();
 }
 
+void PEditorHUD::OnSelectionChange(const PActor* Actor)
+{
+	SelectPanel->RemoveAllChildren();
+	if (!Actor && SelectionView != nullptr)
+	{
+		GetWorld()->DestroyWidget(SelectionView);
+	}
+	else
+	{
+		SelectionView = ConstructSelectionView(Actor);
+		SelectPanel->AddChild(SelectionView);
+	}
+}
+
 void PEditorHUD::OnTilesetButtonChecked(bool State)
 {
 	auto Sender = GetSender<PButton>();
-	auto Item   = Sender->GetCustomData<STileItem>();
+	auto Item = Sender->GetCustomData<STileItem>();
 
 	EditorGame->SetCurrentTileset(Item->Tileset);
 	EditorGame->SetCurrentTilesetItem(State ? Item : nullptr);
@@ -294,6 +391,6 @@ void PEditorHUD::OnTilesetButtonChecked(bool State)
 void PEditorHUD::OnActorButtonChecked(bool State)
 {
 	auto Sender = GetSender<PButton>();
-	auto Item   = Sender->GetCustomData<SActorItem>();
+	auto Item = Sender->GetCustomData<SActorItem>();
 	EditorGame->SetCurrentActorItem(State ? Item : nullptr);
 }

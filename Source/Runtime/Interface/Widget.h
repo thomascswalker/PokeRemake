@@ -3,20 +3,21 @@
 #include <initializer_list>
 #include <limits>
 
-#include "Style.h"
 #include "Core/Containers.h"
 #include "Engine/Input.h"
 #include "Engine/Object.h"
+#include "Engine/ParamBlock.h"
 #include "Renderer/Renderer.h"
 
-#define WIDGET_TEXT 255, 255, 255, 255
-#define WIDGET_LIGHT 150, 150, 150, 255
-#define WIDGET_MED 100, 100, 100, 255
-#define WIDGET_DARK 50, 50, 50, 255
+#include "Style.h"
 
-#define WIDGET_WIDTH 50
-#define WIDGET_HEIGHT 20
-#define WIDGET_SPACING 5
+#define WIDGET_TEXT	 255, 255, 255, 255
+#define WIDGET_LIGHT 150, 150, 150, 255
+#define WIDGET_MED	 100, 100, 100, 255
+#define WIDGET_DARK	 50, 50, 50, 255
+
+#define WIDGET_WIDTH	 50
+#define WIDGET_SPACING	 5
 #define WIDGET_FONT_SIZE 16.0f
 
 #define DEFAULT_WIDGET_HEIGHT 20
@@ -84,21 +85,22 @@ protected:
 	EResizeMode mResizeModeW = RM_Grow;
 	EResizeMode mResizeModeH = RM_Grow;
 
-	FVector2 mFixedSize = {0.0f, 0.0f};
-	FVector2 mOffset    = {0.0f, 0.0f};
-	FVector2 mMaxSize   = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()};
-	int mGridCount      = 1;
+	FVector2 mFixedSize = { 0.0f, 0.0f };
+	FVector2 mOffset = { 0.0f, 0.0f };
+	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	int		 mGridCount = 1;
 
 	bool mMouseOver = false;
-	bool mVisible   = true;
+	bool mVisible = true;
+	bool mFocused = false;
 
 	// Floating widgets
 
-	bool mFloating      = false;
+	bool		 mFloating = false;
 	EWidgetDepth mDepth = WD_Default;
 
 	static std::shared_ptr<CSS::Stylesheet> sStylesheet;
-	SStyle mStyle;
+	SStyle									mStyle;
 
 public:
 	float X = 0.0f;
@@ -106,9 +108,9 @@ public:
 	float W = 0.0f;
 	float H = 0.0f;
 
-	FPadding mPadding;
+	FPadding	mPadding;
 	DHoverBegin HoverBegin;
-	DHoverEnd HoverEnd;
+	DHoverEnd	HoverEnd;
 
 	PWidget();
 
@@ -198,6 +200,7 @@ public:
 
 	virtual void AddChild(PWidget* Child);
 	virtual void RemoveChild(PWidget* Child);
+	virtual void RemoveAllChildren();
 
 	std::vector<PWidget*> GetChildren() const
 	{
@@ -209,11 +212,23 @@ public:
 		return mChildren.size();
 	}
 
+	// Interaction
+
+	bool GetFocused() const
+	{
+		return mFocused;
+	}
+
+	void SetFocused(bool State)
+	{
+		mFocused = State;
+	}
+
 	// Layout
 
 	virtual FRect GetGeometry() const
 	{
-		return FRect{X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y)};
+		return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) };
 	}
 
 	FVector2 GetOffset() const
@@ -373,7 +388,7 @@ public:
 	template <typename T>
 	void SetCustomData(T* Data)
 	{
-		auto Size   = sizeof(T);
+		auto Size = sizeof(T);
 		mCustomData = std::malloc(Size);
 		std::memcpy(mCustomData, Data, Size);
 	}
@@ -384,4 +399,14 @@ public:
 	{
 		return static_cast<T*>(mSender);
 	}
+
+	// Param blocks
+
+#if _EDITOR
+protected:
+	PParameter* Param = nullptr;
+
+public:
+	virtual void Bind(PParameter* NewParam) { Param = NewParam; }
+#endif
 };

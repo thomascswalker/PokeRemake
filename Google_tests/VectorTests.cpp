@@ -1,5 +1,5 @@
 #include "Core/Logging.h"
-#include "Core/Vector.h"
+#include "Core/CoreFwd.h"
 
 #include "gtest/gtest.h"
 

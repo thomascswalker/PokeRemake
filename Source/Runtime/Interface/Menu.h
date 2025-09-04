@@ -67,7 +67,7 @@ public:
 
     std::string GetDisplayName() const override
     {
-        return mText;
+        return mText->GetText();
     }
 
     friend class PMenuBar;

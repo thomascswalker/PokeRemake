@@ -4,14 +4,16 @@
 
 class PText : public PWidget
 {
-	std::string mText;
-	PColor mColor;
-	float mFontSize;
+protected:
+	std::string mText = "";
+	PColor		mColor = PColor::UIText;
+	float		mFontSize = FONT_RENDER_SCALE;
+	EAlignment	mAlignment = AL_Center;
 
 public:
 	PText() = default;
 
-	explicit PText(const std::string& Text, float FontSize = FONT_RENDER_SCALE, const PColor& Color = PColor::White)
+	explicit PText(const std::string& Text, float FontSize = FONT_RENDER_SCALE, const PColor& Color = PColor::UIText)
 		: mText(Text), mColor(Color), mFontSize(FontSize)
 	{
 		mResizeModeW = RM_Grow;
@@ -20,8 +22,38 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
+#if _EDITOR
+		std::string Text = Param == nullptr ? mText : Param->Get<std::string>();
+#else
+		std::string Text = mText;
+#endif
 		Renderer->SetDrawColor(mColor);
-		Renderer->DrawText(mText, FVector2(X + W / 2.0f, Y + H / 2.0f), mFontSize);
+		float	 HalfHeight = H / 2.0f;
+		float	 HalfWidth = W / 2.0f;
+		float	 QuarterFontSize = mFontSize / 4.0f;
+		FVector2 TextPos = { X + 2, Y + HalfHeight + QuarterFontSize };
+		auto	 TextWidth = Renderer->GetTextWidth(Text, mFontSize);
+
+		float HalfTextWidth = TextWidth / 2.0f;
+		switch (mAlignment)
+		{
+			case AL_Left:
+				{
+					break;
+				}
+			case AL_Center:
+				{
+					TextPos.X += HalfWidth - HalfTextWidth;
+					break;
+				}
+			case AL_Right:
+				{
+					TextPos.X += W;
+					TextPos.X -= TextWidth;
+					break;
+				}
+		}
+		Renderer->DrawText(Text, TextPos, mFontSize);
 	}
 
 	float GetFontSize() const
@@ -44,6 +76,34 @@ public:
 		mText = Text;
 	}
 
+	void Add(char C, size_t Pos = std::string::npos)
+	{
+		if (Pos == std::string::npos)
+		{
+			mText.append(1, C);
+		}
+		else
+		{
+			mText.insert(Pos, 1, C);
+		}
+	}
+
+	void Remove(size_t Pos = std::string::npos)
+	{
+		if (mText.empty())
+		{
+			return;
+		}
+		if (Pos == std::string::npos)
+		{
+			mText.pop_back();
+		}
+		else
+		{
+			mText.erase(Pos, 1);
+		}
+	}
+
 	PColor GetColor() const
 	{
 		return mColor;
@@ -52,5 +112,20 @@ public:
 	void SetColor(const PColor& Color)
 	{
 		mColor = Color;
+	}
+
+	EAlignment GetAlignment() const
+	{
+		return mAlignment;
+	}
+
+	void SetAlignment(EAlignment Alignment)
+	{
+		mAlignment = Alignment;
+	}
+
+	std::string* GetTextAddress()
+	{
+		return &mText;
 	}
 };

@@ -45,6 +45,10 @@ void PEditorView::Tick(float DeltaTime)
 
 void PEditorView::OnKeyDown(SInputEvent* Event)
 {
+	if (IsInputContext(IC_Text))
+	{
+		return;
+	}
 	switch (Event->KeyDown)
 	{
 	case SDLK_W: mInputState[0] = true;
@@ -66,6 +70,10 @@ void PEditorView::OnKeyDown(SInputEvent* Event)
 
 void PEditorView::OnKeyUp(SInputEvent* Event)
 {
+	if (IsInputContext(IC_Text))
+	{
+		return;
+	}
 	switch (Event->KeyUp)
 	{
 	case SDLK_W: mInputState[0] = false;

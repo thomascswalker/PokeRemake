@@ -75,12 +75,11 @@ void PMenu::OnItemClicked()
 }
 
 PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
-	: PButton(this, &PMenu::ShowView), mItems(InItems)
+	: PButton(Name, this, &PMenu::ShowView), mItems(InItems)
 {
 	mPadding     = {0};
 	mResizeModeW = RM_Fixed;
 	mFixedSize.X = 80;
-	mText        = Name;
 	mCheckable   = true;
 
 	// HoverEnd.AddRaw(this, &PMenu::HideView);

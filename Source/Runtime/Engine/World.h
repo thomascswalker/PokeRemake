@@ -6,28 +6,31 @@
 #include "Actors/GameMap.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
-#include "Interface/Widget.h"
 #include "Interface/HUD.h"
+#include "Interface/Widget.h"
 
 #if _EDITOR
-#include "../../Editor/EditorView.h"
+#include "../../Editor/Actors/EditorView.h"
 #include "Components/SelectionComponent.h"
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 #endif
 
 class PWorld : public PObject
 {
-	PPlayerCharacter* mPlayerCharacter = nullptr;
-	std::vector<std::shared_ptr<PActor>> mActors;
+	PPlayerCharacter*						 mPlayerCharacter = nullptr;
+	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
 
-	std::vector<PActor*> mDestroyableActors;
+	std::vector<PActor*>  mDestroyableActors;
+	std::vector<PObject*> mDestroyableObjects;
+	std::vector<PWidget*> mDestroyableWidgets;
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	std::shared_ptr<PHUD> mHUD;
+	std::shared_ptr<PHUD>				  mHUD;
 
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
+	void DestroyWidgetInternal(PWidget* Widget);
 
 public:
 #if _EDITOR
@@ -38,6 +41,7 @@ public:
 
 	void Start() override;
 	void Tick(float DeltaTime) override;
+
 	void PostTick() override;
 
 #if _EDITOR
@@ -55,6 +59,8 @@ public:
 		return Object;
 	}
 
+	void DestroyObject(PObject* Object);
+
 	template <IS_SUBCLASS_OF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
 	{
@@ -62,6 +68,8 @@ public:
 		mActors.push_back(Actor);
 
 #if _EDITOR
+		Actor->InitializeParameters();
+
 		Actor->Clicked.AddRaw(this, &PWorld::OnActorClicked);
 
 		if (Actor->GetSelectable())
@@ -141,6 +149,8 @@ public:
 
 	std::vector<PWidget*> GetWidgets() const;
 
+	void DestroyWidget(PWidget* Widget);
+
 	template <typename T = PHUD>
 	T* CreateHUD()
 	{
@@ -154,9 +164,9 @@ public:
 		return static_cast<T*>(mHUD.get());
 	}
 
-	PPlayerCharacter* GetPlayerCharacter() const;
-	void SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
-	PActor* GetActorAtPosition(const FVector2& Position) const;
+	PPlayerCharacter*	 GetPlayerCharacter() const;
+	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
+	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
 	void ProcessEvents(SInputEvent* Event);

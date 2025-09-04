@@ -2,10 +2,10 @@
 
 #include "Layout.h"
 
-PWidget* PWidget::mSender                             = nullptr;
+PWidget*						 PWidget::mSender = nullptr;
 std::shared_ptr<CSS::Stylesheet> PWidget::sStylesheet = nullptr;
 
-PWidget::PWidget(): mPadding(5.0f)
+PWidget::PWidget() : mPadding(5.0f)
 {
 	GenerateInternalName();
 }
@@ -57,5 +57,13 @@ void PWidget::RemoveChild(PWidget* Child)
 	{
 		mChildren.erase(it);
 		Child->SetParent(nullptr);
+	}
+}
+
+void PWidget::RemoveAllChildren()
+{
+	for (auto Child : mChildren)
+	{
+		RemoveChild(Child);
 	}
 }

@@ -3,19 +3,20 @@ set(CMAKE_CXX_STANDARD 23)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}
-        ../Runtime
-        ../../ThirdParty
-        ../../ThirdParty/glm
-        ../../ThirdParty/SDL/include
-        ../../ThirdParty/JSON/include/
-        ../../ThirdParty/nativefiledialog-extended/include
+        ../Source/Runtime
+        ../ThirdParty
+        ../ThirdParty/glm
+        ../ThirdParty/SDL/include
+        ../ThirdParty/JSON/include/
+        ../ThirdParty/nativefiledialog-extended/include
 )
 
 add_executable(${PROJECT_NAME}
         #        VectorTests.cpp
         #        MatrixTests.cpp
         #        ColorTests.cpp
-        ArrayTests.cpp
+        #        ArrayTests.cpp
+        ParamBlockTests.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})

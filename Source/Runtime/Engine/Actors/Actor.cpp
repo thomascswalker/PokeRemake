@@ -1,15 +1,15 @@
 #include "Actor.h"
 
 #include "Engine/CameraView.h"
+#include "Engine/Components/CollisionComponent.h"
 #include "Engine/Components/Component.h"
 #include "Engine/Serialization.h"
 #include "Engine/World.h"
-#include "Engine/Components/CollisionComponent.h"
 
 void PActor::OnMouseEvent(SInputEvent* Event)
 {
 	const auto Renderer = GetRenderer();
-	mMousePosition      = Event->MousePosition;
+	mMousePosition = Event->MousePosition;
 
 	// Convert the current world bounds of this actor to a screen position
 	FRect WorldRect = GetWorldBounds();
@@ -63,15 +63,15 @@ IDrawable* PActor::GetDrawableComponent() const
 void PActor::MoveToTile(int32_t X, int32_t Y)
 {
 	auto NewPosition = FVector2(X * BLOCK_SIZE, Y * BLOCK_SIZE);
-	mPosition.X      = NewPosition.X;
-	mPosition.Y      = NewPosition.Y;
+	mPosition.X = NewPosition.X;
+	mPosition.Y = NewPosition.Y;
 }
 
 JSON PActor::Serialize() const
 {
-	JSON Result        = PObject::Serialize();
-	Result["Position"] = {mPosition.X, mPosition.Y};
-	Result["Depth"]    = mPosition.Z;
+	JSON Result = PObject::Serialize();
+	Result["Position"] = { mPosition.X, mPosition.Y };
+	Result["Depth"] = mPosition.Z;
 	if (mChildren.size() > 0)
 	{
 		Result["Children"] = {};
@@ -105,8 +105,8 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Position"))
 	{
 		auto Position = Data.at("Position");
-		mPosition.X   = Position[0].get<float>();
-		mPosition.Y   = Position[1].get<float>();
+		mPosition.X = Position[0].get<float>();
+		mPosition.Y = Position[1].get<float>();
 	}
 
 	if (Data.contains("Depth"))
@@ -117,7 +117,7 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Children"))
 	{
 		auto Children = Data.at("Children");
-		auto Count    = Children.size();
+		auto Count = Children.size();
 		LogDebug("Deserializing {} children for {}.", Count, mInternalName.c_str());
 		for (auto& Child : Children)
 		{
@@ -135,7 +135,7 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Components"))
 	{
 		auto Components = Data.at("Components");
-		auto Count      = Components.size();
+		auto Count = Components.size();
 		LogDebug("Deserializing {} components for {}.", Count, mInternalName.c_str());
 		for (auto& Component : Components)
 		{
@@ -152,3 +152,11 @@ void PActor::Deserialize(const JSON& Data)
 	}
 	LogDebug("Finished deserializing {}", mInternalName.c_str());
 }
+
+#if _EDITOR
+void PActor::InitializeParameters()
+{
+	AddParameter("Name", &mInternalName, PT_String);
+	AddParameter("Position", &mPosition, PT_FVector3);
+}
+#endif
