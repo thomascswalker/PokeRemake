@@ -2,10 +2,10 @@
 
 #include "Core/Color.h"
 #include "Core/Delegate.h"
-#include "Text.h"
 #include "Engine/World.h"
 
 #include "AbstractButton.h"
+#include "Text.h"
 #include "Widget.h"
 
 constexpr float gButtonTextSize = 16.0f;
@@ -13,13 +13,16 @@ constexpr float gButtonTextSize = 16.0f;
 class PButton : public PAbstractButton
 {
 protected:
-	PText* mText;
+	PText*	  mText;
 	PTexture* mTexture = nullptr;
 
 	FRect mSourceRect;
-	bool mUseSourceRect = false;
+	bool  mUseSourceRect = false;
 
 public:
+	// Required for constructor inheritance
+	using PAbstractButton::PAbstractButton;
+
 	PButton() : mText(ConstructWidget<PText>())
 	{
 		PWidget::AddChild(mText);

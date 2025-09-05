@@ -441,6 +441,19 @@ void PRenderer::DrawFillRectAt(const FRect& Rect) const
 	DrawFillRect(ScreenRect);
 }
 
+void PRenderer::DrawPolygonAt(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes, const FVector2& Position) const
+{
+	std::vector OffsetVertices = Vertices;
+
+	for (auto& V : OffsetVertices)
+	{
+		V.X += Position.X;
+		V.Y += Position.Y;
+	}
+
+	DrawPolygon(OffsetVertices, Indexes);
+}
+
 void PRenderer::DrawTextAt(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const
 {
 	FVector2 ScreenPosition;
@@ -586,4 +599,12 @@ TArray<PActor*> PRenderer::GetActorsUnderMouse() const
 		}
 	}
 	return Actors;
+}
+
+std::vector<FVector2> CreateTriangle(float Size)
+{
+	auto V0 = FVector2{ 0.0f, 0.0f };
+	auto V1 = FVector2{ Size / 2.0f, Size };
+	auto V2 = FVector2{ Size, 0.0f };
+	return { V0, V1, V2 };
 }

@@ -1,4 +1,5 @@
 #include "AbstractButton.h"
+
 #include "ButtonGroup.h"
 
 void PAbstractButton::SetButtonGroup(PButtonGroup* Group)
@@ -8,6 +9,9 @@ void PAbstractButton::SetButtonGroup(PButtonGroup* Group)
 
 void PAbstractButton::OnMouseEvent(SInputEvent* Event)
 {
+	// Are we inside the button?
+	mMouseOver = GetGeometry().Contains(Event->MousePosition);
+
 	// Hover begin/end events
 	if (!mMouseOver && GetGeometry().Contains(Event->MousePosition))
 	{
@@ -17,9 +21,6 @@ void PAbstractButton::OnMouseEvent(SInputEvent* Event)
 	{
 		HoverEnd.Broadcast();
 	}
-
-	// Are we inside the button?
-	mMouseOver = GetGeometry().Contains(Event->MousePosition);
 
 	if (mMouseOver)
 	{

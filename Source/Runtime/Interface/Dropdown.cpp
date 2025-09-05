@@ -4,15 +4,15 @@
 
 PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 {
-	mLayoutMode  = LM_Vertical;
+	mLayoutMode = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
-	mFloating    = true;
+	mFloating = true;
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < InStrings.size(); Index++)
 	{
-		auto Item       = InStrings[Index];
+		auto	 Item = InStrings[Index];
 		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item);
 		Button->SetResizeModeW(RM_Grow);
 		Button->SetResizeModeH(RM_Fixed);
@@ -28,8 +28,8 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 void PDropdownView::OnMouseEvent(SInputEvent* Event)
 {
 	bool OldMouseOver = mMouseOver;
-	mMouseOver        = GetGeometry().Contains(Event->MousePosition);
-	bool ParentOver   = mDropdown->GetGeometry().Contains(Event->MousePosition);
+	mMouseOver = GetGeometry().Contains(Event->MousePosition);
+	bool ParentOver = mDropdown->GetGeometry().Contains(Event->MousePosition);
 	if (OldMouseOver && !mMouseOver && !ParentOver)
 	{
 		HoverEnd.Broadcast();
@@ -39,7 +39,7 @@ void PDropdownView::OnMouseEvent(SInputEvent* Event)
 
 void PDropdownView::OnItemClicked()
 {
-	auto Sender   = GetSender();
+	auto Sender = GetSender();
 	auto Dropdown = dynamic_cast<PDropdown*>(GetParent());
 	if (!Dropdown)
 	{
@@ -92,24 +92,16 @@ void PDropdown::Draw(const PRenderer* Renderer) const
 {
 	PButton::Draw(Renderer);
 
-	float TriangleSize = 10.0f;
-	auto Pos           = GetGeometry().GetPosition();
-	auto Size          = GetGeometry().GetSize();
-	FVector2 Offset    = Pos + Size;
-	Offset.Y -= ((Size.Y / 2) + (TriangleSize / 2));
+	float	 TriangleSize = 10.0f;
+	auto	 Pos = GetGeometry().GetPosition();
+	auto	 Size = GetGeometry().GetSize();
+	FVector2 Offset = Pos + Size;
+	Offset.Y -= Size.Y / 2 + TriangleSize / 2;
 	Offset.X -= 20;
 
-	std::vector TriangleVerts = //
-	{
-		FVector2{0.0f, 0.0f}
-		+ Offset, //
-		FVector2{TriangleSize / 2.0f, TriangleSize}
-		+ Offset, //
-		FVector2{TriangleSize, 0.0f}
-		+ Offset //
-	};
+	const std::vector Vertices = CreateTriangle(TriangleSize);
 	Renderer->SetDrawColor(PColor::OffWhite);
-	Renderer->DrawPolygon(TriangleVerts, {0, 1, 2});
+	Renderer->DrawPolygonAt(Vertices, { 0, 1, 2 }, Offset);
 }
 
 void PDropdown::AddItem(const std::string& Item)

@@ -17,8 +17,11 @@ namespace Layout
 		{
 			return;
 		}
-		const auto LayoutMode = Parent->GetLayoutMode();
-		auto	   ChildCount = Parent->GetChildCount();
+		const auto	LayoutMode = Parent->GetLayoutMode();
+		auto		ChildCount = Parent->GetChildCount();
+		auto		Growable = Parent->GetGrowable(LayoutMode);
+		auto		GrowableCount = Growable.size();
+		const float Gap = 5.0f;
 
 		// Track the remaining width and height we can grow to within this widget
 		float RemainingWidth = Parent->W;
@@ -52,11 +55,19 @@ namespace Layout
 		// Remove width/height for the gap between each child
 		if (LayoutMode == LM_Horizontal)
 		{
-			RemainingWidth -= (ChildCount - 1) * Parent->Padding.Left;
+			if (GrowableCount > 1)
+			{
+				RemainingWidth /= GrowableCount - 1;
+			}
+			RemainingWidth -= (ChildCount - 1) * Gap;
 		}
 		else
 		{
-			RemainingHeight -= (ChildCount - 1) * Parent->Padding.Top;
+			if (GrowableCount > 1)
+			{
+				RemainingHeight /= GrowableCount - 1;
+			}
+			RemainingHeight -= (ChildCount - 1) * Gap;
 		}
 
 		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Parent->GetGridCount()) : 0;
@@ -224,8 +235,8 @@ namespace Layout
 		const auto Padding = Widget->Padding;
 
 		// Change in X and Y as we lay out children
-		float DX = Padding.Left;
-		float DY = Padding.Top;
+		float DX = 0;
+		float DY = 0;
 
 		const auto LayoutMode = Widget->GetLayoutMode();
 
@@ -242,6 +253,20 @@ namespace Layout
 				Child->Y = Rect.Y + Rect.H;
 				Position(Child);
 				continue;
+			}
+
+			switch (LayoutMode)
+			{
+
+				case LM_Horizontal:
+					DX += Child->Padding.Left;
+					break;
+				case LM_Vertical:
+					DY += Child->Padding.Top;
+					break;
+				default:
+				case LM_Grid:
+					break;
 			}
 
 			// Child position is at the origin plus the current change in X/Y

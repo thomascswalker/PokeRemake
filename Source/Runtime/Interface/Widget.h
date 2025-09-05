@@ -46,7 +46,7 @@ class PWidget : public PObject, public IInputHandler
 {
 protected:
 	// Static pointer to the widget that sent the event.
-	static PWidget* mSender;
+	static PWidget* sSender;
 	// Pointer to the parent of this widget.
 	PWidget* mParent = nullptr;
 	// List of child widgets.
@@ -387,7 +387,7 @@ public:
 	template <typename T = PWidget>
 	static T* GetSender()
 	{
-		return static_cast<T*>(mSender);
+		return static_cast<T*>(sSender);
 	}
 
 	// Param blocks

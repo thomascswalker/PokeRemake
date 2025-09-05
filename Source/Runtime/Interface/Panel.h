@@ -5,9 +5,6 @@
 class PPanel : public PBox
 {
 public:
-	PPanel()
-	{}
-
 	void Draw(const PRenderer* Renderer) const override
 	{
 		FRect Rect = GetGeometry();
@@ -24,7 +21,7 @@ public:
 		// into scene objects.
 		if (Event->LeftMouseDown && GetGeometry().Contains(Event->MousePosition))
 		{
-			Event->Consume();
+			Event->Unconsume();
 		}
 	}
 };

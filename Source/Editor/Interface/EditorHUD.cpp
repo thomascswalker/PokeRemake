@@ -213,7 +213,7 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		ParamLabel->SetFixedWidth(75);
 
 		// Right-hand widget
-		// ParamRow->AddChild(ParamLabel);
+		ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
 			case PT_String:
@@ -225,9 +225,12 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 				}
 			case PT_FVector3:
 				{
-					auto V3Spinner = ConstructWidget<PMultiSpinner<3>>();
-					V3Spinner->Bind(Param);
-					ParamRow->AddChild(V3Spinner);
+					auto SpinnerX = ConstructWidget<PSpinner>();
+					auto SpinnerY = ConstructWidget<PSpinner>();
+					auto SpinnerZ = ConstructWidget<PSpinner>();
+					ParamRow->AddChild(SpinnerX);
+					ParamRow->AddChild(SpinnerY);
+					ParamRow->AddChild(SpinnerZ);
 					break;
 				}
 			default:
