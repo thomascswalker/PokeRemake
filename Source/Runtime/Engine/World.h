@@ -15,7 +15,7 @@
 DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 #endif
 
-class PWorld : public PObject
+class PWorld : public PObject, public IInputHandler
 {
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
@@ -169,7 +169,7 @@ public:
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
-	void ProcessEvents(SInputEvent* Event);
+	bool ProcessEvents(SInputEvent* Event) override;
 
 #if _EDITOR
 	TArray<PActor*> GetSelectableActors() const;

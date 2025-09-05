@@ -1,14 +1,13 @@
 #include "Game.h"
 
-#include "Core/Logging.h"
-
 #include <memory>
 
 #include "Core/CSS.h"
+#include "Core/Logging.h"
 
 PGame::PGame()
 {
-	mWorld    = std::make_shared<PWorld>();
+	mWorld = std::make_shared<PWorld>();
 	mSettings = std::make_shared<PSettings>();
 }
 
@@ -74,21 +73,31 @@ void PGame::OnKeyUp(SInputEvent* Event)
 {
 	switch (Event->KeyUp)
 	{
-	case SDLK_F1: mSettings->DebugDraw = !mSettings->DebugDraw;
-		Event->Consume();
-		break;
-	default: break;
+		case SDLK_F1:
+			mSettings->DebugDraw = !mSettings->DebugDraw;
+			Event->Consume();
+			break;
+		default:
+			break;
 	}
 }
 
 bool PGame::ProcessEvents(SInputEvent* Event)
 {
+	// Handle events for the game
 	if (IInputHandler::ProcessEvents(Event))
 	{
 		return true;
 	}
 
-	return mGameMode->ProcessEvents(Event);
+	// Handle game mode events
+	if (mGameMode->ProcessEvents(Event))
+	{
+		return true;
+	}
+
+	// Handle world events
+	return mWorld->ProcessEvents(Event);
 }
 
 bool PGame::SetCurrentGameMode(const std::string& Name)
@@ -160,4 +169,3 @@ void PGame::OnGameModeLoaded(PGameMode* GameMode)
 }
 
 void PGame::OnGameModeUnloaded(PGameMode* GameMode) {}
-

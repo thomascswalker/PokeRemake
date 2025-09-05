@@ -5,9 +5,6 @@
 class PBox : public PWidget
 {
 public:
-	PBox()
-	{}
-
 	void Draw(const PRenderer* Renderer) const override
 	{
 		FRect Rect = GetGeometry();

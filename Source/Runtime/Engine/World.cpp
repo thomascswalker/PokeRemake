@@ -259,14 +259,14 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 	return OutActors;
 }
 
-void PWorld::ProcessEvents(SInputEvent* Event)
+bool PWorld::ProcessEvents(SInputEvent* Event)
 {
 	// First process all widget events as these are the layer 'above' the game view
 	if (mHUD)
 	{
 		if (mHUD->ProcessEvents(Event))
 		{
-			return;
+			return true;
 		}
 	}
 
@@ -275,16 +275,18 @@ void PWorld::ProcessEvents(SInputEvent* Event)
 	{
 		if (Actor->ProcessEvents(Event))
 		{
-			return;
+			return true;
 		}
 		for (const auto& Component : Actor->GetComponents())
 		{
 			if (Component->ProcessEvents(Event))
 			{
-				return;
+				return true;
 			}
 		}
 	}
+
+	return false;
 }
 
 #if _EDITOR

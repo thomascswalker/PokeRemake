@@ -1,6 +1,5 @@
 #pragma once
 
-#include <initializer_list>
 #include <limits>
 
 #include "Core/Containers.h"
@@ -9,6 +8,7 @@
 #include "Engine/ParamBlock.h"
 #include "Renderer/Renderer.h"
 
+#include "Padding.h"
 #include "Style.h"
 
 #define WIDGET_TEXT	 255, 255, 255, 255
@@ -42,37 +42,11 @@ enum EWidgetDepth
 	WD_Default
 };
 
-template <typename T>
-struct TPadding
-{
-	T Left;
-	T Bottom;
-	T Right;
-	T Top;
-
-	explicit TPadding(T Value)
-		: Left(Value), Bottom(Value), Right(Value), Top(Value) {}
-
-	explicit TPadding(T InLeft, T InBottom, T InRight, T InTop)
-		: Left(InLeft), Bottom(InBottom), Right(InRight), Top(InTop) {}
-
-	TPadding(std::initializer_list<T> Values)
-	{
-		T* P = &Left;
-		for (auto it = Values.begin(); it != Values.end(); ++it)
-		{
-			*P++ = *it;
-		}
-	}
-};
-
-using FPadding = TPadding<float>;
-
 class PWidget : public PObject, public IInputHandler
 {
 protected:
 	// Static pointer to the widget that sent the event.
-	static PWidget* mSender;
+	static PWidget* sSender;
 	// Pointer to the parent of this widget.
 	PWidget* mParent = nullptr;
 	// List of child widgets.
@@ -103,12 +77,13 @@ protected:
 	SStyle									mStyle;
 
 public:
-	float X = 0.0f;
-	float Y = 0.0f;
-	float W = 0.0f;
-	float H = 0.0f;
+	float	X = 0.0f;
+	float	Y = 0.0f;
+	float	W = 0.0f;
+	float	H = 0.0f;
+	FBounds Padding;
+	FBounds Margin;
 
-	FPadding	mPadding;
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 
@@ -210,6 +185,21 @@ public:
 	size_t GetChildCount() const
 	{
 		return mChildren.size();
+	}
+
+	std::vector<PWidget*> GetGrowable(ELayoutMode Direction) const
+	{
+		return Containers::Filter(
+			mChildren,
+			[Direction](const PWidget* Child) {
+				return (Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow)
+					   && Child->GetVisible();
+			});
+	}
+
+	bool IsGrowable(ELayoutMode Direction) const
+	{
+		return Direction == LM_Horizontal ? mResizeModeW == RM_Grow : mResizeModeH == RM_Grow;
 	}
 
 	// Interaction
@@ -397,7 +387,7 @@ public:
 	template <typename T = PWidget>
 	static T* GetSender()
 	{
-		return static_cast<T*>(mSender);
+		return static_cast<T*>(sSender);
 	}
 
 	// Param blocks

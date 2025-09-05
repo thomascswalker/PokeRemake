@@ -2,10 +2,10 @@
 
 #include "Layout.h"
 
-PWidget*						 PWidget::mSender = nullptr;
+PWidget*						 PWidget::sSender = nullptr;
 std::shared_ptr<CSS::Stylesheet> PWidget::sStylesheet = nullptr;
 
-PWidget::PWidget() : mPadding(5.0f)
+PWidget::PWidget()
 {
 	GenerateInternalName();
 }
@@ -23,12 +23,8 @@ bool PWidget::ProcessEvents(SInputEvent* Event)
 		}
 	}
 
-	mSender = this;
-	if (IInputHandler::ProcessEvents(Event))
-	{
-		return true;
-	}
-	return false;
+	sSender = this;
+	return IInputHandler::ProcessEvents(Event);
 }
 
 void PWidget::SetParent(PWidget* Parent)

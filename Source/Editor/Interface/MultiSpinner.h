@@ -1,25 +1,40 @@
 #pragma once
+
 #include "Engine/World.h"
 #include "Interface/Widget.h"
 
 template <int N>
 class PMultiSpinner : public PWidget
 {
-	std::array<PSpinner*, N> mSpinners;
+	static_assert(N == 2 || N == 3 || N == 4, "N must either 2, 3, or 4.");
+	DECLARE_MULTICAST_DELEGATE(DValueChanged, FVector3);
+
+	FVector3  mValue;
+	PSpinner* mSpinners[4];
+
+	void OnValueChangedInternal(float NewValue)
+	{
+		ValueChanged.Broadcast(mValue);
+	}
 
 public:
+	DValueChanged ValueChanged;
+
 	PMultiSpinner()
 	{
 		mLayoutMode = LM_Horizontal;
 		mResizeModeW = RM_Grow;
 		mResizeModeH = RM_Fixed;
 		mFixedSize.Y = DEFAULT_WIDGET_HEIGHT;
-		mPadding = { 0 };
 
 		for (int32_t Index = 0; Index < N; Index++)
 		{
-			mSpinners[Index] = ConstructWidget<PSpinner>();
-			PWidget::AddChild(mSpinners[Index]);
+			auto Spinner = ConstructWidget<PSpinner>();
+			mSpinners[Index] = Spinner;
+			Spinner->Padding.Left = 5;
+			Spinner->Padding.Right = 5;
+			Spinner->ValueChanged.AddRaw(this, &PMultiSpinner::OnValueChangedInternal);
+			PWidget::AddChild(Spinner);
 		}
 	}
 
@@ -27,32 +42,22 @@ public:
 	{
 		PWidget::Bind(NewParam);
 
-		FVector2 V2;
-		FVector3 V3;
-		FVector4 V4;
 		switch (N)
 		{
-			case 2:
-				V2 = NewParam->Get<FVector2>();
-				mSpinners[0]->SetValue(V2.X);
-				mSpinners[1]->SetValue(V2.Y);
-				break;
 			case 3:
-				V3 = NewParam->Get<FVector3>();
-				mSpinners[0]->SetValue(V3.X);
-				mSpinners[1]->SetValue(V3.Y);
-				mSpinners[2]->SetValue(V3.Z);
+				mValue = NewParam->Get<FVector3>();
+
+				mSpinners[0]->SetValue(mValue.X);
+				mSpinners[1]->SetValue(mValue.Y);
+				mSpinners[2]->SetValue(mValue.Z);
+
+				ValueChanged.AddRaw(Param, &PParameter::Set<FVector3>);
 				break;
+			case 2:
 			case 4:
-				V4 = NewParam->Get<FVector4>();
-				mSpinners[0]->SetValue(V4.X);
-				mSpinners[1]->SetValue(V4.Y);
-				mSpinners[2]->SetValue(V4.Z);
-				mSpinners[3]->SetValue(V4.W);
-				break;
 			default:
 				LogError("Invalid N value.");
-				return;
+				break;
 		}
 	}
 };

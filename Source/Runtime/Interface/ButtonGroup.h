@@ -21,7 +21,7 @@ public:
 	void OnButtonChecked(bool State)
 	{
 		// Deselect all buttons other than the one which sent this broadcast.
-		auto Sender = static_cast<PAbstractButton*>(mSender);
+		auto Sender = static_cast<PAbstractButton*>(sSender);
 		for (const auto& Button : mButtons)
 		{
 			if (Button->GetInternalName() != Sender->GetInternalName())

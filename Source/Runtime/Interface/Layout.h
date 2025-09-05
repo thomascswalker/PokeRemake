@@ -6,29 +6,34 @@
 
 namespace Layout
 {
+	inline void SizeGrowDirection(const PWidget* Child)
+	{
+	}
 
 	// Grow this widget's children to fit the space of this widget
-	inline void Grow(const PWidget* Widget)
+	inline void SizeGrowChildren(const PWidget* Parent)
 	{
-		if (!Widget->GetVisible())
+		if (!Parent->GetVisible())
 		{
 			return;
 		}
-		const auto LayoutMode = Widget->GetLayoutMode();
-		float	   ChildGap = Widget->mPadding.Left;
-		auto	   ChildCount = Widget->GetChildCount();
+		const auto	LayoutMode = Parent->GetLayoutMode();
+		auto		ChildCount = Parent->GetChildCount();
+		auto		Growable = Parent->GetGrowable(LayoutMode);
+		auto		GrowableCount = Growable.size();
+		const float Gap = 5.0f;
 
 		// Track the remaining width and height we can grow to within this widget
-		float RemainingWidth = Widget->W;
-		float RemainingHeight = Widget->H;
+		float RemainingWidth = Parent->W;
+		float RemainingHeight = Parent->H;
 
 		// Remove width and height with the widget's padding
-		RemainingWidth -= Widget->mPadding.Left + Widget->mPadding.Right;
-		RemainingHeight -= Widget->mPadding.Top + Widget->mPadding.Bottom;
+		RemainingWidth -= Parent->Padding.Left + Parent->Padding.Right;
+		RemainingHeight -= Parent->Padding.Top + Parent->Padding.Bottom;
 
 		// Remove width/height (depending on the layout mode) for each
 		// child within this widget (as long as it's visible).
-		for (auto Child : Widget->GetChildren())
+		for (auto Child : Parent->GetChildren())
 		{
 			if (!Child->GetVisible())
 			{
@@ -47,20 +52,28 @@ namespace Layout
 			}
 		}
 
-		// // Remove width/height for the gap between each child
-		// if (LayoutMode == LM_Horizontal)
-		// {
-		// 	RemainingWidth -= (ChildCount - 1) * ChildGap;
-		// }
-		// else
-		// {
-		// 	RemainingHeight -= (ChildCount - 1) * ChildGap;
-		// }
+		// Remove width/height for the gap between each child
+		if (LayoutMode == LM_Horizontal)
+		{
+			if (GrowableCount > 1)
+			{
+				RemainingWidth /= GrowableCount - 1;
+			}
+			RemainingWidth -= (ChildCount - 1) * Gap;
+		}
+		else
+		{
+			if (GrowableCount > 1)
+			{
+				RemainingHeight /= GrowableCount - 1;
+			}
+			RemainingHeight -= (ChildCount - 1) * Gap;
+		}
 
-		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Widget->GetGridCount()) : 0;
+		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Parent->GetGridCount()) : 0;
 
 		// Grow the children to fit the remaining width/height
-		for (auto Child : Widget->GetChildren())
+		for (auto Child : Parent->GetChildren())
 		{
 			if (!Child->GetVisible())
 			{
@@ -99,11 +112,11 @@ namespace Layout
 					}
 					break;
 			}
-			Grow(Child);
+			SizeGrowChildren(Child);
 		}
 	}
 
-	inline void Fit(PWidget* Widget)
+	inline void SizeFit(PWidget* Widget)
 	{
 		if (!Widget->GetVisible())
 		{
@@ -115,15 +128,15 @@ namespace Layout
 
 		if (RMW == RM_Fit || RMH == RM_Fit)
 		{
-			const float Padding = Widget->mPadding.Left;
+			const auto Padding = Widget->Padding;
 
 			if (RMW == RM_Fit)
 			{
-				Widget->W += Padding;
+				Widget->W += Padding.Right;
 			}
 			if (RMH == RM_Fit)
 			{
-				Widget->H += Padding;
+				Widget->H += Padding.Bottom;
 			}
 
 			float SumW = 0;
@@ -137,10 +150,10 @@ namespace Layout
 				{
 					continue;
 				}
-				SumW += Child->W + Padding;
-				SumH += Child->H + Padding;
-				LargestW = std::max(LargestW, Child->W + Padding);
-				LargestH = std::max(LargestH, Child->H + Padding);
+				SumW += Child->W + Padding.Right;
+				SumH += Child->H + Padding.Bottom;
+				LargestW = std::max(LargestW, Child->W + Padding.Right);
+				LargestH = std::max(LargestH, Child->H + Padding.Bottom);
 			}
 
 			switch (Widget->GetLayoutMode())
@@ -148,21 +161,21 @@ namespace Layout
 				case LM_Horizontal:
 					if (RMW == RM_Fit)
 					{
-						Widget->W = SumW + Padding;
+						Widget->W = SumW + Padding.Right;
 					}
 					if (RMH == RM_Fit)
 					{
-						Widget->H = LargestH + Padding;
+						Widget->H = LargestH + Padding.Bottom;
 					}
 					break;
 				case LM_Vertical:
 					if (RMW == RM_Fit)
 					{
-						Widget->W = LargestW + Padding;
+						Widget->W = LargestW + Padding.Right;
 					}
 					if (RMH == RM_Fit)
 					{
-						Widget->H = SumH + Padding;
+						Widget->H = SumH + Padding.Bottom;
 					}
 					break;
 				case LM_Grid:
@@ -176,11 +189,11 @@ namespace Layout
 			{
 				continue;
 			}
-			Fit(Child);
+			SizeFit(Child);
 		}
 	}
 
-	inline void Fixed(PWidget* Widget)
+	inline void SizeFixed(PWidget* Widget)
 	{
 		if (!Widget->GetVisible())
 		{
@@ -199,7 +212,7 @@ namespace Layout
 			{
 				continue;
 			}
-			Fixed(Child);
+			SizeFixed(Child);
 		}
 	}
 
@@ -219,11 +232,11 @@ namespace Layout
 		const FVector2 Origin = { Rect.X, Rect.Y };
 
 		// Uniform padding
-		const float Padding = Widget->mPadding.Left;
+		const auto Padding = Widget->Padding;
 
 		// Change in X and Y as we lay out children
-		float DX = Padding;
-		float DY = Padding;
+		float DX = 0;
+		float DY = 0;
 
 		const auto LayoutMode = Widget->GetLayoutMode();
 
@@ -242,6 +255,20 @@ namespace Layout
 				continue;
 			}
 
+			switch (LayoutMode)
+			{
+
+				case LM_Horizontal:
+					DX += Child->Padding.Left;
+					break;
+				case LM_Vertical:
+					DY += Child->Padding.Top;
+					break;
+				default:
+				case LM_Grid:
+					break;
+			}
+
 			// Child position is at the origin plus the current change in X/Y
 			Child->X = Origin.X + DX;
 			Child->Y = Origin.Y + DY;
@@ -253,25 +280,25 @@ namespace Layout
 			switch (LayoutMode)
 			{
 				case LM_Horizontal:
-					DX += Child->W + Padding;
+					DX += Child->W + Padding.Right;
 					break;
 				case LM_Vertical:
-					DY += Child->H + Padding;
+					DY += Child->H + Padding.Bottom;
 					break;
 				case LM_Grid:
 					DX += Child->W;
 					// Move to next row
 					if (DX >= Rect.W)
 					{
-						DY += Child->H + Padding;
-						DX = Padding;
+						DY += Child->H + Padding.Bottom;
+						DX = Padding.Right;
 					}
 					break;
 			}
 		}
 	}
 
-	inline void Offset(PWidget* Widget)
+	inline void PositionOffset(PWidget* Widget)
 	{
 		if (!Widget->GetVisible())
 		{
@@ -289,7 +316,7 @@ namespace Layout
 			{
 				continue;
 			}
-			Offset(Child);
+			PositionOffset(Child);
 		}
 	}
 
@@ -300,11 +327,14 @@ namespace Layout
 			return;
 		}
 
-		Fixed(Widget);
-		Fit(Widget);
-		Grow(Widget);
+		// Size
+		SizeFixed(Widget);
+		SizeFit(Widget);
+		SizeGrowChildren(Widget);
+
+		// Position
 		Position(Widget);
-		Offset(Widget);
+		PositionOffset(Widget);
 
 		// Once all widgets have been recursively sized and positioned, call
 		// the OnLayout function.

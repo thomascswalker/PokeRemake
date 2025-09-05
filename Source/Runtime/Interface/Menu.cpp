@@ -10,7 +10,7 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
 	mFloating    = true;
-	mPadding     = {0};
+	Padding     = {0};
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < mData->size(); Index++)
@@ -30,7 +30,7 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 			Button->SetResizeModeW(RM_Grow);
 			Button->SetResizeModeH(RM_Fixed);
 			Button->SetFixedHeight(20);
-			Button->mPadding = {0};
+			Button->Padding = {0};
 
 			Item->Index = Index;
 			Button->SetCustomData(Item);
@@ -77,7 +77,7 @@ void PMenu::OnItemClicked()
 PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 	: PButton(Name, this, &PMenu::ShowView), mItems(InItems)
 {
-	mPadding     = {0};
+	Padding     = {0};
 	mResizeModeW = RM_Fixed;
 	mFixedSize.X = 80;
 	mCheckable   = true;
@@ -117,7 +117,7 @@ void PMenu::HideView()
 
 PMenuBar::PMenuBar()
 {
-	mPadding = {0};
+	Padding = {0};
 
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;

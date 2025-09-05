@@ -49,7 +49,7 @@ DEFINE_STATIC_GLOBAL_AND_GETTER(CameraView, Game);
 DEFINE_STATIC_GLOBAL_AND_GETTER(Settings, Game);
 
 bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GPUMode,
-                              bool IsEditor)
+							  bool IsEditor)
 {
 	bIsEditor = IsEditor;
 	LogInfo("Constructing {} Application", bIsEditor ? "Editor" : "Game");
@@ -64,12 +64,12 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	}
 
 	// Create the SDL Context wrapper
-	mContext          = std::make_unique<SDLContext>();
+	mContext = std::make_unique<SDLContext>();
 	mContext->GPUMode = GPUMode;
 
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
 	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT,
-	                                 WindowFlags, &mContext->Window, &mContext->Renderer))
+									 WindowFlags, &mContext->Window, &mContext->Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());
 		return false;
@@ -119,9 +119,9 @@ void PApplication::Uninitialize() const
 bool PApplication::Loop()
 {
 	// Tick the engine
-	const uint64_t Now         = SDL_GetTicksNS();
-	const uint64_t DeltaTimeNS = Now - mCurrentTime;                               // Get delta time in nanoseconds
-	const float DeltaTime      = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	const uint64_t Now = SDL_GetTicksNS();
+	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
+	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
 	mEngine->Tick(DeltaTime);
 	mCurrentTime = Now;
 
@@ -158,18 +158,19 @@ bool PApplication::HandleEvent(void* Event)
 	// Handle window-level events
 	switch (SDLEvent->type)
 	{
-	case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-		{
-			Uninitialize();
-			return false;
-		}
-	case SDL_EVENT_WINDOW_RESIZED:
-		{
-			float Width  = static_cast<float>(SDLEvent->window.data1);
-			float Height = static_cast<float>(SDLEvent->window.data2);
-			mRenderer->OnResize({Width, Height});
-		}
-	default: break;
+		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+			{
+				Uninitialize();
+				return false;
+			}
+		case SDL_EVENT_WINDOW_RESIZED:
+			{
+				float Width = static_cast<float>(SDLEvent->window.data1);
+				float Height = static_cast<float>(SDLEvent->window.data2);
+				mRenderer->OnResize({ Width, Height });
+			}
+		default:
+			break;
 	}
 
 	// Handle all other events
@@ -179,14 +180,8 @@ bool PApplication::HandleEvent(void* Event)
 		return false;
 	}
 
-	// Handle game-level events
-	if (GetGame()->ProcessEvents(&InputEvent))
-	{
-		return true;
-	}
-	// Handle world-level events
-	GetWorld()->ProcessEvents(&InputEvent);
-
+	// Handle game events
+	GetGame()->ProcessEvents(&InputEvent);
 	return true;
 }
 
@@ -219,4 +214,3 @@ SDLContext* PApplication::GetContext() const
 {
 	return mContext.get();
 }
-

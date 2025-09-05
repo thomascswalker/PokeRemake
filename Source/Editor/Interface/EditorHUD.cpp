@@ -60,8 +60,6 @@ void PEditorHUD::SetupInterface()
 {
 	// Vertical layout to force the file menu to the top
 	mLayoutMode = LM_Vertical;
-	// Zero padding to allow file menu to expand to the border
-	mPadding = { 0 };
 
 	// File Menu
 	auto MenuBar = ConstructWidget<PMenuBar>();
@@ -86,15 +84,15 @@ void PEditorHUD::SetupInterface()
 
 	// Main panel
 	MainPanel = World->ConstructWidget<PWidget>();
-	MainPanel->mPadding = { 5 };
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
-	MainPanel->SetVisible(false);
+	MainPanel->SetVisible(true);
 
 	// Select
 	SelectPanel = World->ConstructWidget<PPanel>();
 	SelectPanel->SetLayoutMode(LM_Vertical);
+	MainPanel->AddChild(SelectPanel);
 
 	// Tiles
 
@@ -147,7 +145,7 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 		// Create the button item
 		auto GridItem = GridView->AddItem<PButton>(TilesetTexture);
 		auto Button = GridItem->GetWidget<PButton>();
-		Button->mPadding = { 0 };
+		Button->Padding = { 0 };
 		Button->SetResizeMode(RM_Fixed, RM_Fixed);
 		Button->SetFixedSize(ItemSize);
 		Button->SetCheckable(true);
@@ -169,7 +167,7 @@ PGridView* PEditorHUD::ConstructActorView()
 		return nullptr;
 	}
 	PGridView* GridView = World->ConstructWidget<PGridView>();
-	GridView->mPadding = { 5 };
+	GridView->Padding = { 5 };
 	GridView->SetGridCount(1);
 
 	for (auto& ActorItem : gPlaceableActors)
@@ -193,7 +191,7 @@ PGridView* PEditorHUD::ConstructActorView()
 PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 {
 	auto SelectionView = ConstructWidget<PWidget>();
-	SelectionView->mPadding = { 0 };
+	SelectionView->Padding = { 0 };
 	SelectionView->SetLayoutMode(LM_Vertical);
 
 	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
@@ -215,7 +213,7 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		ParamLabel->SetFixedWidth(75);
 
 		// Right-hand widget
-		// ParamRow->AddChild(ParamLabel);
+		ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
 			case PT_String:
@@ -227,9 +225,12 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 				}
 			case PT_FVector3:
 				{
-					auto V3Spinner = ConstructWidget<PMultiSpinner<3>>();
-					V3Spinner->Bind(Param);
-					ParamRow->AddChild(V3Spinner);
+					auto SpinnerX = ConstructWidget<PSpinner>();
+					auto SpinnerY = ConstructWidget<PSpinner>();
+					auto SpinnerZ = ConstructWidget<PSpinner>();
+					ParamRow->AddChild(SpinnerX);
+					ParamRow->AddChild(SpinnerY);
+					ParamRow->AddChild(SpinnerZ);
 					break;
 				}
 			default:
@@ -331,7 +332,6 @@ void PEditorHUD::OnSelectButtonClicked()
 	MainPanel->AddChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);
 	MainPanel->RemoveChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnTilesButtonClicked()
@@ -344,7 +344,6 @@ void PEditorHUD::OnTilesButtonClicked()
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->AddChild(TilePanel);
 	MainPanel->RemoveChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnActorsButtonClicked()
@@ -357,7 +356,6 @@ void PEditorHUD::OnActorsButtonClicked()
 	MainPanel->RemoveChild(SelectPanel);
 	MainPanel->RemoveChild(TilePanel);
 	MainPanel->AddChild(ActorPanel);
-	MainPanel->SetVisible(true);
 }
 
 void PEditorHUD::OnExitButtonClicked()
