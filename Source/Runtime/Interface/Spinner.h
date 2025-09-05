@@ -66,7 +66,7 @@ public:
 
 protected:
 	float mValue = 0.0f;
-	float mMinValue = std::numeric_limits<float>::min();
+	float mMinValue = std::numeric_limits<float>::lowest();
 	float mMaxValue = std::numeric_limits<float>::max();
 
 	ESpinnerMode mMode = SM_Integer;
@@ -87,13 +87,13 @@ protected:
 
 	void OnValueChangedUpInternal()
 	{
-		mValue = std::clamp(mValue++, mMinValue, mMaxValue);
+		mValue = std::max(mMinValue, std::min(mMaxValue, mValue + 1.0f));
 		OnValueChangedInternal();
 	}
 
 	void OnValueChangedDownInternal()
 	{
-		mValue = std::clamp(mValue--, mMinValue, mMaxValue);
+		mValue = std::max(mMinValue, std::min(mMaxValue, mValue - 1.0f));
 		OnValueChangedInternal();
 	}
 
@@ -107,35 +107,30 @@ public:
 
 		mText = ConstructWidget<PText>();
 		mText->SetText(std::format("{}", mValue));
-		//
-		// mButtonBox = ConstructWidget<PBox>();
-		// mButtonBox->SetLayoutMode(LM_Vertical);
-		// mButtonBox->SetResizeMode(RM_Fit, RM_Fit);
 
 		mUpButton = ConstructWidget<PSpinnerButton>(this, &PSpinner::OnValueChangedUpInternal);
 		mUpButton->SetUp(true);
 		mUpButton->SetResizeMode(RM_Fixed, RM_Fixed);
-		mUpButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y / 2 });
+		mUpButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y });
 		PWidget::AddChild(mUpButton);
 
 		mDownButton = ConstructWidget<PSpinnerButton>(this, &PSpinner::OnValueChangedDownInternal);
 		mDownButton->SetUp(false);
 		mDownButton->SetResizeMode(RM_Fixed, RM_Fixed);
-		mDownButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y / 2 });
+		mDownButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y });
 		PWidget::AddChild(mDownButton);
 
-		// PWidget::AddChild(mButtonBox);
 		PWidget::AddChild(mText);
 	}
 
 	void Draw(const PRenderer* Renderer) const override
 	{
 		// Background
-		Renderer->SetDrawColor(PColor::UIBackground);
+		Renderer->SetDrawColor(Style.Background);
 		Renderer->DrawFillRect(GetGeometry());
 
 		// Outline
-		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->SetDrawColor(Style.Border);
 		Renderer->DrawRect(GetGeometry());
 	}
 
@@ -150,16 +145,6 @@ public:
 	{
 		mValue = Value;
 		OnValueChangedInternal();
-	}
-
-	bool ProcessEvents(SInputEvent* Event) override
-	{
-		if (Event->Type == IET_MouseDown || Event->Type == IET_MouseUp)
-		{
-
-			int Test = 5;
-		}
-		return PWidget::ProcessEvents(Event);
 	}
 
 #if _EDITOR

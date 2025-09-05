@@ -6,11 +6,11 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 	: mDelegate(InDelegate),
 	  mData(InData)
 {
-	mLayoutMode  = LM_Vertical;
+	mLayoutMode = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
-	mFloating    = true;
-	Padding     = {0};
+	mFloating = true;
+	Padding = { 0 };
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < mData->size(); Index++)
@@ -30,12 +30,11 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 			Button->SetResizeModeW(RM_Grow);
 			Button->SetResizeModeH(RM_Fixed);
 			Button->SetFixedHeight(20);
-			Button->Padding = {0};
+			Button->Padding = { 0 };
 
 			Item->Index = Index;
 			Button->SetCustomData(Item);
-			Button->Clicked.AddLambda([=]
-			{
+			Button->Clicked.AddLambda([=] {
 				InDelegate->Broadcast();
 			});
 			PWidget::AddChild(Button);
@@ -46,8 +45,8 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 void PMenuView::OnMouseEvent(SInputEvent* Event)
 {
 	bool OldMouseOver = mMouseOver;
-	mMouseOver        = GetGeometry().Contains(Event->MousePosition);
-	bool ParentOver   = mMenu->GetGeometry().Contains(Event->MousePosition);
+	mMouseOver = GetGeometry().Contains(Event->MousePosition);
+	bool ParentOver = mMenu->GetGeometry().Contains(Event->MousePosition);
 	if (OldMouseOver && !mMouseOver && !ParentOver)
 	{
 		HoverEnd.Broadcast();
@@ -77,10 +76,9 @@ void PMenu::OnItemClicked()
 PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 	: PButton(Name, this, &PMenu::ShowView), mItems(InItems)
 {
-	Padding     = {0};
 	mResizeModeW = RM_Fixed;
 	mFixedSize.X = 80;
-	mCheckable   = true;
+	mCheckable = true;
 
 	// HoverEnd.AddRaw(this, &PMenu::HideView);
 	ItemClicked.AddRaw(this, &PMenu::OnItemClicked);
@@ -117,8 +115,6 @@ void PMenu::HideView()
 
 PMenuBar::PMenuBar()
 {
-	Padding = {0};
-
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
 }

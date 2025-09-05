@@ -88,8 +88,10 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
 	MainPanel->SetVisible(true);
+	MainPanel->AddChild(ConstructWidget<PSpinner>());
 
 	// Select
+
 	SelectPanel = World->ConstructWidget<PPanel>();
 	SelectPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->AddChild(SelectPanel);
@@ -225,12 +227,19 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 				}
 			case PT_FVector3:
 				{
+					auto MultiSpinner = ConstructWidget<PWidget>();
 					auto SpinnerX = ConstructWidget<PSpinner>();
+					SpinnerX->Style.Border = PColor("#FF0000");
 					auto SpinnerY = ConstructWidget<PSpinner>();
+					SpinnerY->Style.Border = PColor("#00FF00");
 					auto SpinnerZ = ConstructWidget<PSpinner>();
-					ParamRow->AddChild(SpinnerX);
-					ParamRow->AddChild(SpinnerY);
-					ParamRow->AddChild(SpinnerZ);
+					SpinnerZ->Style.Border = PColor("#0000FF");
+					MultiSpinner->AddChild(SpinnerX);
+					MultiSpinner->AddChild(SpinnerY);
+					MultiSpinner->AddChild(SpinnerZ);
+					ParamRow->AddChild(MultiSpinner);
+
+					SelectionView->AddChild(ConstructWidget<PButton>("Test button"));
 					break;
 				}
 			default:

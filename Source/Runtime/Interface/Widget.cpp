@@ -12,9 +12,14 @@ PWidget::PWidget()
 
 bool PWidget::ProcessEvents(SInputEvent* Event)
 {
+	sSender = this;
+	if (IInputHandler::ProcessEvents(Event))
+	{
+		return true;
+	}
 	// Process all child events first so the parent
 	// doesn't consume events meant for children
-	for (const auto& Child : mChildren)
+	for (const auto Child : mChildren)
 	{
 		if (Child->ProcessEvents(Event))
 		{
@@ -23,8 +28,7 @@ bool PWidget::ProcessEvents(SInputEvent* Event)
 		}
 	}
 
-	sSender = this;
-	return IInputHandler::ProcessEvents(Event);
+	return Event->Consumed;
 }
 
 void PWidget::SetParent(PWidget* Parent)
