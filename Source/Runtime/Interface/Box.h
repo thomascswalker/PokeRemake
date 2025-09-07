@@ -8,9 +8,9 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		FRect Rect = GetGeometry();
-		Renderer->SetDrawColor(PColor::UIPanel);
+		Renderer->SetDrawColor(Style.Primary);
 		Renderer->DrawFillRect(Rect);
-		Renderer->SetDrawColor(PColor::UIBorder); // White color
+		Renderer->SetDrawColor(Style.Border); // White color
 		Renderer->DrawRect(Rect);
 		PWidget::Draw(Renderer);
 	}

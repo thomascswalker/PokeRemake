@@ -37,7 +37,7 @@ public:
 		auto  Size = GetGeometry().GetSize();
 
 		float Factor = mUp ? -1.0f : 1.0f;
-		auto  Offset = Pos + (Size / 2.0f) - (Scale / 2.0f);
+		auto  Offset = Pos + Size / 2.0f - Scale / 2.0f;
 
 		auto V0 = FVector2{ -Scale * Factor, -Scale * Factor };
 		auto V1 = FVector2{ 0.0f, Scale * Factor };
@@ -61,18 +61,21 @@ class PSpinner : public PWidget
 	DECLARE_MULTICAST_DELEGATE(DValueChangedDown);
 	DECLARE_MULTICAST_DELEGATE(DValueChanged, float);
 
+	DelegateHandle mValueChangedDelegate;
+
 public:
 	DValueChanged ValueChanged;
 
 protected:
 	float mValue = 0.0f;
-	float mMinValue = std::numeric_limits<float>::min();
+	float mMinValue = std::numeric_limits<float>::lowest();
 	float mMaxValue = std::numeric_limits<float>::max();
+	float mStepValue = 1.0f;
 
 	ESpinnerMode mMode = SM_Integer;
 
+	PBox*			mBox;
 	PText*			mText;
-	PBox*			mButtonBox;
 	PSpinnerButton* mUpButton;
 	PSpinnerButton* mDownButton;
 
@@ -87,13 +90,13 @@ protected:
 
 	void OnValueChangedUpInternal()
 	{
-		mValue = std::clamp(mValue++, mMinValue, mMaxValue);
+		mValue = std::max(mMinValue, std::min(mMaxValue, mValue + mStepValue));
 		OnValueChangedInternal();
 	}
 
 	void OnValueChangedDownInternal()
 	{
-		mValue = std::clamp(mValue--, mMinValue, mMaxValue);
+		mValue = std::max(mMinValue, std::min(mMaxValue, mValue - mStepValue));
 		OnValueChangedInternal();
 	}
 
@@ -107,42 +110,37 @@ public:
 
 		mText = ConstructWidget<PText>();
 		mText->SetText(std::format("{}", mValue));
-		//
-		// mButtonBox = ConstructWidget<PBox>();
-		// mButtonBox->SetLayoutMode(LM_Vertical);
-		// mButtonBox->SetResizeMode(RM_Fit, RM_Fit);
+
+		PBox* ButtonBox = ConstructWidget<PBox>();
+		ButtonBox->SetResizeMode(RM_Fixed, RM_Fixed);
+		ButtonBox->SetFixedSize({ mFixedSize.Y, mFixedSize.Y });
 
 		mUpButton = ConstructWidget<PSpinnerButton>(this, &PSpinner::OnValueChangedUpInternal);
 		mUpButton->SetUp(true);
-		mUpButton->SetResizeMode(RM_Fixed, RM_Fixed);
-		mUpButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y / 2 });
-		PWidget::AddChild(mUpButton);
+		ButtonBox->AddChild(mUpButton);
 
 		mDownButton = ConstructWidget<PSpinnerButton>(this, &PSpinner::OnValueChangedDownInternal);
 		mDownButton->SetUp(false);
-		mDownButton->SetResizeMode(RM_Fixed, RM_Fixed);
-		mDownButton->SetFixedSize({ mFixedSize.Y, mFixedSize.Y / 2 });
-		PWidget::AddChild(mDownButton);
+		ButtonBox->AddChild(mDownButton);
 
-		// PWidget::AddChild(mButtonBox);
+		mBox = ConstructWidget<PBox>();
+		mBox->SetResizeMode(RM_Fixed, RM_Fixed);
+		mBox->SetFixedSize({ mFixedSize.Y / 2, mFixedSize.Y });
+
+		PWidget::AddChild(mBox);
 		PWidget::AddChild(mText);
+		PWidget::AddChild(ButtonBox);
 	}
 
 	void Draw(const PRenderer* Renderer) const override
 	{
 		// Background
-		Renderer->SetDrawColor(PColor::UIBackground);
+		Renderer->SetDrawColor(Style.Background);
 		Renderer->DrawFillRect(GetGeometry());
 
 		// Outline
-		Renderer->SetDrawColor(PColor::UIBorder);
+		Renderer->SetDrawColor(Style.Border);
 		Renderer->DrawRect(GetGeometry());
-	}
-
-	void SetRange(float Min, float Max)
-	{
-		mMinValue = Min;
-		mMaxValue = Max;
 	}
 
 	float GetValue() const { return mValue; }
@@ -152,27 +150,54 @@ public:
 		OnValueChangedInternal();
 	}
 
-	bool ProcessEvents(SInputEvent* Event) override
+	void SetRange(float Min, float Max)
 	{
-		if (Event->Type == IET_MouseDown || Event->Type == IET_MouseUp)
-		{
+		mMinValue = Min;
+		mMaxValue = Max;
+	}
 
-			int Test = 5;
-		}
-		return PWidget::ProcessEvents(Event);
+	void SetStep(float Value)
+	{
+		mStepValue = Value;
+	}
+
+	void SetColor(const PColor& Color)
+	{
+		mBox->Style.Primary = Color;
 	}
 
 #if _EDITOR
-	void Bind(PParameter* Param) override
+	void Bind(PParameter* NewParam) override
 	{
 		// Set the parameter reference
-		PWidget::Bind(Param);
+		PWidget::Bind(NewParam);
 
-		// Override the existing text with the parameter's current text
+		// Override the existing value with the parameter's current value
 		mValue = Param->Get<float>();
+		OnValueChangedInternal(); // Update text to match
 
 		// Bind events from this widget to set the parameter value
-		ValueChanged.AddRaw(Param, &PParameter::Set<float>);
+		mValueChangedDelegate = ValueChanged.AddRaw(Param, &PParameter::Set<float>);
+	}
+
+	void Bind(PParameter* NewParam, int32_t Index) override
+	{
+		PWidget::Bind(NewParam, Index);
+
+		auto Ptr = static_cast<float*>(Param->GetRaw());
+		mValue = Ptr[Index];
+		OnValueChangedInternal(); // Update text to match
+
+		mValueChangedDelegate = ValueChanged.AddLambda([this, Index](float Value) {
+			Param->Set<float>(Value, Index);
+		});
+	}
+
+	void Unbind() override
+	{
+		PWidget::Unbind();
+
+		ValueChanged.Remove(mValueChangedDelegate);
 	}
 #endif
 };

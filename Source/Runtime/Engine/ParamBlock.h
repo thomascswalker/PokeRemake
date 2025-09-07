@@ -18,12 +18,11 @@ enum EParamType
 	PT_FRect
 };
 
-using TParam = std::ptrdiff_t;
-
 class PParameter
 {
 	std::string			  Name;
-	TParam				  Ref;
+	std::ptrdiff_t		  Ref;
+	int32_t				  Size;
 	EParamType			  Type;
 	const std::type_info& TypeInfo;
 
@@ -34,9 +33,11 @@ public:
 	[[nodiscard]] PParameter(const std::string& InName, const T* InValue, EParamType InType)
 		: Name(InName),
 		  Ref(reinterpret_cast<size_t>(InValue)),
+		  Size(sizeof(T) / 4),
 		  Type(InType),
 		  TypeInfo(typeid(T))
 	{
+		Size = sizeof(T) / 4;
 	}
 
 	~PParameter() = default;
@@ -44,12 +45,14 @@ public:
 	PParameter(const PParameter& other)
 		: Name{ other.Name },
 		  Ref{ other.Ref },
+		  Size(other.Size),
 		  Type{ other.Type },
 		  TypeInfo{ other.TypeInfo } {}
 
 	PParameter(PParameter&& other) noexcept
 		: Name{ std::move(other.Name) },
 		  Ref{ other.Ref },
+		  Size(other.Size),
 		  Type{ other.Type },
 		  TypeInfo{ other.TypeInfo } {}
 
@@ -73,6 +76,11 @@ public:
 		return *this;
 	}
 
+	bool IsValid()
+	{
+		return Ref != 0;
+	}
+
 	std::string GetName() const
 	{
 		return Name;
@@ -88,17 +96,19 @@ public:
 		Type = NewType;
 	}
 
-	void Set(float NewValue)
-	{
-		auto Ptr = reinterpret_cast<float*>(Ref);
-		*Ptr = NewValue;
-	}
-
 	template <typename T>
 	void Set(T NewValue)
 	{
 		auto Ptr = reinterpret_cast<T*>(Ref);
 		*Ptr = NewValue;
+	}
+
+	template <typename T>
+	void Set(T NewValue, int32_t Index)
+	{
+		ASSERT(Index < Size, "Index out of range. Wanted <" << Size << ", got " << Index);
+		auto Ptr = reinterpret_cast<T*>(Ref);
+		Ptr[Index] = NewValue;
 	}
 
 	template <typename T>
@@ -113,6 +123,19 @@ public:
 		ASSERT(typeid(T).hash_code() == TypeInfo.hash_code(),
 			   "Invalid type: wanted " << TypeInfo.name() << " got " << typeid(T).name());
 		return *reinterpret_cast<T*>(Ref);
+	}
+
+	template <typename T>
+	T Get(int32_t Index) const
+	{
+		ASSERT(Index < Size, "Index out of range. Wanted <" << Size << ", got " << Index);
+		auto Ptr = reinterpret_cast<T*>(Ref);
+		return static_cast<T>(Ptr[Index]);
+	}
+
+	void* GetRaw() const
+	{
+		return reinterpret_cast<void*>(Ref);
 	}
 
 	std::string ToString() const
@@ -178,22 +201,25 @@ public:
 class IParamBlock
 {
 protected:
-	std::map<std::string, PParameter> Parameters;
+	std::map<std::string, PParameter> mParameters;
 
 public:
-	virtual ~IParamBlock() = default;
+	virtual ~IParamBlock()
+	{
+		mParameters.clear();
+	}
 
 	template <typename T>
 	void AddParameter(const std::string& Name, T* Ref, EParamType Type)
 	{
-		Parameters.emplace(Name, PParameter{ Name, Ref, Type });
+		mParameters.emplace(Name, PParameter(Name, Ref, Type));
 	}
 
 	PParameter* GetParameter(const std::string& Name)
 	{
-		if (Parameters.contains(Name))
+		if (mParameters.contains(Name))
 		{
-			return &Parameters.at(Name);
+			return &mParameters.at(Name);
 		}
 		return nullptr;
 	}
@@ -201,7 +227,7 @@ public:
 	std::map<std::string, PParameter*> GetAllParameters() const
 	{
 		std::map<std::string, PParameter*> Result;
-		for (auto& [fst, snd] : Parameters)
+		for (auto& [fst, snd] : mParameters)
 		{
 			Result.emplace(fst, const_cast<PParameter*>(&snd));
 		}

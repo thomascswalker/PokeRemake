@@ -4,7 +4,7 @@
 
 #include "EditorData.h"
 
-DECLARE_MULTICAST_DELEGATE(DSelectionChanged, const PActor*);
+DECLARE_MULTICAST_DELEGATE(DSelectionChanged, PActor*);
 
 class PEditorGame : public PGame
 {

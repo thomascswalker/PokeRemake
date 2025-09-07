@@ -8,15 +8,15 @@
 
 struct PColor;
 template <typename T>
-class TVector2;
+struct TVector2;
 template <typename T>
-class TVector3;
+struct TVector3;
 template <typename T>
-class TVector4;
+struct TVector4;
 template <typename T>
-class TMatrix;
+struct TMatrix;
 template <typename T>
-class TRect;
+struct TRect;
 
 using FVector2 = TVector2<float>;
 using FVector3 = TVector3<float>;
@@ -24,11 +24,11 @@ using FVector4 = TVector4<float>;
 using IVector2 = TVector2<int32_t>;
 using IVector3 = TVector3<int32_t>;
 using IVector4 = TVector4<int32_t>;
-using FMatrix  = TMatrix<float>;
-using DMatrix  = TMatrix<double>;
-using IMatrix  = TMatrix<int32_t>;
-using FRect    = TRect<float>;
-using IRect    = TRect<int32_t>;
+using FMatrix = TMatrix<float>;
+using DMatrix = TMatrix<double>;
+using IMatrix = TMatrix<int32_t>;
+using FRect = TRect<float>;
+using IRect = TRect<int32_t>;
 
 /* Classes */
 

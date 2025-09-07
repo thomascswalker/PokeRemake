@@ -4,9 +4,8 @@
 
 // Row-major 4x4 Matrix
 template <typename T>
-class TMatrix
+struct TMatrix
 {
-public:
 	TVector4<T> M[4];
 
 	// Constructors

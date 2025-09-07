@@ -17,11 +17,10 @@ namespace Layout
 		{
 			return;
 		}
-		const auto	LayoutMode = Parent->GetLayoutMode();
-		auto		ChildCount = Parent->GetChildCount();
-		auto		Growable = Parent->GetGrowable(LayoutMode);
-		auto		GrowableCount = Growable.size();
-		const float Gap = 5.0f;
+		const auto LayoutMode = Parent->GetLayoutMode();
+		auto	   ChildCount = Parent->GetChildCount();
+		auto	   Growable = Parent->GetGrowableChildren(LayoutMode);
+		auto	   GrowableCount = Growable.size();
 
 		// Track the remaining width and height we can grow to within this widget
 		float RemainingWidth = Parent->W;
@@ -55,19 +54,11 @@ namespace Layout
 		// Remove width/height for the gap between each child
 		if (LayoutMode == LM_Horizontal)
 		{
-			if (GrowableCount > 1)
-			{
-				RemainingWidth /= GrowableCount - 1;
-			}
-			RemainingWidth -= (ChildCount - 1) * Gap;
+			RemainingWidth -= (ChildCount - 1) * Parent->Padding.Right;
 		}
 		else
 		{
-			if (GrowableCount > 1)
-			{
-				RemainingHeight /= GrowableCount - 1;
-			}
-			RemainingHeight -= (ChildCount - 1) * Gap;
+			RemainingHeight -= (ChildCount - 1) * Parent->Padding.Bottom;
 		}
 
 		const float GridWidth = LayoutMode == LM_Grid ? RemainingWidth / static_cast<float>(Parent->GetGridCount()) : 0;
@@ -84,7 +75,7 @@ namespace Layout
 				case LM_Horizontal:
 					if (Child->GetResizeModeW() == RM_Grow)
 					{
-						Child->W += RemainingWidth;
+						Child->W += RemainingWidth / GrowableCount;
 					}
 					if (Child->GetResizeModeH() == RM_Grow)
 					{
@@ -94,7 +85,7 @@ namespace Layout
 				case LM_Vertical:
 					if (Child->GetResizeModeH() == RM_Grow)
 					{
-						Child->H += RemainingHeight;
+						Child->H += RemainingHeight / GrowableCount;
 					}
 					if (Child->GetResizeModeW() == RM_Grow)
 					{
@@ -110,6 +101,8 @@ namespace Layout
 					{
 						Child->W += GridWidth;
 					}
+					break;
+				default:
 					break;
 			}
 			SizeGrowChildren(Child);
@@ -264,8 +257,8 @@ namespace Layout
 				case LM_Vertical:
 					DY += Child->Padding.Top;
 					break;
-				default:
 				case LM_Grid:
+				default:
 					break;
 			}
 
@@ -293,6 +286,7 @@ namespace Layout
 						DY += Child->H + Padding.Bottom;
 						DX = Padding.Right;
 					}
+				default:
 					break;
 			}
 		}
@@ -318,6 +312,14 @@ namespace Layout
 			}
 			PositionOffset(Child);
 		}
+	}
+
+	inline void Open(PWidget* Widget)
+	{
+	}
+
+	inline void Close(PWidget* Widget)
+	{
 	}
 
 	inline void Layout(PWidget* Widget)

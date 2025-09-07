@@ -14,14 +14,4 @@ public:
 		Renderer->DrawRect(Rect);
 		PWidget::Draw(Renderer);
 	}
-
-	void OnMouseEvent(SInputEvent* Event) override
-	{
-		// Consume clicks and scrolls so they don't carry over
-		// into scene objects.
-		if (Event->LeftMouseDown && GetGeometry().Contains(Event->MousePosition))
-		{
-			Event->Unconsume();
-		}
-	}
 };

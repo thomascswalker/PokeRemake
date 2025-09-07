@@ -112,17 +112,17 @@ public:
 			Renderer->DrawTexture(mTexture, TextureRect, R);
 			if (mMouseDown && mMouseOver)
 			{
-				Color = (mChecked ? mStyle.SecondaryClicked.WithAlpha(128) : PColor::Black.WithAlpha(100));
+				Color = (mChecked ? Style.SecondaryClicked.WithAlpha(128) : PColor::Black.WithAlpha(100));
 			}
 			// Hovered and not clicked
 			else if (mMouseOver)
 			{
-				Color = (mChecked ? mStyle.SecondaryHover.WithAlpha(128) : PColor::Black.WithAlpha(50));
+				Color = (mChecked ? Style.SecondaryHover.WithAlpha(128) : PColor::Black.WithAlpha(50));
 			}
 			// Not hovered and not clicked
 			else
 			{
-				Color = (mChecked ? mStyle.Secondary.WithAlpha(128) : PColor::Black.WithAlpha(0));
+				Color = (mChecked ? Style.Secondary.WithAlpha(128) : PColor::Black.WithAlpha(0));
 			}
 			Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_BLEND);
 		}
@@ -130,17 +130,17 @@ public:
 		{
 			if (mMouseDown && mMouseOver)
 			{
-				Color = (mChecked ? mStyle.SecondaryClicked : mStyle.PrimaryClicked);
+				Color = (mChecked ? Style.SecondaryClicked : Style.PrimaryClicked);
 			}
 			// Hovered and not clicked
 			else if (mMouseOver)
 			{
-				Color = (mChecked ? mStyle.SecondaryHover : mStyle.PrimaryHover);
+				Color = (mChecked ? Style.SecondaryHover : Style.PrimaryHover);
 			}
 			// Not hovered and not clicked
 			else
 			{
-				Color = (mChecked ? mStyle.Secondary : mStyle.Primary);
+				Color = (mChecked ? Style.Secondary : Style.Primary);
 			}
 		}
 
@@ -149,7 +149,7 @@ public:
 		Renderer->SetRenderDrawBlendMode(SDL_BLENDMODE_NONE);
 
 		// Border
-		Renderer->SetDrawColor(mStyle.Border);
+		Renderer->SetDrawColor(Style.Border);
 		Renderer->DrawRect(R);
 	}
 

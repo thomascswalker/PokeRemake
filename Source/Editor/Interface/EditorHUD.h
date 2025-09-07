@@ -15,7 +15,7 @@ public:
 	void	   SetupInterface();
 	PGridView* ConstructTilesetView(STileset* Tileset);
 	PGridView* ConstructActorView();
-	PWidget*   ConstructSelectionView(const PActor* Actor);
+	PWidget*   ConstructSelectionView(PActor* Actor);
 
 	// Menu bar
 	void OnNewButtonClicked();
@@ -30,7 +30,9 @@ public:
 	void OnSizeXChanged(float Value);
 	void OnSizeYChanged(float Value);
 
-	void OnSelectionChange(const PActor* Actor);
+	void OnSelectionChange(PActor* Actor);
 	void OnTilesetButtonChecked(bool State);
 	void OnActorButtonChecked(bool State);
+
+	void OnActorDestroyed(PActor* Actor);
 };

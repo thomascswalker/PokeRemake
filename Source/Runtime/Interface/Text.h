@@ -39,6 +39,8 @@ public:
 		{
 			case AL_Left:
 				{
+					// TODO: Figure out left alignment
+					TextPos.X += 5;
 					break;
 				}
 			case AL_Center:

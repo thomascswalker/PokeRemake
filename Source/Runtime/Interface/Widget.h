@@ -74,15 +74,16 @@ protected:
 	EWidgetDepth mDepth = WD_Default;
 
 	static std::shared_ptr<CSS::Stylesheet> sStylesheet;
-	SStyle									mStyle;
 
 public:
 	float	X = 0.0f;
 	float	Y = 0.0f;
 	float	W = 0.0f;
 	float	H = 0.0f;
-	FBounds Padding;
-	FBounds Margin;
+	FBounds Padding = { 0.0f };
+	FBounds Margin = { 0.0f };
+	float	Gap = 0.0f;
+	SStyle	Style;
 
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
@@ -90,7 +91,12 @@ public:
 	PWidget();
 
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
-	virtual ~PWidget() override = default;
+	virtual ~PWidget() override
+	{
+#if _EDITOR
+		Unbind();
+#endif
+	}
 
 	// General
 
@@ -182,19 +188,24 @@ public:
 		return mChildren;
 	}
 
+	template <typename P>
+	std::vector<PWidget*> GetChildren(const P& Predicate) const
+	{
+		return Containers::Filter(mChildren, Predicate);
+	}
+
 	size_t GetChildCount() const
 	{
 		return mChildren.size();
 	}
 
-	std::vector<PWidget*> GetGrowable(ELayoutMode Direction) const
+	std::vector<PWidget*> GetGrowableChildren(ELayoutMode Direction) const
 	{
-		return Containers::Filter(
-			mChildren,
-			[Direction](const PWidget* Child) {
-				return (Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow)
-					   && Child->GetVisible();
-			});
+		auto Pred = [Direction](const PWidget* Child) {
+			return (Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow)
+				   && Child->GetVisible();
+		};
+		return GetChildren(Pred);
 	}
 
 	bool IsGrowable(ELayoutMode Direction) const
@@ -397,6 +408,12 @@ protected:
 	PParameter* Param = nullptr;
 
 public:
+	bool IsValid() const
+	{
+		return Param != nullptr && Param->IsValid();
+	}
 	virtual void Bind(PParameter* NewParam) { Param = NewParam; }
+	virtual void Bind(PParameter* NewParam, int32_t Index) { Param = NewParam; }
+	virtual void Unbind() { Param = nullptr; }
 #endif
 };

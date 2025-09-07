@@ -90,6 +90,7 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetVisible(true);
 
 	// Select
+
 	SelectPanel = World->ConstructWidget<PPanel>();
 	SelectPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->AddChild(SelectPanel);
@@ -188,7 +189,7 @@ PGridView* PEditorHUD::ConstructActorView()
 	return GridView;
 }
 
-PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
+PWidget* PEditorHUD::ConstructSelectionView(PActor* Actor)
 {
 	auto SelectionView = ConstructWidget<PWidget>();
 	SelectionView->Padding = { 0 };
@@ -205,15 +206,16 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		auto ParamRow = ConstructWidget<PWidget>();
 		ParamRow->SetResizeModeH(RM_Fixed);
 		ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+		ParamRow->Padding = { 5 };
 
 		// Left-hand label
 		auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
 		ParamLabel->SetAlignment(AL_Left);
 		ParamLabel->SetResizeModeW(RM_Fixed);
 		ParamLabel->SetFixedWidth(75);
+		ParamRow->AddChild(ParamLabel);
 
 		// Right-hand widget
-		ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
 			case PT_String:
@@ -225,12 +227,27 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 				}
 			case PT_FVector3:
 				{
+					auto MultiSpinner = ConstructWidget<PWidget>();
+
 					auto SpinnerX = ConstructWidget<PSpinner>();
+					SpinnerX->SetStep(50);
+					SpinnerX->SetColor(PColor::Red);
+					SpinnerX->Bind(Param, 0);
+					MultiSpinner->AddChild(SpinnerX);
+
 					auto SpinnerY = ConstructWidget<PSpinner>();
+					SpinnerY->SetStep(50);
+					SpinnerY->SetColor(PColor::Green);
+					SpinnerY->Bind(Param, 1);
+					MultiSpinner->AddChild(SpinnerY);
+
 					auto SpinnerZ = ConstructWidget<PSpinner>();
-					ParamRow->AddChild(SpinnerX);
-					ParamRow->AddChild(SpinnerY);
-					ParamRow->AddChild(SpinnerZ);
+					SpinnerZ->SetStep(50);
+					SpinnerZ->SetColor(PColor::Blue);
+					SpinnerZ->Bind(Param, 2);
+					MultiSpinner->AddChild(SpinnerZ);
+
+					ParamRow->AddChild(MultiSpinner);
 					break;
 				}
 			default:
@@ -241,7 +258,8 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		SelectionView->AddChild(ParamRow);
 	}
 
-	SelectionView->AddChild(ConstructWidget<PSpacer>());
+	Actor->Destroyed.AddRaw(this, &PEditorHUD::OnActorDestroyed);
+
 	return SelectionView;
 }
 
@@ -363,7 +381,7 @@ void PEditorHUD::OnExitButtonClicked()
 	GetGame()->End();
 }
 
-void PEditorHUD::OnSelectionChange(const PActor* Actor)
+void PEditorHUD::OnSelectionChange(PActor* Actor)
 {
 	SelectPanel->RemoveAllChildren();
 	if (!Actor && SelectionView != nullptr)
@@ -391,4 +409,13 @@ void PEditorHUD::OnActorButtonChecked(bool State)
 	auto Sender = GetSender<PButton>();
 	auto Item = Sender->GetCustomData<SActorItem>();
 	EditorGame->SetCurrentActorItem(State ? Item : nullptr);
+}
+
+void PEditorHUD::OnActorDestroyed(PActor* Actor)
+{
+	if (Actor && SelectionView != nullptr)
+	{
+		SelectPanel->RemoveAllChildren();
+		GetWorld()->DestroyWidget(SelectionView);
+	}
 }

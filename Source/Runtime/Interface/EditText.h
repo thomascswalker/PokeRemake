@@ -57,14 +57,15 @@ public:
 		PText::Draw(Renderer);
 	}
 
-	void HandleClick(const FVector2& MousePos)
+	void HandleClick(SInputEvent* Event)
 	{
-		if (GetGeometry().Contains(MousePos))
+		if (GetGeometry().Contains(Event->MousePosition))
 		{
 			mCursorPos = mText.size();
 			mFocused = !mFocused;
 			mPrevInputContext = GetInputContext()->Type;
 			SetInputContext(IC_Text);
+			Event->Consume();
 		}
 		else if (mFocused)
 		{
@@ -79,8 +80,7 @@ public:
 		{
 			case IET_MouseUp:
 				{
-					HandleClick(Event->MousePosition);
-					Event->Consume();
+					HandleClick(Event);
 					break;
 				}
 			default:
