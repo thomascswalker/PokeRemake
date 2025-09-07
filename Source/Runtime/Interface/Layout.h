@@ -75,7 +75,7 @@ namespace Layout
 				case LM_Horizontal:
 					if (Child->GetResizeModeW() == RM_Grow)
 					{
-						Child->W += RemainingWidth;
+						Child->W += RemainingWidth / GrowableCount;
 					}
 					if (Child->GetResizeModeH() == RM_Grow)
 					{
@@ -85,7 +85,7 @@ namespace Layout
 				case LM_Vertical:
 					if (Child->GetResizeModeH() == RM_Grow)
 					{
-						Child->H += RemainingHeight;
+						Child->H += RemainingHeight / GrowableCount;
 					}
 					if (Child->GetResizeModeW() == RM_Grow)
 					{

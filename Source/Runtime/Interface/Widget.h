@@ -91,7 +91,12 @@ public:
 	PWidget();
 
 	// ReSharper disable once CppEnforceOverridingDestructorStyle
-	virtual ~PWidget() override = default;
+	virtual ~PWidget() override
+	{
+#if _EDITOR
+		Unbind();
+#endif
+	}
 
 	// General
 
@@ -403,6 +408,12 @@ protected:
 	PParameter* Param = nullptr;
 
 public:
+	bool IsValid() const
+	{
+		return Param != nullptr && Param->IsValid();
+	}
 	virtual void Bind(PParameter* NewParam) { Param = NewParam; }
+	virtual void Bind(PParameter* NewParam, int32_t Index) { Param = NewParam; }
+	virtual void Unbind() { Param = nullptr; }
 #endif
 };

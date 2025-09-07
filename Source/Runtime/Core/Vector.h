@@ -5,9 +5,8 @@
 #include "Json.h"
 
 template <typename T>
-class TVector2
+struct TVector2
 {
-public:
 	union
 	{
 		struct
@@ -31,20 +30,20 @@ public:
 		Y = Json.at(1);
 	}
 
-	TVector2(const TVector2& Other)                = default;
-	TVector2(TVector2&& Other) noexcept            = default;
-	TVector2& operator=(const TVector2& Other)     = default;
+	TVector2(const TVector2& Other) = default;
+	TVector2(TVector2&& Other) noexcept = default;
+	TVector2& operator=(const TVector2& Other) = default;
 	TVector2& operator=(TVector2&& Other) noexcept = default;
-	~TVector2()                                    = default;
+	~TVector2() = default;
 
 	TVector2 GetNormalized() const
 	{
 		T Length = this->Length();
 		if (Length == 0)
 		{
-			return {0, 0};
+			return { 0, 0 };
 		}
-		return {X / Length, Y / Length};
+		return { X / Length, Y / Length };
 	}
 
 	// Dot product
@@ -86,12 +85,12 @@ public:
 
 	static TVector2 Tile()
 	{
-		return {TILE_SIZE, TILE_SIZE};
+		return { TILE_SIZE, TILE_SIZE };
 	}
 
 	static TVector2 Block()
 	{
-		return {BLOCK_SIZE, BLOCK_SIZE};
+		return { BLOCK_SIZE, BLOCK_SIZE };
 	}
 
 	// Operators
@@ -107,22 +106,22 @@ public:
 
 	TVector2 operator+(const TVector2& Other) const
 	{
-		return {X + Other.X, Y + Other.Y};
+		return { X + Other.X, Y + Other.Y };
 	}
 
 	TVector2 operator-(const TVector2& Other) const
 	{
-		return {X - Other.X, Y - Other.Y};
+		return { X - Other.X, Y - Other.Y };
 	}
 
 	TVector2 operator*(const TVector2& Other) const
 	{
-		return {X * Other.X, Y * Other.Y};
+		return { X * Other.X, Y * Other.Y };
 	}
 
 	TVector2 operator/(const TVector2& Other) const
 	{
-		return {X / Other.X, Y / Other.Y};
+		return { X / Other.X, Y / Other.Y };
 	}
 
 	TVector2 operator+=(const TVector2& Other)
@@ -151,22 +150,22 @@ public:
 
 	TVector2 operator+(const T Scalar) const
 	{
-		return {X + Scalar, Y + Scalar};
+		return { X + Scalar, Y + Scalar };
 	}
 
 	TVector2 operator-(const T Scalar) const
 	{
-		return {X - Scalar, Y - Scalar};
+		return { X - Scalar, Y - Scalar };
 	}
 
 	TVector2 operator*(const T Scalar) const
 	{
-		return {X * Scalar, Y * Scalar};
+		return { X * Scalar, Y * Scalar };
 	}
 
 	TVector2 operator/(const T Scalar) const
 	{
-		return {X / Scalar, Y / Scalar};
+		return { X / Scalar, Y / Scalar };
 	}
 
 	TVector2 operator+=(const T Scalar)
@@ -226,9 +225,8 @@ public:
 };
 
 template <typename T>
-class TVector3
+struct TVector3
 {
-public:
 	union
 	{
 		struct
@@ -252,11 +250,11 @@ public:
 		Z = Json.array().at(2);
 	}
 
-	TVector3(const TVector3& Other)                = default;
-	TVector3(TVector3&& Other) noexcept            = default;
-	TVector3& operator=(const TVector3& Other)     = default;
+	TVector3(const TVector3& Other) = default;
+	TVector3(TVector3&& Other) noexcept = default;
+	TVector3& operator=(const TVector3& Other) = default;
 	TVector3& operator=(TVector3&& Other) noexcept = default;
-	~TVector3()                                    = default;
+	~TVector3() = default;
 
 	bool operator==(const TVector3& Other) const
 	{
@@ -273,9 +271,9 @@ public:
 		T Length = this->Length();
 		if (Length == 0)
 		{
-			return {0, 0, 0};
+			return { 0, 0, 0 };
 		}
-		return {X / Length, Y / Length, Z / Length};
+		return { X / Length, Y / Length, Z / Length };
 	}
 
 	T Dot(const TVector3& Other) const
@@ -285,7 +283,7 @@ public:
 
 	TVector3 Cross(const TVector3& Other) const
 	{
-		return {Y * Other.Z - Z * Other.Y, Z * Other.X - X * Other.Z, X * Other.Y - Y * Other.X};
+		return { Y * Other.Z - Z * Other.Y, Z * Other.X - X * Other.Z, X * Other.Y - Y * Other.X };
 	}
 
 	T Length() const
@@ -319,22 +317,22 @@ public:
 
 	TVector3 operator+(const TVector3& Other) const
 	{
-		return {X + Other.X, Y + Other.Y, Z + Other.Z};
+		return { X + Other.X, Y + Other.Y, Z + Other.Z };
 	}
 
 	TVector3 operator-(const TVector3& Other) const
 	{
-		return {X - Other.X, Y - Other.Y, Z - Other.Z};
+		return { X - Other.X, Y - Other.Y, Z - Other.Z };
 	}
 
 	TVector3 operator*(const TVector3& Other) const
 	{
-		return {X * Other.X, Y * Other.Y, Z * Other.Z};
+		return { X * Other.X, Y * Other.Y, Z * Other.Z };
 	}
 
 	TVector3 operator/(const TVector3& Other) const
 	{
-		return {X / Other.X, Y / Other.Y, Z / Other.Z};
+		return { X / Other.X, Y / Other.Y, Z / Other.Z };
 	}
 
 	TVector3 operator+=(const TVector3& Other)
@@ -359,22 +357,22 @@ public:
 
 	TVector3 operator+(const T Scalar) const
 	{
-		return {X + Scalar, Y + Scalar, Z + Scalar};
+		return { X + Scalar, Y + Scalar, Z + Scalar };
 	}
 
 	TVector3 operator-(const T Scalar) const
 	{
-		return {X - Scalar, Y - Scalar, Z - Scalar};
+		return { X - Scalar, Y - Scalar, Z - Scalar };
 	}
 
 	TVector3 operator*(const T Scalar) const
 	{
-		return {X * Scalar, Y * Scalar, Z * Scalar};
+		return { X * Scalar, Y * Scalar, Z * Scalar };
 	}
 
 	TVector3 operator/(const T Scalar) const
 	{
-		return {X / Scalar, Y / Scalar, Z / Scalar};
+		return { X / Scalar, Y / Scalar, Z / Scalar };
 	}
 
 	TVector3 operator+=(const T Scalar)
@@ -405,9 +403,8 @@ public:
 };
 
 template <typename T>
-class TVector4
+struct TVector4
 {
-public:
 	union
 	{
 		struct
@@ -432,11 +429,11 @@ public:
 		W = Json.array().at(3);
 	}
 
-	TVector4(const TVector4& Other)                = default;
-	TVector4(TVector4&& Other) noexcept            = default;
-	TVector4& operator=(const TVector4& Other)     = default;
+	TVector4(const TVector4& Other) = default;
+	TVector4(TVector4&& Other) noexcept = default;
+	TVector4& operator=(const TVector4& Other) = default;
 	TVector4& operator=(TVector4&& Other) noexcept = default;
-	~TVector4()                                    = default;
+	~TVector4() = default;
 
 	bool operator==(const TVector4& Other) const
 	{
@@ -453,9 +450,9 @@ public:
 		T Length = this->Length();
 		if (Length == 0)
 		{
-			return {0, 0, 0, 0};
+			return { 0, 0, 0, 0 };
 		}
-		return {X / Length, Y / Length, Z / Length, W / Length};
+		return { X / Length, Y / Length, Z / Length, W / Length };
 	}
 
 	T Dot(const TVector4& Other) const
@@ -505,12 +502,12 @@ public:
 
 	TVector4 operator*(const TVector4& Other) const
 	{
-		return {X * Other.X, Y * Other.Y, Z * Other.Z, W * Other.W};
+		return { X * Other.X, Y * Other.Y, Z * Other.Z, W * Other.W };
 	}
 
 	TVector4 operator/(const TVector4& Other) const
 	{
-		return {X / Other.X, Y / Other.Y, Z / Other.Z, W / Other.W};
+		return { X / Other.X, Y / Other.Y, Z / Other.Z, W / Other.W };
 	}
 
 	TVector4 operator+=(const TVector4& Other)
@@ -535,22 +532,22 @@ public:
 
 	TVector4 operator+(const T Scalar) const
 	{
-		return {X + Scalar, Y + Scalar, Z + Scalar, W + Scalar};
+		return { X + Scalar, Y + Scalar, Z + Scalar, W + Scalar };
 	}
 
 	TVector4 operator-(const T Scalar) const
 	{
-		return {X - Scalar, Y - Scalar, Z - Scalar, W - Scalar};
+		return { X - Scalar, Y - Scalar, Z - Scalar, W - Scalar };
 	}
 
 	TVector4 operator*(const T Scalar) const
 	{
-		return {X * Scalar, Y * Scalar, Z * Scalar, W * Scalar};
+		return { X * Scalar, Y * Scalar, Z * Scalar, W * Scalar };
 	}
 
 	TVector4 operator/(const T Scalar) const
 	{
-		return {X / Scalar, Y / Scalar, Z / Scalar, W / Scalar};
+		return { X / Scalar, Y / Scalar, Z / Scalar, W / Scalar };
 	}
 
 	TVector4 operator+=(const T Scalar)

@@ -20,8 +20,6 @@
 class PActor;
 class PComponent;
 
-DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
-
 struct SActorItem
 {
 	std::string Name;
@@ -36,6 +34,10 @@ class PActor :
 	public PObject,
 	public IInputHandler
 {
+
+	DECLARE_MULTICAST_DELEGATE(DClicked, PActor*);
+	DECLARE_MULTICAST_DELEGATE(DDestroyed, PActor*);
+
 protected:
 	PActor*					 mParent = nullptr;
 	FVector3				 mPosition;
@@ -56,6 +58,7 @@ public:
 	DHoverBegin HoverBegin;
 	DHoverEnd	HoverEnd;
 	DClicked	Clicked;
+	DDestroyed	Destroyed;
 
 	PActor() = default;
 

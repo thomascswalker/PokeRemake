@@ -5,9 +5,8 @@
 #include "CoreFwd.h"
 
 template <typename T>
-class TRect
+struct TRect
 {
-public:
 	T X;
 	T Y;
 	T W;
@@ -60,19 +59,19 @@ public:
 	bool Contains(const TRect& Other) const
 	{
 		return Other.X >= X && Other.X + Other.W < X + W && Other.Y >= Y
-			&& Other.Y + Other.H < Y + H;
+			   && Other.Y + Other.H < Y + H;
 	}
 
 	bool Intersects(const TRect& Other) const
 	{
 		return !(Other.X > X + W || Other.X + Other.W < X || Other.Y > Y + H
-			|| Other.Y + Other.H < Y);
+				 || Other.Y + Other.H < Y);
 	}
 
 	bool Overlaps(const TRect& Other) const
 	{
 		return !(Other.X >= X + W || Other.X + Other.W <= X || Other.Y >= Y + H
-			|| Other.Y + Other.H <= Y);
+				 || Other.Y + Other.H <= Y);
 	}
 
 	bool operator==(const TRect& Other) const
@@ -122,36 +121,36 @@ public:
 
 	SDL_FRect ToSDL_FRect() const
 	{
-		return {(float)X, (float)Y, (float)W, (float)H};
+		return { (float)X, (float)Y, (float)W, (float)H };
 	}
 
 	SDL_Rect ToSDL_Rect() const
 	{
-		return {(int)X, (int)Y, (int)W, (int)H};
+		return { (int)X, (int)Y, (int)W, (int)H };
 	}
 
 	static TRect Tile()
 	{
-		return {0, 0, TILE_SIZE, TILE_SIZE};
+		return { 0, 0, TILE_SIZE, TILE_SIZE };
 	}
 
 	static TRect Block()
 	{
-		return {0, 0, BLOCK_SIZE, BLOCK_SIZE};
+		return { 0, 0, BLOCK_SIZE, BLOCK_SIZE };
 	}
 
 	static TRect TileItem(const FVector2& Position)
 	{
-		return {Position.X * 8.0f, Position.Y * 8.0f, 8, 8};
+		return { Position.X * 8.0f, Position.Y * 8.0f, 8, 8 };
 	}
 
 	static TRect BlockItem(const FVector2& Position)
 	{
-		return {Position.X * 8.0f, Position.Y * 8.0f, 16, 16};
+		return { Position.X * 8.0f, Position.Y * 8.0f, 16, 16 };
 	}
 
 	static TRect SpriteItem(const FVector2& Position)
 	{
-		return {Position.X * 16.0f, Position.Y * 16.0f, 16, 16};
+		return { Position.X * 16.0f, Position.Y * 16.0f, 16, 16 };
 	}
 };

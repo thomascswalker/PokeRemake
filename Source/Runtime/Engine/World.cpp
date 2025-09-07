@@ -73,6 +73,7 @@ void PWorld::DestroyObject(PObject* Object)
 void PWorld::DestroyActor(PActor* Actor)
 {
 	mDestroyableActors.emplace_back(Actor);
+	Actor->Destroyed.Broadcast(Actor);
 	for (auto Child : Actor->GetChildren())
 	{
 		DestroyActor(Child);
