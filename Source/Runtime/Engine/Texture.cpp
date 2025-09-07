@@ -1,16 +1,17 @@
 #include "Texture.h"
+
 #include "Core/Files.h"
 #include "Core/Logging.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG // generate user friendly error messages
 
+#include <cstring>
+#include <map>
+
 #include "Core/Containers.h"
 #include "Renderer/Renderer.h"
 #include "stb/stb_image.h"
-
-#include <cstring>
-#include <map>
 
 TextureMap TextureManager::sTextures = {};
 
@@ -24,18 +25,16 @@ PTexture::~PTexture() {}
 
 PTexture* TextureManager::Load(const std::string& FileName)
 {
-	LogDebug("Finding texture: {}", FileName.c_str());
 	const auto AbsFileName = Files::FindFile(FileName);
 	if (AbsFileName.empty())
 	{
 		LogError("File not found: {}", FileName.c_str());
 		return nullptr;
 	}
-	LogDebug("Loading texture: {}", AbsFileName.c_str());
 
-	int Width, Height, Channels;
-	int DesiredChannelCount = 4;
-	void* Data              = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
+	int	  Width, Height, Channels;
+	int	  DesiredChannelCount = 4;
+	void* Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
 
 	if (!Data)
 	{
@@ -49,7 +48,6 @@ PTexture* TextureManager::Load(const std::string& FileName)
 		return nullptr;
 	}
 
-	LogDebug("Texture {} loaded", FileName.c_str());
 	return NewTexture;
 }
 
@@ -64,11 +62,11 @@ void TextureManager::LoadAllTextures()
 
 bool TextureManager::LoadSDL(PTexture* Texture)
 {
-	const auto Renderer   = GetRenderer()->GetSDLRenderer();
-	const auto Width      = Texture->GetWidth();
-	const auto Height     = Texture->GetHeight();
+	const auto Renderer = GetRenderer()->GetSDLRenderer();
+	const auto Width = Texture->GetWidth();
+	const auto Height = Texture->GetHeight();
 	const auto SDLTexture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
-	                                          SDL_TEXTUREACCESS_STATIC, Width, Height);
+											  SDL_TEXTUREACCESS_STATIC, Width, Height);
 
 	if (!SDLTexture)
 	{
@@ -80,7 +78,6 @@ bool TextureManager::LoadSDL(PTexture* Texture)
 	if (SDL_UpdateTexture(SDLTexture, &Source, Texture->GetData(), Texture->GetPitch()))
 	{
 		Texture->mSDLTexture = SDLTexture;
-		LogDebug("Updated SDL Texture.");
 		return true;
 	}
 	LogError("Unable to update SDL texture: {}", SDL_GetError());
@@ -89,7 +86,6 @@ bool TextureManager::LoadSDL(PTexture* Texture)
 
 void TextureManager::UnloadSDL()
 {
-	LogDebug("Destroying all SDL textures");
 	for (const auto& V : GetTextures() | std::views::values)
 	{
 		SDL_DestroyTexture(V->GetSDLTexture());
@@ -118,10 +114,9 @@ PTexture* TextureManager::Get(const std::string& Name)
 
 PTexture* TextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
 {
-	PTexture Tex;
+	PTexture   Tex;
 	const auto DataSize = Width * Height * Channels;
-	Tex.mData           = static_cast<uint8_t*>(malloc(DataSize));
-	LogDebug("Copying texture data into new texture {}", FileName.c_str());
+	Tex.mData = static_cast<uint8_t*>(malloc(DataSize));
 	memcpy(Tex.mData, Data, DataSize);
 
 	if (!Tex.mData)
@@ -131,10 +126,10 @@ PTexture* TextureManager::Create(const std::string& FileName, float Width, float
 	}
 
 	auto BaseName = Files::SplitExt(FileName);
-	Tex.mName     = BaseName;
-	Tex.mPath     = Files::DirName(FileName);
-	Tex.mWidth    = Width;
-	Tex.mHeight   = Height;
+	Tex.mName = BaseName;
+	Tex.mPath = Files::DirName(FileName);
+	Tex.mWidth = Width;
+	Tex.mHeight = Height;
 	Tex.mChannels = Channels;
 
 	if (!LoadSDL(&Tex))

@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "Interface/ButtonGroup.h"
 #include "Interface/EditText.h"
+#include "Interface/Group.h"
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
@@ -24,7 +25,7 @@ static PWidget*							 MainPanel = nullptr;
 static PPanel*							 SelectPanel = nullptr;
 static PPanel*							 TilePanel = nullptr;
 static PPanel*							 ActorPanel = nullptr;
-static PWidget*							 SelectionView = nullptr;
+static PWidget*							 ActorParamView = nullptr;
 static std::map<std::string, PGridView*> TilesetViews;
 static PButtonGroup*					 TilesetViewButtonGroup = nullptr;
 static PButtonGroup*					 ActorViewButtonGroup = nullptr;
@@ -189,78 +190,102 @@ PGridView* PEditorHUD::ConstructActorView()
 	return GridView;
 }
 
-PWidget* PEditorHUD::ConstructSelectionView(PActor* Actor)
+PWidget* PEditorHUD::ConstructParamRow(PParameter* Param)
 {
-	auto SelectionView = ConstructWidget<PWidget>();
-	SelectionView->Padding = { 0 };
-	SelectionView->SetLayoutMode(LM_Vertical);
+	// Row
+	auto ParamRow = ConstructWidget<PWidget>();
+	ParamRow->SetResizeModeH(RM_Fixed);
+	ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
+	ParamRow->Padding = { 5 };
+
+	// Left-hand label
+	auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
+	ParamLabel->SetAlignment(AL_Left);
+	ParamLabel->SetResizeModeW(RM_Fixed);
+	ParamLabel->SetFixedWidth(75);
+	ParamRow->AddChild(ParamLabel);
+
+	// Right-hand widget
+	switch (Param->GetType())
+	{
+		case PT_String:
+			{
+				auto EditText = ConstructWidget<PEditText>();
+				EditText->Bind(Param);
+				ParamRow->AddChild(EditText);
+				break;
+			}
+		case PT_FVector3:
+			{
+				auto MultiSpinner = ConstructWidget<PWidget>();
+
+				auto SpinnerX = ConstructWidget<PSpinner>();
+				SpinnerX->SetStep(50);
+				SpinnerX->SetColor(PColor::Red);
+				SpinnerX->Bind(Param, 0);
+				MultiSpinner->AddChild(SpinnerX);
+
+				auto SpinnerY = ConstructWidget<PSpinner>();
+				SpinnerY->SetStep(50);
+				SpinnerY->SetColor(PColor::Green);
+				SpinnerY->Bind(Param, 1);
+				MultiSpinner->AddChild(SpinnerY);
+
+				auto SpinnerZ = ConstructWidget<PSpinner>();
+				SpinnerZ->SetStep(50);
+				SpinnerZ->SetColor(PColor::Blue);
+				SpinnerZ->Bind(Param, 2);
+				MultiSpinner->AddChild(SpinnerZ);
+
+				ParamRow->AddChild(MultiSpinner);
+				break;
+			}
+		default:
+			break;
+	}
+
+	// Add row
+	return ParamRow;
+}
+
+PWidget* PEditorHUD::ConstructActorParamView(PActor* Actor)
+{
+	auto ActorParamView = ConstructWidget<PWidget>();
+	ActorParamView->Padding = { 0 };
+	ActorParamView->SetLayoutMode(LM_Vertical);
 
 	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
 	Label->SetResizeModeH(RM_Fixed);
 	Label->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
-	SelectionView->AddChild(Label);
+	ActorParamView->AddChild(Label);
 
 	for (auto [Name, Param] : Actor->GetAllParameters())
 	{
-		// Row
-		auto ParamRow = ConstructWidget<PWidget>();
-		ParamRow->SetResizeModeH(RM_Fixed);
-		ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
-		ParamRow->Padding = { 5 };
-
-		// Left-hand label
-		auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
-		ParamLabel->SetAlignment(AL_Left);
-		ParamLabel->SetResizeModeW(RM_Fixed);
-		ParamLabel->SetFixedWidth(75);
-		ParamRow->AddChild(ParamLabel);
-
-		// Right-hand widget
-		switch (Param->GetType())
-		{
-			case PT_String:
-				{
-					auto EditText = ConstructWidget<PEditText>();
-					EditText->Bind(Param);
-					ParamRow->AddChild(EditText);
-					break;
-				}
-			case PT_FVector3:
-				{
-					auto MultiSpinner = ConstructWidget<PWidget>();
-
-					auto SpinnerX = ConstructWidget<PSpinner>();
-					SpinnerX->SetStep(50);
-					SpinnerX->SetColor(PColor::Red);
-					SpinnerX->Bind(Param, 0);
-					MultiSpinner->AddChild(SpinnerX);
-
-					auto SpinnerY = ConstructWidget<PSpinner>();
-					SpinnerY->SetStep(50);
-					SpinnerY->SetColor(PColor::Green);
-					SpinnerY->Bind(Param, 1);
-					MultiSpinner->AddChild(SpinnerY);
-
-					auto SpinnerZ = ConstructWidget<PSpinner>();
-					SpinnerZ->SetStep(50);
-					SpinnerZ->SetColor(PColor::Blue);
-					SpinnerZ->Bind(Param, 2);
-					MultiSpinner->AddChild(SpinnerZ);
-
-					ParamRow->AddChild(MultiSpinner);
-					break;
-				}
-			default:
-				continue;
-		}
-
-		// Add row
-		SelectionView->AddChild(ParamRow);
+		ActorParamView->AddChild(ConstructParamRow(Param));
 	}
+
+	std::vector<std::string> Names;
+	for (auto Comp : Actor->GetComponents())
+	{
+		Names.push_back(Comp->GetClassName());
+	}
+	LogError("Components: {}", String::Join(Names, ", "));
+
+	for (auto Comp : Actor->GetComponents())
+	{
+		auto CompParamView = ConstructWidget<PGroup>(Comp->GetClassName());
+		for (auto [Name, Param] : Comp->GetAllParameters())
+		{
+			CompParamView->AddChild(ConstructParamRow(Param));
+		}
+		ActorParamView->AddChild(CompParamView);
+	}
+
+	ActorParamView->AddChild(ConstructWidget<PSpacer>());
 
 	Actor->Destroyed.AddRaw(this, &PEditorHUD::OnActorDestroyed);
 
-	return SelectionView;
+	return ActorParamView;
 }
 
 void PEditorHUD::OnSizeXChanged(float Value)
@@ -384,14 +409,14 @@ void PEditorHUD::OnExitButtonClicked()
 void PEditorHUD::OnSelectionChange(PActor* Actor)
 {
 	SelectPanel->RemoveAllChildren();
-	if (!Actor && SelectionView != nullptr)
+	if (!Actor && ActorParamView != nullptr)
 	{
-		GetWorld()->DestroyWidget(SelectionView);
+		GetWorld()->DestroyWidget(ActorParamView);
 	}
 	else
 	{
-		SelectionView = ConstructSelectionView(Actor);
-		SelectPanel->AddChild(SelectionView);
+		ActorParamView = ConstructActorParamView(Actor);
+		SelectPanel->AddChild(ActorParamView);
 	}
 }
 
@@ -413,9 +438,9 @@ void PEditorHUD::OnActorButtonChecked(bool State)
 
 void PEditorHUD::OnActorDestroyed(PActor* Actor)
 {
-	if (Actor && SelectionView != nullptr)
+	if (Actor && ActorParamView != nullptr)
 	{
 		SelectPanel->RemoveAllChildren();
-		GetWorld()->DestroyWidget(SelectionView);
+		GetWorld()->DestroyWidget(ActorParamView);
 	}
 }

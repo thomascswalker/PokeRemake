@@ -16,3 +16,12 @@ FVector2 PComponent::GetPosition() const
 	LogDebug("Parent is invalid");
 	return FVector2(0, 0);
 }
+
+#if _EDITOR
+
+void PComponent::InitializeParameters()
+{
+	AddParameter("Name", &mInternalName, PT_String);
+}
+
+#endif

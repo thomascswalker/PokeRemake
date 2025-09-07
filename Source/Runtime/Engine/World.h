@@ -127,6 +127,11 @@ public:
 		}
 		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Owner->AddComponent(Component.get());
+
+#if _EDITOR
+		Component->InitializeParameters();
+#endif
+
 		mComponents.push_back(Component);
 		return Component.get();
 	}

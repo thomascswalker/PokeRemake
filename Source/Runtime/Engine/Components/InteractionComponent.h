@@ -30,4 +30,8 @@ public:
 
     void Interact(PPlayerCharacter* Player);
     void Deserialize(const JSON& Data) override;
+
+#if _EDITOR
+	void InitializeParameters() override;
+#endif
 };
