@@ -213,9 +213,9 @@ PWidget* PEditorHUD::ConstructSelectionView(PActor* Actor)
 		ParamLabel->SetAlignment(AL_Left);
 		ParamLabel->SetResizeModeW(RM_Fixed);
 		ParamLabel->SetFixedWidth(75);
+		ParamRow->AddChild(ParamLabel);
 
 		// Right-hand widget
-		ParamRow->AddChild(ParamLabel);
 		switch (Param->GetType())
 		{
 			case PT_String:
