@@ -37,7 +37,7 @@ public:
 		auto  Size = GetGeometry().GetSize();
 
 		float Factor = mUp ? -1.0f : 1.0f;
-		auto  Offset = Pos + (Size / 2.0f) - (Scale / 2.0f);
+		auto  Offset = Pos + Size / 2.0f - Scale / 2.0f;
 
 		auto V0 = FVector2{ -Scale * Factor, -Scale * Factor };
 		auto V1 = FVector2{ 0.0f, Scale * Factor };

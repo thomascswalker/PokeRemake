@@ -234,12 +234,12 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 					SpinnerY->Style.Border = PColor("#00FF00");
 					auto SpinnerZ = ConstructWidget<PSpinner>();
 					SpinnerZ->Style.Border = PColor("#0000FF");
+
 					MultiSpinner->AddChild(SpinnerX);
 					MultiSpinner->AddChild(SpinnerY);
 					MultiSpinner->AddChild(SpinnerZ);
-					ParamRow->AddChild(MultiSpinner);
 
-					SelectionView->AddChild(ConstructWidget<PButton>("Test button"));
+					ParamRow->AddChild(MultiSpinner);
 					break;
 				}
 			default:
@@ -250,7 +250,7 @@ PWidget* PEditorHUD::ConstructSelectionView(const PActor* Actor)
 		SelectionView->AddChild(ParamRow);
 	}
 
-	SelectionView->AddChild(ConstructWidget<PSpacer>());
+	SelectionView->AddChild(ConstructWidget<PButton>("Test button"));
 	return SelectionView;
 }
 
