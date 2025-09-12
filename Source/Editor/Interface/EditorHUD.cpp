@@ -12,11 +12,9 @@
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
-#include "Interface/Spacer.h"
 #include "Interface/Spinner.h"
 
 #include "EditorGame.h"
-#include "MultiSpinner.h"
 
 static PWorld*		World = nullptr;
 static PEditorGame* EditorGame = nullptr;
@@ -93,6 +91,7 @@ void PEditorHUD::SetupInterface()
 	// Select
 
 	SelectPanel = World->ConstructWidget<PPanel>();
+	SelectPanel->SetResizeModeH(RM_Fit);
 	SelectPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->AddChild(SelectPanel);
 
@@ -196,7 +195,6 @@ PWidget* PEditorHUD::ConstructParamRow(PParameter* Param)
 	auto ParamRow = ConstructWidget<PWidget>();
 	ParamRow->SetResizeModeH(RM_Fixed);
 	ParamRow->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
-	ParamRow->Padding = { 5 };
 
 	// Left-hand label
 	auto ParamLabel = ConstructWidget<PText>(std::format("{}: ", Param->GetName()));
@@ -248,44 +246,19 @@ PWidget* PEditorHUD::ConstructParamRow(PParameter* Param)
 	return ParamRow;
 }
 
-PWidget* PEditorHUD::ConstructActorParamView(PActor* Actor)
+PWidget* PEditorHUD::ConstructParamView(const IParamBlock* ParamBlock, const std::string& Title)
 {
-	auto ActorParamView = ConstructWidget<PWidget>();
-	ActorParamView->Padding = { 0 };
-	ActorParamView->SetLayoutMode(LM_Vertical);
+	auto ParamBlockView = ConstructWidget<PBox>();
+	ParamBlockView->Padding = { 5 };
+	ParamBlockView->SetLayoutMode(LM_Vertical);
+	ParamBlockView->SetResizeModeH(RM_Fit);
 
-	auto Label = ConstructWidget<PText>(Actor->GetDisplayName());
-	Label->SetResizeModeH(RM_Fixed);
-	Label->SetFixedHeight(DEFAULT_WIDGET_HEIGHT);
-	ActorParamView->AddChild(Label);
-
-	for (auto [Name, Param] : Actor->GetAllParameters())
+	for (auto [Name, Param] : ParamBlock->GetAllParameters())
 	{
-		ActorParamView->AddChild(ConstructParamRow(Param));
+		ParamBlockView->AddChild(ConstructParamRow(Param));
 	}
 
-	std::vector<std::string> Names;
-	for (auto Comp : Actor->GetComponents())
-	{
-		Names.push_back(Comp->GetClassName());
-	}
-	LogError("Components: {}", String::Join(Names, ", "));
-
-	for (auto Comp : Actor->GetComponents())
-	{
-		auto CompParamView = ConstructWidget<PGroup>(Comp->GetClassName());
-		for (auto [Name, Param] : Comp->GetAllParameters())
-		{
-			CompParamView->AddChild(ConstructParamRow(Param));
-		}
-		ActorParamView->AddChild(CompParamView);
-	}
-
-	ActorParamView->AddChild(ConstructWidget<PSpacer>());
-
-	Actor->Destroyed.AddRaw(this, &PEditorHUD::OnActorDestroyed);
-
-	return ActorParamView;
+	return ParamBlockView;
 }
 
 void PEditorHUD::OnSizeXChanged(float Value)
@@ -412,11 +385,30 @@ void PEditorHUD::OnSelectionChange(PActor* Actor)
 	if (!Actor && ActorParamView != nullptr)
 	{
 		GetWorld()->DestroyWidget(ActorParamView);
+		return;
 	}
-	else
+
+	// Destroy this widget when the actor is destroyed
+	Actor->Destroyed.AddRaw(this, &PEditorHUD::OnActorDestroyed);
+
+	ActorParamView = ConstructParamView(Actor, Actor->GetClassName());
+	SelectPanel->AddChild(ActorParamView);
+
+	if (Actor->GetComponentsCount() > 0)
 	{
-		ActorParamView = ConstructActorParamView(Actor);
-		SelectPanel->AddChild(ActorParamView);
+		auto CompGroup = ConstructWidget<PBox>();
+		CompGroup->Padding = { 5 };
+		CompGroup->SetLayoutMode(LM_Vertical);
+		CompGroup->SetResizeModeH(RM_Fit);
+		CompGroup->SetResizeModeW(RM_Grow);
+
+		for (auto Comp : Actor->GetComponents())
+		{
+			auto CompParamView = ConstructParamView(Comp, Comp->GetClassName());
+			CompGroup->AddChild(CompParamView);
+		}
+
+		SelectPanel->AddChild(CompGroup);
 	}
 }
 

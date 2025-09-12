@@ -16,7 +16,7 @@ public:
 	PGridView* ConstructTilesetView(STileset* Tileset);
 	PGridView* ConstructActorView();
 	PWidget*   ConstructParamRow(PParameter* Param);
-	PWidget*   ConstructActorParamView(PActor* Actor);
+	PWidget*   ConstructParamView(const IParamBlock* ParamBlock, const std::string& Title);
 
 	// Menu bar
 	void OnNewButtonClicked();

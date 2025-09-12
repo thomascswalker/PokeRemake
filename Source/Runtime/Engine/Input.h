@@ -9,6 +9,19 @@
 DECLARE_MULTICAST_DELEGATE(DHoverBegin);
 DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 
+inline TMap<char, char> gSpecialCharMap = {
+	{ '1', '!' },
+	{ '2', '@' },
+	{ '3', '#' },
+	{ '4', '$' },
+	{ '5', '%' },
+	{ '6', '^' },
+	{ '7', '&' },
+	{ '8', '*' },
+	{ '9', '(' },
+	{ '0', ')' },
+};
+
 enum EInputEventType
 {
 	IET_None,
@@ -36,6 +49,10 @@ struct SInputEvent
 	float	 MouseScroll = 0.0f;
 	int		 KeyDown = 0;
 	int		 KeyUp = 0;
+
+	static bool ShiftDown;
+	static bool ControlDown;
+	static bool AltDown;
 
 	// Convert from an SDL_Event to a native SInputEvent
 	SInputEvent(SDL_Event* SDLEvent)
@@ -116,12 +133,46 @@ struct SInputEvent
 				{
 					Type = IET_KeyDown;
 					KeyDown = Event->key.key;
+					switch (Event->key.key)
+					{
+						case SDLK_RSHIFT:
+						case SDLK_LSHIFT:
+							ShiftDown = true;
+							break;
+						case SDLK_RCTRL:
+						case SDLK_LCTRL:
+							ControlDown = true;
+							break;
+						case SDLK_RALT:
+						case SDLK_LALT:
+							AltDown = true;
+							break;
+						default:
+							break;
+					}
 					break;
 				}
 			case SDL_EVENT_KEY_UP:
 				{
 					Type = IET_KeyUp;
 					KeyUp = Event->key.key;
+					switch (Event->key.key)
+					{
+						case SDLK_RSHIFT:
+						case SDLK_LSHIFT:
+							ShiftDown = false;
+							break;
+						case SDLK_RCTRL:
+						case SDLK_LCTRL:
+							ControlDown = false;
+							break;
+						case SDLK_RALT:
+						case SDLK_LALT:
+							AltDown = false;
+							break;
+						default:
+							break;
+					}
 					break;
 				}
 			default:

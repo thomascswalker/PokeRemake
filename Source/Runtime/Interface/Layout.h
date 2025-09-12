@@ -13,10 +13,6 @@ namespace Layout
 	// Grow this widget's children to fit the space of this widget
 	inline void SizeGrowChildren(const PWidget* Parent)
 	{
-		if (!Parent->GetVisible())
-		{
-			return;
-		}
 		const auto LayoutMode = Parent->GetLayoutMode();
 		auto	   ChildCount = Parent->GetChildCount();
 		auto	   Growable = Parent->GetGrowableChildren(LayoutMode);
@@ -111,9 +107,14 @@ namespace Layout
 
 	inline void SizeFit(PWidget* Widget)
 	{
-		if (!Widget->GetVisible())
+		// Fit children prior to fitting this widget
+		for (const auto Child : Widget->GetChildren())
 		{
-			return;
+			if (!Child->GetVisible())
+			{
+				continue;
+			}
+			SizeFit(Child);
 		}
 
 		const auto RMW = Widget->GetResizeModeW();
@@ -121,15 +122,13 @@ namespace Layout
 
 		if (RMW == RM_Fit || RMH == RM_Fit)
 		{
-			const auto Padding = Widget->Padding;
-
 			if (RMW == RM_Fit)
 			{
-				Widget->W += Padding.Right;
+				Widget->W += Widget->Padding.Right;
 			}
 			if (RMH == RM_Fit)
 			{
-				Widget->H += Padding.Bottom;
+				Widget->H += Widget->Padding.Bottom;
 			}
 
 			float SumW = 0;
@@ -143,10 +142,10 @@ namespace Layout
 				{
 					continue;
 				}
-				SumW += Child->W + Padding.Right;
-				SumH += Child->H + Padding.Bottom;
-				LargestW = std::max(LargestW, Child->W + Padding.Right);
-				LargestH = std::max(LargestH, Child->H + Padding.Bottom);
+				SumW += Child->W + Widget->Padding.Right;
+				SumH += Child->H + Widget->Padding.Bottom;
+				LargestW = std::max(LargestW, Child->W + Widget->Padding.Right);
+				LargestH = std::max(LargestH, Child->H + Widget->Padding.Bottom);
 			}
 
 			switch (Widget->GetLayoutMode())
@@ -154,45 +153,31 @@ namespace Layout
 				case LM_Horizontal:
 					if (RMW == RM_Fit)
 					{
-						Widget->W = SumW + Padding.Right;
+						Widget->W = SumW + Widget->Padding.Right;
 					}
 					if (RMH == RM_Fit)
 					{
-						Widget->H = LargestH + Padding.Bottom;
+						Widget->H = LargestH + Widget->Padding.Bottom;
 					}
 					break;
 				case LM_Vertical:
 					if (RMW == RM_Fit)
 					{
-						Widget->W = LargestW + Padding.Right;
+						Widget->W = LargestW + Widget->Padding.Right;
 					}
 					if (RMH == RM_Fit)
 					{
-						Widget->H = SumH + Padding.Bottom;
+						Widget->H = SumH + Widget->Padding.Bottom;
 					}
 					break;
 				case LM_Grid:
 					break;
 			}
 		}
-
-		for (const auto Child : Widget->GetChildren())
-		{
-			if (!Child->GetVisible())
-			{
-				continue;
-			}
-			SizeFit(Child);
-		}
 	}
 
 	inline void SizeFixed(PWidget* Widget)
 	{
-		if (!Widget->GetVisible())
-		{
-			return;
-		}
-
 		// All widgets initialize at their fixed size.
 
 		const auto Size = Widget->GetFixedSize();
@@ -211,11 +196,6 @@ namespace Layout
 
 	inline void Position(const PWidget* Widget)
 	{
-		if (!Widget->GetVisible())
-		{
-			return;
-		}
-
 		const auto Children = Widget->GetChildren();
 
 		// Full geometry of the parent widget
@@ -228,8 +208,8 @@ namespace Layout
 		const auto Padding = Widget->Padding;
 
 		// Change in X and Y as we lay out children
-		float DX = 0;
-		float DY = 0;
+		float DX = Widget->Padding.Left;
+		float DY = Widget->Padding.Top;
 
 		const auto LayoutMode = Widget->GetLayoutMode();
 
@@ -294,11 +274,6 @@ namespace Layout
 
 	inline void PositionOffset(PWidget* Widget)
 	{
-		if (!Widget->GetVisible())
-		{
-			return;
-		}
-
 		const auto Children = Widget->GetChildren();
 
 		Widget->X += Widget->GetOffset().X;
@@ -331,8 +306,8 @@ namespace Layout
 
 		// Size
 		SizeFixed(Widget);
-		SizeFit(Widget);
 		SizeGrowChildren(Widget);
+		SizeFit(Widget);
 
 		// Position
 		Position(Widget);

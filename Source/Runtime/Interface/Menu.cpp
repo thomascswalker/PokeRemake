@@ -6,16 +6,18 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 	: mDelegate(InDelegate),
 	  mData(InData)
 {
+	SetFloating(true);
+	SetVisible(false);
 	mLayoutMode = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
-	mFloating = true;
 	Padding = { 0 };
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < mData->size(); Index++)
 	{
 		auto Item = &InData->at(Index);
+		Item->Index = Index;
 
 		// Construct a separator
 		if (Item->IsSeparator)
@@ -23,18 +25,21 @@ PMenuView::PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDel
 			PHDivider* Separator = ConstructWidget<PHDivider>();
 			PWidget::AddChild(Separator);
 		}
-		// Otherwise construct the button for this menu item
 		else
 		{
+			// Otherwise construct the button for this menu item
 			PButton* Button = ConstructWidget<PButton>(Item->Name);
 			Button->SetResizeModeW(RM_Grow);
 			Button->SetResizeModeH(RM_Fixed);
 			Button->SetFixedHeight(20);
 			Button->Padding = { 0 };
 
-			Item->Index = Index;
+			// Set this button's custom data to the current item
 			Button->SetCustomData(Item);
-			Button->Clicked.AddLambda([=] {
+
+			// Callback for when the menu item is clicked, we broadcast the delegate
+			// passed in from the PMenu parent.
+			Button->Clicked.AddLambda([InDelegate] {
 				InDelegate->Broadcast();
 			});
 			PWidget::AddChild(Button);
@@ -80,11 +85,10 @@ PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 	mFixedSize.X = 80;
 	mCheckable = true;
 
-	// HoverEnd.AddRaw(this, &PMenu::HideView);
 	ItemClicked.AddRaw(this, &PMenu::OnItemClicked);
 
 	mView = GetWorld()->ConstructWidget<PMenuView>(&mItems, &ItemClicked);
-	mView->SetVisible(false);
+	mView->SetVisible(false, true);
 	mView->mMenu = this;
 }
 
@@ -99,7 +103,7 @@ void PMenu::ShowView(bool State)
 	{
 		return;
 	}
-	mView->SetVisible(true);
+	mView->SetVisible(true, true);
 	PWidget::AddChild(mView);
 	mView->HoverEnd.AddRaw(this, &PMenu::HideView);
 	MenuOpened.Broadcast(this);
@@ -107,7 +111,7 @@ void PMenu::ShowView(bool State)
 
 void PMenu::HideView()
 {
-	mView->SetVisible(false);
+	mView->SetVisible(false, true);
 	PWidget::RemoveChild(mView);
 	mChecked = false;
 	MenuClosed.Broadcast(this);

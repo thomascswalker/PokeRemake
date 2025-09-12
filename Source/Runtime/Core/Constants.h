@@ -8,22 +8,22 @@ constexpr float EPSILON = 0.000000000001f;
 
 constexpr int DEFAULT_SPRITE_WIDTH = 16;
 
-constexpr float RENDER_SCALE    = 1.0f;
-constexpr float TILE_SIZE       = 50.0f;
-constexpr float BLOCK_SIZE      = TILE_SIZE * 2.0f;
-constexpr float TILE_ITEM_SIZE  = 8.0f;
+constexpr float RENDER_SCALE = 1.0f;
+constexpr float TILE_SIZE = 50.0f;
+constexpr float BLOCK_SIZE = TILE_SIZE * 2.0f;
+constexpr float TILE_ITEM_SIZE = 8.0f;
 constexpr float BLOCK_ITEM_SIZE = TILE_ITEM_SIZE * 2.0f;
-constexpr int TILE_ROWS         = 10;
-constexpr int TILE_COLUMNS      = 9;
+constexpr int	TILE_ROWS = 10;
+constexpr int	TILE_COLUMNS = 9;
 
-constexpr auto WINDOW_TITLE        = "PokeRemake";
+constexpr auto WINDOW_TITLE = "PokeRemake";
 constexpr auto WINDOW_TITLE_EDITOR = "PokeRemake Editor";
 
 #if _EDITOR
-constexpr float WINDOW_DEFAULT_WIDTH  = 1280;
+constexpr float WINDOW_DEFAULT_WIDTH = 1280;
 constexpr float WINDOW_DEFAULT_HEIGHT = 720;
 #else
-constexpr float WINDOW_DEFAULT_WIDTH  = 420;
+constexpr float WINDOW_DEFAULT_WIDTH = 420;
 constexpr float WINDOW_DEFAULT_HEIGHT = 360;
 #endif
 
@@ -39,9 +39,8 @@ constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f;
 // This is kind of arbitrary for now and is simply based on what looks best visually.
 constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f;
 
-const std::string FONT_NAME           = "Roboto";
-constexpr int FONT_ATLAS_SIZE         = 1024;
-constexpr int FONT_CHAR_COUNT         = 96;    // ASCII 32..126
-constexpr int FONT_CHAR_START         = 32;    // ASCII 32 is the first printable character
+constexpr int	FONT_ATLAS_SIZE = 1024;
+constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126
+constexpr int	FONT_CHAR_START = 32;		   // ASCII 32 is the first printable character
 constexpr float FONT_ATLAS_BAKE_SCALE = 64.0f; // Font size in pixels
-constexpr float FONT_RENDER_SCALE     = 16.0f; // Scale for rendering text
+constexpr float FONT_RENDER_SCALE = 16.0f;	   // Scale for rendering text

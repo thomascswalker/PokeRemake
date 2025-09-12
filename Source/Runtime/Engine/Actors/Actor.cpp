@@ -116,7 +116,6 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Children"))
 	{
 		auto Children = Data.at("Children");
-		auto Count = Children.size();
 		for (auto& Child : Children)
 		{
 			if (auto ChildActor = Serialization::DeserializeActor(Child))

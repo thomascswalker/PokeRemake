@@ -1,0 +1,15 @@
+{
+  "PalletTown_PlayerHouse": [
+    "${PLAYER}'s house"
+  ],
+  "PalletTown_RivalHouse": [
+    "${RIVAL}'s house"
+  ],
+  "PalletTown": [
+    "Pallet Town"
+  ],
+  "PalletTown_OakLab": [
+    "Oak Pokemon",
+    "Research Lab"
+  ]
+}
