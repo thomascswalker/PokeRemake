@@ -97,6 +97,7 @@ set(SOURCES
         Engine/ParamBlock.h
         Interface/EditText.h
         Interface/Padding.h
+        Engine/Timer.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

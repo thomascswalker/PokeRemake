@@ -9,6 +9,8 @@
 #include "Interface/HUD.h"
 #include "Interface/Widget.h"
 
+#include "Timer.h"
+
 #if _EDITOR
 #include "../../Editor/Actors/EditorView.h"
 #include "Components/SelectionComponent.h"
@@ -27,6 +29,8 @@ class PWorld : public PObject, public IInputHandler
 
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
 	std::shared_ptr<PHUD>				  mHUD;
+
+	std::shared_ptr<PTimerManager> mTimerManager;
 
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
