@@ -57,19 +57,18 @@ protected:
 	EResizeMode mResizeModeW = RM_Grow;
 	EResizeMode mResizeModeH = RM_Grow;
 
-	FVector2 mFixedSize = { 0.0f, 0.0f };
-	FVector2 mOffset = { 0.0f, 0.0f };
-	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
-	int		 mGridCount = 1;
+	FVector2	 mFixedSize = { 0.0f, 0.0f };
+	FVector2	 mOffset = { 0.0f, 0.0f };
+	FVector2	 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	EWidgetDepth mDepth = WD_Default;
+	int			 mGridCount = 1;
+
+	// State
 
 	bool mMouseOver = false;
 	bool mVisible = true;
 	bool mFocused = false;
-
-	// Floating widgets
-
-	bool		 mFloating = false;
-	EWidgetDepth mDepth = WD_Default;
+	bool mFloating = false;
 
 public:
 	/* Static members which are accessed across all widgets */

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "AbstractPopup.h"
-#include "Panel.h"
-#include "Button.h"
 #include "Engine/World.h"
+
+#include "AbstractPopup.h"
+#include "Button.h"
+#include "Panel.h"
 
 using TMenuItemAction = std::function<void()>;
 
@@ -18,71 +19,71 @@ DECLARE_MULTICAST_DELEGATE(DMenuClosed, PMenu*);
 
 struct SMenuItemData
 {
-    DMenuItemClicked Clicked;
-    int32_t Index    = 0;
-    std::string Name = "";
-    bool IsSeparator = false;
+	DMenuItemClicked Clicked;
+	int32_t			 Index = 0;
+	std::string		 Name = "";
+	bool			 IsSeparator = false;
 
-    SMenuItemData() : IsSeparator(true) {}
+	SMenuItemData() : IsSeparator(true) {}
 
-    template <typename T>
-    SMenuItemData(const std::string& InName, T* InObject, void (T::*Delegate)()) :
-        Name(InName)
-    {
-        Clicked.AddRaw(InObject, Delegate);
-    }
+	template <typename T>
+	SMenuItemData(const std::string& InName, T* InObject, void (T::*Delegate)()) : Name(InName)
+	{
+		Clicked.AddRaw(InObject, Delegate);
+	}
 };
 
 class PMenuView : public PPanel
 {
-    PMenu* mMenu                      = nullptr;
-    DMenuItemClicked* mDelegate       = nullptr;
-    std::vector<SMenuItemData>* mData = nullptr;
+	PMenu*						mMenu = nullptr;
+	DMenuItemClicked*			mDelegate = nullptr;
+	std::vector<SMenuItemData>* mData = nullptr;
 
 public:
-    PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDelegate);
-    void OnMouseEvent(SInputEvent* Event) override;
-    void OnItemClicked();
+	PMenuView(std::vector<SMenuItemData>* InData, DMenuItemClicked* InDelegate);
+	void OnMouseEvent(SInputEvent* Event) override;
+	void OnItemClicked();
 
-    friend class PMenu;
+	friend class PMenu;
 };
 
 class PMenu : public PButton
 {
-    DMenuOpened MenuOpened;
-    DMenuClosed MenuClosed;
-    DMenuItemClicked ItemClicked;
+	DMenuOpened		 MenuOpened;
+	DMenuClosed		 MenuClosed;
+	DMenuItemClicked ItemClicked;
 
-    std::vector<SMenuItemData> mItems;
-    PMenuView* mView;
+	std::vector<SMenuItemData> mItems;
+	PMenuView*				   mView;
 
-    void OnItemClicked();
+	void OnItemClicked();
 
 public:
-    PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
+	PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
 
-    void AddItem(const SMenuItemData& Item);
-    void ShowView(bool State);
-    void HideView();
+	void AddItem(const SMenuItemData& Item);
+	void ShowView(bool State);
+	void HideView();
 
-    std::string GetDisplayName() const override
-    {
-        return mText->GetText();
-    }
+	std::string GetDisplayName() const override
+	{
+		return mText->GetText();
+	}
 
-    friend class PMenuBar;
+	friend class PMenuBar;
 };
 
 class PMenuBar : public PPanel
 {
-    TArray<PMenu*> mMenus;
-    PMenu* mOpenMenu = nullptr;
+	TArray<PMenu*> mMenus;
+	PMenu*		   mOpenMenu = nullptr;
 
 public:
-    PMenuBar();
+	PMenuBar();
 
-    PMenu* AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
-    void OnMenuOpened(PMenu* Menu);
-    void OnMenuClosed(PMenu* Menu);
-    void OnMenuHoverBegin();
+	PMenu* AddMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems);
+	void   OnMenuOpened(PMenu* Menu);
+	void   OnMenuClosed(PMenu* Menu);
+	void   OnMenuHoverBegin();
+	void   OnMenuHoverEnd();
 };

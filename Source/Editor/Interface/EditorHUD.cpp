@@ -86,7 +86,7 @@ void PEditorHUD::SetupInterface()
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
-	MainPanel->SetVisible(true);
+	MainPanel->SetVisible(false);
 
 	// Select
 

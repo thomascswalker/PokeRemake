@@ -111,7 +111,7 @@ void PMenu::ShowView(bool State)
 
 void PMenu::HideView()
 {
-	mView->SetVisible(false, true);
+	mView->SetVisible(false);
 	PWidget::RemoveChild(mView);
 	mChecked = false;
 	MenuClosed.Broadcast(this);
@@ -127,6 +127,7 @@ PMenu* PMenuBar::AddMenu(const std::string& Name, const std::vector<SMenuItemDat
 {
 	auto Menu = ConstructWidget<PMenu>(Name, InItems);
 	Menu->HoverBegin.AddRaw(this, &PMenuBar::OnMenuHoverBegin);
+	Menu->HoverEnd.AddRaw(this, &PMenuBar::OnMenuHoverEnd);
 	Menu->MenuOpened.AddRaw(this, &PMenuBar::OnMenuOpened);
 	Menu->MenuClosed.AddRaw(this, &PMenuBar::OnMenuClosed);
 	mMenus.Add(Menu);
@@ -158,6 +159,22 @@ void PMenuBar::OnMenuClosed(PMenu* Menu)
 }
 
 void PMenuBar::OnMenuHoverBegin()
+{
+	auto Menu = dynamic_cast<PMenu*>(GetSender());
+
+	// If there is no open menu OR the menu we are now hovering is the current menu
+	// do an early exit.
+	if (!mOpenMenu || mOpenMenu == Menu)
+	{
+		return;
+	}
+
+	// Hide the current menu
+	mOpenMenu->HideView();
+	mOpenMenu = nullptr;
+}
+
+void PMenuBar::OnMenuHoverEnd()
 {
 	auto Menu = dynamic_cast<PMenu*>(GetSender());
 

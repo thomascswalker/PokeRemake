@@ -168,8 +168,12 @@ bool PRenderer::Render() const
 		// Draw floating
 		auto Visible = PWidget::sVisible;
 		auto Floating = PWidget::sFloating;
-		for (auto Widget : Floating)
+		for (const auto Widget : Floating)
 		{
+			if (!Widget->GetVisible())
+			{
+				continue;
+			}
 			Widget->PreDraw(this);
 			Widget->Draw(this);
 			Widget->PostDraw(this);
