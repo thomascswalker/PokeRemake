@@ -26,6 +26,9 @@ struct TBounds
 		}
 	}
 
+	T X() const { return Left + Right; }
+	T Y() const { return Bottom + Top; }
+
 	TBounds& operator=(T Value)
 	{
 		Left = Value;

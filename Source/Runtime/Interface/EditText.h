@@ -30,6 +30,7 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		auto G = GetGeometry();
+		Renderer->SetClipRect(G);
 
 		// Background
 		Renderer->SetDrawColor(PColor::UIBackground);
@@ -46,15 +47,16 @@ public:
 			FVector2 CursorStart = G.Min();
 			// X offset for char position
 			float XOffset = Renderer->GetTextWidth(mText.substr(0, mCursorPos));
-			CursorStart.X += XOffset + 2;
+			CursorStart.X += XOffset + mParent->Padding.X() + 6;
 			FVector2 CursorEnd = { CursorStart.X, CursorStart.Y + G.H };
-			CursorStart.Y += 3;
-			CursorEnd.Y -= 3;
+			CursorStart.Y += 4;
+			CursorEnd.Y -= 4;
 			Renderer->DrawLine(CursorStart, CursorEnd);
 		}
 
 		// Text
 		PText::Draw(Renderer);
+		Renderer->ReleaseClipRect();
 	}
 
 	void HandleClick(SInputEvent* Event)
@@ -62,14 +64,14 @@ public:
 		if (GetGeometry().Contains(Event->MousePosition))
 		{
 			mCursorPos = mText.size();
-			mFocused = !mFocused;
+			SetFocused(!mFocused);
 			mPrevInputContext = GetInputContext()->Type;
 			SetInputContext(IC_Text);
 			Event->Consume();
 		}
 		else if (mFocused)
 		{
-			mFocused = false;
+			SetFocused(false);
 			SetInputContext(mPrevInputContext);
 		}
 	}
@@ -93,20 +95,49 @@ public:
 	void OnKeyDown(SInputEvent* Event) override
 	{
 		auto Key = Event->KeyDown;
-		if (!mFocused && isascii(Key))
+		if (!mFocused)
 		{
 			return;
 		}
-		if (Key == SDLK_DELETE || Key == SDLK_BACKSPACE)
+
+		switch (Key)
 		{
-			mCursorPos = std::max(0, mCursorPos - 1);
-			Remove(mCursorPos);
+			case SDLK_DELETE:
+			case SDLK_BACKSPACE:
+				mCursorPos = std::max(0, mCursorPos - 1);
+				Remove(mCursorPos);
+				break;
+			case SDLK_LEFT:
+				mCursorPos = std::max(0, mCursorPos - 1);
+				break;
+			case SDLK_RIGHT:
+				mCursorPos = std::min(static_cast<int32_t>(mText.size()), mCursorPos + 1);
+				break;
+			case SDLK_LSHIFT:
+			case SDLK_RSHIFT:
+			case SDLK_LCTRL:
+			case SDLK_RCTRL:
+			case SDLK_LALT:
+			case SDLK_RALT:
+				break;
+			default:
+				// Convert to uppercase
+				if (Event->ShiftDown)
+				{
+					if (isalpha(Key))
+					{
+						Key -= 32;
+					}
+					else if (isdigit(Key))
+					{
+						Key = gSpecialCharMap[Key];
+					}
+				}
+				Add(Key, mCursorPos);
+				mCursorPos++;
+				break;
 		}
-		else
-		{
-			Add(Key, mCursorPos);
-			mCursorPos++;
-		}
+
 		OnTextChange.Broadcast(mText);
 		Event->Consume();
 	}

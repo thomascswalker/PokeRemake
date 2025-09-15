@@ -4,10 +4,14 @@
 
 PWidget*						 PWidget::sSender = nullptr;
 std::shared_ptr<CSS::Stylesheet> PWidget::sStylesheet = nullptr;
+TArray<PWidget*>				 PWidget::sFloating = {};
+TArray<PWidget*>				 PWidget::sVisible = {};
+TArray<PWidget*>				 PWidget::sFocused = {};
 
 PWidget::PWidget()
 {
 	GenerateInternalName();
+	SetVisible(true);
 }
 
 bool PWidget::ProcessEvents(SInputEvent* Event)

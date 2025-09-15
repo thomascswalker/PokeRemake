@@ -9,6 +9,8 @@ protected:
 	PColor		mColor = PColor::UIText;
 	float		mFontSize = FONT_RENDER_SCALE;
 	EAlignment	mAlignment = AL_Center;
+	bool		mLineBreak = false;
+	int32_t		mLineBreakPos = 0;
 
 public:
 	PText() = default;
@@ -22,6 +24,7 @@ public:
 
 	void Draw(const PRenderer* Renderer) const override
 	{
+		Renderer->SetClipRect(GetGeometry());
 #if _EDITOR
 		std::string Text = Param == nullptr ? mText : Param->Get<std::string>();
 #else
@@ -55,7 +58,26 @@ public:
 					break;
 				}
 		}
-		Renderer->DrawText(Text, TextPos, mFontSize);
+
+		if (!mLineBreak)
+		{
+			Renderer->DrawText(Text, TextPos, mFontSize);
+		}
+		else
+		{
+			int32_t Pos = 0;
+			while (Pos < mText.size())
+			{
+				auto SubText = mText.substr(Pos, mLineBreakPos);
+				Renderer->DrawText(SubText, TextPos, mFontSize);
+
+				// Offset text cursor pos
+				Pos += mLineBreakPos;
+				// Offset text draw Y to the next line
+				TextPos.Y += mFontSize;
+			}
+		}
+		Renderer->ReleaseClipRect();
 	}
 
 	float GetFontSize() const
@@ -105,6 +127,11 @@ public:
 			mText.erase(Pos, 1);
 		}
 	}
+
+	bool	GetLineBreak() const { return mLineBreak; }
+	void	SetLineBreak(bool LineBreak) { mLineBreak = LineBreak; }
+	int32_t GetLineBreakPos() const { return mLineBreakPos; }
+	void	SetLineBreakPos(int32_t Pos) { mLineBreakPos = Pos; }
 
 	PColor GetColor() const
 	{

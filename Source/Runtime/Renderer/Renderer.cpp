@@ -9,7 +9,11 @@
 #include "Engine/World.h"
 #include "stb/stb_truetype.h"
 
-std::string	 gDefaultFont = FONT_NAME; // Default font name
+#if _EDITOR
+std::string gDefaultFont = "Roboto";
+#else
+std::string gDefaultFont = "Pokemon";
+#endif
 static PFont gCurrentFont;
 
 constexpr auto gTextureScaleMode = SDL_SCALEMODE_NEAREST;
@@ -161,16 +165,19 @@ bool PRenderer::Render() const
 			VALIDATE(Root->DrawChildren(this), "Failed to draw.");
 		}
 
-		for (auto W : GetWorld()->GetWidgets())
+		// Draw floating
+		auto Visible = PWidget::sVisible;
+		auto Floating = PWidget::sFloating;
+		for (const auto Widget : Floating)
 		{
-			if (!W->GetFloating() || !W->GetVisible())
+			if (!Widget->GetVisible())
 			{
 				continue;
 			}
-			W->PreDraw(this);
-			W->Draw(this);
-			W->PostDraw(this);
-			VALIDATE(W->DrawChildren(this), "Failed to draw.");
+			Widget->PreDraw(this);
+			Widget->Draw(this);
+			Widget->PostDraw(this);
+			VALIDATE(Widget->DrawChildren(this), "Failed to draw.");
 		}
 	}
 

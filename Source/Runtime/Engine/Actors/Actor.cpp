@@ -1,6 +1,5 @@
 #include "Actor.h"
 
-#include "Engine/CameraView.h"
 #include "Engine/Components/CollisionComponent.h"
 #include "Engine/Components/Component.h"
 #include "Engine/Serialization.h"
@@ -117,8 +116,6 @@ void PActor::Deserialize(const JSON& Data)
 	if (Data.contains("Children"))
 	{
 		auto Children = Data.at("Children");
-		auto Count = Children.size();
-		LogDebug("Deserializing {} children for {}.", Count, mInternalName.c_str());
 		for (auto& Child : Children)
 		{
 			if (auto ChildActor = Serialization::DeserializeActor(Child))
@@ -127,30 +124,15 @@ void PActor::Deserialize(const JSON& Data)
 			}
 		}
 	}
-	else
-	{
-		LogDebug("No children for {}.", mInternalName.c_str());
-	}
 
 	if (Data.contains("Components"))
 	{
 		auto Components = Data.at("Components");
-		auto Count = Components.size();
-		LogDebug("Deserializing {} components for {}.", Count, mInternalName.c_str());
 		for (auto& Component : Components)
 		{
-			if (auto NewComponent = Serialization::DeserializeComponent(Component, this))
-			{
-				AddComponent(NewComponent);
-				LogDebug("Deserialized component: {}", NewComponent->GetClassName().c_str());
-			}
+			Serialization::DeserializeComponent(Component, this);
 		}
 	}
-	else
-	{
-		LogDebug("No components for {}.", mInternalName.c_str());
-	}
-	LogDebug("Finished deserializing {}", mInternalName.c_str());
 }
 
 #if _EDITOR

@@ -148,6 +148,11 @@ public:
 		return mComponents;
 	}
 
+	size_t GetComponentsCount() const
+	{
+		return mComponents.size();
+	}
+
 	IDrawable* GetDrawableComponent() const;
 
 	virtual FRect GetLocalBounds() const

@@ -45,8 +45,6 @@ enum EWidgetDepth
 class PWidget : public PObject, public IInputHandler
 {
 protected:
-	// Static pointer to the widget that sent the event.
-	static PWidget* sSender;
 	// Pointer to the parent of this widget.
 	PWidget* mParent = nullptr;
 	// List of child widgets.
@@ -59,23 +57,27 @@ protected:
 	EResizeMode mResizeModeW = RM_Grow;
 	EResizeMode mResizeModeH = RM_Grow;
 
-	FVector2 mFixedSize = { 0.0f, 0.0f };
-	FVector2 mOffset = { 0.0f, 0.0f };
-	FVector2 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
-	int		 mGridCount = 1;
+	FVector2	 mFixedSize = { 0.0f, 0.0f };
+	FVector2	 mOffset = { 0.0f, 0.0f };
+	FVector2	 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	EWidgetDepth mDepth = WD_Default;
+	int			 mGridCount = 1;
+
+	// State
 
 	bool mMouseOver = false;
 	bool mVisible = true;
 	bool mFocused = false;
-
-	// Floating widgets
-
-	bool		 mFloating = false;
-	EWidgetDepth mDepth = WD_Default;
-
-	static std::shared_ptr<CSS::Stylesheet> sStylesheet;
+	bool mFloating = false;
 
 public:
+	/* Static members which are accessed across all widgets */
+	static PWidget*							sSender;
+	static std::shared_ptr<CSS::Stylesheet> sStylesheet;
+	static TArray<PWidget*>					sVisible;
+	static TArray<PWidget*>					sFloating;
+	static TArray<PWidget*>					sFocused;
+
 	float	X = 0.0f;
 	float	Y = 0.0f;
 	float	W = 0.0f;
@@ -94,7 +96,7 @@ public:
 	virtual ~PWidget() override
 	{
 #if _EDITOR
-		Unbind();
+		PWidget::Unbind();
 #endif
 	}
 
@@ -118,14 +120,24 @@ public:
 
 	void SetParent(PWidget* Parent);
 
+	/* States */
+
 	bool GetVisible() const
 	{
 		return mVisible;
 	}
 
-	void SetVisible(bool State)
+	void SetVisible(bool State, bool Recurse = false)
 	{
 		mVisible = State;
+		State ? sVisible.Add(this) : sVisible.Remove(this);
+		if (Recurse)
+		{
+			for (auto Child : mChildren)
+			{
+				Child->SetVisible(State, true);
+			}
+		}
 	}
 
 	void ToggleVisible()
@@ -141,6 +153,28 @@ public:
 	void SetFloating(bool State)
 	{
 		mFloating = State;
+		State ? sFloating.Add(this) : sFloating.Remove(this);
+	}
+
+	bool GetFocused() const
+	{
+		return mFocused;
+	}
+
+	void SetFocused(bool State)
+	{
+		mFocused = State;
+
+		// If we're focusing on a new widget, clear the other focused widgets
+		if (State)
+		{
+			for (auto W : sFocused)
+			{
+				W->SetFocused(false);
+			}
+			sFocused.Clear();
+		}
+		State ? sFocused.Add(this) : sFocused.Remove(this);
 	}
 
 	// Drawing
@@ -177,6 +211,11 @@ public:
 	virtual void Draw(const PRenderer* Renderer) const {}
 	virtual void PostDraw(const PRenderer* Renderer) {}
 
+	virtual void DebugDraw(const PRenderer* Renderer)
+	{
+		Renderer->DrawRect(GetGeometry());
+	}
+
 	// Children
 
 	virtual void AddChild(PWidget* Child);
@@ -203,7 +242,7 @@ public:
 	{
 		auto Pred = [Direction](const PWidget* Child) {
 			return (Direction == LM_Horizontal ? Child->mResizeModeW == RM_Grow : Child->mResizeModeH == RM_Grow)
-				   && Child->GetVisible();
+				   && Child->GetVisible() && !Child->mFloating;
 		};
 		return GetChildren(Pred);
 	}
@@ -211,18 +250,6 @@ public:
 	bool IsGrowable(ELayoutMode Direction) const
 	{
 		return Direction == LM_Horizontal ? mResizeModeW == RM_Grow : mResizeModeH == RM_Grow;
-	}
-
-	// Interaction
-
-	bool GetFocused() const
-	{
-		return mFocused;
-	}
-
-	void SetFocused(bool State)
-	{
-		mFocused = State;
 	}
 
 	// Layout

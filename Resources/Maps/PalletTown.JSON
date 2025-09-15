@@ -61,8 +61,8 @@
       ]
     },
     {
-      "$SignPost": {
-        "Components::1::Message": "${PLAYER}'s house"
+      "&SignPost": {
+        "Components->1->Message": "#Signs::PalletTown_PlayerHouse"
       },
       "Position": [
         300.0,
@@ -70,8 +70,8 @@
       ]
     },
     {
-      "$SignPost": {
-        "Components::1::Message": "${RIVAL}'s house"
+      "&SignPost": {
+        "Components->1->Message": "#Signs::PalletTown_RivalHouse"
       },
       "Position": [
         1100.0,
@@ -79,8 +79,8 @@
       ]
     },
     {
-      "$SignPost": {
-        "Components::1::Message": "PALLET TOWN"
+      "&SignPost": {
+        "Components->1->Message": "#Signs::PalletTown"
       },
       "Position": [
         700.0,
@@ -88,8 +88,8 @@
       ]
     },
     {
-      "$SignPost": {
-        "Components::1::Message": "OAK POKeMON"
+      "&SignPost": {
+        "Components->1->Message": "#Signs::PalletTown_OakLab"
       },
       "Position": [
         1300.0,

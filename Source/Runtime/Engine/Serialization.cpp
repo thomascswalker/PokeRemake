@@ -31,8 +31,7 @@ PActor* Serialization::DeserializeActor(const JSON& Data)
 	CONSTRUCT_EACH_ACTOR(
 		GameMap,
 		Portal,
-		SceneryActor
-	);
+		SceneryActor);
 
 	LogWarning("Deserialization of Actor {} not supported.", ClassName.c_str());
 	return nullptr;
@@ -45,7 +44,6 @@ PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
 		return nullptr; // Skip null objects
 	}
 
-	LogDebug("Deserializing Component: {}", Data.at("Class").get<std::string>().c_str());
 	BEGIN_CONSTRUCT_COMPONENT;
 
 	CONSTRUCT_EACH_COMPONENT(
@@ -53,9 +51,7 @@ PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
 		CameraComponent,
 		CharacterMovementComponent,
 		CollisionComponent,
-		InteractionComponent
-	);
+		InteractionComponent);
 
-	LogWarning("Deserialization of Component {} not supported.", ClassName.c_str());
 	return nullptr;
 }

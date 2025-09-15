@@ -1,28 +1,22 @@
 #pragma once
 
-#include "Logging.h"
 #include "nlohmann/json.hpp"
+
+#include "Array.h"
+
+#define ANCHOR "&"	// Reference to ActorDef
+#define HASH   "#"	// Reference to TextDef
+#define ARROW  "->" // Pointer to child actor
 
 using JSON = nlohmann::json;
 
-void ExpandRef(JSON* Json, const std::string& Ref, const JSON& Override);
+void ExpandArrow(JSON* Out, const std::string& Key, const JSON& Value);
 
-void Expand(JSON* Json);
+void ExpandAnchor(JSON* Out, const std::string& Ref, const JSON& Override);
 
-inline void OnPropertyMissing(const JSON& Json, const char* Property)
-{
-	std::vector<std::string> Keys;
-	for (auto Item : Json.items())
-	{
-		Keys.push_back(Item.key());
-	}
-	std::string KeysString;
-	for (auto Item : Keys)
-	{
-		KeysString += Item + ", ";
-	}
-	LogWarning("Property {} is missing: [{}]", Property, KeysString.c_str());
-}
+void Expand(JSON* Out);
+
+void OnPropertyMissing(const JSON& Json, const char* Property);
 
 #define CHECK_PROPERTY(Json, Property)      \
 	if (!Json.contains(#Property))          \
@@ -31,14 +25,14 @@ inline void OnPropertyMissing(const JSON& Json, const char* Property)
 	}
 
 #define BEGIN_SAVE_PROPERTIES(Parent) JSON Result = Parent::Serialize()
-#define END_SAVE_PROPERTIES return Result
+#define END_SAVE_PROPERTIES			  return Result
 
 #define BEGIN_LOAD_PROPERTIES(Parent) Parent::Deserialize(Data)
 
 #define SAVE_MEMBER_PROPERTY(Property) \
 	Result[#Property] = m##Property
 
-#define LOAD_MEMBER_PROPERTY(Property, Type) \
+#define LOAD_MEMBER_PROPERTY(Property, Type)       \
 	if (Data.contains(#Property))                  \
 	{                                              \
 		m##Property = Data[#Property].get<Type>(); \
@@ -48,7 +42,7 @@ inline void OnPropertyMissing(const JSON& Json, const char* Property)
 		OnPropertyMissing(Data, #Property);        \
 	}
 
-#define SERIALIZE_MEMBER_PROPERTY(Property) \
+#define SERIALIZE_MEMBER_PROPERTY(Property)     \
 	Result[#Property] = m##Property.Serialize()
 
 #define DESERIALIZE_MEMBER_PROPERTY(Property) \

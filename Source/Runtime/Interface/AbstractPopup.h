@@ -21,7 +21,7 @@ class IPopup : public PWidget
 public:
 	IPopup()
 	{
-		mFloating = true;
+		SetFloating(true);
 	}
 
 	~IPopup() override = default;

@@ -1,10 +1,16 @@
 #pragma once
 
+#include "../ParamBlock.h"
 #include "Engine/Actors/Actor.h"
 #include "Engine/Input.h"
 #include "Engine/Object.h"
 
-class PComponent : public PObject, public IInputHandler
+class PComponent :
+#if _EDITOR
+	public IParamBlock,
+#endif
+	public PObject,
+	public IInputHandler
 {
 protected:
 	PActor* mOwner = nullptr;
@@ -21,6 +27,10 @@ public:
 	void	 SetOwner(PActor* Owner);
 	void	 Tick(float DeltaTime) override {}
 	FVector2 GetPosition() const;
+
+#if _EDITOR
+	void InitializeParameters() override;
+#endif
 };
 
 #define BEGIN_CONSTRUCT_COMPONENT                         \

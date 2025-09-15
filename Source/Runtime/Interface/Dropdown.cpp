@@ -7,7 +7,7 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 	mLayoutMode = LM_Vertical;
 	mResizeModeW = RM_Grow;
 	mResizeModeH = RM_Fit;
-	mFloating = true;
+	SetFloating(true);
 
 	// Add each item to the view
 	for (int32_t Index = 0; Index < InStrings.size(); Index++)

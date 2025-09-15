@@ -4,7 +4,7 @@
 
 struct SInteractData
 {
-	std::string Name    = "Default Name";
+	std::string Name = "Default Name";
 	std::string Message = "Default message.";
 
 	SInteractData() = default;
@@ -19,7 +19,7 @@ struct SInteractData
 	{
 		Name = Other.Name;
 		return *this;
-	};
+	}
 };
 
 class IInteractable
