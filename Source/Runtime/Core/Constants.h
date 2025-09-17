@@ -27,17 +27,20 @@ constexpr float WINDOW_DEFAULT_WIDTH = 420;
 constexpr float WINDOW_DEFAULT_HEIGHT = 360;
 #endif
 
-constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
+constexpr float GLOBAL_SPEED_MULTIPLIER = 5.0f;
 
 // Visual character offset to add some 'depth'
 constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
 
-// Tiles per second
-constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f * 1000.0f;
+// Units per second
+constexpr int	TILES_PER_SECOND = 5;
+constexpr float DEFAULT_CHAR_SPEED = TILE_SIZE * TILES_PER_SECOND * GLOBAL_SPEED_MULTIPLIER;
 
-// How often a sprite animation will move to the next frame (in milliseconds)
+// How often a sprite animation will move to the next frame (in seconds)
 // This is kind of arbitrary for now and is simply based on what looks best visually.
-constexpr float DEFAULT_ANIM_SPEED = (TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f) / 1000.0f;
+constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / DEFAULT_CHAR_SPEED;
+
+constexpr float DEFAULT_TEXT_SPEED = 0.05f / GLOBAL_SPEED_MULTIPLIER;
 
 constexpr int	FONT_ATLAS_SIZE = 1024;
 constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126

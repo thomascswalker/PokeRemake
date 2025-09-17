@@ -2,9 +2,10 @@
 #include <vector>
 
 #include "Core/Rect.h"
-#include "Core/String.h"
 
+#include "Object.h"
 #include "Texture.h"
+#include "Timer.h"
 
 struct PAnimation
 {
@@ -14,7 +15,10 @@ struct PAnimation
 
 	void Next()
 	{
-		auto PrevIndex = Indexes[CurrentIndex];
+		if (Indexes.size() <= 1)
+		{
+			return;
+		}
 		CurrentIndex = CurrentIndex + 1 >= Indexes.size() ? 0 : CurrentIndex + 1;
 	}
 
@@ -66,7 +70,7 @@ enum ESpriteSize
 
 class PSprite : public PObject
 {
-	PTexture* mTexture;
+	PTexture* mTexture = nullptr;
 
 	// Pixel size (width and height) of each sprite
 	float mSize = 16.0f;
@@ -75,13 +79,14 @@ class PSprite : public PObject
 	int32_t mWidth = 1;
 
 	std::map<std::string, PAnimation> mAnimations;
-	PAnimation*						  mCurrentAnim;
+	PAnimation*						  mCurrentAnim = nullptr;
 
-	float mAnimationSpeed = 0.1f; // Default animation speed in seconds
-	float mAnimationTimer = 0.0f; // Timer to track animation speed
+	STimerHandle mTimerHandle;
+	float		 mAnimationSpeed; // Default animation speed in seconds
 
 public:
-	PSprite() : mTexture(nullptr), mCurrentAnim(nullptr) {}
+	PSprite() : mAnimationSpeed(DEFAULT_ANIM_SPEED) {}
+	PSprite(float InSpeed) : mAnimationSpeed(InSpeed) {}
 
 	PSprite(const PSprite& other)
 		: PObject{ other },
@@ -89,8 +94,9 @@ public:
 		  mSize{ other.mSize },
 		  mAnimations{ other.mAnimations },
 		  mCurrentAnim{ other.mCurrentAnim },
-		  mAnimationSpeed{ other.mAnimationSpeed },
-		  mAnimationTimer{ other.mAnimationTimer } {}
+		  mAnimationSpeed{ other.mAnimationSpeed }
+	{
+	}
 
 	PSprite(PSprite&& other) noexcept
 		: PObject{ std::move(other) },
@@ -98,8 +104,9 @@ public:
 		  mSize{ other.mSize },
 		  mAnimations{ std::move(other.mAnimations) },
 		  mCurrentAnim{ other.mCurrentAnim },
-		  mAnimationSpeed{ other.mAnimationSpeed },
-		  mAnimationTimer{ other.mAnimationTimer } {}
+		  mAnimationSpeed{ other.mAnimationSpeed }
+	{
+	}
 
 	PSprite& operator=(const PSprite& other)
 	{
@@ -111,7 +118,6 @@ public:
 		mAnimations = other.mAnimations;
 		mCurrentAnim = other.mCurrentAnim;
 		mAnimationSpeed = other.mAnimationSpeed;
-		mAnimationTimer = other.mAnimationTimer;
 		return *this;
 	}
 
@@ -125,22 +131,7 @@ public:
 		mAnimations = std::move(other.mAnimations);
 		mCurrentAnim = other.mCurrentAnim;
 		mAnimationSpeed = other.mAnimationSpeed;
-		mAnimationTimer = other.mAnimationTimer;
 		return *this;
-	}
-
-	void Tick(float DeltaTime) override
-	{
-		if (!mCurrentAnim || mCurrentAnim->Indexes.size() <= 1)
-		{
-			return;
-		}
-		mAnimationTimer += DeltaTime;
-		if (mAnimationTimer >= DEFAULT_ANIM_SPEED)
-		{
-			mCurrentAnim->Next();
-			mAnimationTimer = 0.0f; // Reset the timer after updating the animation
-		}
 	}
 
 	void SetTexture(PTexture* InTexture)
@@ -165,6 +156,10 @@ public:
 		}
 		return FRect();
 	}
+
+	void Play();
+
+	void Stop();
 
 	void AddAnimation(const std::string& Name, const std::vector<uint32_t>& Indexes)
 	{
@@ -210,7 +205,6 @@ public:
 		{
 			mCurrentAnim = nullptr;
 		}
-		mAnimationTimer = 0.0f; // Reset animation timer
 	}
 
 	void SetSize(float Size)

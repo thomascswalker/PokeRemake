@@ -2,9 +2,9 @@
 
 #include "Engine/World.h"
 
-PSpriteComponent::PSpriteComponent()
+PSpriteComponent::PSpriteComponent(float InSpeed)
 {
-	mSprite = GetWorld()->ConstructObject<PSprite>();
+	mSprite = GetWorld()->ConstructObject<PSprite>(InSpeed);
 }
 
 bool PSpriteComponent::Draw(const PRenderer* Renderer) const
