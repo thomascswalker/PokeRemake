@@ -67,7 +67,7 @@ public:
 	{
 		auto Mode = std::make_shared<T>();
 		auto Name = Mode->GetName();
-		mGameModes.Add(Name, Mode);
+		mGameModes.Emplace(Name, Mode);
 		if (mGameMode == nullptr)
 		{
 			mGameMode = Mode.get();

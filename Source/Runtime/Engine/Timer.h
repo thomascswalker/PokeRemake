@@ -1,164 +1,147 @@
 #pragma once
 
+#include <functional>
+
 #include "Core/Delegate.h"
 #include "Core/Map.h"
-
-#include "Object.h"
 
 struct STimer;
 struct STimerHandle;
 class PTimerManager;
 
-DECLARE_MULTICAST_DELEGATE(DTimerTriggered);
+DECLARE_MULTICAST_DELEGATE(DTimerDelegate);
+using DTimerCallback = std::function<void()>;
+using FTimerDelegate = std::function<void()>;
 
-struct STimer
+struct STimerHandle
 {
-	// DTimerTriggered Trigger;
-	// DelegateHandle	Callback;
+private:
+	size_t Index;
 
-	size_t DeltaTime = 0;
-	float  Rate = 1.0f;
-	bool   Loop = false;
+public:
+	STimerHandle() : Index(0) {}
+	bool IsValid() const { return Index != 0; }
+	void Invalidate() { Index = 0; }
+	void SetIndex(size_t NewIndex) { Index = NewIndex; }
 
-	STimer() = default;
-	//
-	// template <typename T>
-	// DelegateHandle* Bind(float InRate, bool InLoop, T* Object, void (T::*Delegate)())
-	// {
-	// 	Rate = InRate;
-	// 	Loop = InLoop;
-	// 	Callback = Trigger.AddRaw(Object, Delegate);
-	// 	return &Callback;
-	// }
+	bool operator==(const STimerHandle& Other) const { return Index == Other.Index; }
+	bool operator!=(const STimerHandle& Other) const { return Index != Other.Index; }
 
-	void Reset()
+	friend class PTimerManager;
+};
+
+struct STimerDelegate
+{
+	DTimerDelegate ObjectCallback;
+	DTimerCallback StaticCallback;
+
+	STimerDelegate() {}
+	STimerDelegate(const DTimerDelegate& D) : ObjectCallback(D), StaticCallback(nullptr) {}
+	STimerDelegate(const DTimerCallback& D) : StaticCallback(D) {}
+
+	void Execute()
 	{
-		DeltaTime = 0;
+		if (ObjectCallback.IsBound())
+		{
+			ObjectCallback.Broadcast();
+		}
+		else
+		{
+			StaticCallback();
+		}
+	}
+
+	bool IsBound() const { return ObjectCallback.IsBound() || StaticCallback != nullptr; }
+
+	void Unbind()
+	{
+		ObjectCallback.RemoveAll();
+		StaticCallback = nullptr;
 	}
 };
 
-//
-// static size_t gNextId = 0;
-//
-// struct STimer
-// {
-// 	DTimerTriggered Trigger;
-// 	DelegateHandle	Callback;
-// 	STimerHandle*	Handle;
-//
-// 	size_t DeltaTime = 0;
-// 	float  Rate;
-// 	bool   Loop = false;
-//
-// 	STimer() = default;
-//
-// 	STimer(STimerHandle* InHandle, float InRate, bool InLoop)
-// 	{
-// 		Handle = InHandle;
-// 		Rate = InRate;
-// 		Loop = InLoop;
-// 	}
-//
-// 	template <typename T>
-// 	DelegateHandle* Bind(T* Object, void (T::*Delegate)())
-// 	{
-// 		Callback = Trigger.AddRaw(Object, Delegate);
-// 		return &Callback;
-// 	}
-//
-// 	bool IsValid() const
-// 	{
-// 		return Trigger.IsBound() && Callback.IsValid();
-// 	}
-//
-// 	void Invalidate()
-// 	{
-// 		Trigger.RemoveAll();
-// 		Callback.Reset();
-// 		Handle = nullptr;
-// 	}
-// };
-//
-// struct STimerHandle
-// {
-// private:
-// 	size_t Id = 0;
-//
-// public:
-// 	STimerHandle()
-// 	{
-// 		Id = ++gNextId;
-// 	}
-//
-// 	friend class PTimerManager;
-// };
-//
-// class PTimerManager : public PObject
-// {
-// 	TMap<size_t, STimer> Timers;
-// 	TArray<size_t>		 DestroyedTimers;
-//
-// 	void DestroyTimerInternal(STimer* Timer)
-// 	{
-// 		if (Timer->Handle)
-// 		{
-// 			size_t Id = Timer->Handle->Id;
-// 			Timer->Invalidate();
-// 			Timers.Remove(Id);
-// 		}
-// 	}
-//
-// public:
-// 	template <typename T>
-// 	void SetTimer(STimerHandle& Handle, float Rate, bool Loop, T* Object, void (T::*Delegate)())
-// 	{
-// 		Timers[Handle.Id] = STimer(&Handle, Rate, Loop);
-// 		Timers[Handle.Id].Bind(Object, Delegate);
-// 	}
-//
-// 	void DestroyTimer(const STimerHandle& Handle)
-// 	{
-// 		auto Iter = Timers.Find(Handle.Id);
-// 		if (Iter != Timers.end())
-// 		{
-// 			DestroyedTimers.Add(Handle.Id);
-// 		}
-// 	}
-//
-// 	void Tick(float DeltaTime) override
-// 	{
-// 		// Destroy timers
-// 		if (DestroyedTimers.Size() > 0)
-// 		{
-// 			for (auto Id : DestroyedTimers)
-// 			{
-// 				STimer* Timer = &Timers[Id];
-// 				DestroyTimerInternal(Timer);
-// 			}
-// 			DestroyedTimers.Clear();
-// 		}
-//
-// 		for (auto Iter = Timers.begin(); Iter != Timers.end(); ++Iter)
-// 		{
-// 			auto Timer = &Iter->second;
-// 			if (!Timer->IsValid())
-// 			{
-// 				LogError("Timer is invalid: {}", Timer->Handle->Id);
-// 				DestroyTimer(*Timer->Handle);
-// 				continue;
-// 			}
-//
-// 			// Increment the time for this timer
-// 			Timer->DeltaTime += DeltaTime;
-//
-// 			if (Timer->DeltaTime < Timer->Rate)
-// 			{
-// 				continue;
-// 			}
-//
-// 			// If it has passed the rate, trigger the callback, then reset the delta time.
-// 			Timer->Trigger.Broadcast();
-// 			Timer->DeltaTime = 0;
-// 		}
-// 	}
-// };
+struct STimer
+{
+	bool		   Loop = true;
+	float		   Rate;
+	STimerHandle   Handle;
+	STimerDelegate Delegate;
+};
+
+class PTimerManager
+{
+	static size_t		 sNextHandle;
+	TMap<size_t, STimer> mTimers;
+
+	STimerHandle AddTimer(STimer&& Timer)
+	{
+		STimerHandle Handle;
+		auto		 NewIndex = sNextHandle++;
+		mTimers.Emplace(sNextHandle++, std::move(Timer));
+		Handle.SetIndex(NewIndex);
+		return Handle;
+	}
+
+	void RemoveTimer(const STimerHandle& Handle)
+	{
+		mTimers.Remove(Handle.Index);
+	}
+
+	STimer* FindTimer(const STimerHandle& Handle)
+	{
+		return mTimers.At(Handle.Index);
+	}
+
+	STimer& GetTimer(const STimerHandle& Handle)
+	{
+		return mTimers[Handle.Index];
+	}
+
+	void SetTimerInternal(STimerHandle& Handle, STimerDelegate&& InDelegate, float Rate, float Loop)
+	{
+		if (FindTimer(Handle))
+		{
+			RemoveTimer(Handle);
+		}
+
+		if (Rate <= 0.0f)
+		{
+			Handle.Invalidate();
+			return;
+		}
+
+		STimer NewTimer;
+		NewTimer.Delegate = std::move(InDelegate);
+		NewTimer.Rate = Rate;
+		NewTimer.Loop = Loop;
+
+		STimerHandle NewHandle = AddTimer(std::move(NewTimer));
+		Handle = NewHandle;
+	}
+
+public:
+	template <typename T>
+	void SetTimer(STimerHandle& Handle, T* Object, void (T::*Delegate)(), float Rate, float Loop)
+	{
+		STimerDelegate NewDelegate;
+		NewDelegate.ObjectCallback.AddRaw(Object, Delegate);
+		SetTimerInternal(Handle, std::move(NewDelegate), Rate, Loop);
+	}
+
+	void SetTimer(STimerHandle& Handle, const DTimerCallback& Callback, float Rate, float Loop)
+	{
+		STimerDelegate NewDelegate;
+		NewDelegate.StaticCallback = Callback;
+		SetTimerInternal(Handle, std::move(NewDelegate), Rate, Loop);
+	}
+
+	void ClearTimer(STimerHandle& Handle)
+	{
+		if (auto Timer = FindTimer(Handle))
+		{
+			Timer->Delegate.Unbind();
+			RemoveTimer(Handle);
+		}
+		Handle.Invalidate();
+	}
+};

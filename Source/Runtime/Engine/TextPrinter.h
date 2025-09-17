@@ -13,7 +13,6 @@ static TMap<std::string, std::string> gTextVars = {
 
 class PTextPrinter : public PObject
 {
-	STimer		mTimer;
 	std::string mText{};
 	size_t		mCursor = 0;
 	FVector2	mOffset;
