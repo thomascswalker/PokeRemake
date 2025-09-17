@@ -30,16 +30,24 @@ float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Posit
 	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
 	const float Width = GetTextWidth(Text, FontSize);
 
-	float		X = Position.X;
-	const float Y = Position.Y;
+	float X = Position.X;
+	float Y = Position.Y;
 	for (const auto& C : Text)
 	{
 		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
 		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
 		SDL_FRect  Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
 						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
-		SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
-		X += Info->xadvance * Aspect;
+		if (C == '\n')
+		{
+			Y += Aspect * FontSize * 2;
+			X = Position.X;
+		}
+		else
+		{
+			SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+			X += Info->xadvance * Aspect;
+		}
 	}
 
 	// Reset draw color mod
@@ -126,7 +134,7 @@ void PRenderer::LoadFont(const std::string& Name) const
 
 void PRenderer::UnloadFonts() {}
 
-bool PRenderer::Render() const
+bool PRenderer::Render(float DeltaTime) const
 {
 	SetDrawColor(PColor::UIBackground);
 	SDL_RenderClear(mContext->Renderer);
@@ -180,6 +188,11 @@ bool PRenderer::Render() const
 			VALIDATE(Widget->DrawChildren(this), "Failed to draw.");
 		}
 	}
+
+	// Over everything, render current DT in seconds
+	auto ScreenSize = GetScreenSize();
+	SetDrawColor(PColor::Green);
+	DrawText(std::to_string(DeltaTime), { ScreenSize.X - 100, 20 }, 14.0f, true);
 
 	SDL_RenderPresent(mContext->Renderer);
 	return true;
@@ -397,6 +410,26 @@ void PRenderer::DrawGrid() const
 		Y1 = Y0;
 		DrawLine(X0, Y0, X1, Y1);
 	}
+}
+void PRenderer::DrawChar(char Char, const FVector2& Position, float FontSize) const
+{
+	// uint8_t R, G, B, A;
+	auto Color = GetDrawColor();
+	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+
+	// Aspect ratio of the pixel height we render at to the pixel height we baked the
+	// font atlas at.
+	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
+	const float Y = Position.Y;
+
+	const auto Info = &gCurrentFont.CharacterData[Char - FONT_CHAR_START];
+	SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
+	SDL_FRect  Dest(Position.X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
+					(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
+	SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+
+	// Reset draw color mod
+	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
 }
 
 float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const

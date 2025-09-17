@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/CoreFwd.h"
+#include "Core/Time.h"
 #include "Engine/Engine.h"
 #include "Engine/Game.h"
 #include "Engine/Input.h"
@@ -29,13 +30,13 @@ class PApplication
 {
 	static PApplication* sInstance;
 
-	uint64_t mCurrentTime = 0;
+	Time::TimePoint mCurrentTime;
 
 	std::shared_ptr<PEngine> mEngine;
 
 	/* Rendering */
 
-	std::unique_ptr<PRenderer> mRenderer;
+	std::unique_ptr<PRenderer>	mRenderer;
 	std::unique_ptr<SDLContext> mContext;
 
 	/* Editor */
@@ -61,7 +62,7 @@ public:
 			{
 				Game->Start();
 				auto World = Game->GetWorld();
-				auto HUD   = World->CreateHUD<HUDType>();
+				auto HUD = World->CreateHUD<HUDType>();
 				HUD->PreStart();
 
 				mRenderer->PostInitialize();
@@ -84,36 +85,36 @@ public:
 	/* Events */
 
 	bool HandleEvent(void* Event);
-	bool Draw() const;
+	bool Draw(float DeltaTime) const;
 
 	/* Properties */
 
-	bool IsRunning() const;
-	PEngine* GetEngine() const;
-	PRenderer* GetRenderer() const;
+	bool		IsRunning() const;
+	PEngine*	GetEngine() const;
+	PRenderer*	GetRenderer() const;
 	SDLContext* GetContext() const;
 };
 
 PApplication* GetApplication();
 
-#define CREATE_APP(GameType, HUDType) \
-const auto Args = ArgParser::Parse(argc, argv); \
-const auto App  = PApplication::GetInstance(); \
-\
-if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor)) \
-{ \
-	App->Start<GameType, HUDType>(); \
-	while (App->IsRunning()) \
-	{ \
-		if (!App->Loop()) \
-		{ \
-			break; \
-		}\
-	}\
-}\
-else\
-{\
-	return 1;\
-}\
-\
-return 0;
+#define CREATE_APP(GameType, HUDType)                                   \
+	const auto Args = ArgParser::Parse(argc, argv);                     \
+	const auto App = PApplication::GetInstance();                       \
+                                                                        \
+	if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor)) \
+	{                                                                   \
+		App->Start<GameType, HUDType>();                                \
+		while (App->IsRunning())                                        \
+		{                                                               \
+			if (!App->Loop())                                           \
+			{                                                           \
+				break;                                                  \
+			}                                                           \
+		}                                                               \
+	}                                                                   \
+	else                                                                \
+	{                                                                   \
+		return 1;                                                       \
+	}                                                                   \
+                                                                        \
+	return 0;

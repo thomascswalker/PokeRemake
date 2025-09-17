@@ -72,7 +72,7 @@ public:
 
 	/* Drawing */
 
-	bool Render() const;
+	bool Render(float DeltaTime) const;
 
 	void   SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const;
 	PColor GetDrawColor() const;
@@ -90,6 +90,7 @@ public:
 	void  DrawFillRect(const FRect& Rect) const;
 	void  DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
 	void  DrawGrid() const;
+	void  DrawChar(char Char, const FVector2& Position, float FontSize) const;
 	float DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false) const;
 	void  DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
 

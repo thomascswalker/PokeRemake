@@ -98,6 +98,7 @@ set(SOURCES
         Interface/EditText.h
         Interface/Padding.h
         Engine/Timer.h
+        Engine/TextPrinter.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

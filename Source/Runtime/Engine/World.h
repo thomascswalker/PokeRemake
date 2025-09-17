@@ -30,7 +30,7 @@ class PWorld : public PObject, public IInputHandler
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
 	std::shared_ptr<PHUD>				  mHUD;
 
-	std::shared_ptr<PTimerManager> mTimerManager;
+	// std::shared_ptr<PTimerManager> mTimerManager;
 
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
@@ -135,7 +135,7 @@ public:
 #if _EDITOR
 		Component->InitializeParameters();
 #endif
-
+		Component->Start();
 		mComponents.push_back(Component);
 		return Component.get();
 	}
@@ -146,6 +146,7 @@ public:
 	T* ConstructWidget(ArgsType&&... Args)
 	{
 		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
+		Widget->Start();
 		mWidgets.push_back(Widget);
 		return Widget.get();
 	}
@@ -177,6 +178,11 @@ public:
 	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
+	//
+	// PTimerManager* GetTimerManager()
+	// {
+	// 	return mTimerManager.get();
+	// }
 
 	bool ProcessEvents(SInputEvent* Event) override;
 

@@ -1,9 +1,11 @@
 #include "Application.h"
 
+#include <chrono>
 #include <format>
 
 #include "Core/Constants.h"
 #include "Core/Logging.h"
+#include "Core/Time.h"
 #include "SDL3/SDL_opengl.h"
 
 PApplication* PApplication::sInstance = nullptr;
@@ -92,7 +94,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 	SDL_ShowWindow(mContext->Window);
 
 	// Store initial time
-	mCurrentTime = SDL_GetTicks();
+	mCurrentTime = Time::Now();
 
 	return true;
 }
@@ -118,10 +120,8 @@ void PApplication::Uninitialize() const
 
 bool PApplication::Loop()
 {
-	// Tick the engine
-	const uint64_t Now = SDL_GetTicksNS();
-	const uint64_t DeltaTimeNS = Now - mCurrentTime;							 // Get delta time in nanoseconds
-	const float	   DeltaTime = static_cast<float>(DeltaTimeNS / 1000) / 1000.0f; // Convert to seconds
+	auto		Now = Time::Now();
+	const float DeltaTime = Time::Delta(mCurrentTime, Now); // Convert to seconds
 	mEngine->Tick(DeltaTime);
 	mCurrentTime = Now;
 
@@ -136,7 +136,7 @@ bool PApplication::Loop()
 	}
 
 	// Draw to the screen
-	if (!Draw())
+	if (!Draw(DeltaTime))
 	{
 		return false;
 	}
@@ -185,9 +185,9 @@ bool PApplication::HandleEvent(void* Event)
 	return true;
 }
 
-bool PApplication::Draw() const
+bool PApplication::Draw(float DeltaTime) const
 {
-	if (!mRenderer->Render())
+	if (!mRenderer->Render(DeltaTime))
 	{
 		return false;
 	}
