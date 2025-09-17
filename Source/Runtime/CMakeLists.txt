@@ -101,6 +101,7 @@ set(SOURCES
         Engine/TextPrinter.h
         Engine/Timer.cpp
         Engine/Sprite.cpp
+        Core/Binary.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 
