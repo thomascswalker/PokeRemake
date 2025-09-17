@@ -7,7 +7,7 @@ class PSpriteComponent : public PComponent, public IDrawable
 	FVector2				 mOffset{};
 
 public:
-	PSpriteComponent();
+	PSpriteComponent(float InSpeed = DEFAULT_ANIM_SPEED);
 	~PSpriteComponent() override = default;
 
 	PSpriteComponent(const PSpriteComponent& other)

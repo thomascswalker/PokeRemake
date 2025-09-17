@@ -18,10 +18,10 @@ PCharacter::PCharacter()
 		mMovementComponent->MovementDirectionChanged.AddRaw(this, &PCharacter::OnMovementEnded);
 	}
 
-	mSpriteComponent = ConstructComponent<PSpriteComponent>(this);
+	mSpriteComponent = ConstructComponent<PSpriteComponent>(this, DEFAULT_ANIM_SPEED);
 	if (mSpriteComponent)
 	{
-		mSpriteComponent->SetOffset({0, CHARACTER_OFFSET});
+		mSpriteComponent->SetOffset({ 0, CHARACTER_OFFSET });
 
 		auto Sprite = mSpriteComponent->GetSprite();
 
@@ -29,14 +29,14 @@ PCharacter::PCharacter()
 		Sprite->SetSize(16.0f);
 		Sprite->SetIndexSize(16.0f);
 
-		Sprite->AddAnimation("WalkRight", {SI_WalkRight, SI_IdleRight});
-		Sprite->AddAnimation("WalkLeft", {SI_WalkLeft, SI_IdleLeft});
-		Sprite->AddAnimation("WalkUp", {SI_WalkUpA, SI_WalkUpB});
-		Sprite->AddAnimation("WalkDown", {SI_WalkDownA, SI_WalkDownB});
-		Sprite->AddAnimation("IdleRight", {SI_IdleRight});
-		Sprite->AddAnimation("IdleLeft", {SI_IdleLeft});
-		Sprite->AddAnimation("IdleUp", {SI_IdleUp});
-		Sprite->AddAnimation("IdleDown", {SI_IdleDown});
+		Sprite->AddAnimation("WalkRight", { SI_WalkRight, SI_IdleRight });
+		Sprite->AddAnimation("WalkLeft", { SI_WalkLeft, SI_IdleLeft });
+		Sprite->AddAnimation("WalkUp", { SI_WalkUpA, SI_WalkUpB });
+		Sprite->AddAnimation("WalkDown", { SI_WalkDownA, SI_WalkDownB });
+		Sprite->AddAnimation("IdleRight", { SI_IdleRight });
+		Sprite->AddAnimation("IdleLeft", { SI_IdleLeft });
+		Sprite->AddAnimation("IdleUp", { SI_IdleUp });
+		Sprite->AddAnimation("IdleDown", { SI_IdleDown });
 
 		Sprite->SetCurrentAnimation("IdleDown");
 	}
@@ -49,69 +49,71 @@ FRect PCharacter::GetLocalBounds() const
 
 FRect PCharacter::GetWorldBounds() const
 {
-	return {GetWorldPosition2D(), FVector2::Block()};
+	return { GetWorldPosition2D(), FVector2::Block() };
 }
 
 void PCharacter::OnMovementStarted(EOrientation Direction)
 {
 	switch (Direction)
 	{
-	case OR_East:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkRight");
-			break;
-		}
-	case OR_West:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkLeft");
-			break;
-		}
-	case OR_North:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkUp");
-			break;
-		}
-	case OR_South:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkDown");
-			break;
-		}
-	default:
-		{
-			break;
-		}
+		case OR_East:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkRight");
+				break;
+			}
+		case OR_West:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkLeft");
+				break;
+			}
+		case OR_North:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkUp");
+				break;
+			}
+		case OR_South:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("WalkDown");
+				break;
+			}
+		default:
+			{
+				break;
+			}
 	}
+	mSpriteComponent->GetSprite()->Play();
 }
 
 void PCharacter::OnMovementEnded(EOrientation Direction)
 {
 	switch (Direction)
 	{
-	case OR_East:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleRight");
-			break;
-		}
-	case OR_West:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleLeft");
-			break;
-		}
-	case OR_North:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleUp");
-			break;
-		}
-	case OR_South:
-		{
-			mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleDown");
-			break;
-		}
-	default:
-		{
-			break;
-		}
+		case OR_East:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleRight");
+				break;
+			}
+		case OR_West:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleLeft");
+				break;
+			}
+		case OR_North:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleUp");
+				break;
+			}
+		case OR_South:
+			{
+				mSpriteComponent->GetSprite()->SetCurrentAnimation("IdleDown");
+				break;
+			}
+		default:
+			{
+				break;
+			}
 	}
+	mSpriteComponent->GetSprite()->Stop();
 
 	// Collision
 	for (auto Actor : GetWorld()->GetActorsAtPosition(GetPosition2D()))

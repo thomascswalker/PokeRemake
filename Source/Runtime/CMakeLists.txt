@@ -100,6 +100,7 @@ set(SOURCES
         Engine/Timer.h
         Engine/TextPrinter.h
         Engine/Timer.cpp
+        Engine/Sprite.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

@@ -20,7 +20,7 @@ class PTextPrinter : public PObject
 	bool		mPrinting = false;
 
 	STimerHandle mTimerHandle;
-	float		 mAnimationSpeed = 0.05f;
+	float		 mAnimationSpeed = DEFAULT_TEXT_SPEED;
 
 public:
 	void Play()
