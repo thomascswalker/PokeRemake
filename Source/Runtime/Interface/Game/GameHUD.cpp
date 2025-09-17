@@ -4,21 +4,27 @@
 
 PGameHUD::PGameHUD()
 {
-    mLayoutMode = LM_Vertical;
+	SetLayoutMode(LM_Vertical);
 
-    mSpacer = ConstructWidget<PSpacer>();
-    PWidget::AddChild(mSpacer);
+	mSpacer = ConstructWidget<PSpacer>();
+	mSpacer->SetFixedHeight(260);
+	mSpacer->SetResizeModeH(RM_Fixed);
 
-    mDialogBox = ConstructWidget<PDialogBox>();
-    PWidget::AddChild(mDialogBox);
-    mDialogBox->SetVisible(false);
+	mDialogBox = ConstructWidget<PDialogBox>();
+	mDialogBox->SetVisible(false);
+
+	// PWidget::AddChild(mSpacer);
+	PWidget::AddChild(mDialogBox);
 }
 
 void PGameHUD::DialogBox(const std::string& Text)
 {
-    mDialogBox->GetVisible() ? mDialogBox->SetVisible(false) : mDialogBox->SetVisible(true);
-    mDialogBox->GetVisible()
-        ? SetInputContext(IC_Dialog)
-        : SetInputContext(IC_Default);
-    mDialogBox->SetText(Text);
+	mDialogBox->ToggleVisible();
+	bool isVisible = mDialogBox->GetVisible();
+	isVisible
+		? SetInputContext(IC_Dialog)
+		: SetInputContext(IC_Default);
+
+	mDialogBox->SetText(Text);
+	isVisible ? mDialogBox->Print() : mDialogBox->EndPrint();
 }

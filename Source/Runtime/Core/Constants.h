@@ -33,11 +33,11 @@ constexpr float GLOBAL_SPEED_MULTIPLIER = 1.0f;
 constexpr float CHARACTER_OFFSET = TILE_SIZE / 2.0f;
 
 // Tiles per second
-constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f;
+constexpr float DEFAULT_CHAR_SPEED = GLOBAL_SPEED_MULTIPLIER / 2.0f * 1000.0f;
 
 // How often a sprite animation will move to the next frame (in milliseconds)
 // This is kind of arbitrary for now and is simply based on what looks best visually.
-constexpr float DEFAULT_ANIM_SPEED = TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f;
+constexpr float DEFAULT_ANIM_SPEED = (TILE_SIZE / GLOBAL_SPEED_MULTIPLIER * 2.0f) / 1000.0f;
 
 constexpr int	FONT_ATLAS_SIZE = 1024;
 constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126

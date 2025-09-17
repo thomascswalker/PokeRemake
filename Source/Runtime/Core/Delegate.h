@@ -34,8 +34,8 @@
 
 #define DECLARE_DELEGATE_RET(name, retValue, ...) using name = Delegate<retValue, __VA_ARGS__>
 
-#define DECLARE_MULTICAST_DELEGATE(name, ...)    \
-	using name = MulticastDelegate<__VA_ARGS__>; \
+#define DECLARE_MULTICAST_DELEGATE(name, ...)                        \
+	using name = MulticastDelegate<__VA_ARGS__>;                     \
 	using name##Delegate = MulticastDelegate<__VA_ARGS__>::DelegateT
 
 #define DECLARE_EVENT(name, ownerType, ...)            \
@@ -776,6 +776,16 @@ public:
 		m_Events = std::move(other.m_Events);
 		m_Locks = std::move(other.m_Locks);
 		return *this;
+	}
+
+	bool operator==(const MulticastDelegate& Other) const
+	{
+		return m_Events == Other.m_Events;
+	}
+
+	bool operator!=(const MulticastDelegate& Other) const
+	{
+		return !(*this == Other);
 	}
 
 	template <typename T>

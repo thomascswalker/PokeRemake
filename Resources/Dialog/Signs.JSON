@@ -9,7 +9,7 @@
     "Pallet Town"
   ],
   "PalletTown_OakLab": [
-    "Oak Pokemon",
+    "Oak ${MON}",
     "Research Lab"
   ]
 }

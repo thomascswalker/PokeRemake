@@ -1,39 +1,59 @@
 #pragma once
 
+#include "Engine/TextPrinter.h"
 #include "Engine/World.h"
 #include "Interface/Box.h"
-#include "Interface/Text.h"
-
-#define DIALOG_MAX_CHAR 18
+#include "SDL3/SDL_test_common.h"
 
 class PDialogBox : public PBox
 {
-	PText*	  mText;
-	PTexture* mTexture;
+	PTextPrinter mPrinter;
+	PTexture*	 mTexture = nullptr;
 
 public:
-	PDialogBox(const std::string& Text = "")
+	void Start() override
 	{
-		SetFixedHeight(100);
-		SetResizeModeH(RM_Fixed);
-
-		mText = ConstructWidget<PText>(Text, 20.0f, PColor::Black);
-		mText->Padding = { 10 };
-		mText->SetAlignment(AL_Left);
-		mText->SetLineBreak(true);
-		mText->SetLineBreakPos(DIALOG_MAX_CHAR);
-		PWidget::AddChild(mText);
+		mTexture = TextureManager::Get("DialogBox");
 	}
 
 	void Draw(const PRenderer* Renderer) const override
 	{
-		PTexture* Tex = TextureManager::Get("DialogBox");
-		FRect	  Geometry = GetGeometry();
-		Renderer->DrawTexture(Tex, Tex->GetRect(), Geometry);
+		Renderer->SetDrawColor(255, 255, 255, 255);
+		FRect Geometry = GetGeometry();
+
+		/**
+		 * TODO: Currently hardcoded because layout is not working as expected.
+		 */
+		Geometry.H = 100;
+		Geometry.W = WINDOW_DEFAULT_WIDTH;
+		Geometry.X = 0;
+		Geometry.Y = WINDOW_DEFAULT_HEIGHT - Geometry.H;
+		Renderer->DrawFillRect(Geometry);
+		Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);
+
+		Renderer->SetDrawColor(0, 0, 0, 255);
+		auto Position = Geometry.GetPosition() + FVector2(24, 48);
+		Renderer->DrawText(mPrinter.GetDisplayText(), Position, 32.0f);
+	}
+
+	void Tick(float DeltaTime) override
+	{
+		PWidget::Tick(DeltaTime);
+		mPrinter.Tick(DeltaTime);
 	}
 
 	void SetText(const std::string& Text)
 	{
-		mText->SetText(Text);
+		mPrinter.SetText(Text);
+	}
+
+	void Print()
+	{
+		mPrinter.Play();
+	}
+
+	void EndPrint()
+	{
+		mPrinter.Stop();
 	}
 };

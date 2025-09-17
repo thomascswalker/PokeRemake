@@ -77,7 +77,7 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 
 		JsonData = JSON::parse(Data.data());
 		Expand(&JsonData);
-		sMapData.Add(Name, JsonData);
+		sMapData.Emplace(Name, JsonData);
 	}
 	const std::string MapName = JsonData["MapName"];
 	sMapData[MapName]         = JsonData;
