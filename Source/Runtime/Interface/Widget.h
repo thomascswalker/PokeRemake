@@ -36,6 +36,12 @@ enum EResizeMode
 	RM_Grow,
 };
 
+enum EPositionMode
+{
+	PM_Fixed,
+	PM_Relative,
+};
+
 enum EWidgetDepth
 {
 	WD_Floating,
@@ -52,11 +58,13 @@ protected:
 	// Custom data associated with this widget
 	void* mCustomData = nullptr;
 
-	ELayoutMode mLayoutMode = LM_Horizontal;
+	ELayoutMode	  mLayoutMode = LM_Horizontal;
+	EPositionMode mPositionMode = PM_Relative;
 
 	EResizeMode mResizeModeW = RM_Grow;
 	EResizeMode mResizeModeH = RM_Grow;
 
+	FVector2	 mFixedPosition = { 0.0f, 0.0f };
 	FVector2	 mFixedSize = { 0.0f, 0.0f };
 	FVector2	 mOffset = { 0.0f, 0.0f };
 	FVector2	 mMaxSize = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
@@ -256,7 +264,9 @@ public:
 
 	virtual FRect GetGeometry() const
 	{
-		return FRect{ X, Y, std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y) };
+		FVector2 Position = mPositionMode == PM_Relative ? FVector2{ X, Y } : mFixedPosition;
+		FVector2 Size(std::min(W, mMaxSize.X), std::min(H, mMaxSize.Y));
+		return FRect{ Position, Size };
 	}
 
 	FVector2 GetOffset() const
@@ -313,6 +323,16 @@ public:
 		mLayoutMode = LayoutMode;
 	}
 
+	EPositionMode GetPositionMode() const
+	{
+		return mPositionMode;
+	}
+
+	void SetPositionMode(EPositionMode Mode)
+	{
+		mPositionMode = Mode;
+	}
+
 	EResizeMode GetResizeModeW() const
 	{
 		return mResizeModeW;
@@ -337,6 +357,26 @@ public:
 	{
 		mResizeModeW = InW;
 		mResizeModeH = InH;
+	}
+
+	FVector2 GetFixedPosition() const
+	{
+		return mFixedPosition;
+	}
+
+	void SetFixedPosition(const FVector2& Position)
+	{
+		mFixedPosition = Position;
+	}
+
+	void SetFixedX(float Value)
+	{
+		mFixedPosition.X = Value;
+	}
+
+	void SetFixedY(float Value)
+	{
+		mFixedPosition.Y = Value;
 	}
 
 	FVector2 GetFixedSize() const
