@@ -9,9 +9,9 @@
 void PWorld::Start()
 {
 	LogDebug("Starting world");
-	//
-	// LogDebug("Constructing timer manager.");
-	// mTimerManager = std::make_shared<PTimerManager>();
+
+	LogDebug("Constructing timer manager.");
+	mTimerManager = std::make_shared<PTimerManager>();
 
 	LogDebug("Starting {} actors.", GetActors().size());
 	for (const auto& Actor : GetActors())
@@ -27,6 +27,8 @@ void PWorld::Start()
 
 void PWorld::Tick(float DeltaTime)
 {
+	mTimerManager->Tick(DeltaTime);
+
 	auto R = GetRenderer();
 
 	// If there's a root widget, set it to span the width and height of the screen

@@ -1,8 +1,14 @@
+/**
+ * Shameless copy of Unreal Engine's FTimer/FTimerManager.
+ */
+
 #pragma once
 
 #include <functional>
+#include <ranges>
 
 #include "Core/Delegate.h"
+#include "Core/Logging.h"
 #include "Core/Map.h"
 
 struct STimer;
@@ -11,7 +17,6 @@ class PTimerManager;
 
 DECLARE_MULTICAST_DELEGATE(DTimerDelegate);
 using DTimerCallback = std::function<void()>;
-using FTimerDelegate = std::function<void()>;
 
 struct STimerHandle
 {
@@ -36,18 +41,27 @@ struct STimerDelegate
 	DTimerCallback StaticCallback;
 
 	STimerDelegate() {}
+	template <typename T>
+	STimerDelegate(T* Object, void (T::*Delegate)())
+	{
+		ObjectCallback.AddRaw(Object, Delegate);
+	}
 	STimerDelegate(const DTimerDelegate& D) : ObjectCallback(D), StaticCallback(nullptr) {}
 	STimerDelegate(const DTimerCallback& D) : StaticCallback(D) {}
 
 	void Execute()
 	{
-		if (ObjectCallback.IsBound())
+		if (ObjectCallback.IsBound() || ObjectCallback.GetSize() > 0)
 		{
 			ObjectCallback.Broadcast();
 		}
-		else
+		else if (StaticCallback != nullptr)
 		{
 			StaticCallback();
+		}
+		else
+		{
+			LogError("Delegate is not bound to any function.");
 		}
 	}
 
@@ -63,7 +77,8 @@ struct STimerDelegate
 struct STimer
 {
 	bool		   Loop = true;
-	float		   Rate;
+	float		   Rate = 0;
+	float		   Elapsed = 0;
 	STimerHandle   Handle;
 	STimerDelegate Delegate;
 };
@@ -77,7 +92,7 @@ class PTimerManager
 	{
 		STimerHandle Handle;
 		auto		 NewIndex = sNextHandle++;
-		mTimers.Emplace(sNextHandle++, std::move(Timer));
+		mTimers.Emplace(NewIndex, std::move(Timer));
 		Handle.SetIndex(NewIndex);
 		return Handle;
 	}
@@ -123,16 +138,12 @@ public:
 	template <typename T>
 	void SetTimer(STimerHandle& Handle, T* Object, void (T::*Delegate)(), float Rate, float Loop)
 	{
-		STimerDelegate NewDelegate;
-		NewDelegate.ObjectCallback.AddRaw(Object, Delegate);
-		SetTimerInternal(Handle, std::move(NewDelegate), Rate, Loop);
+		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), Rate, Loop);
 	}
 
 	void SetTimer(STimerHandle& Handle, const DTimerCallback& Callback, float Rate, float Loop)
 	{
-		STimerDelegate NewDelegate;
-		NewDelegate.StaticCallback = Callback;
-		SetTimerInternal(Handle, std::move(NewDelegate), Rate, Loop);
+		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Rate, Loop);
 	}
 
 	void ClearTimer(STimerHandle& Handle)
@@ -143,5 +154,18 @@ public:
 			RemoveTimer(Handle);
 		}
 		Handle.Invalidate();
+	}
+
+	void Tick(float DeltaTime)
+	{
+		for (auto& Timer : mTimers | std::views::values)
+		{
+			Timer.Elapsed += DeltaTime;
+			if (Timer.Elapsed >= Timer.Rate)
+			{
+				Timer.Delegate.Execute();
+				Timer.Elapsed = 0;
+			}
+		}
 	}
 };

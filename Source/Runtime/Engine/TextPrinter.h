@@ -7,8 +7,9 @@
 #define DIALOG_SPEED	5
 
 static TMap<std::string, std::string> gTextVars = {
-	{ "${PLAYER}",  "ASH" },
-	{  "${RIVAL}", "GARY" }
+	{	  "${MON}", "Pokémon" },
+	{ "${PLAYER}",	   "ASH" },
+	{  "${RIVAL}",	  "GARY" }
 };
 
 class PTextPrinter : public PObject
@@ -17,35 +18,22 @@ class PTextPrinter : public PObject
 	size_t		mCursor = 0;
 	FVector2	mOffset;
 	bool		mPrinting = false;
-	float		mAnimationDelta = 0.0f;
-	float		mAnimationSpeed = 0.05f;
+
+	STimerHandle mTimerHandle;
+	float		 mAnimationSpeed = 0.05f;
 
 public:
-	void StartTimer()
+	void Play()
 	{
-		mAnimationDelta = 0;
+		GetWorld()->GetTimerManager()->SetTimer(mTimerHandle, this, &PTextPrinter::NextChar, mAnimationSpeed, true);
 		mPrinting = true;
 	}
 
-	void EndTimer()
+	void Stop()
 	{
-		mAnimationDelta = 0;
+		GetWorld()->GetTimerManager()->ClearTimer(mTimerHandle);
 		mCursor = 0;
 		mPrinting = false;
-	}
-
-	void Tick(float DeltaTime) override
-	{
-		if (!mPrinting)
-		{
-			return;
-		}
-		mAnimationDelta += DeltaTime;
-		if (mAnimationDelta > mAnimationSpeed)
-		{
-			NextChar();
-			mAnimationDelta = 0;
-		}
 	}
 
 	void Reset()

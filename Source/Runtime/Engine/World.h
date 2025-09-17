@@ -22,6 +22,7 @@ class PWorld : public PObject, public IInputHandler
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
+	std::shared_ptr<PTimerManager>			 mTimerManager;
 
 	std::vector<PActor*>  mDestroyableActors;
 	std::vector<PObject*> mDestroyableObjects;
@@ -178,11 +179,11 @@ public:
 	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
-	//
-	// PTimerManager* GetTimerManager()
-	// {
-	// 	return mTimerManager.get();
-	// }
+
+	PTimerManager* GetTimerManager()
+	{
+		return mTimerManager.get();
+	}
 
 	bool ProcessEvents(SInputEvent* Event) override;
 

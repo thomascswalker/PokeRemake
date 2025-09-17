@@ -13,7 +13,7 @@ PGameHUD::PGameHUD()
 	mDialogBox = ConstructWidget<PDialogBox>();
 	mDialogBox->SetVisible(false);
 
-	PWidget::AddChild(mSpacer);
+	// PWidget::AddChild(mSpacer);
 	PWidget::AddChild(mDialogBox);
 }
 
