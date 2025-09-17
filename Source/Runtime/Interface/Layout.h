@@ -202,7 +202,7 @@ namespace Layout
 		const FRect Rect = Widget->GetGeometry();
 
 		// Top-left
-		const FVector2 Origin = { Rect.X, Rect.Y };
+		const FVector2 Origin = Rect.GetPosition();
 
 		// Uniform padding
 		const auto Padding = Widget->Padding;
