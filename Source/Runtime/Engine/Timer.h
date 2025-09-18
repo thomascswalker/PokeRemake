@@ -168,4 +168,12 @@ public:
 			}
 		}
 	}
+
+	void ClearAllTimers()
+	{
+		for (auto& Timer : mTimers | std::views::values)
+		{
+			ClearTimer(Timer.Handle);
+		}
+	}
 };

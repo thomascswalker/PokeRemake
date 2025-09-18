@@ -43,6 +43,7 @@ public:
 	~PWorld() override = default;
 
 	bool Start() override;
+	bool End() override;
 	void Tick(float DeltaTime) override;
 
 	void PostTick() override;

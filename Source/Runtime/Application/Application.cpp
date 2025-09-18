@@ -120,6 +120,10 @@ void PApplication::Uninitialize() const
 
 bool PApplication::Loop()
 {
+	if (!mEngine->IsRunning())
+	{
+		return false;
+	}
 	auto		Now = Time::Now();
 	const float DeltaTime = Time::Delta(mCurrentTime, Now); // Convert to seconds
 	mEngine->Tick(DeltaTime);
@@ -168,6 +172,15 @@ bool PApplication::HandleEvent(void* Event)
 				float Width = static_cast<float>(SDLEvent->window.data1);
 				float Height = static_cast<float>(SDLEvent->window.data2);
 				mRenderer->OnResize({ Width, Height });
+			}
+		case SDL_EVENT_KEY_UP:
+			// Global exit across any input context
+			{
+				if (SDLEvent->key.key == SDLK_ESCAPE)
+				{
+					mEngine->GetGame()->End();
+				}
+				break;
 			}
 		default:
 			break;

@@ -9,7 +9,6 @@ PMapMode::PMapMode()
 {
 	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
 	mSaveState[PLAYER_POSITION] = JSON::array({ 800, 800 });
-	LogDebug("Save State: {}", mSaveState.dump(2).c_str());
 
 	PMapManager::GameMapLoaded.AddRaw(this, &PMapMode::OnGameMapLoaded);
 	PMapManager::GameMapUnloaded.AddRaw(this, &PMapMode::OnGameMapUnloaded);
@@ -35,8 +34,8 @@ bool PMapMode::Load()
 
 bool PMapMode::Unload()
 {
-	auto World = GetWorld();
-	auto Player = World->GetPlayerCharacter();
+	mWorld = GetWorld();
+	auto Player = mWorld->GetPlayerCharacter();
 
 	// Current position
 	auto PlayerPosition = Player->GetPosition2D();
@@ -52,13 +51,13 @@ bool PMapMode::Unload()
 	mSaveState[PLAYER_MAP] = Map->GetMapName();
 
 	// Destroy all actors
-	World->DestroyAllActors();
+	mWorld->DestroyAllActors();
 
 	// Clear all maps from the world
 	PMapManager::ClearMaps();
 
 	// Unset the player character
-	World->SetPlayerCharacter(nullptr);
+	mWorld->SetPlayerCharacter(nullptr);
 
 	LogDebug("Unload Save State: {}", mSaveState.dump(2).c_str());
 

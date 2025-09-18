@@ -49,6 +49,7 @@ bool PGame::Start()
 bool PGame::End()
 {
 	GameEnded.Broadcast();
+	mWorld->End();
 	return true;
 }
 

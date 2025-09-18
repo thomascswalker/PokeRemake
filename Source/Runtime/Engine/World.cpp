@@ -6,6 +6,8 @@
 #include "Engine/Input.h"
 #include "Interface/Layout.h"
 
+#include "MapManager.h"
+
 bool PWorld::Start()
 {
 	LogDebug("Starting world");
@@ -32,6 +34,20 @@ bool PWorld::Start()
 		}
 	}
 
+	return true;
+}
+bool PWorld::End()
+{
+	for (auto& Component : GetComponents())
+	{
+		DestroyComponentInternal(Component);
+	}
+	for (auto& Actor : GetActors())
+	{
+		DestroyActorInternal(Actor);
+	}
+	PMapManager::ClearMaps();
+	mTimerManager->ClearAllTimers();
 	return true;
 }
 

@@ -1,14 +1,17 @@
 #include "Engine.h"
 
-#include "Actors/Portal.h"
-
 PEngine::PEngine()
-	: mIsRunning(true), mGame(nullptr) {}
+	: mGame(nullptr) {}
 
-void PEngine::Start() {}
+void PEngine::Start()
+{
+	LogDebug("Starting engine.");
+	mIsRunning = true;
+}
 
 void PEngine::Stop()
 {
+	LogDebug("Stopping engine.");
 	mIsRunning = false;
 }
 

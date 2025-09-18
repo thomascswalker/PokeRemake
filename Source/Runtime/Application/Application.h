@@ -61,6 +61,8 @@ public:
 			return false;
 		}
 		mEngine->Initialize<GameType>();
+		mEngine->Start();
+
 		PGame* Game = mEngine->GetGame();
 		if (!Game)
 		{
@@ -79,6 +81,12 @@ public:
 
 		mRenderer->PostInitialize();
 
+		return true;
+	}
+
+	bool Stop() const
+	{
+		mEngine->Stop();
 		return true;
 	}
 
@@ -116,6 +124,11 @@ PApplication* GetApplication();
 			{                                                           \
 				break;                                                  \
 			}                                                           \
+		}                                                               \
+		if (!App->Stop())                                               \
+		{                                                               \
+			LogError("Failed to stop application.");                    \
+			return 1;                                                   \
 		}                                                               \
 	}                                                                   \
 	else                                                                \
