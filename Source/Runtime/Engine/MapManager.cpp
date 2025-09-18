@@ -6,8 +6,12 @@
 #include "Serialization.h"
 #include "World.h"
 
-TMap<std::string, JSON> PMapManager::sMapData         = {};
+TMap<std::string, JSON>		 PMapManager::sMapData = {};
 TMap<std::string, PGameMap*> PMapManager::sActiveMaps = {};
+
+static EMapState gMapState = MS_None;
+DGameMapLoaded	 PMapManager::GameMapLoaded = DGameMapLoaded();
+DGameMapUnloaded PMapManager::GameMapUnloaded = DGameMapUnloaded();
 
 PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 {
@@ -39,26 +43,16 @@ PGameMap* PMapManager::GetMap(const std::string& Name)
 	return nullptr;
 }
 
-PGameMap* PMapManager::LoadMap(const JSON& Data)
-{
-	JSON ExpandedData = Data;
-	Expand(&ExpandedData);
-	const std::string MapName = ExpandedData["MapName"];
-	sMapData[MapName]         = ExpandedData;
-	return ConstructMap(ExpandedData);
-}
-
 PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
+	gMapState = MS_Loading;
 	JSON JsonData;
 	if (sMapData.Contains(Name) && !ForceReload)
 	{
-		LogDebug("Loading map from memory: {}", Name.c_str());
 		JsonData = sMapData[Name];
 	}
 	else
 	{
-		LogDebug("Loading map from file: {}", Name.c_str());
 		std::string Data;
 		std::string FileName;
 		if (!Name.ends_with(".JSON"))
@@ -72,6 +66,7 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 
 		if (FileName.empty() || !Files::ReadFile(FileName, Data))
 		{
+			gMapState = MS_None;
 			return nullptr;
 		}
 
@@ -80,52 +75,77 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 		sMapData.Emplace(Name, JsonData);
 	}
 	const std::string MapName = JsonData["MapName"];
-	sMapData[MapName]         = JsonData;
-	return ConstructMap(JsonData);
+	sMapData[MapName] = JsonData;
+	auto NewMap = ConstructMap(JsonData);
+	if (!NewMap)
+	{
+		gMapState = MS_None;
+		LogError("Failed to construct map.");
+		return nullptr;
+	}
+
+	GameMapLoaded.Broadcast();
+	gMapState = MS_Loaded;
+	return NewMap;
 }
 
 PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
 {
+	gMapState = MS_Loading;
 	JSON JsonData;
 
-	LogDebug("Loading map from file: {}", FileName.c_str());
 	std::string Data;
 
 	if (FileName.empty() || !Files::ReadFile(FileName, Data))
 	{
+		gMapState = MS_None;
 		return nullptr;
 	}
 
 	JsonData = JSON::parse(Data.data());
 	Expand(&JsonData);
 	const std::string MapName = JsonData["MapName"];
-	sMapData[MapName]         = JsonData;
+	sMapData[MapName] = JsonData;
 
-	return ConstructMap(JsonData);
+	auto NewMap = ConstructMap(JsonData);
+	if (!NewMap)
+	{
+		gMapState = MS_None;
+		LogError("Failed to construct map.");
+		return nullptr;
+	}
+	GameMapLoaded.Broadcast();
+	gMapState = MS_Loaded;
+	return NewMap;
 }
 
 bool PMapManager::UnloadMap(const std::string& Name)
 {
+	gMapState = MS_Unloading;
 	// Get the reference to the map
 	auto GameMap = GetMap(Name);
 	if (!GameMap)
 	{
+		gMapState = MS_None;
 		LogError("Unable to find map {} in world.", Name.c_str());
 		return false;
 	}
 
 	// Destroy the map actor
-	LogDebug("Destroying map: {}", Name.c_str());
 	GetWorld()->DestroyActor(GameMap);
 
 	// Remove the map from the list of active maps
 	sActiveMaps.Remove(Name);
 
+	GameMapUnloaded.Broadcast();
+
+	gMapState = MS_None;
+
 	return true;
 }
 
 bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
-                            EOrientation ExitDirection)
+							EOrientation ExitDirection)
 {
 	UnloadMap(OldMap);
 	PGameMap* GameMap = LoadMap(NewMap, false);
@@ -134,7 +154,6 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 		LogError("Failed to load map: {}", NewMap.c_str());
 		return false;
 	}
-	LogDebug("Switched to map: {}", NewMap.c_str());
 	if (auto Player = GetWorld()->GetPlayerCharacter())
 	{
 		Player->GetMovementComponent()->SetMovementDirection(ExitDirection);
@@ -180,4 +199,9 @@ PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
 void PMapManager::ClearMaps()
 {
 	sActiveMaps.Clear();
+}
+
+EMapState PMapManager::GetState()
+{
+	return gMapState;
 }

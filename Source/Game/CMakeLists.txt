@@ -17,6 +17,7 @@ set(SOURCES
         BattleMode.cpp
         BattleView.cpp
         BattleView.h
+        Interface/TransitionOverlay.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

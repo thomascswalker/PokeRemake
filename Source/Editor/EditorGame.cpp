@@ -42,12 +42,14 @@ bool PEditorGame::PreStart()
 	return true;
 }
 
-void PEditorGame::Start()
+bool PEditorGame::Start()
 {
 	PGame::Start();
 
 	// Bind the world actor clicked event to handle selection within the editor.
 	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
+
+	return true;
 }
 
 void PEditorGame::PostTick()

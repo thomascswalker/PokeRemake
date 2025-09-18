@@ -22,7 +22,7 @@ public:
 	// Init
 	PEditorGame();
 	bool PreStart() override;
-	void Start() override;
+	bool Start() override;
 	void PostTick() override;
 
 	// Input

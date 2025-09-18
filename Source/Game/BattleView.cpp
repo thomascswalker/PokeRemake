@@ -2,10 +2,11 @@
 
 #include "Engine/World.h"
 
-void PBattleView::Start()
+bool PBattleView::Start()
 {
-    if (const auto W = GetWorld())
-    {
-        mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
-    }
+	if (const auto W = GetWorld())
+	{
+		mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
+	}
+	return true;
 }

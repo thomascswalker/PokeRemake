@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Character.h"
+#include <bitset>
+
 #include "Engine/Components/CameraComponent.h"
 
-#include <bitset>
+#include "Character.h"
 
 class PPlayerCharacter : public PCharacter, public IDrawable
 {
 	PCameraComponent* mCameraComponent = nullptr;
-	std::bitset<4> mInputState; // Left, Right, Down, Up
-	bool bInputAllowed = true;
+	std::bitset<4>	  mInputState; // Left, Right, Down, Up
+	bool			  mInputAllowed = true;
 
 public:
 	PPlayerCharacter();
@@ -23,6 +24,7 @@ public:
 		return Drawing::Z_Player;
 	}
 
+	bool CanMove() const;
 	void Interact();
 
 	PCameraComponent* GetCameraComponent() const

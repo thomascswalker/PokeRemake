@@ -19,9 +19,10 @@ public:
 		mFixedPosition = { 0, WINDOW_DEFAULT_HEIGHT - mFixedSize.Y };
 	}
 
-	void Start() override
+	bool Start() override
 	{
 		mTexture = TextureManager::Get("DialogBox");
+		return true;
 	}
 
 	void Draw(const PRenderer* Renderer) const override

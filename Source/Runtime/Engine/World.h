@@ -31,8 +31,6 @@ class PWorld : public PObject, public IInputHandler
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
 	std::shared_ptr<PHUD>				  mHUD;
 
-	// std::shared_ptr<PTimerManager> mTimerManager;
-
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
 	void DestroyWidgetInternal(PWidget* Widget);
@@ -44,7 +42,7 @@ public:
 
 	~PWorld() override = default;
 
-	void Start() override;
+	bool Start() override;
 	void Tick(float DeltaTime) override;
 
 	void PostTick() override;

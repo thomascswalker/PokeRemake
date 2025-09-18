@@ -6,7 +6,7 @@
 #include "Engine/Input.h"
 #include "Interface/Layout.h"
 
-void PWorld::Start()
+bool PWorld::Start()
 {
 	LogDebug("Starting world");
 
@@ -16,13 +16,23 @@ void PWorld::Start()
 	LogDebug("Starting {} actors.", GetActors().size());
 	for (const auto& Actor : GetActors())
 	{
-		Actor->Start();
+		if (!Actor->Start())
+		{
+			LogError("Failed to start actor");
+			return false;
+		}
 	}
 	LogDebug("Starting {} components.", GetComponents().size());
 	for (const auto& Component : GetComponents())
 	{
-		Component->Start();
+		if (!Component->Start())
+		{
+			LogError("Failed to start component");
+			return false;
+		}
 	}
+
+	return true;
 }
 
 void PWorld::Tick(float DeltaTime)
@@ -145,9 +155,21 @@ void PWorld::DestroyComponentInternal(const PComponent* Component)
 
 	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
 }
+
 void PWorld::DestroyWidgetInternal(PWidget* Widget)
 {
 	std::shared_ptr<PWidget> SharedWidget;
+
+	// Unparent this widget
+	Widget->Unparent();
+
+	// Destroy all children, recursively
+	for (auto Child : Widget->GetChildren())
+	{
+		DestroyWidgetInternal(Child);
+	}
+
+	//
 	for (auto Ptr : mWidgets)
 	{
 		if (Ptr.get() == Widget)

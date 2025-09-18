@@ -1,12 +1,17 @@
 #include "TestGame.h"
 
+#include "Application/Application.h"
+
 #include "BattleMode.h"
 #include "MapMode.h"
 
-#include "Application/Application.h"
-
-TestGame::TestGame()
+bool TestGame::PreStart()
 {
+	if (!PGame::PreStart())
+	{
+		return false;
+	}
 	AddGameMode<PMapMode>();
 	AddGameMode<PBattleMode>();
+	return true;
 }

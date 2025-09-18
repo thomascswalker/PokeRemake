@@ -1,20 +1,21 @@
 #include "CharacterMovementComponent.h"
 
 #include "Core/Logging.h"
-
 #include "Engine/MapManager.h"
 #include "Engine/World.h"
 
-void PCharacterMovementComponent::Start()
+bool PCharacterMovementComponent::Start()
 {
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
 	mTargetPosition = mOwner->GetWorldPosition2D();
-	mCurrentMap     = PMapManager::GetMapAtPosition(mTargetPosition);
+	mCurrentMap = PMapManager::GetMapAtPosition(mTargetPosition);
 	if (!mCurrentMap)
 	{
 		LogError("No valid maps in the world.");
+		return false;
 	}
+	return true;
 }
 
 void PCharacterMovementComponent::Tick(float DeltaTime)
@@ -26,19 +27,24 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 	}
 
 	// Are we close enough to snap to the target position?
-	bool CloseEnough   = false;
+	bool CloseEnough = false;
 	auto OwnerPosition = mOwner->GetWorldPosition2D();
 	switch (mMovementDirection)
 	{
-	case OR_East: CloseEnough = OwnerPosition.X >= mTargetPosition.X;
-		break;
-	case OR_West: CloseEnough = OwnerPosition.X <= mTargetPosition.X;
-		break;
-	case OR_South: CloseEnough = OwnerPosition.Y >= mTargetPosition.Y;
-		break;
-	case OR_North: CloseEnough = OwnerPosition.Y <= mTargetPosition.Y;
-		break;
-	default: break;
+		case OR_East:
+			CloseEnough = OwnerPosition.X >= mTargetPosition.X;
+			break;
+		case OR_West:
+			CloseEnough = OwnerPosition.X <= mTargetPosition.X;
+			break;
+		case OR_South:
+			CloseEnough = OwnerPosition.Y >= mTargetPosition.Y;
+			break;
+		case OR_North:
+			CloseEnough = OwnerPosition.Y <= mTargetPosition.Y;
+			break;
+		default:
+			break;
 	}
 
 	// End movement, we've reached the target position
@@ -57,30 +63,30 @@ void PCharacterMovementComponent::Tick(float DeltaTime)
 	// Add distance traveled in the corresponding direction to the current position
 	switch (mMovementDirection)
 	{
-	case OR_East:
-		{
-			OwnerPosition.X += Distance;
-			break;
-		}
-	case OR_West:
-		{
-			OwnerPosition.X -= Distance;
-			break;
-		}
-	case OR_South:
-		{
-			OwnerPosition.Y += Distance;
-			break;
-		}
-	case OR_North:
-		{
-			OwnerPosition.Y -= Distance;
-			break;
-		}
-	default:
-		{
-			break;
-		}
+		case OR_East:
+			{
+				OwnerPosition.X += Distance;
+				break;
+			}
+		case OR_West:
+			{
+				OwnerPosition.X -= Distance;
+				break;
+			}
+		case OR_South:
+			{
+				OwnerPosition.Y += Distance;
+				break;
+			}
+		case OR_North:
+			{
+				OwnerPosition.Y -= Distance;
+				break;
+			}
+		default:
+			{
+				break;
+			}
 	}
 	mOwner->SetPosition2D(OwnerPosition);
 	mDistanceTraveled += Distance;

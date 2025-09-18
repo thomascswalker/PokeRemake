@@ -55,27 +55,29 @@ public:
 	template <typename GameType, typename HUDType = PHUD>
 	bool Start() const
 	{
-		if (mEngine)
+		if (!mEngine)
 		{
-			mEngine->Initialize<GameType>();
-			if (PGame* Game = mEngine->GetGame())
-			{
-				Game->Start();
-				auto World = Game->GetWorld();
-				auto HUD = World->CreateHUD<HUDType>();
-				HUD->PreStart();
-
-				mRenderer->PostInitialize();
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
+			LogError("Engine is invalid.");
 			return false;
 		}
+		mEngine->Initialize<GameType>();
+		PGame* Game = mEngine->GetGame();
+		if (!Game)
+		{
+			LogError("Game is invalid.");
+			return false;
+		}
+
+		if (!Game->Start())
+		{
+			LogError("Failed to start game.");
+			return false;
+		}
+		auto World = Game->GetWorld();
+		auto HUD = World->CreateHUD<HUDType>();
+		HUD->PreStart();
+
+		mRenderer->PostInitialize();
 
 		return true;
 	}
@@ -103,7 +105,11 @@ PApplication* GetApplication();
                                                                         \
 	if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor)) \
 	{                                                                   \
-		App->Start<GameType, HUDType>();                                \
+		if (!App->Start<GameType, HUDType>())                           \
+		{                                                               \
+			LogError("Failed to start application.");                   \
+			return 1;                                                   \
+		}                                                               \
 		while (App->IsRunning())                                        \
 		{                                                               \
 			if (!App->Loop())                                           \

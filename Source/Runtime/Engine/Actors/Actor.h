@@ -270,8 +270,7 @@ public:
 #endif
 };
 
-#define BEGIN_CONSTRUCT_ACTOR                                                         \
-	LogDebug("Deserializing Actor: {}", Data.at("Class").get<std::string>().c_str()); \
+#define BEGIN_CONSTRUCT_ACTOR                             \
 	auto ClassName = Data.at("Class").get<std::string>();
 
 #define CONSTRUCT_ACTOR(Class)                                         \
