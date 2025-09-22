@@ -25,6 +25,10 @@ private:
 
 public:
 	STimerHandle() : Index(0) {}
+	~STimerHandle()
+	{
+		Invalidate();
+	}
 	bool IsValid() const { return Index != 0; }
 	void Invalidate() { Index = 0; }
 	void SetIndex(size_t NewIndex) { Index = NewIndex; }
@@ -83,6 +87,16 @@ struct STimer
 	float		   Elapsed = 0;
 	STimerHandle   Handle;
 	STimerDelegate Delegate;
+
+	STimer() = default;
+	STimer(bool					 InLoop,
+		   float				 InRate,
+		   float				 InInitialDelay,
+		   const STimerHandle&	 InHandle,
+		   const STimerDelegate& InDelegate)
+		: Loop(InLoop), Rate(InRate), Elapsed(-InInitialDelay), Handle(InHandle), Delegate(InDelegate) {}
+
+	bool IsValid() const { return Handle.IsValid() || Delegate.IsBound(); }
 };
 
 class PTimerManager
@@ -120,7 +134,6 @@ public:
 private:
 	static size_t			 sNextHandle;
 	std::map<size_t, STimer> mTimers;
-	std::vector<STimer>		 mDelays;
 
 	void RemoveTimer(const STimerHandle& Handle)
 	{
@@ -136,7 +149,7 @@ private:
 		return &mTimers.at(Handle.Index);
 	}
 
-	void SetTimerInternal(STimerHandle& Handle, STimerDelegate&& InDelegate, float Rate, float Loop)
+	void SetTimerInternal(STimerHandle& Handle, STimerDelegate&& InDelegate, float Rate, float InitialDelay, float Loop)
 	{
 		if (FindTimer(Handle))
 		{
@@ -151,21 +164,50 @@ private:
 
 		STimerHandle NewHandle;
 		auto		 NewIndex = sNextHandle++;
-		mTimers.emplace(NewIndex, STimer(Loop, Rate, 0, NewHandle, std::move(InDelegate)));
+		mTimers.emplace(NewIndex, STimer(Loop, Rate, InitialDelay, NewHandle, std::move(InDelegate)));
 		NewHandle.SetIndex(NewIndex);
 		Handle = NewHandle;
 	}
 
 public:
-	template <typename T>
-	void SetTimer(STimerHandle& Handle, T* Object, void (T::*Delegate)(), float Rate, float Loop)
+	void Tick(float DeltaTime)
 	{
-		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), Rate, Loop);
+		if (mTimers.size() == 0)
+		{
+			return;
+		}
+
+		std::vector<STimerHandle> ClearTimerQueue;
+		for (auto& Timer : mTimers | std::views::values)
+		{
+			Timer.Elapsed += DeltaTime;
+			if (Timer.Elapsed >= Timer.Rate)
+			{
+				Timer.Delegate.Execute();
+				Timer.Elapsed = 0;
+				if (!Timer.Loop)
+				{
+					ClearTimerQueue.push_back(Timer.Handle);
+				}
+			}
+		}
+
+		for (auto Handle : ClearTimerQueue)
+		{
+			RemoveTimer(Handle);
+		}
+		ClearTimerQueue.clear();
 	}
 
-	void SetTimer(STimerHandle& Handle, const DTimerCallback& Callback, float Rate, float Loop)
+	template <typename T>
+	void SetTimer(STimerHandle& Handle, T* Object, void (T::*Delegate)(), float Rate, float Loop = false, float InitialDelay = 0.0f)
 	{
-		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Rate, Loop);
+		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), Rate, InitialDelay, Loop);
+	}
+
+	void SetTimer(STimerHandle& Handle, const DTimerCallback& Callback, float Rate, float Loop = false, float InitialDelay = 0.0f)
+	{
+		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Rate, InitialDelay, Loop);
 	}
 
 	STimer& GetTimer(const STimerHandle& Handle)
@@ -183,23 +225,6 @@ public:
 		Handle.Invalidate();
 	}
 
-	void Tick(float DeltaTime)
-	{
-		for (auto& Timer : mTimers | std::views::values)
-		{
-			Timer.Elapsed += DeltaTime;
-			if (Timer.Elapsed >= Timer.Rate)
-			{
-				Timer.Delegate.Execute();
-				Timer.Elapsed = 0;
-				if (!Timer.Loop)
-				{
-					ClearTimer(Timer.Handle);
-				}
-			}
-		}
-	}
-
 	void ClearAllTimers()
 	{
 		for (auto& Timer : mTimers | std::views::values)
@@ -211,12 +236,12 @@ public:
 	template <typename T>
 	void Delay(STimerHandle& Handle, float Time, T* Object, void (T::*Delegate)())
 	{
-		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), Time, false);
+		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), 0.01f, Time, false);
 	}
 
 	void Delay(STimerHandle& Handle, float Time, const DTimerCallback& Callback)
 	{
-		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Time, false);
+		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), 0.01f, Time, false);
 	}
 };
 

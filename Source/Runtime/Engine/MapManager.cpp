@@ -137,28 +137,44 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	return true;
 }
 
-bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
-							EOrientation ExitDirection)
+void PMapManager::UnloadSwitchMap()
 {
-	UnloadMap(OldMap);
-	PGameMap* GameMap = LoadMap(NewMap, false);
+	LogInfo("Unloading switch map.");
+	GetTimerManager()->ClearTimer(mUnloadHandle);
+
+	UnloadMap(mSwitchMap.OldMap);
+	PGameMap* GameMap = LoadMap(mSwitchMap.NewMap, false);
 	if (!GameMap)
 	{
-		LogError("Failed to load map: {}", NewMap.c_str());
-		return false;
+		LogError("Failed to load map: {}", mSwitchMap.NewMap.c_str());
+		return;
 	}
 	if (auto Player = GetWorld()->GetPlayerCharacter())
 	{
-		Player->GetMovementComponent()->SetMovementDirection(ExitDirection);
-		Player->GetMovementComponent()->SnapToPosition(NewPosition, GameMap);
+		Player->GetMovementComponent()->SetMovementDirection(mSwitchMap.ExitDirection);
+		Player->GetMovementComponent()->SnapToPosition(mSwitchMap.NewPosition, GameMap);
 	}
 	else
 	{
 		LogError("Failed to get Player Character.");
-		return false;
 	}
+}
+
+bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
+							EOrientation ExitDirection)
+{
+	LogInfo("Switching map");
+	mSwitchMap = {
+		OldMap, NewMap, NewPosition, ExitDirection
+	};
+	GetTimerManager()->Delay(mUnloadHandle, 1.0f, this, &PMapManager::UnloadSwitchMap);
 
 	return true;
+}
+
+bool PMapManager::SwitchMap(const SSwitchMapParams& Params)
+{
+	return SwitchMap(Params.OldMap, Params.NewMap, Params.NewPosition, Params.ExitDirection);
 }
 
 PGameMap* PMapManager::GetMapUnderMouse()

@@ -19,15 +19,26 @@ enum EMapState
 	MS_Loaded,
 };
 
+struct SSwitchMapParams
+{
+	std::string	 OldMap;
+	std::string	 NewMap;
+	FVector2	 NewPosition;
+	EOrientation ExitDirection;
+};
+
 class PMapManager
 {
 	TMap<std::string, JSON>		 mMapData;
 	TMap<std::string, PGameMap*> mActiveMaps;
 	EMapState					 mMapState = MS_None;
+	SSwitchMapParams			 mSwitchMap;
 
 public:
 	DGameMapLoaded	 GameMapLoaded;
 	DGameMapUnloaded GameMapUnloaded;
+	STimerHandle	 mLoadHandle;
+	STimerHandle	 mUnloadHandle;
 
 	PGameMap* ConstructMap(const JSON& JsonData);
 	PGameMap* GetMap(const std::string& Name);
@@ -35,8 +46,10 @@ public:
 	PGameMap* LoadMapFile(const std::string& FileName);
 
 	bool UnloadMap(const std::string& Name);
+	void UnloadSwitchMap();
 	bool SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
 				   EOrientation ExitDirection);
+	bool SwitchMap(const SSwitchMapParams& Params);
 
 	PGameMap* GetMapUnderMouse();
 	PGameMap* GetMapAtPosition(const FVector2& Position);
