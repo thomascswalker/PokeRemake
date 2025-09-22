@@ -21,25 +21,29 @@ enum EMapState
 
 class PMapManager
 {
-	static TMap<std::string, JSON>		sMapData;
-	static TMap<std::string, PGameMap*> sActiveMaps;
+	TMap<std::string, JSON>		 mMapData;
+	TMap<std::string, PGameMap*> mActiveMaps;
+	EMapState					 mMapState = MS_None;
 
 public:
-	static DGameMapLoaded	GameMapLoaded;
-	static DGameMapUnloaded GameMapUnloaded;
+	DGameMapLoaded	 GameMapLoaded;
+	DGameMapUnloaded GameMapUnloaded;
 
-	static PGameMap* ConstructMap(const JSON& JsonData);
-	static PGameMap* GetMap(const std::string& Name);
-	static PGameMap* LoadMap(const std::string& Name, bool ForceReload);
-	static PGameMap* LoadMapFile(const std::string& FileName);
+	PGameMap* ConstructMap(const JSON& JsonData);
+	PGameMap* GetMap(const std::string& Name);
+	PGameMap* LoadMap(const std::string& Name, bool ForceReload);
+	PGameMap* LoadMapFile(const std::string& FileName);
 
-	static bool UnloadMap(const std::string& Name);
-	static bool SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
-						  EOrientation ExitDirection);
+	bool UnloadMap(const std::string& Name);
+	bool SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
+				   EOrientation ExitDirection);
 
-	static PGameMap* GetMapUnderMouse();
-	static PGameMap* GetMapAtPosition(const FVector2& Position);
-	static void		 ClearMaps();
+	PGameMap* GetMapUnderMouse();
+	PGameMap* GetMapAtPosition(const FVector2& Position);
+	void	  ClearMaps();
 
-	static EMapState GetState();
+	EMapState GetState();
 };
+
+// Defined in World.h
+static PMapManager* GetMapManager();

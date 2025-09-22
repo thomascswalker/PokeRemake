@@ -35,7 +35,7 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Parent is not map");
 				return;
 			}
-			PMapManager::SwitchMap(GameMap->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
+			GetMapManager()->SwitchMap(GameMap->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
 		}
 	}
 }

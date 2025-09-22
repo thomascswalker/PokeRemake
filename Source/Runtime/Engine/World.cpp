@@ -43,7 +43,7 @@ bool PWorld::End()
 	{
 		DestroyActorInternal(Actor);
 	}
-	PMapManager::ClearMaps();
+	mMapManager.ClearMaps();
 	mTimerManager.ClearAllTimers();
 	return true;
 }

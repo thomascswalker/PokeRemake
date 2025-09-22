@@ -2,27 +2,28 @@
 
 #include "Application/Application.h"
 #include "Interface/Button.h"
-#include "Interface/Game/GameHUD.h"
 
 #define PLAYER_MAP		"MapName"
 #define PLAYER_POSITION "PlayerPosition"
 
 PMapMode::PMapMode()
 {
+	// Convenience vars
+	mWorld = GetWorld();
+	mMapManager = GetMapManager();
+
 	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
 	mSaveState[PLAYER_POSITION] = JSON::array({ 800, 800 });
 
-	PMapManager::GameMapLoaded.AddRaw(this, &PMapMode::OnGameMapLoaded);
-	PMapManager::GameMapUnloaded.AddRaw(this, &PMapMode::OnGameMapUnloaded);
-
-	mWorld = GetWorld();
+	mMapManager->GameMapLoaded.AddRaw(this, &PMapMode::OnGameMapLoaded);
+	mMapManager->GameMapUnloaded.AddRaw(this, &PMapMode::OnGameMapUnloaded);
 }
 
 bool PMapMode::Load()
 {
 	LogDebug("Load Save State: {}", mSaveState.dump(2).c_str());
 	// Load the map from JSON
-	auto Map = PMapManager::LoadMap(mSaveState[PLAYER_MAP], false);
+	auto Map = mMapManager->LoadMap(mSaveState[PLAYER_MAP], false);
 
 	LogDebug("PreStart: Constructing actors.");
 	auto Player = ConstructActor<PPlayerCharacter>();
@@ -38,7 +39,6 @@ bool PMapMode::Load()
 
 bool PMapMode::Unload()
 {
-	mWorld = GetWorld();
 	auto Player = mWorld->GetPlayerCharacter();
 
 	// Current position
@@ -46,7 +46,7 @@ bool PMapMode::Unload()
 	mSaveState[PLAYER_POSITION] = PlayerPosition.ToJson();
 
 	// Current map
-	auto Map = PMapManager::GetMapAtPosition(PlayerPosition);
+	auto Map = mMapManager->GetMapAtPosition(PlayerPosition);
 	if (!Map)
 	{
 		LogError("No map at position: {}", PlayerPosition.ToString().c_str());
@@ -58,7 +58,7 @@ bool PMapMode::Unload()
 	mWorld->DestroyAllActors();
 
 	// Clear all maps from the world
-	PMapManager::ClearMaps();
+	mMapManager->ClearMaps();
 
 	// Unset the player character
 	mWorld->SetPlayerCharacter(nullptr);

@@ -6,20 +6,13 @@
 #include "Serialization.h"
 #include "World.h"
 
-TMap<std::string, JSON>		 PMapManager::sMapData = {};
-TMap<std::string, PGameMap*> PMapManager::sActiveMaps = {};
-
-static EMapState gMapState = MS_None;
-DGameMapLoaded	 PMapManager::GameMapLoaded = DGameMapLoaded();
-DGameMapUnloaded PMapManager::GameMapUnloaded = DGameMapUnloaded();
-
 PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 {
 	std::string MapName = JsonData["MapName"];
-	if (sActiveMaps.Contains(MapName))
+	if (mActiveMaps.Contains(MapName))
 	{
 		LogWarning("Map {} already exists.", MapName.c_str());
-		return sActiveMaps[MapName];
+		return mActiveMaps[MapName];
 	}
 	// Create the map
 	const auto GameMap = SpawnActor<PGameMap>(JsonData);
@@ -28,16 +21,16 @@ PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 		LogError("Failed to create map");
 		return nullptr;
 	}
-	sActiveMaps[MapName] = GameMap;
+	mActiveMaps[MapName] = GameMap;
 	return GameMap;
 }
 
 PGameMap* PMapManager::GetMap(const std::string& Name)
 {
 	// If the map is available in the list of active maps, return it
-	if (sActiveMaps.Contains(Name))
+	if (mActiveMaps.Contains(Name))
 	{
-		return sActiveMaps[Name];
+		return mActiveMaps[Name];
 	}
 
 	return nullptr;
@@ -45,11 +38,11 @@ PGameMap* PMapManager::GetMap(const std::string& Name)
 
 PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
-	gMapState = MS_Loading;
+	mMapState = MS_Loading;
 	JSON JsonData;
-	if (sMapData.Contains(Name) && !ForceReload)
+	if (mMapData.Contains(Name) && !ForceReload)
 	{
-		JsonData = sMapData[Name];
+		JsonData = mMapData[Name];
 	}
 	else
 	{
@@ -66,67 +59,67 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 
 		if (FileName.empty() || !Files::ReadFile(FileName, Data))
 		{
-			gMapState = MS_None;
+			mMapState = MS_None;
 			return nullptr;
 		}
 
 		JsonData = JSON::parse(Data.data());
 		Expand(&JsonData);
-		sMapData.Emplace(Name, JsonData);
+		mMapData.Emplace(Name, JsonData);
 	}
 	const std::string MapName = JsonData["MapName"];
-	sMapData[MapName] = JsonData;
+	mMapData[MapName] = JsonData;
 	auto NewMap = ConstructMap(JsonData);
 	if (!NewMap)
 	{
-		gMapState = MS_None;
+		mMapState = MS_None;
 		LogError("Failed to construct map.");
 		return nullptr;
 	}
 
 	GameMapLoaded.Broadcast();
-	gMapState = MS_Loaded;
+	mMapState = MS_Loaded;
 	return NewMap;
 }
 
 PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
 {
-	gMapState = MS_Loading;
+	mMapState = MS_Loading;
 	JSON JsonData;
 
 	std::string Data;
 
 	if (FileName.empty() || !Files::ReadFile(FileName, Data))
 	{
-		gMapState = MS_None;
+		mMapState = MS_None;
 		return nullptr;
 	}
 
 	JsonData = JSON::parse(Data.data());
 	Expand(&JsonData);
 	const std::string MapName = JsonData["MapName"];
-	sMapData[MapName] = JsonData;
+	mMapData[MapName] = JsonData;
 
 	auto NewMap = ConstructMap(JsonData);
 	if (!NewMap)
 	{
-		gMapState = MS_None;
+		mMapState = MS_None;
 		LogError("Failed to construct map.");
 		return nullptr;
 	}
 	GameMapLoaded.Broadcast();
-	gMapState = MS_Loaded;
+	mMapState = MS_Loaded;
 	return NewMap;
 }
 
 bool PMapManager::UnloadMap(const std::string& Name)
 {
-	gMapState = MS_Unloading;
+	mMapState = MS_Unloading;
 	// Get the reference to the map
 	auto GameMap = GetMap(Name);
 	if (!GameMap)
 	{
-		gMapState = MS_None;
+		mMapState = MS_None;
 		LogError("Unable to find map {} in world.", Name.c_str());
 		return false;
 	}
@@ -135,11 +128,11 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	GetWorld()->DestroyActor(GameMap);
 
 	// Remove the map from the list of active maps
-	sActiveMaps.Remove(Name);
+	mActiveMaps.Remove(Name);
 
 	GameMapUnloaded.Broadcast();
 
-	gMapState = MS_None;
+	mMapState = MS_None;
 
 	return true;
 }
@@ -183,7 +176,7 @@ PGameMap* PMapManager::GetMapUnderMouse()
 
 PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
 {
-	for (const auto GameMap : sActiveMaps | std::views::values)
+	for (const auto GameMap : mActiveMaps | std::views::values)
 	{
 		auto Bounds = GameMap->GetWorldBounds();
 		Bounds.W *= 2.0f;
@@ -198,10 +191,10 @@ PGameMap* PMapManager::GetMapAtPosition(const FVector2& Position)
 
 void PMapManager::ClearMaps()
 {
-	sActiveMaps.Clear();
+	mActiveMaps.Clear();
 }
 
 EMapState PMapManager::GetState()
 {
-	return gMapState;
+	return mMapState;
 }

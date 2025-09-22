@@ -9,6 +9,7 @@
 #include "Interface/HUD.h"
 #include "Interface/Widget.h"
 
+#include "MapManager.h"
 #include "Timer.h"
 
 #if _EDITOR
@@ -22,7 +23,9 @@ class PWorld : public PObject, public IInputHandler
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
-	PTimerManager							 mTimerManager;
+
+	PTimerManager mTimerManager;
+	PMapManager	  mMapManager;
 
 	std::vector<PActor*>  mDestroyableActors;
 	std::vector<PObject*> mDestroyableObjects;
@@ -182,6 +185,11 @@ public:
 		return &mTimerManager;
 	}
 
+	PMapManager* GetMapManager()
+	{
+		return &mMapManager;
+	}
+
 	bool ProcessEvents(SInputEvent* Event) override;
 
 #if _EDITOR
@@ -254,3 +262,8 @@ T* GetHUD()
 {
 	return GetWorld()->GetHUD<T>();
 }
+
+// Declared in Timer.h
+PTimerManager* GetTimerManager() { return GetWorld()->GetTimerManager(); }
+// Declared in MapManager.h
+PMapManager* GetMapManager() { return GetWorld()->GetMapManager(); }

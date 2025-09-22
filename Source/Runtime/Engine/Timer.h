@@ -40,12 +40,14 @@ struct STimerDelegate
 	DTimerDelegate ObjectCallback;
 	DTimerCallback StaticCallback;
 
-	STimerDelegate() {}
+	STimerDelegate() = default;
+
 	template <typename T>
 	STimerDelegate(T* Object, void (T::*Delegate)())
 	{
 		ObjectCallback.AddRaw(Object, Delegate);
 	}
+
 	STimerDelegate(const DTimerDelegate& D) : ObjectCallback(D), StaticCallback(nullptr) {}
 	STimerDelegate(const DTimerCallback& D) : StaticCallback(D) {}
 
@@ -86,19 +88,14 @@ struct STimer
 class PTimerManager
 {
 public:
-	PTimerManager()
-	{
-		int test = 5;
-	};
+	PTimerManager() = default;
 	PTimerManager(const PTimerManager& other)
 		: mTimers{ other.mTimers }
 	{
-		int test = 5;
 	}
 	PTimerManager(PTimerManager&& other) noexcept
 		: mTimers{ std::move(other.mTimers) }
 	{
-		int test = 5;
 	}
 	~PTimerManager() = default;
 	PTimerManager& operator=(const PTimerManager& other)
@@ -123,6 +120,7 @@ public:
 private:
 	static size_t			 sNextHandle;
 	std::map<size_t, STimer> mTimers;
+	std::vector<STimer>		 mDelays;
 
 	void RemoveTimer(const STimerHandle& Handle)
 	{
@@ -209,4 +207,18 @@ public:
 			ClearTimer(Timer.Handle);
 		}
 	}
+
+	template <typename T>
+	void Delay(STimerHandle& Handle, float Time, T* Object, void (T::*Delegate)())
+	{
+		SetTimerInternal(Handle, std::move(STimerDelegate(Object, Delegate)), Time, false);
+	}
+
+	void Delay(STimerHandle& Handle, float Time, const DTimerCallback& Callback)
+	{
+		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Time, false);
+	}
 };
+
+// Defined in World.h
+static PTimerManager* GetTimerManager();

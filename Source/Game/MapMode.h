@@ -11,7 +11,8 @@ DECLARE_MULTICAST_DELEGATE(DGameMapUnloaded);
 
 class PMapMode : public PGameMode
 {
-	PWorld* mWorld = nullptr;
+	PWorld*		 mWorld = nullptr;
+	PMapManager* mMapManager = nullptr;
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;

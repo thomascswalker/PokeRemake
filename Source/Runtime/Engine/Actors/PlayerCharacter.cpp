@@ -160,7 +160,7 @@ void PPlayerCharacter::OnKeyUp(SInputEvent* Event)
 
 bool PPlayerCharacter::CanMove() const
 {
-	return PMapManager::GetState() == MS_Loaded;
+	return GetMapManager()->GetState() == MS_Loaded;
 }
 
 void PPlayerCharacter::Interact()
