@@ -60,24 +60,12 @@ public:
 			LogError("Engine is invalid.");
 			return false;
 		}
-		mEngine->Initialize<GameType>();
-		mEngine->Start();
 
-		PGame* Game = mEngine->GetGame();
-		if (!Game)
+		if (!mEngine->Start<GameType, HUDType>())
 		{
-			LogError("Game is invalid.");
+			LogError("Failed to initialize engine.");
 			return false;
 		}
-
-		if (!Game->Start())
-		{
-			LogError("Failed to start game.");
-			return false;
-		}
-		auto World = Game->GetWorld();
-		auto HUD = World->CreateHUD<HUDType>();
-		HUD->PreStart();
 
 		mRenderer->PostInitialize();
 

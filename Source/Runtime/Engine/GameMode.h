@@ -2,12 +2,15 @@
 
 #include "Input.h"
 #include "Object.h"
+#include "Transition.h"
 
 class PGameMode : public PObject, public IInputHandler
 {
 protected:
 	bool mLoaded = false;
 	JSON mSaveState;
+
+	PTransitionManager mTransitionManager;
 
 public:
 	virtual std::string GetName()

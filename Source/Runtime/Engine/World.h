@@ -22,7 +22,7 @@ class PWorld : public PObject, public IInputHandler
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
-	std::shared_ptr<PTimerManager>			 mTimerManager;
+	PTimerManager							 mTimerManager;
 
 	std::vector<PActor*>  mDestroyableActors;
 	std::vector<PObject*> mDestroyableObjects;
@@ -36,10 +36,6 @@ class PWorld : public PObject, public IInputHandler
 	void DestroyWidgetInternal(PWidget* Widget);
 
 public:
-#if _EDITOR
-	DActorSelected ActorClicked;
-#endif
-
 	~PWorld() override = default;
 
 	bool Start() override;
@@ -49,7 +45,8 @@ public:
 	void PostTick() override;
 
 #if _EDITOR
-	void OnActorClicked(PActor* Actor)
+	DActorSelected ActorClicked;
+	void		   OnActorClicked(PActor* Actor)
 	{
 		ActorClicked.Broadcast(Actor);
 	}
@@ -165,7 +162,8 @@ public:
 	T* CreateHUD()
 	{
 		mHUD = std::make_shared<T>();
-		return dynamic_cast<T*>(mHUD.get());
+		auto NewHUD = dynamic_cast<T*>(mHUD.get());
+		return NewHUD;
 	}
 
 	template <typename T = PHUD>
@@ -181,7 +179,7 @@ public:
 
 	PTimerManager* GetTimerManager()
 	{
-		return mTimerManager.get();
+		return &mTimerManager;
 	}
 
 	bool ProcessEvents(SInputEvent* Event) override;

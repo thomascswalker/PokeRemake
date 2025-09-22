@@ -3,12 +3,6 @@
 PEngine::PEngine()
 	: mGame(nullptr) {}
 
-void PEngine::Start()
-{
-	LogDebug("Starting engine.");
-	mIsRunning = true;
-}
-
 void PEngine::Stop()
 {
 	LogDebug("Stopping engine.");

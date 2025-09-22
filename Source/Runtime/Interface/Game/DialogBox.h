@@ -11,14 +11,6 @@ class PDialogBox : public PBox
 	PTexture*	 mTexture = nullptr;
 
 public:
-	PDialogBox()
-	{
-		SetResizeMode(RM_Fixed, RM_Fixed);
-		mFixedSize = { WINDOW_DEFAULT_WIDTH, 100 };
-		SetPositionMode(PM_Fixed);
-		mFixedPosition = { 0, WINDOW_DEFAULT_HEIGHT - mFixedSize.Y };
-	}
-
 	bool Start() override
 	{
 		mTexture = TextureManager::Get("DialogBox");
@@ -28,7 +20,7 @@ public:
 	void Draw(const PRenderer* Renderer) const override
 	{
 		Renderer->SetDrawColor(255, 255, 255, 255);
-		FRect Geometry = GetGeometry();
+		FRect Geometry = { 0, WINDOW_DEFAULT_HEIGHT - 100, WINDOW_DEFAULT_WIDTH, 100 };
 
 		Renderer->DrawFillRect(Geometry);
 		Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);

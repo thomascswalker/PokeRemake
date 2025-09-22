@@ -11,13 +11,14 @@ include_directories(
 )
 
 set(SOURCES
-        TestGame.cpp
+        MainGame.cpp
         BattleMode.h
         MapMode.cpp
         BattleMode.cpp
         BattleView.cpp
         BattleView.h
         Interface/TransitionOverlay.h
+        FadeTransition.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

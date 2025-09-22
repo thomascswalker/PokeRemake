@@ -22,12 +22,6 @@ bool PGame::PreStart()
 
 bool PGame::Start()
 {
-	if (!this->PreStart())
-	{
-		LogError("Failed to start game");
-		return false;
-	}
-
 	if (mGameStarted)
 	{
 		LogWarning("Game is already started.");

@@ -4,6 +4,8 @@
 #include "Engine/MapManager.h"
 #include "Interface/TransitionOverlay.h"
 
+#include "FadeTransition.h"
+
 DECLARE_MULTICAST_DELEGATE(DGameMapLoaded);
 DECLARE_MULTICAST_DELEGATE(DGameMapUnloaded);
 
@@ -13,6 +15,7 @@ class PMapMode : public PGameMode
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;
+	STransition*		mFadeTransition = nullptr;
 
 public:
 	PMapMode();

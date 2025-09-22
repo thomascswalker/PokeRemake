@@ -1,6 +1,8 @@
 #include "MapMode.h"
 
 #include "Application/Application.h"
+#include "Interface/Button.h"
+#include "Interface/Game/GameHUD.h"
 
 #define PLAYER_MAP		"MapName"
 #define PLAYER_POSITION "PlayerPosition"
@@ -12,6 +14,8 @@ PMapMode::PMapMode()
 
 	PMapManager::GameMapLoaded.AddRaw(this, &PMapMode::OnGameMapLoaded);
 	PMapManager::GameMapUnloaded.AddRaw(this, &PMapMode::OnGameMapUnloaded);
+
+	mWorld = GetWorld();
 }
 
 bool PMapMode::Load()

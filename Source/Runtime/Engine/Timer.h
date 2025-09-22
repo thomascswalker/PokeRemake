@@ -85,31 +85,57 @@ struct STimer
 
 class PTimerManager
 {
-	static size_t		 sNextHandle;
-	TMap<size_t, STimer> mTimers;
-
-	STimerHandle AddTimer(STimer&& Timer)
+public:
+	PTimerManager()
 	{
-		STimerHandle Handle;
-		auto		 NewIndex = sNextHandle++;
-		mTimers.Emplace(NewIndex, std::move(Timer));
-		Handle.SetIndex(NewIndex);
-		return Handle;
+		int test = 5;
+	};
+	PTimerManager(const PTimerManager& other)
+		: mTimers{ other.mTimers }
+	{
+		int test = 5;
 	}
+	PTimerManager(PTimerManager&& other) noexcept
+		: mTimers{ std::move(other.mTimers) }
+	{
+		int test = 5;
+	}
+	~PTimerManager() = default;
+	PTimerManager& operator=(const PTimerManager& other)
+	{
+		if (this == &other)
+		{
+			return *this;
+		}
+		mTimers = other.mTimers;
+		return *this;
+	}
+	PTimerManager& operator=(PTimerManager&& other) noexcept
+	{
+		if (this == &other)
+		{
+			return *this;
+		}
+		mTimers = std::move(other.mTimers);
+		return *this;
+	}
+
+private:
+	static size_t			 sNextHandle;
+	std::map<size_t, STimer> mTimers;
 
 	void RemoveTimer(const STimerHandle& Handle)
 	{
-		mTimers.Remove(Handle.Index);
+		mTimers.erase(Handle.Index);
 	}
 
 	STimer* FindTimer(const STimerHandle& Handle)
 	{
-		return mTimers.At(Handle.Index);
-	}
-
-	STimer& GetTimer(const STimerHandle& Handle)
-	{
-		return mTimers[Handle.Index];
+		if (!mTimers.contains(Handle.Index))
+		{
+			return nullptr;
+		}
+		return &mTimers.at(Handle.Index);
 	}
 
 	void SetTimerInternal(STimerHandle& Handle, STimerDelegate&& InDelegate, float Rate, float Loop)
@@ -125,12 +151,10 @@ class PTimerManager
 			return;
 		}
 
-		STimer NewTimer;
-		NewTimer.Delegate = std::move(InDelegate);
-		NewTimer.Rate = Rate;
-		NewTimer.Loop = Loop;
-
-		STimerHandle NewHandle = AddTimer(std::move(NewTimer));
+		STimerHandle NewHandle;
+		auto		 NewIndex = sNextHandle++;
+		mTimers.emplace(NewIndex, STimer(Loop, Rate, 0, NewHandle, std::move(InDelegate)));
+		NewHandle.SetIndex(NewIndex);
 		Handle = NewHandle;
 	}
 
@@ -144,6 +168,11 @@ public:
 	void SetTimer(STimerHandle& Handle, const DTimerCallback& Callback, float Rate, float Loop)
 	{
 		SetTimerInternal(Handle, std::move(STimerDelegate(Callback)), Rate, Loop);
+	}
+
+	STimer& GetTimer(const STimerHandle& Handle)
+	{
+		return mTimers[Handle.Index];
 	}
 
 	void ClearTimer(STimerHandle& Handle)
@@ -165,6 +194,10 @@ public:
 			{
 				Timer.Delegate.Execute();
 				Timer.Elapsed = 0;
+				if (!Timer.Loop)
+				{
+					ClearTimer(Timer.Handle);
+				}
 			}
 		}
 	}

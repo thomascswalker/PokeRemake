@@ -17,20 +17,17 @@ constexpr float TRANSITION_DURATION = 1000.0f;
 
 class PTransitionOverlay : public PWidget
 {
-	STimerHandle mTimerHandle;
-	float		 Opacity = 1.0f;
-	float		 Duration = TRANSITION_DURATION; // 1 second
-	float		 Rate = Duration / 100.0f;		 // 100 increments of the fade
+	STransition* mTransition;
+	STimerHandle Handle;
+	float		 mOpacity = 1.0f;
+	float		 mDuration = TRANSITION_DURATION; // 1 second
+	float		 mRate = mDuration / 10000.0f;	  // 100 increments of the fade
 	bool		 mFadeOut = true;
 
 	void FadeOut()
 	{
-		if (!mFadeOut)
-		{
-			return;
-		}
-		Opacity -= Rate;
-		if (Opacity <= 0.0f)
+		mOpacity -= mRate;
+		if (mOpacity <= 0.0f)
 		{
 			FadedOut.Broadcast();
 			mFadeOut = false;
@@ -39,12 +36,8 @@ class PTransitionOverlay : public PWidget
 
 	void FadeIn()
 	{
-		if (mFadeOut)
-		{
-			return;
-		}
-		Opacity += Rate;
-		if (Opacity >= 1.0f)
+		mOpacity += mRate;
+		if (mOpacity >= 1.0f)
 		{
 			FadedIn.Broadcast();
 			Unparent();
@@ -56,25 +49,34 @@ public:
 	DFadedOut FadedOut;
 	DFadedIn  FadedIn;
 
+	PTransitionOverlay(STransition* Transition)
+	{
+		mTransition = Transition;
+	}
+
 	void Draw(const PRenderer* Renderer) const override
 	{
-		Renderer->SetDrawColor(0, 0, 0, 255);
+		Renderer->SetDrawColor(0, 0, 0, static_cast<uint8_t>(255.0f * mOpacity));
 		Renderer->DrawFillRect({ 0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT });
 	}
 
 	void StartFade(EFadeMode Mode)
 	{
-		GetWorld()->GetTimerManager()->ClearTimer(mTimerHandle);
+		auto Mgr = GetWorld()->GetTimerManager();
+		Mgr->ClearTimer(Handle);
 		switch (Mode)
 		{
 			case FM_In:
-				Opacity = 0.0f;
-				GetWorld()->GetTimerManager()->SetTimer(mTimerHandle, this, &PTransitionOverlay::FadeIn, Rate, true);
+				mOpacity = 0.0f;
+				Mgr->SetTimer(Handle, this, &PTransitionOverlay::FadeIn, mRate, true);
 				break;
 			case FM_Out:
-				Opacity = 1.0f;
-				GetWorld()->GetTimerManager()->SetTimer(mTimerHandle, this, &PTransitionOverlay::FadeOut, Rate, true);
+				mOpacity = 1.0f;
+				Mgr->SetTimer(Handle, this, &PTransitionOverlay::FadeOut, mRate, true);
 				break;
 		}
 	}
+
+	float GetOpacity() const { return mOpacity; }
+	void  SetOpacity(float Opacity) { mOpacity = Opacity; }
 };

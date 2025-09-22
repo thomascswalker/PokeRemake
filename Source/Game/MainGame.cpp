@@ -1,11 +1,11 @@
-#include "TestGame.h"
+#include "MainGame.h"
 
 #include "Application/Application.h"
 
 #include "BattleMode.h"
 #include "MapMode.h"
 
-bool TestGame::PreStart()
+bool PMainGame::PreStart()
 {
 	if (!PGame::PreStart())
 	{

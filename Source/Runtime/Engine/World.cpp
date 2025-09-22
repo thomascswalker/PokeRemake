@@ -12,9 +12,6 @@ bool PWorld::Start()
 {
 	LogDebug("Starting world");
 
-	LogDebug("Constructing timer manager.");
-	mTimerManager = std::make_shared<PTimerManager>();
-
 	LogDebug("Starting {} actors.", GetActors().size());
 	for (const auto& Actor : GetActors())
 	{
@@ -47,13 +44,13 @@ bool PWorld::End()
 		DestroyActorInternal(Actor);
 	}
 	PMapManager::ClearMaps();
-	mTimerManager->ClearAllTimers();
+	mTimerManager.ClearAllTimers();
 	return true;
 }
 
 void PWorld::Tick(float DeltaTime)
 {
-	mTimerManager->Tick(DeltaTime);
+	mTimerManager.Tick(DeltaTime);
 
 	auto R = GetRenderer();
 

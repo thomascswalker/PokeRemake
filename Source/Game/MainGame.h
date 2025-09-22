@@ -2,10 +2,10 @@
 
 #include "Engine/Game.h"
 
-class TestGame : public PGame
+class PMainGame : public PGame
 {
 public:
-	~TestGame() override {}
+	~PMainGame() override {}
 
 	bool PreStart() override;
 };
