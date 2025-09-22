@@ -28,8 +28,10 @@ public:
 
 	bool Load() override;
 	bool Unload() override;
-	void OnGameMapLoaded();
-	void OnGameMapUnloaded();
+
+	void OnGameMapStateChanged(EMapState State);
+	void OnFadeInComplete();
+	void OnFadeOutComplete();
 
 	void OnKeyUp(SInputEvent* Event) override;
 };

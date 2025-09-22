@@ -15,8 +15,7 @@ PMapMode::PMapMode()
 	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
 	mSaveState[PLAYER_POSITION] = JSON::array({ 800, 800 });
 
-	mMapManager->GameMapLoaded.AddRaw(this, &PMapMode::OnGameMapLoaded);
-	mMapManager->GameMapUnloaded.AddRaw(this, &PMapMode::OnGameMapUnloaded);
+	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 }
 
 bool PMapMode::Load()
@@ -68,14 +67,47 @@ bool PMapMode::Unload()
 	return true;
 }
 
-void PMapMode::OnGameMapLoaded()
+void PMapMode::OnGameMapStateChanged(EMapState State)
 {
-	LogInfo("Map loaded.");
+	switch (State)
+	{
+		case MS_Loading:
+			LogInfo("Map loading...");
+			break;
+		case MS_Loaded:
+			LogInfo("Map loaded.");
+			break;
+		case MS_Unloading:
+			LogInfo("Map unloading...");
+			TransitionOverlay = mWorld->ConstructWidget<PTransitionOverlay>();
+			GetHUD<PGameHUD>()->AddChild(TransitionOverlay);
+			TransitionOverlay->Fade(FM_Out);
+			TransitionOverlay->FadedOut.AddRaw(this, &PMapMode::OnFadeOutComplete);
+			TransitionOverlay->FadedIn.AddRaw(this, &PMapMode::OnFadeInComplete);
+			break;
+		case MS_Unloaded:
+			LogInfo("Map unloaded.");
+			break;
+	}
 }
 
-void PMapMode::OnGameMapUnloaded()
+void PMapMode::OnFadeInComplete()
 {
-	LogInfo("Map unloaded.");
+	if (TransitionOverlay)
+	{
+		TransitionOverlay->Unparent();
+		TransitionOverlay->FadedIn.RemoveAll();
+		mWorld->DestroyWidget(TransitionOverlay);
+		TransitionOverlay = nullptr;
+	}
+}
+
+void PMapMode::OnFadeOutComplete()
+{
+	if (TransitionOverlay)
+	{
+		TransitionOverlay->Fade(FM_In);
+	}
 }
 
 void PMapMode::OnKeyUp(SInputEvent* Event)

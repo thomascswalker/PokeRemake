@@ -10,69 +10,67 @@ DECLARE_MULTICAST_DELEGATE(DFadedIn);
 enum EFadeMode
 {
 	FM_In,
-	FM_Out
+	FM_Out,
 };
-
-constexpr float TRANSITION_DURATION = 1000.0f;
 
 class PTransitionOverlay : public PWidget
 {
-	STransition* mTransition;
 	STimerHandle Handle;
-	float		 mOpacity = 1.0f;
-	float		 mDuration = TRANSITION_DURATION; // 1 second
-	float		 mRate = mDuration / 10000.0f;	  // 100 increments of the fade
-	bool		 mFadeOut = true;
-
-	void FadeOut()
-	{
-		mOpacity -= mRate;
-		if (mOpacity <= 0.0f)
-		{
-			FadedOut.Broadcast();
-			mFadeOut = false;
-		}
-	}
-
-	void FadeIn()
-	{
-		mOpacity += mRate;
-		if (mOpacity >= 1.0f)
-		{
-			FadedIn.Broadcast();
-			Unparent();
-			GetWorld()->DestroyWidget(this);
-		}
-	}
+	float		 mOpacity = 0.0f;
+	float		 mElapsed = 0.0f;
+	EFadeMode	 mMode = FM_Out;
 
 public:
 	DFadedOut FadedOut;
 	DFadedIn  FadedIn;
 
-	PTransitionOverlay(STransition* Transition)
-	{
-		mTransition = Transition;
-	}
-
 	void Draw(const PRenderer* Renderer) const override
 	{
-		Renderer->SetDrawColor(0, 0, 0, static_cast<uint8_t>(255.0f * mOpacity));
+		const auto Alpha = static_cast<int32_t>(255.0f * mOpacity);
+		Renderer->SetDrawColor(0, 0, 0, Alpha);
 		Renderer->DrawFillRect({ 0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT });
 	}
 
-	void StartFade(EFadeMode Mode)
+	void Tick(float DeltaTime) override
 	{
-		auto Mgr = GetWorld()->GetTimerManager();
-		Mgr->ClearTimer(Handle);
+		// Increment elapsed time
+		mElapsed += DeltaTime;
+
+		// Percentage of time elapsed
+		float DeltaOpacity = DeltaTime / TRANSITION_DURATION;
+
+		switch (mMode)
+		{
+			case FM_In:
+				mOpacity -= DeltaOpacity;
+				if (mOpacity <= 0.0f)
+				{
+					FadedIn.Broadcast();
+				}
+				break;
+			case FM_Out:
+				mOpacity += DeltaOpacity;
+				if (mOpacity >= 1.0f)
+				{
+					FadedOut.Broadcast();
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	void Fade(EFadeMode Mode)
+	{
+		mElapsed = 0;
+		mMode = Mode;
 		switch (Mode)
 		{
 			case FM_In:
-				mOpacity = 0.0f;
-				Mgr->SetTimer(Handle, this, &PTransitionOverlay::FadeIn, mRate, true);
+				mOpacity = 1.0f;
 				break;
 			case FM_Out:
-				mOpacity = 1.0f;
-				Mgr->SetTimer(Handle, this, &PTransitionOverlay::FadeOut, mRate, true);
+				mOpacity = 0.0f;
 				break;
 		}
 	}

@@ -14,7 +14,7 @@ struct SFadeTransition : STransition
 
 		Duration = 100.0f;
 
-		Overlay = GetWorld()->ConstructWidget<PTransitionOverlay>(this);
+		Overlay = GetWorld()->ConstructWidget<PTransitionOverlay>();
 		if (!Overlay)
 		{
 			LogError("Failed to construct fade transition overlay.");
@@ -23,8 +23,7 @@ struct SFadeTransition : STransition
 		auto HUD = GetHUD<PGameHUD>();
 		HUD->AddChild(Overlay);
 
-		// Overlay->SetOpacity(0.0f);
-		Overlay->StartFade(FM_Out);
+		Overlay->Fade(FM_Out);
 		Overlay->FadedOut.AddRaw(this, &SFadeTransition::End);
 		STransition::Start();
 	}

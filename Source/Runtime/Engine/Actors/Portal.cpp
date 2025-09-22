@@ -4,8 +4,8 @@
 
 PPortal::PPortal()
 {
-	mPosition.Z         = Drawing::Z_1000;
-	mBlocking           = false;
+	mPosition.Z = Drawing::Z_1000;
+	mBlocking = false;
 	mCollisionComponent = ConstructComponent<PCollisionComponent>(this);
 	if (mCollisionComponent)
 	{
@@ -35,14 +35,14 @@ void PPortal::OnOverlapBegin(PActor* Actor)
 				LogWarning("Parent is not map");
 				return;
 			}
-			GetMapManager()->SwitchMap(GameMap->GetMapName(), mTargetMap, mTargetPosition, mExitDirection);
+			GetMapManager()->SwitchMap(GameMap->GetMapName(), mTargetMap, mTargetPosition, mExitDirection, TRANSITION_DURATION);
 		}
 	}
 }
 
 FRect PPortal::GetLocalBounds() const
 {
-	return {0, 0, BLOCK_SIZE, BLOCK_SIZE};
+	return { 0, 0, BLOCK_SIZE, BLOCK_SIZE };
 }
 
 bool PPortal::DebugDraw(const PRenderer* Renderer) const
@@ -58,7 +58,7 @@ JSON PPortal::Serialize() const
 	JSON Result = PActor::Serialize();
 	SAVE_MEMBER_PROPERTY(TargetMap);
 	SAVE_MEMBER_PROPERTY(ExitDirection);
-	Result["TargetPosition"] = {mTargetPosition.X, mTargetPosition.Y};
+	Result["TargetPosition"] = { mTargetPosition.X, mTargetPosition.Y };
 	return Result;
 }
 

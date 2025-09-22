@@ -44,7 +44,9 @@ struct STimerDelegate
 	DTimerDelegate ObjectCallback;
 	DTimerCallback StaticCallback;
 
-	STimerDelegate() = default;
+	STimerDelegate()
+	{
+	}
 
 	template <typename T>
 	STimerDelegate(T* Object, void (T::*Delegate)())
@@ -134,10 +136,11 @@ public:
 private:
 	static size_t			 sNextHandle;
 	std::map<size_t, STimer> mTimers;
+	std::vector<size_t>		 mDestroyedTimers;
 
-	void RemoveTimer(const STimerHandle& Handle)
+	void DestroyTimer(const STimerHandle& Handle)
 	{
-		mTimers.erase(Handle.Index);
+		mDestroyedTimers.push_back(Handle.Index);
 	}
 
 	STimer* FindTimer(const STimerHandle& Handle)
@@ -153,10 +156,10 @@ private:
 	{
 		if (FindTimer(Handle))
 		{
-			RemoveTimer(Handle);
+			DestroyTimer(Handle);
 		}
 
-		if (Rate <= 0.0f)
+		if (Rate <= 0.0f && InitialDelay == 0.0f)
 		{
 			Handle.Invalidate();
 			return;
@@ -169,34 +172,40 @@ private:
 		Handle = NewHandle;
 	}
 
+	void DestroyTimersInternal()
+	{
+		for (auto Index : mDestroyedTimers)
+		{
+			// Invalidate the handle of this timer
+			mTimers[Index].Handle.Invalidate();
+
+			// Erase the timer from the timers map given the index
+			mTimers.erase(Index);
+		}
+		mDestroyedTimers.clear();
+	}
+
 public:
 	void Tick(float DeltaTime)
 	{
-		if (mTimers.size() == 0)
-		{
-			return;
-		}
+		DestroyTimersInternal();
 
-		std::vector<STimerHandle> ClearTimerQueue;
 		for (auto& Timer : mTimers | std::views::values)
 		{
 			Timer.Elapsed += DeltaTime;
 			if (Timer.Elapsed >= Timer.Rate)
 			{
-				Timer.Delegate.Execute();
-				Timer.Elapsed = 0;
+				// If the timer is not set to loop, and we've surpassed the
+				// rate time, then mark this timer as destroyed. It will be cleaned
+				// up on the next tick.
 				if (!Timer.Loop)
 				{
-					ClearTimerQueue.push_back(Timer.Handle);
+					mDestroyedTimers.push_back(Timer.Handle.Index);
 				}
+				Timer.Elapsed = 0;
+				Timer.Delegate.Execute();
 			}
 		}
-
-		for (auto Handle : ClearTimerQueue)
-		{
-			RemoveTimer(Handle);
-		}
-		ClearTimerQueue.clear();
 	}
 
 	template <typename T>
@@ -220,7 +229,7 @@ public:
 		if (auto Timer = FindTimer(Handle))
 		{
 			Timer->Delegate.Unbind();
-			RemoveTimer(Handle);
+			DestroyTimer(Handle);
 		}
 		Handle.Invalidate();
 	}

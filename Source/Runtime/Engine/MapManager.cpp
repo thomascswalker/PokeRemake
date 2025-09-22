@@ -38,7 +38,7 @@ PGameMap* PMapManager::GetMap(const std::string& Name)
 
 PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 {
-	mMapState = MS_Loading;
+	SetState(MS_Loading);
 	JSON JsonData;
 	if (mMapData.Contains(Name) && !ForceReload)
 	{
@@ -59,7 +59,7 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 
 		if (FileName.empty() || !Files::ReadFile(FileName, Data))
 		{
-			mMapState = MS_None;
+			SetState(MS_Unloaded);
 			return nullptr;
 		}
 
@@ -72,26 +72,25 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 	auto NewMap = ConstructMap(JsonData);
 	if (!NewMap)
 	{
-		mMapState = MS_None;
+		SetState(MS_Unloaded);
 		LogError("Failed to construct map.");
 		return nullptr;
 	}
 
-	GameMapLoaded.Broadcast();
-	mMapState = MS_Loaded;
+	SetState(MS_Loaded);
 	return NewMap;
 }
 
 PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
 {
-	mMapState = MS_Loading;
+	SetState(MS_Loading);
 	JSON JsonData;
 
 	std::string Data;
 
 	if (FileName.empty() || !Files::ReadFile(FileName, Data))
 	{
-		mMapState = MS_None;
+		SetState(MS_Unloaded);
 		return nullptr;
 	}
 
@@ -103,23 +102,21 @@ PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
 	auto NewMap = ConstructMap(JsonData);
 	if (!NewMap)
 	{
-		mMapState = MS_None;
+		SetState(MS_Unloaded);
 		LogError("Failed to construct map.");
 		return nullptr;
 	}
-	GameMapLoaded.Broadcast();
-	mMapState = MS_Loaded;
+	SetState(MS_Loaded);
 	return NewMap;
 }
 
 bool PMapManager::UnloadMap(const std::string& Name)
 {
-	mMapState = MS_Unloading;
 	// Get the reference to the map
 	auto GameMap = GetMap(Name);
 	if (!GameMap)
 	{
-		mMapState = MS_None;
+		SetState(MS_Unloaded);
 		LogError("Unable to find map {} in world.", Name.c_str());
 		return false;
 	}
@@ -130,9 +127,7 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	// Remove the map from the list of active maps
 	mActiveMaps.Remove(Name);
 
-	GameMapUnloaded.Broadcast();
-
-	mMapState = MS_None;
+	SetState(MS_Unloaded);
 
 	return true;
 }
@@ -140,9 +135,14 @@ bool PMapManager::UnloadMap(const std::string& Name)
 void PMapManager::UnloadSwitchMap()
 {
 	LogInfo("Unloading switch map.");
+
+	// Clear the timer which triggered this deferred map unloading
 	GetTimerManager()->ClearTimer(mUnloadHandle);
 
+	// Actually unload the map
 	UnloadMap(mSwitchMap.OldMap);
+
+	// Load in the new map
 	PGameMap* GameMap = LoadMap(mSwitchMap.NewMap, false);
 	if (!GameMap)
 	{
@@ -161,20 +161,23 @@ void PMapManager::UnloadSwitchMap()
 }
 
 bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
-							EOrientation ExitDirection)
+							EOrientation ExitDirection, float Delay)
 {
 	LogInfo("Switching map");
 	mSwitchMap = {
-		OldMap, NewMap, NewPosition, ExitDirection
+		OldMap,
+		NewMap,
+		NewPosition,
+		ExitDirection,
+		Delay,
 	};
-	GetTimerManager()->Delay(mUnloadHandle, 1.0f, this, &PMapManager::UnloadSwitchMap);
+
+	SetState(MS_Unloading);
+
+	// Defer unloading the map for 1 second to allow for the transition animation to play.
+	GetTimerManager()->Delay(mUnloadHandle, Delay, this, &PMapManager::UnloadSwitchMap);
 
 	return true;
-}
-
-bool PMapManager::SwitchMap(const SSwitchMapParams& Params)
-{
-	return SwitchMap(Params.OldMap, Params.NewMap, Params.NewPosition, Params.ExitDirection);
 }
 
 PGameMap* PMapManager::GetMapUnderMouse()
@@ -210,7 +213,13 @@ void PMapManager::ClearMaps()
 	mActiveMaps.Clear();
 }
 
-EMapState PMapManager::GetState()
+EMapState PMapManager::GetState() const
 {
 	return mMapState;
+}
+
+void PMapManager::SetState(EMapState NewState)
+{
+	mMapState = NewState;
+	GameMapStateChanged.Broadcast(mMapState);
 }

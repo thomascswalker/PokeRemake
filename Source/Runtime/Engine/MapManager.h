@@ -8,16 +8,15 @@
 #define MAP_PALLET_TOWN_ASH_HOUSE_F1 "PalletTownAshHouseF1"
 #define MAP_PALLET_TOWN_GARY_HOUSE	 "PalletTownGaryHouse"
 
-DECLARE_MULTICAST_DELEGATE(DGameMapLoaded);
-DECLARE_MULTICAST_DELEGATE(DGameMapUnloaded);
-
 enum EMapState
 {
-	MS_None,
 	MS_Loading,
-	MS_Unloading,
 	MS_Loaded,
+	MS_Unloading,
+	MS_Unloaded,
 };
+
+DECLARE_MULTICAST_DELEGATE(DGameMapStateChange, EMapState);
 
 struct SSwitchMapParams
 {
@@ -25,20 +24,21 @@ struct SSwitchMapParams
 	std::string	 NewMap;
 	FVector2	 NewPosition;
 	EOrientation ExitDirection;
+	float		 Delay;
 };
 
 class PMapManager
 {
 	TMap<std::string, JSON>		 mMapData;
 	TMap<std::string, PGameMap*> mActiveMaps;
-	EMapState					 mMapState = MS_None;
-	SSwitchMapParams			 mSwitchMap;
+	EMapState					 mMapState = MS_Unloaded;
+	SSwitchMapParams			 mSwitchMap = {};
 
 public:
-	DGameMapLoaded	 GameMapLoaded;
-	DGameMapUnloaded GameMapUnloaded;
-	STimerHandle	 mLoadHandle;
-	STimerHandle	 mUnloadHandle;
+	DGameMapStateChange GameMapStateChanged;
+
+	STimerHandle mLoadHandle;
+	STimerHandle mUnloadHandle;
 
 	PGameMap* ConstructMap(const JSON& JsonData);
 	PGameMap* GetMap(const std::string& Name);
@@ -48,14 +48,14 @@ public:
 	bool UnloadMap(const std::string& Name);
 	void UnloadSwitchMap();
 	bool SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
-				   EOrientation ExitDirection);
-	bool SwitchMap(const SSwitchMapParams& Params);
+				   EOrientation ExitDirection, float Delay);
 
 	PGameMap* GetMapUnderMouse();
 	PGameMap* GetMapAtPosition(const FVector2& Position);
 	void	  ClearMaps();
 
-	EMapState GetState();
+	EMapState GetState() const;
+	void	  SetState(EMapState NewState);
 };
 
 // Defined in World.h
