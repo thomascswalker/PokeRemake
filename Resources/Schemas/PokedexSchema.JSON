@@ -1,0 +1,77 @@
+{
+  "title": "Pokemon Definition",
+  "description": "Definitional schema for Pokemon.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "Id": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 151
+      },
+      "Name": {
+        "type": "string"
+      },
+      "Type": {
+        "type": "array",
+        "items": {
+          "enum": [
+            "Normal",
+            "Fire",
+            "Water",
+            "Electric",
+            "Grass",
+            "Ice",
+            "Fighting",
+            "Poison",
+            "Ground",
+            "Flying",
+            "Psychic",
+            "Bug",
+            "Rock",
+            "Ghost",
+            "Dragon"
+          ]
+        }
+      },
+      "Stats": {
+        "type": "object",
+        "properties": {
+          "HP": {
+            "type": "integer"
+          },
+          "Attack": {
+            "type": "integer"
+          },
+          "Defense": {
+            "type": "integer"
+          },
+          "Sp. Attack": {
+            "type": "integer"
+          },
+          "Sp. Defense": {
+            "type": "integer"
+          },
+          "Speed": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "HP",
+          "Attack",
+          "Defense",
+          "Sp. Attack",
+          "Sp. Defense",
+          "Speed"
+        ]
+      }
+    },
+    "required": [
+      "Id",
+      "Name",
+      "Type",
+      "Stats"
+    ]
+  }
+}
