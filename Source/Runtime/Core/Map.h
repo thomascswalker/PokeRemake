@@ -36,8 +36,24 @@ public:
 
 	~TMap() = default;
 
-	TMap& operator=(const TMap&) = default;
-	TMap& operator=(TMap&&) = default;
+	TMap(const TMap& other)
+		: mData{ other.mData } {}
+	TMap(TMap&& other) noexcept
+		: mData{ std::move(other.mData) } {}
+	TMap& operator=(const TMap& other)
+	{
+		if (this == &other)
+			return *this;
+		mData = other.mData;
+		return *this;
+	}
+	TMap& operator=(TMap&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+		mData = std::move(other.mData);
+		return *this;
+	}
 
 	/* STL */
 

@@ -59,7 +59,7 @@ public:
 
 	PCharacterMovementComponent() = default;
 
-	void Start() override;
+	bool Start() override;
 	void Tick(float DeltaTime) override;
 	bool IsMoving() const;
 	bool Move(const FVector2& Velocity);

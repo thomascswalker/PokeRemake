@@ -20,27 +20,31 @@ bool PGame::PreStart()
 	return true;
 }
 
-void PGame::Start()
+bool PGame::Start()
 {
-	this->PreStart();
-
 	if (mGameStarted)
 	{
 		LogWarning("Game is already started.");
-		return;
+		return false;
 	}
 	assert(mWorld != nullptr);
 	mWorld->Start();
 	assert(mGameMode != nullptr);
-	LoadCurrentGameMode();
+	if (!LoadCurrentGameMode())
+	{
+		return false;
+	}
 
 	mGameStarted = true;
 	GameStarted.Broadcast();
+	return true;
 }
 
-void PGame::End()
+bool PGame::End()
 {
 	GameEnded.Broadcast();
+	mWorld->End();
+	return true;
 }
 
 void PGame::Tick(float DeltaTime)
@@ -138,6 +142,7 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 
 bool PGame::LoadCurrentGameMode()
 {
+	mGameMode->Start();
 	if (mGameMode->GetLoaded())
 	{
 		LogWarning("Game mode is already loaded.");

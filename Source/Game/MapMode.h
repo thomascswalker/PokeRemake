@@ -2,18 +2,36 @@
 
 #include "Engine/GameMode.h"
 #include "Engine/MapManager.h"
+#include "Interface/TransitionOverlay.h"
+
+#include "FadeTransition.h"
+
+DECLARE_MULTICAST_DELEGATE(DGameMapLoaded);
+DECLARE_MULTICAST_DELEGATE(DGameMapUnloaded);
 
 class PMapMode : public PGameMode
 {
+	PWorld*		 mWorld = nullptr;
+	PMapManager* mMapManager = nullptr;
+
+	STimerHandle		mTimerHandle;
+	PTransitionOverlay* TransitionOverlay = nullptr;
+	STransition*		mFadeTransition = nullptr;
+
 public:
-    PMapMode();
+	PMapMode();
 
-    std::string GetName() override
-    {
-        return "MapMode";
-    }
+	std::string GetName() override
+	{
+		return "MapMode";
+	}
 
-    bool Load() override;
-    bool Unload() override;
-    void OnKeyUp(SInputEvent* Event) override;
+	bool Load() override;
+	bool Unload() override;
+
+	void OnGameMapStateChanged(EMapState State);
+	void OnFadeInComplete();
+	void OnFadeOutComplete();
+
+	void OnKeyUp(SInputEvent* Event) override;
 };

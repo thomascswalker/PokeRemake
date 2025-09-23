@@ -47,3 +47,5 @@ constexpr int	FONT_CHAR_COUNT = 96;		   // ASCII 32..126
 constexpr int	FONT_CHAR_START = 32;		   // ASCII 32 is the first printable character
 constexpr float FONT_ATLAS_BAKE_SCALE = 64.0f; // Font size in pixels
 constexpr float FONT_RENDER_SCALE = 16.0f;	   // Scale for rendering text
+
+constexpr float TRANSITION_DURATION = 1.0f / GLOBAL_SPEED_MULTIPLIER;

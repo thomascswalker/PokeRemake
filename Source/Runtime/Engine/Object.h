@@ -7,10 +7,10 @@ class PObject
 {
 protected:
 	std::string mInternalName;
-	bool mSerializable = true;
+	bool		mSerializable = true;
 
 public:
-	PObject()          = default;
+	PObject() = default;
 	virtual ~PObject() = default;
 
 	// Called before the game begins
@@ -20,11 +20,11 @@ public:
 	}
 
 	// Called when the game begins
-	virtual void Start() {}
+	virtual bool Start() { return true; }
 	// Called when the game ends
-	virtual void End() {}
+	virtual bool End() { return true; }
 	// Called after the game ends
-	virtual void PostEnd() {}
+	virtual bool PostEnd() { return true; }
 	virtual void Tick(float DeltaTime) {}
 	virtual void PostTick() {}
 
@@ -65,7 +65,6 @@ public:
 		{
 			GenerateInternalName();
 		}
-		LogDebug("Deserializing {}: {}", GetClassName().c_str(), mInternalName.c_str());
 	}
 
 	bool IsSerializable() const

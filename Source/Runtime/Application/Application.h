@@ -55,28 +55,26 @@ public:
 	template <typename GameType, typename HUDType = PHUD>
 	bool Start() const
 	{
-		if (mEngine)
+		if (!mEngine)
 		{
-			mEngine->Initialize<GameType>();
-			if (PGame* Game = mEngine->GetGame())
-			{
-				Game->Start();
-				auto World = Game->GetWorld();
-				auto HUD = World->CreateHUD<HUDType>();
-				HUD->PreStart();
-
-				mRenderer->PostInitialize();
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
+			LogError("Engine is invalid.");
 			return false;
 		}
 
+		if (!mEngine->Start<GameType, HUDType>())
+		{
+			LogError("Failed to initialize engine.");
+			return false;
+		}
+
+		mRenderer->PostInitialize();
+
+		return true;
+	}
+
+	bool Stop() const
+	{
+		mEngine->Stop();
 		return true;
 	}
 
@@ -103,13 +101,22 @@ PApplication* GetApplication();
                                                                         \
 	if (App->Initialize(Args.WindowFlags, Args.GPUMode, Args.IsEditor)) \
 	{                                                                   \
-		App->Start<GameType, HUDType>();                                \
+		if (!App->Start<GameType, HUDType>())                           \
+		{                                                               \
+			LogError("Failed to start application.");                   \
+			return 1;                                                   \
+		}                                                               \
 		while (App->IsRunning())                                        \
 		{                                                               \
 			if (!App->Loop())                                           \
 			{                                                           \
 				break;                                                  \
 			}                                                           \
+		}                                                               \
+		if (!App->Stop())                                               \
+		{                                                               \
+			LogError("Failed to stop application.");                    \
+			return 1;                                                   \
 		}                                                               \
 	}                                                                   \
 	else                                                                \

@@ -10,8 +10,12 @@
 #include "Logging.h"
 
 inline std::vector<std::string> gResourcePaths = {
-	"Resources\\Shaders", "Resources\\Textures",
-	"Resources\\Fonts", "Resources\\Maps", "Resources\\ActorDefs", "Resources\\Styles",
+	"Resources\\Shaders",
+	"Resources\\Textures",
+	"Resources\\Fonts",
+	"Resources\\Maps",
+	"Resources\\ActorDefs",
+	"Resources\\Styles",
 };
 
 namespace Files
@@ -49,21 +53,21 @@ namespace Files
 		return "";
 	}
 
-	inline bool GetOpenFileName(std::string* FileName,
-	                            const std::vector<std::pair<std::string, std::string>>& Filters)
+	inline bool GetOpenFileName(std::string*											FileName,
+								const std::vector<std::pair<std::string, std::string>>& Filters)
 	{
 		NFD_Init();
 		std::vector<nfdu8filteritem_t> FilterItems;
 		for (const auto& Filter : Filters)
 		{
-			nfdu8filteritem_t Item = {Filter.first.c_str(), Filter.second.c_str()};
+			nfdu8filteritem_t Item = { Filter.first.c_str(), Filter.second.c_str() };
 			FilterItems.push_back(Item);
 		}
-		nfdopendialogu8args_t Args = {nullptr};
-		Args.filterList            = FilterItems.data();
-		Args.filterCount           = FilterItems.size();
+		nfdopendialogu8args_t Args = { nullptr };
+		Args.filterList = FilterItems.data();
+		Args.filterCount = FilterItems.size();
 		char* OutPath;
-		int Result = NFD_OpenDialogU8_With(&OutPath, &Args);
+		int	  Result = NFD_OpenDialogU8_With(&OutPath, &Args);
 
 		if (Result == NFD_OKAY)
 		{
@@ -74,7 +78,7 @@ namespace Files
 			const char* Error = NFD_GetError();
 			if (Error != nullptr && strlen(Error) > 0)
 			{
-				LogDebug("Failed to open file dialog: {}", Error);
+				LogError("Failed to open file dialog: {}", Error);
 				return false;
 			}
 		}
@@ -82,21 +86,21 @@ namespace Files
 		return true;
 	}
 
-	inline bool GetSaveFileName(std::string* FileName,
-	                            const std::vector<std::pair<std::string, std::string>>& Filters)
+	inline bool GetSaveFileName(std::string*											FileName,
+								const std::vector<std::pair<std::string, std::string>>& Filters)
 	{
 		NFD_Init();
 		std::vector<nfdu8filteritem_t> FilterItems;
 		for (const auto& Filter : Filters)
 		{
-			nfdu8filteritem_t Item = {Filter.first.c_str(), Filter.second.c_str()};
+			nfdu8filteritem_t Item = { Filter.first.c_str(), Filter.second.c_str() };
 			FilterItems.push_back(Item);
 		}
-		nfdsavedialogu8args_t Args = {nullptr};
-		Args.filterCount           = FilterItems.size();
-		Args.filterList            = FilterItems.data();
+		nfdsavedialogu8args_t Args = { nullptr };
+		Args.filterCount = FilterItems.size();
+		Args.filterList = FilterItems.data();
 		char* OutPath;
-		int Result = NFD_SaveDialogU8_With(&OutPath, &Args);
+		int	  Result = NFD_SaveDialogU8_With(&OutPath, &Args);
 
 		if (Result == NFD_OKAY)
 		{
@@ -127,8 +131,6 @@ namespace Files
 
 	inline bool ReadFile(const std::string& FileName, std::string& Buffer)
 	{
-		LogDebug("Reading file: {}", FileName.c_str());
-
 		std::ifstream File;
 		File.open(FileName.c_str(), std::ios::binary);
 		if (!File.is_open())

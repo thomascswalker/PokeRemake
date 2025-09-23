@@ -128,6 +128,8 @@ public:
 
 	void SetParent(PWidget* Parent);
 
+	void Unparent();
+
 	/* States */
 
 	bool GetVisible() const

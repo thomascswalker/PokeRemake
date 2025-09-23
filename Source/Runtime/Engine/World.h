@@ -9,6 +9,7 @@
 #include "Interface/HUD.h"
 #include "Interface/Widget.h"
 
+#include "MapManager.h"
 #include "Timer.h"
 
 #if _EDITOR
@@ -22,7 +23,9 @@ class PWorld : public PObject, public IInputHandler
 	PPlayerCharacter*						 mPlayerCharacter = nullptr;
 	std::vector<std::shared_ptr<PActor>>	 mActors;
 	std::vector<std::shared_ptr<PComponent>> mComponents;
-	std::shared_ptr<PTimerManager>			 mTimerManager;
+
+	PTimerManager mTimerManager;
+	PMapManager	  mMapManager;
 
 	std::vector<PActor*>  mDestroyableActors;
 	std::vector<PObject*> mDestroyableObjects;
@@ -31,26 +34,22 @@ class PWorld : public PObject, public IInputHandler
 	std::vector<std::shared_ptr<PWidget>> mWidgets;
 	std::shared_ptr<PHUD>				  mHUD;
 
-	// std::shared_ptr<PTimerManager> mTimerManager;
-
 	void DestroyActorInternal(const PActor* Actor);
 	void DestroyComponentInternal(const PComponent* Component);
 	void DestroyWidgetInternal(PWidget* Widget);
 
 public:
-#if _EDITOR
-	DActorSelected ActorClicked;
-#endif
-
 	~PWorld() override = default;
 
-	void Start() override;
+	bool Start() override;
+	bool End() override;
 	void Tick(float DeltaTime) override;
 
 	void PostTick() override;
 
 #if _EDITOR
-	void OnActorClicked(PActor* Actor)
+	DActorSelected ActorClicked;
+	void		   OnActorClicked(PActor* Actor)
 	{
 		ActorClicked.Broadcast(Actor);
 	}
@@ -166,7 +165,8 @@ public:
 	T* CreateHUD()
 	{
 		mHUD = std::make_shared<T>();
-		return dynamic_cast<T*>(mHUD.get());
+		auto NewHUD = dynamic_cast<T*>(mHUD.get());
+		return NewHUD;
 	}
 
 	template <typename T = PHUD>
@@ -182,7 +182,12 @@ public:
 
 	PTimerManager* GetTimerManager()
 	{
-		return mTimerManager.get();
+		return &mTimerManager;
+	}
+
+	PMapManager* GetMapManager()
+	{
+		return &mMapManager;
 	}
 
 	bool ProcessEvents(SInputEvent* Event) override;
@@ -257,3 +262,8 @@ T* GetHUD()
 {
 	return GetWorld()->GetHUD<T>();
 }
+
+// Declared in Timer.h
+PTimerManager* GetTimerManager() { return GetWorld()->GetTimerManager(); }
+// Declared in MapManager.h
+PMapManager* GetMapManager() { return GetWorld()->GetMapManager(); }

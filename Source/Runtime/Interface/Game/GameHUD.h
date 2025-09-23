@@ -1,19 +1,18 @@
 #pragma once
 
-#include "DialogBox.h"
-
-#include "Interface/Box.h"
 #include "Interface/HUD.h"
 #include "Interface/Spacer.h"
 
+#include "DialogBox.h"
+
 class PGameHUD : public PHUD
 {
-    PSpacer* mSpacer;
-    PDialogBox* mDialogBox;
+	PSpacer*	mSpacer = nullptr;
+	PDialogBox* mDialogBox = nullptr;
 
 public:
-    PGameHUD();
-    ~PGameHUD() override = default;
+	PGameHUD();
+	~PGameHUD() override = default;
 
-    void DialogBox(const std::string& Text);
+	void DialogBox(const std::string& Text);
 };

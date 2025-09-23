@@ -1,12 +1,11 @@
 #pragma once
 
-#include "GameMode.h"
-
 #include "Components/CameraComponent.h"
+#include "Core/Map.h"
+
+#include "GameMode.h"
 #include "Settings.h"
 #include "World.h"
-
-#include "Core/Map.h"
 
 DECLARE_MULTICAST_DELEGATE(DGameStarted);
 DECLARE_MULTICAST_DELEGATE(DGameEnded);
@@ -15,26 +14,26 @@ class PGame : public PObject, public IInputHandler
 {
 protected:
 	/* Actors/Objects */
-	std::shared_ptr<PWorld> mWorld;
+	std::shared_ptr<PWorld>	   mWorld;
 	std::shared_ptr<PSettings> mSettings;
-	PCameraView* mActiveCameraView = nullptr;
+	PCameraView*			   mActiveCameraView = nullptr;
 
 	/* Game State */
 
-	bool mGameStarted    = false;
-	PGameMode* mGameMode = nullptr;
+	bool										  mGameStarted = false;
+	PGameMode*									  mGameMode = nullptr;
 	TMap<std::string, std::shared_ptr<PGameMode>> mGameModes;
 
 public:
 	DGameStarted GameStarted;
-	DGameEnded GameEnded;
+	DGameEnded	 GameEnded;
 
 	PGame();
 	~PGame() override {}
 
 	bool PreStart() override;
-	void Start() override;
-	void End() override;
+	bool Start() override;
+	bool End() override;
 	void Tick(float DeltaTime) override;
 	void PostTick() override;
 

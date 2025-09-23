@@ -274,7 +274,7 @@ void PEditorHUD::OnSizeYChanged(float Value)
 void PEditorHUD::OnNewButtonClicked()
 {
 	World->DestroyAllActors();
-	PMapManager::ClearMaps();
+	GetMapManager()->ClearMaps();
 }
 
 void PEditorHUD::OnCreateButtonClicked()
@@ -302,7 +302,7 @@ void PEditorHUD::OnCreateButtonClicked()
 		}
 	}
 
-	PMapManager::ConstructMap(JsonData);
+	GetMapManager()->ConstructMap(JsonData);
 }
 
 void PEditorHUD::OnSaveButtonClicked()
@@ -335,7 +335,7 @@ void PEditorHUD::OnLoadButtonClicked()
 		return;
 	}
 
-	PMapManager::LoadMap(FileName, true);
+	GetMapManager()->LoadMap(FileName, true);
 }
 
 void PEditorHUD::OnSelectButtonClicked()

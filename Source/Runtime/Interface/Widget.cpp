@@ -47,6 +47,14 @@ void PWidget::SetParent(PWidget* Parent)
 		mParent->mChildren.push_back(this);
 	}
 }
+void PWidget::Unparent()
+{
+	if (mParent)
+	{
+		mParent->RemoveChild(this);
+	}
+	mParent = nullptr;
+}
 
 void PWidget::AddChild(PWidget* Child)
 {

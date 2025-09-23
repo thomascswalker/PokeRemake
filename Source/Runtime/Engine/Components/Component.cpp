@@ -13,7 +13,7 @@ FVector2 PComponent::GetPosition() const
 	{
 		return mOwner->GetPosition2D();
 	}
-	LogDebug("Parent is invalid");
+	LogWarning("Parent of component {} is invalid.", mInternalName.c_str());
 	return FVector2(0, 0);
 }
 

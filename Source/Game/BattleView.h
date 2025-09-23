@@ -7,5 +7,5 @@ protected:
     PCameraComponent* mCameraComponent = nullptr;
 
 public:
-    void Start() override;
+	bool Start() override;
 };

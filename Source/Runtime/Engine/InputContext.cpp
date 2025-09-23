@@ -43,7 +43,7 @@ static TMap<EInputContext, SInputContext> gInputContextMap = {
 		{} }											  },
 	{ IC_Battle,
 	  { IC_Battle,
-		{ SDLK_ESCAPE } }								 },
+		{ SDLK_Q } }									  },
 	// Editor
 	{
 		IC_Select,

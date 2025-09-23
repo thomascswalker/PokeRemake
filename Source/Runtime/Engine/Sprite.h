@@ -246,12 +246,10 @@ public:
 
 		auto Texture = Data["Texture"].get<std::string>();
 		mTexture = TextureManager::Get(Texture);
-		LogDebug("Loaded texture: {}", mTexture->GetName());
 		LOAD_MEMBER_PROPERTY(Size, float);
 		LOAD_MEMBER_PROPERTY(IndexSize, float);
 		LOAD_MEMBER_PROPERTY(Width, int32_t);
 
-		LogDebug("Loading {} animations:\n{}", Data["Animations"].size(), Data["Animations"].dump());
 		for (auto& Anim : Data["Animations"])
 		{
 			std::string			  Name = Anim["Name"];
