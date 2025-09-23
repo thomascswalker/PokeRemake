@@ -5,6 +5,10 @@
 #include "BattleMode.h"
 #include "MapMode.h"
 
+PMainGame::PMainGame()
+{
+}
+
 bool PMainGame::PreStart()
 {
 	if (!PGame::PreStart())

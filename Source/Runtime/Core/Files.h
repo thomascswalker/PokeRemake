@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -16,6 +17,7 @@ inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Maps",
 	"Resources\\ActorDefs",
 	"Resources\\Styles",
+	"Resources\\Pokedex"
 };
 
 namespace Files
@@ -76,7 +78,7 @@ namespace Files
 		else
 		{
 			const char* Error = NFD_GetError();
-			if (Error != nullptr && strlen(Error) > 0)
+			if (Error != nullptr && std::strlen(Error) > 0)
 			{
 				LogError("Failed to open file dialog: {}", Error);
 				return false;
