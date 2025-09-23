@@ -19,3 +19,10 @@ bool PMainGame::PreStart()
 	AddGameMode<PBattleMode>();
 	return true;
 }
+bool PMainGame::Start()
+{
+	SPokeDef Bulbasaur = *Pokedex.Get(0);
+	Storage.Add({ Bulbasaur, 1, 0 });
+	Party.Add(Storage.Get(0));
+	return PGame::Start();
+}

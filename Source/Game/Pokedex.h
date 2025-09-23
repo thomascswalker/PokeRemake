@@ -86,4 +86,6 @@ class PPokedexManager
 
 public:
 	PPokedexManager();
+
+	SPokeDef* Get(int32_t Index) { return &Defs[Index]; }
 };

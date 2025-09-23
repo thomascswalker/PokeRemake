@@ -9,6 +9,23 @@ struct SPokemon
 	uint32_t Experience;
 };
 
+class PPokeStorage
+{
+	std::vector<SPokemon> mPokemon;
+
+public:
+	bool Add(const SPokemon& Pokemon)
+	{
+		mPokemon.push_back(Pokemon);
+		return true;
+	}
+
+	SPokemon* Get(int32_t Index)
+	{
+		return &mPokemon[Index];
+	}
+};
+
 class PParty
 {
 	std::array<SPokemon*, 6> mPokemon;
