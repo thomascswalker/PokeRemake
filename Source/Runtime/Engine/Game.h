@@ -3,6 +3,7 @@
 #include "Components/CameraComponent.h"
 #include "Core/Map.h"
 
+#include "GameEvent.h"
 #include "GameMode.h"
 #include "Settings.h"
 #include "World.h"
@@ -84,6 +85,9 @@ public:
 
 	virtual void OnGameModeLoaded(PGameMode* GameMode);
 	virtual void OnGameModeUnloaded(PGameMode* GameMode);
-};
 
-DECLARE_STATIC_GLOBAL_GETTER(Game)
+	virtual bool HandleGameEvent(SGameEvent& Event)
+	{
+		return true;
+	}
+};

@@ -11,10 +11,9 @@ class PDialogBox : public PBox
 	PTexture*	 mTexture = nullptr;
 
 public:
-	bool Start() override
+	PDialogBox()
 	{
 		mTexture = PTextureManager::Get("DialogBox");
-		return true;
 	}
 
 	void Draw(const PRenderer* Renderer) const override

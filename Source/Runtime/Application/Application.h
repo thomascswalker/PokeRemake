@@ -66,19 +66,12 @@ public:
 			}
 		}
 
-		if (!Stop())
-		{
-			LogError("Failed to stop application.");
-		}
-
 		return true;
 	}
 
 	bool Stop() const
 	{
-		GEngine->Stop();
-		GEngine->~PEngine();
-		GEngine = nullptr;
+		Uninitialize();
 		return true;
 	}
 

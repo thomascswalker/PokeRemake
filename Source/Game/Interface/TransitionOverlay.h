@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Timer.h"
-#include "Engine/World.h"
 #include "Interface/Widget.h"
 
 DECLARE_MULTICAST_DELEGATE(DFadedOut);

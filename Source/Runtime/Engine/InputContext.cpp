@@ -83,7 +83,6 @@ bool IsInputContext(EInputContext Type)
 
 void RestoreInputContext()
 {
-	LogInfo("Restoring input context...");
 	gInputContext = gPrevInputContext;
 	gPrevInputContext = gInputContextMap[IC_Default];
 }

@@ -72,22 +72,17 @@ void PMapMode::OnGameMapStateChanged(EMapState State)
 	switch (State)
 	{
 		case MS_Loading:
-			LogInfo("Map loading...");
 			break;
 		case MS_Loaded:
-			LogInfo("Map loaded.");
 			break;
 		case MS_Unloading:
-			LogInfo("Map unloading...");
 			TransitionOverlay = mWorld->ConstructWidget<PTransitionOverlay>();
-			LogWarning("Reimplement PGameHUD Add TransitionOverlay on PMapMode");
-			// GetHUD<PGameHUD>()->AddChild(TransitionOverlay);
+			GWorld->GetRootWidget()->AddChild(TransitionOverlay);
 			TransitionOverlay->Fade(FM_Out);
 			TransitionOverlay->FadedOut.AddRaw(this, &PMapMode::OnFadeOutComplete);
 			TransitionOverlay->FadedIn.AddRaw(this, &PMapMode::OnFadeInComplete);
 			break;
 		case MS_Unloaded:
-			LogInfo("Map unloaded.");
 			break;
 	}
 }

@@ -134,8 +134,6 @@ bool PMapManager::UnloadMap(const std::string& Name)
 
 void PMapManager::UnloadSwitchMap()
 {
-	LogInfo("Unloading switch map.");
-
 	// Clear the timer which triggered this deferred map unloading
 	GetTimerManager()->ClearTimer(mUnloadHandle);
 
@@ -163,7 +161,6 @@ void PMapManager::UnloadSwitchMap()
 bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
 							EOrientation ExitDirection, float Delay)
 {
-	LogInfo("Switching map");
 	mSwitchMap = {
 		OldMap,
 		NewMap,

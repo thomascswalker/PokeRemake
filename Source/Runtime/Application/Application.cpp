@@ -210,5 +210,9 @@ bool PApplication::Draw(float DeltaTime) const
 
 bool PApplication::IsRunning() const
 {
+	if (!GEngine)
+	{
+		return false;
+	}
 	return GEngine->IsRunning();
 }

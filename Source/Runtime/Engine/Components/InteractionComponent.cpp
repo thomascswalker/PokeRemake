@@ -1,12 +1,13 @@
 #include "InteractionComponent.h"
 
-#include "../../../Game/Interface/GameHUD.h"
+#include "Engine/Engine.h"
+#include "Engine/Game.h"
 #include "Engine/World.h"
 
 void PInteractionComponent::Interact(PPlayerCharacter* Player)
 {
-	// GetHUD<PGameHUD>()->DialogBox(mData.Message);
-	LogWarning("Reimplement interaction dialog box");
+	SGameEvent Event(this, "Dialog", &mData);
+	GEngine->GetGame()->HandleGameEvent(Event);
 }
 
 void PInteractionComponent::Deserialize(const JSON& Data)
