@@ -1,11 +1,10 @@
 #include "MainGame.h"
 
 #include "Application/Application.h"
-#include "Core/Pokedex.h"
-#include "Core/PokeParty.h"
-#include "Core/PokeStorage.h"
-#include "Modes/BattleMode.h"
-#include "Modes/MapMode.h"
+#include "Engine/Actors/Interactable.h"
+
+#include "BattleMode.h"
+#include "MapMode.h"
 
 bool PMainGame::PreStart()
 {
@@ -20,17 +19,34 @@ bool PMainGame::PreStart()
 	return true;
 }
 
-bool PMainGame::Start()
+bool PMainGame::HandleGameEvent(SGameEvent& Event)
 {
-	// Load the pokedex
-	auto Mgr = PPokedexManager::Instance();
-	Mgr->Init();
+	auto Data = Event.GetData<SInteractData>();
+	if (!mDialogBox)
+	{
+		ShowDialogBox(Data->Message);
+	}
+	else
+	{
+		CloseDialogBox();
+	}
+	return true;
+}
 
-	auto PlayerStorage = GetPlayerStorage();
-	auto Mon = PlayerStorage->Construct(ID_BULBASAUR);
+void PMainGame::ShowDialogBox(const std::string& Text)
+{
+	SetInputContext(IC_Dialog);
+	mDialogBox = GWorld->ConstructWidget<PDialogBox>();
+	mDialogBox->SetText(Text);
+	mDialogBox->Print();
+	GWorld->GetRootWidget()->AddChild(mDialogBox);
+}
 
-	auto PlayerParty = GetPlayerParty();
-	PlayerParty->Add(Mon);
-
-	return PGame::Start();
+void PMainGame::CloseDialogBox()
+{
+	RestoreInputContext();
+	mDialogBox->Print();
+	GWorld->GetRootWidget()->RemoveChild(mDialogBox);
+	GWorld->DestroyWidget(mDialogBox);
+	mDialogBox = nullptr;
 }

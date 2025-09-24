@@ -32,6 +32,7 @@ using IRect = TRect<int32_t>;
 
 /* Classes */
 
+class PGameInstance;
 class PAbstractButton;
 class PActor;
 class PBox;

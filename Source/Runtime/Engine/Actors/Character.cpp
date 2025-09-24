@@ -25,7 +25,7 @@ PCharacter::PCharacter()
 
 		auto Sprite = mSpriteComponent->GetSprite();
 
-		Sprite->SetTexture(TextureManager::Get(TEXTURE_GARY));
+		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
 		Sprite->SetSize(16.0f);
 		Sprite->SetIndexSize(16.0f);
 
@@ -116,7 +116,7 @@ void PCharacter::OnMovementEnded(EOrientation Direction)
 	mSpriteComponent->GetSprite()->Stop();
 
 	// Collision
-	for (auto Actor : GetWorld()->GetActorsAtPosition(GetPosition2D()))
+	for (auto Actor : GWorld->GetActorsAtPosition(GetPosition2D()))
 	{
 		if (Actor == this)
 		{

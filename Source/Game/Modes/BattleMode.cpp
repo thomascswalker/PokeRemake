@@ -24,7 +24,7 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				GetGame()->SetAndLoadCurrentGameMode("MapMode");
+				GEngine->GetGame()->SetAndLoadCurrentGameMode("MapMode");
 				break;
 			}
 		default:

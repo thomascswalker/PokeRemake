@@ -7,13 +7,14 @@
 
 PGame::PGame()
 {
+	// Construct the world
 	mWorld = std::make_shared<PWorld>();
-	mSettings = std::make_shared<PSettings>();
+	GWorld = mWorld.get();
 }
 
 bool PGame::PreStart()
 {
-	TextureManager::LoadAllTextures();
+	PTextureManager::LoadAllTextures();
 	TilesetManager::LoadAllTilesets();
 	StyleManager::LoadAllStylesheets();
 
@@ -52,11 +53,6 @@ void PGame::Tick(float DeltaTime)
 	mWorld->Tick(DeltaTime);
 }
 
-void PGame::PostTick()
-{
-	mWorld->PostTick();
-}
-
 void PGame::UpdateCameraView()
 {
 	for (auto Comp : mWorld->GetComponents())
@@ -64,7 +60,7 @@ void PGame::UpdateCameraView()
 		// Just set the first camera component found as the active camera
 		if (auto CameraComp = dynamic_cast<PCameraComponent*>(Comp))
 		{
-			mActiveCameraView = CameraComp->GetCameraView();
+			GRenderer->SetCameraView(CameraComp->GetCameraView());
 			LogDebug("Found active camera");
 			return;
 		}

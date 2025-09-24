@@ -3,12 +3,11 @@
 #include <memory>
 #include <vector>
 
-#include "Actors/GameMap.h"
 #include "Actors/PlayerCharacter.h"
 #include "Components/Component.h"
-#include "Interface/HUD.h"
 #include "Interface/Widget.h"
 
+#include "GameInstance.h"
 #include "MapManager.h"
 #include "Timer.h"
 
@@ -20,32 +19,23 @@ DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 
 class PWorld : public PObject, public IInputHandler
 {
-	PPlayerCharacter*						 mPlayerCharacter = nullptr;
-	std::vector<std::shared_ptr<PActor>>	 mActors;
-	std::vector<std::shared_ptr<PComponent>> mComponents;
+	PPlayerCharacter*		 mPlayerCharacter = nullptr;
+	std::vector<PActor*>	 mActors;
+	std::vector<PComponent*> mComponents;
 
 	PTimerManager mTimerManager;
 	PMapManager	  mMapManager;
 
-	std::vector<PActor*>  mDestroyableActors;
-	std::vector<PObject*> mDestroyableObjects;
-	std::vector<PWidget*> mDestroyableWidgets;
-
-	std::vector<std::shared_ptr<PWidget>> mWidgets;
-	std::shared_ptr<PHUD>				  mHUD;
-
-	void DestroyActorInternal(const PActor* Actor);
-	void DestroyComponentInternal(const PComponent* Component);
-	void DestroyWidgetInternal(PWidget* Widget);
+	std::shared_ptr<PWidget> mRootWidget;
+	std::vector<PWidget*>	 mWidgets;
 
 public:
+	PWorld();
 	~PWorld() override = default;
 
 	bool Start() override;
 	bool End() override;
 	void Tick(float DeltaTime) override;
-
-	void PostTick() override;
 
 #if _EDITOR
 	DActorSelected ActorClicked;
@@ -56,14 +46,13 @@ public:
 #endif
 
 	template <IS_SUBCLASS_OF(PObject), typename... ArgsType>
-	std::shared_ptr<T> ConstructObject(ArgsType&&... Args)
+	T* ConstructObject(ArgsType&&... Args)
 	{
-		std::shared_ptr<T> Object = std::make_shared<T>(std::forward<ArgsType>(Args)...);
+		ASSERT(GGameInstance != nullptr, "Game Instance is not initialized.");
+		T* Object = GGameInstance->ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Object->GenerateInternalName();
 		return Object;
 	}
-
-	void DestroyObject(PObject* Object);
 
 	template <IS_SUBCLASS_OF(PActor), typename... ArgsType>
 	T* ConstructActor(ArgsType&&... Args)
@@ -78,12 +67,12 @@ public:
 
 		if (Actor->GetSelectable())
 		{
-			auto SelectionComponent = ConstructComponent<PSelectionComponent>(Actor.get());
+			auto SelectionComponent = ConstructComponent<PSelectionComponent>(Actor);
 			Actor->SetSelectionComponent(SelectionComponent);
 		}
 
 #endif
-		return Actor.get();
+		return Actor;
 	}
 
 	void DestroyActor(PActor* Actor);
@@ -112,7 +101,7 @@ public:
 		std::vector<T*> OutActors;
 		for (const auto& Actor : mActors)
 		{
-			if (auto TypedActor = dynamic_cast<T*>(Actor.get()))
+			if (auto TypedActor = dynamic_cast<T*>(Actor))
 			{
 				OutActors.push_back(TypedActor);
 			}
@@ -130,17 +119,21 @@ public:
 			return ExistingComponent;
 		}
 		auto Component = ConstructObject<T>(std::forward<ArgsType>(Args)...);
-		Owner->AddComponent(Component.get());
+		Owner->AddComponent(Component);
 
 #if _EDITOR
 		Component->InitializeParameters();
 #endif
 		Component->Start();
 		mComponents.push_back(Component);
-		return Component.get();
+		return Component;
 	}
 
+	void DestroyComponent(PComponent* Component);
+
 	std::vector<PComponent*> GetComponents() const;
+
+	PWidget* GetRootWidget() const { return mRootWidget.get(); }
 
 	template <IS_SUBCLASS_OF(PWidget), typename... ArgsType>
 	T* ConstructWidget(ArgsType&&... Args)
@@ -148,7 +141,7 @@ public:
 		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Widget->Start();
 		mWidgets.push_back(Widget);
-		return Widget.get();
+		return Widget;
 	}
 
 	template <typename T>
@@ -160,20 +153,6 @@ public:
 	std::vector<PWidget*> GetWidgets() const;
 
 	void DestroyWidget(PWidget* Widget);
-
-	template <typename T = PHUD>
-	T* CreateHUD()
-	{
-		mHUD = std::make_shared<T>();
-		auto NewHUD = dynamic_cast<T*>(mHUD.get());
-		return NewHUD;
-	}
-
-	template <typename T = PHUD>
-	T* GetHUD() const
-	{
-		return static_cast<T*>(mHUD.get());
-	}
 
 	PPlayerCharacter*	 GetPlayerCharacter() const;
 	void				 SetPlayerCharacter(PPlayerCharacter* PlayerCharacter);
@@ -197,12 +176,12 @@ public:
 #endif
 };
 
-DECLARE_STATIC_GLOBAL_GETTER(World)
+extern PWorld* GWorld;
 
 template <typename T, typename... ArgsType>
 T* ConstructActor(ArgsType&&... Args)
 {
-	return GetWorld()->ConstructActor<T>(std::forward<ArgsType>(Args)...);
+	return GWorld->ConstructActor<T>(std::forward<ArgsType>(Args)...);
 }
 
 template <typename T>
@@ -232,7 +211,7 @@ T* SpawnActor(const JSON& Json)
 template <typename T, typename... ArgsType>
 T* ConstructComponent(PActor* Owner, ArgsType&&... Args)
 {
-	return GetWorld()->ConstructComponent<T>(Owner, std::forward<ArgsType>(Args)...);
+	return GWorld->ConstructComponent<T>(Owner, std::forward<ArgsType>(Args)...);
 }
 
 template <typename T>
@@ -246,7 +225,7 @@ T* ConstructComponent(PActor* Owner, const JSON& Json)
 template <typename T, typename... ArgsType>
 T* ConstructWidget(ArgsType&&... Args)
 {
-	return GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+	return GWorld->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
 }
 
 template <typename T>
@@ -257,13 +236,7 @@ T* ConstructWidget(const JSON& Json)
 	return Widget;
 }
 
-template <typename T>
-T* GetHUD()
-{
-	return GetWorld()->GetHUD<T>();
-}
-
 // Declared in Timer.h
-PTimerManager* GetTimerManager() { return GetWorld()->GetTimerManager(); }
+PTimerManager* GetTimerManager() { return GWorld->GetTimerManager(); }
 // Declared in MapManager.h
-PMapManager* GetMapManager() { return GetWorld()->GetMapManager(); }
+PMapManager* GetMapManager() { return GWorld->GetMapManager(); }

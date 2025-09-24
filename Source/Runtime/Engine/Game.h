@@ -3,6 +3,7 @@
 #include "Components/CameraComponent.h"
 #include "Core/Map.h"
 
+#include "GameEvent.h"
 #include "GameMode.h"
 #include "Settings.h"
 #include "World.h"
@@ -15,7 +16,7 @@ class PGame : public PObject, public IInputHandler
 protected:
 	/* Actors/Objects */
 	std::shared_ptr<PWorld>	   mWorld;
-	std::shared_ptr<PSettings> mSettings;
+	std::shared_ptr<SSettings> mSettings;
 	PCameraView*			   mActiveCameraView = nullptr;
 
 	/* Game State */
@@ -35,7 +36,6 @@ public:
 	bool Start() override;
 	bool End() override;
 	void Tick(float DeltaTime) override;
-	void PostTick() override;
 
 	PWorld* GetWorld() const
 	{
@@ -51,11 +51,6 @@ public:
 	PCameraView* GetCameraView() const
 	{
 		return mActiveCameraView;
-	}
-
-	PSettings* GetSettings() const
-	{
-		return mSettings.get();
 	}
 
 	void OnKeyUp(SInputEvent* Event) override;
@@ -90,6 +85,9 @@ public:
 
 	virtual void OnGameModeLoaded(PGameMode* GameMode);
 	virtual void OnGameModeUnloaded(PGameMode* GameMode);
-};
 
-DECLARE_STATIC_GLOBAL_GETTER(Game)
+	virtual bool HandleGameEvent(SGameEvent& Event)
+	{
+		return true;
+	}
+};

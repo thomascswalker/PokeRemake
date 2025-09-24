@@ -4,7 +4,7 @@
 
 #include <string>
 
-struct SDLContext
+struct SRenderContext
 {
 	SDL_Window*	   Window;
 	SDL_Renderer*  Renderer;

@@ -24,7 +24,7 @@ void PGameHUD::DialogBox(const std::string& Text)
 		RestoreInputContext();
 		mDialogBox->EndPrint();
 		mDialogBox->Unparent();
-		GetWorld()->DestroyWidget(mDialogBox);
+		GWorld->DestroyWidget(mDialogBox);
 		mDialogBox = nullptr;
 	}
 }

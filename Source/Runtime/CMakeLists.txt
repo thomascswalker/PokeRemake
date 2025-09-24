@@ -103,6 +103,20 @@ set(SOURCES
         Renderer/Drawable.cpp
         Renderer/Drawable.h
         Renderer/Renderer.cpp
+        Core/CSS.h
+        Engine/ParamBlock.h
+        Interface/EditText.h
+        Interface/Padding.h
+        Engine/Timer.h
+        Engine/TextPrinter.h
+        Engine/Timer.cpp
+        Engine/Sprite.cpp
+        Engine/Transition.h
+        Core/Memory.h
+        Engine/GameInstance.h
+        Engine/Settings.cpp
+        Engine/GameInstance.cpp
+        Engine/GameEvent.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Core/Macros.h"
-
-struct PSettings
+struct SSettings
 {
 	bool DebugDraw = false;
 };
 
-DECLARE_STATIC_GLOBAL_GETTER(Settings)
+extern SSettings* GSettings;

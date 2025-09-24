@@ -3,7 +3,7 @@
 
 void PCollisionComponent::ProcessCollision()
 {
-	auto W = GetWorld();
+	auto W = GWorld;
 	if (!W)
 	{
 		LogError("World is invalid.");

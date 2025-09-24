@@ -87,7 +87,7 @@ PMenu::PMenu(const std::string& Name, const std::vector<SMenuItemData>& InItems)
 
 	ItemClicked.AddRaw(this, &PMenu::OnItemClicked);
 
-	mView = GetWorld()->ConstructWidget<PMenuView>(&mItems, &ItemClicked);
+	mView = GWorld->ConstructWidget<PMenuView>(&mItems, &ItemClicked);
 	mView->SetVisible(false, true);
 	mView->mMenu = this;
 }

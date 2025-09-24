@@ -9,11 +9,10 @@
 #include <cstring>
 #include <map>
 
-#include "Core/Containers.h"
 #include "Renderer/Renderer.h"
 #include "stb/stb_image.h"
 
-TextureMap TextureManager::sTextures = {};
+TextureMap PTextureManager::sTextures = {};
 
 uint32_t gNextTextureID = 0;
 
@@ -23,7 +22,7 @@ PTexture::PTexture()
 
 PTexture::~PTexture() {}
 
-PTexture* TextureManager::Load(const std::string& FileName)
+PTexture* PTextureManager::Load(const std::string& FileName)
 {
 	const auto AbsFileName = Files::FindFile(FileName);
 	if (AbsFileName.empty())
@@ -51,7 +50,7 @@ PTexture* TextureManager::Load(const std::string& FileName)
 	return NewTexture;
 }
 
-void TextureManager::LoadAllTextures()
+void PTextureManager::LoadAllTextures()
 {
 	const auto Textures = Files::GetFilesInDirectory("Resources/Textures");
 	for (const auto& Texture : Textures)
@@ -60,9 +59,9 @@ void TextureManager::LoadAllTextures()
 	}
 }
 
-bool TextureManager::LoadSDL(PTexture* Texture)
+bool PTextureManager::LoadSDL(PTexture* Texture)
 {
-	const auto Renderer = GetRenderer()->GetSDLRenderer();
+	const auto Renderer = GRenderer->GetSDLRenderer();
 	const auto Width = Texture->GetWidth();
 	const auto Height = Texture->GetHeight();
 	const auto SDLTexture = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_ABGR8888,
@@ -84,7 +83,7 @@ bool TextureManager::LoadSDL(PTexture* Texture)
 	return false;
 }
 
-void TextureManager::UnloadSDL()
+void PTextureManager::UnloadSDL()
 {
 	for (const auto& V : GetTextures() | std::views::values)
 	{
@@ -92,7 +91,7 @@ void TextureManager::UnloadSDL()
 	}
 }
 
-PTexture* TextureManager::Get(const std::string& Name)
+PTexture* PTextureManager::Get(const std::string& Name)
 {
 	for (auto Key : GetTextures() | std::views::keys)
 	{
@@ -112,7 +111,7 @@ PTexture* TextureManager::Get(const std::string& Name)
 	return nullptr;
 }
 
-PTexture* TextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
+PTexture* PTextureManager::Create(const std::string& FileName, float Width, float Height, int Channels, void* Data)
 {
 	PTexture   Tex;
 	const auto DataSize = Width * Height * Channels;
@@ -141,7 +140,7 @@ PTexture* TextureManager::Create(const std::string& FileName, float Width, float
 	return sTextures[BaseName].get();
 }
 
-void TextureManager::Destroy(const PTexture* Texture)
+void PTextureManager::Destroy(const PTexture* Texture)
 {
 	auto Iter = sTextures.find(Texture->GetName());
 	if (Iter != sTextures.end())
@@ -154,7 +153,7 @@ void TextureManager::Destroy(const PTexture* Texture)
 	}
 }
 
-TextureMap& TextureManager::GetTextures()
+TextureMap& PTextureManager::GetTextures()
 {
 	return sTextures;
 }

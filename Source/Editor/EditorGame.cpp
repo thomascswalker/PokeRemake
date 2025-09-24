@@ -10,6 +10,7 @@
 #include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
 #include "Engine/MapManager.h"
+#include "Interface/EditorHUD.h"
 #include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
@@ -17,7 +18,7 @@
 
 PEditorGame* GetEditorGame()
 {
-	return dynamic_cast<PEditorGame*>(GetGame());
+	return dynamic_cast<PEditorGame*>(GEngine->GetGame());
 }
 
 PEditorGame::PEditorGame()
@@ -28,7 +29,11 @@ PEditorGame::PEditorGame()
 bool PEditorGame::PreStart()
 {
 	PGame::PreStart();
-	GetSettings()->DebugDraw = true;
+
+	auto HUD = GWorld->ConstructWidget<PEditorHUD>();
+	GWorld->GetRootWidget()->AddChild(HUD);
+
+	GSettings->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();
 
@@ -47,7 +52,7 @@ bool PEditorGame::Start()
 	PGame::Start();
 
 	// Bind the world actor clicked event to handle selection within the editor.
-	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
+	GWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 
 	return true;
 }
@@ -289,7 +294,7 @@ void PEditorGame::PaintTile(STile* Tile)
 	// Set adjacent tiles
 	if (mBrushSize == BS_Large)
 	{
-		auto MousePosition = GetRenderer()->GetMouseWorldPosition();
+		auto MousePosition = GRenderer->GetMouseWorldPosition();
 
 		// TODO: Clean this up
 		if (auto Tile2 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))
