@@ -21,7 +21,7 @@ void PPokedexManager::Init()
 	}
 }
 
-SPokemonDef* PPokedexManager::Get(int32_t Index) { return &Defs[Index - 1]; }
+SPokemonDef* PPokedexManager::Get(int32_t Index) { return &Defs[Index]; }
 
 SPokemonDef* PPokedexManager::GetByName(const std::string& Name)
 {

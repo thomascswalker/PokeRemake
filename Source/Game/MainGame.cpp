@@ -2,9 +2,8 @@
 
 #include "Application/Application.h"
 #include "Engine/Actors/Interactable.h"
-
-#include "BattleMode.h"
-#include "MapMode.h"
+#include "Modes/BattleMode.h"
+#include "Modes/MapMode.h"
 
 bool PMainGame::PreStart()
 {

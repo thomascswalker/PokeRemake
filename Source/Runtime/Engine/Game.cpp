@@ -17,7 +17,7 @@ bool PGame::PreStart()
 	PTextureManager::LoadAllTextures();
 	TilesetManager::LoadAllTilesets();
 	StyleManager::LoadAllStylesheets();
-	mWorld->ConstructHUD();
+
 	return true;
 }
 
@@ -149,7 +149,6 @@ bool PGame::LoadCurrentGameMode()
 		LogError("Failed to load game mode.");
 		return false;
 	}
-	mGameMode->PostLoad();
 	mGameMode->SetLoaded(true);
 	OnGameModeLoaded(mGameMode);
 
@@ -167,6 +166,7 @@ bool PGame::SetAndLoadCurrentGameMode(const std::string& Name)
 
 void PGame::OnGameModeLoaded(PGameMode* GameMode)
 {
+	UpdateCameraView();
 }
 
 void PGame::OnGameModeUnloaded(PGameMode* GameMode) {}

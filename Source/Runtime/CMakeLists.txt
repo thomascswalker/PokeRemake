@@ -82,8 +82,6 @@ set(SOURCES
         Interface/Divider.h
         Interface/Dropdown.cpp
         Interface/EditText.h
-        ../Game/Interface/DialogBox.h
-        ../Game/Interface/GameHUD.cpp
         Interface/GridView.h
         Interface/Group.h
         Interface/HUD.h

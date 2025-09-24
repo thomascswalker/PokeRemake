@@ -12,7 +12,6 @@ class PMapMode : public PGameMode
 {
 	PWorld*		 mWorld = nullptr;
 	PMapManager* mMapManager = nullptr;
-	PGameHUD*	 mGameHUD = nullptr;
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;
@@ -34,7 +33,4 @@ public:
 	void OnFadeOutComplete();
 
 	void OnKeyUp(SInputEvent* Event) override;
-
-	bool TryStartBattle();
-	bool StartBattle();
 };

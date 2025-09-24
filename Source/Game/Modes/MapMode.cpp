@@ -1,10 +1,7 @@
 #include "MapMode.h"
 
 #include "Application/Application.h"
-#include "Battle/BattleManager.h"
 #include "Interface/Button.h"
-
-#include "BattleMode.h"
 
 #define PLAYER_MAP		"MapName"
 #define PLAYER_POSITION "PlayerPosition"
@@ -12,39 +9,30 @@
 PMapMode::PMapMode()
 {
 	// Convenience vars
-	mWorld = GetWorld();
+	mWorld = GWorld;
 	mMapManager = GetMapManager();
 
 	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
 	mSaveState[PLAYER_POSITION] = JSON::array({ 800, 800 });
 
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
-	mGameHUD = ConstructWidget<PGameHUD>();
 }
 
 bool PMapMode::Load()
 {
-	auto HUD = GetHUD();
-	if (!HUD)
-	{
-		LogError("HUD is invalid.");
-		return false;
-	}
-	HUD->RemoveAllChildren();
-	HUD->AddChild(mGameHUD);
-
+	LogDebug("Load Save State: {}", mSaveState.dump(2).c_str());
 	// Load the map from JSON
 	auto Map = mMapManager->LoadMap(mSaveState[PLAYER_MAP], false);
 
+	LogDebug("PreStart: Constructing actors.");
 	auto Player = ConstructActor<PPlayerCharacter>();
-	GetWorld()->SetPlayerCharacter(Player);
+	GWorld->SetPlayerCharacter(Player);
 
 	auto	 JsonPosition = mSaveState[PLAYER_POSITION];
 	FVector2 Position(JsonPosition);
 	Player->GetMovementComponent()->SnapToPosition(Position, Map);
 
 	SetInputContext(IC_Default);
-
 	return true;
 }
 
@@ -74,6 +62,8 @@ bool PMapMode::Unload()
 	// Unset the player character
 	mWorld->SetPlayerCharacter(nullptr);
 
+	LogDebug("Unload Save State: {}", mSaveState.dump(2).c_str());
+
 	return true;
 }
 
@@ -87,7 +77,7 @@ void PMapMode::OnGameMapStateChanged(EMapState State)
 			break;
 		case MS_Unloading:
 			TransitionOverlay = mWorld->ConstructWidget<PTransitionOverlay>();
-			GetHUD()->AddChild(TransitionOverlay);
+			GWorld->GetRootWidget()->AddChild(TransitionOverlay);
 			TransitionOverlay->Fade(FM_Out);
 			TransitionOverlay->FadedOut.AddRaw(this, &PMapMode::OnFadeOutComplete);
 			TransitionOverlay->FadedIn.AddRaw(this, &PMapMode::OnFadeInComplete);
@@ -122,38 +112,13 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				if (!TryStartBattle())
+				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
 				{
 					Event->Invalidate();
 				}
+				break;
 			}
 		default:
 			break;
 	}
-}
-bool PMapMode::TryStartBattle()
-{
-	auto Game = GetGame();
-	if (!Game->SetCurrentGameMode("BattleMode"))
-	{
-		return false;
-	}
-	Game->LoadCurrentGameMode();
-	return StartBattle();
-}
-
-bool PMapMode::StartBattle()
-{
-	SBattleEvent Event;
-	Event.Type = BT_Wild;
-	Event.Id = ID_CHARMANDER;
-
-	auto BattleMode = static_cast<PBattleMode*>(GetGame()->GetCurrentGameMode());
-	if (!BattleMode)
-	{
-		LogError("BattleMode is not setup properly.");
-		return false;
-	}
-	BattleMode->StartBattle(Event);
-	return true;
 }
