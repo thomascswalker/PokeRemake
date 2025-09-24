@@ -32,7 +32,5 @@ bool PMainGame::Start()
 	auto PlayerParty = GetPlayerParty();
 	PlayerParty->Add(Mon);
 
-	// auto Mon = gPlayerStorage->Construct(ID_BULBASAUR);
-	// gPlayerParty->Add(Mon);
 	return PGame::Start();
 }
