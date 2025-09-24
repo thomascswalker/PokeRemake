@@ -17,6 +17,7 @@ set(SOURCES
         Core/Array.h
         Core/Bitmask.h
         Core/CFwd.h
+        Core/CSS.h
         Core/Color.cpp
         Core/Common.h
         Core/Constants.h
@@ -32,6 +33,7 @@ set(SOURCES
         Core/Map.h
         Core/Matrix.h
         Core/Meta.cpp
+        Core/Singleton.h
         Core/String.h
         Core/Time.h
         Core/Vector.h
@@ -60,12 +62,18 @@ set(SOURCES
         Engine/InputContext.cpp
         Engine/MapManager.cpp
         Engine/Object.cpp
+        Engine/ParamBlock.h
         Engine/SaveState.h
         Engine/Serialization.cpp
         Engine/Settings.h
+        Engine/Sprite.cpp
         Engine/Sprite.h
+        Engine/TextPrinter.h
         Engine/Texture.cpp
         Engine/Tileset.cpp
+        Engine/Timer.cpp
+        Engine/Timer.h
+        Engine/Transition.h
         Engine/World.cpp
         Interface/AbstractButton.cpp
         Interface/Box.h
@@ -73,6 +81,7 @@ set(SOURCES
         Interface/ButtonGroup.h
         Interface/Divider.h
         Interface/Dropdown.cpp
+        Interface/EditText.h
         Interface/Game/DialogBox.h
         Interface/Game/GameHUD.cpp
         Interface/GridView.h
@@ -82,6 +91,7 @@ set(SOURCES
         Interface/ItemView.h
         Interface/Layout.h
         Interface/Menu.cpp
+        Interface/Padding.h
         Interface/Panel.h
         Interface/ScrollArea.h
         Interface/Spacer.h
@@ -93,15 +103,6 @@ set(SOURCES
         Renderer/Drawable.cpp
         Renderer/Drawable.h
         Renderer/Renderer.cpp
-        Core/CSS.h
-        Engine/ParamBlock.h
-        Interface/EditText.h
-        Interface/Padding.h
-        Engine/Timer.h
-        Engine/TextPrinter.h
-        Engine/Timer.cpp
-        Engine/Sprite.cpp
-        Engine/Transition.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

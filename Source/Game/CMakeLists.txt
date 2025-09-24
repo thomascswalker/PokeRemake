@@ -12,16 +12,19 @@ include_directories(
 
 set(SOURCES
         MainGame.cpp
-        BattleMode.h
-        MapMode.cpp
-        BattleMode.cpp
+        Modes/BattleMode.h
+        Modes/MapMode.cpp
+        Modes/BattleMode.cpp
         BattleView.cpp
         BattleView.h
         Interface/TransitionOverlay.h
         FadeTransition.h
-        Pokedex.h
-        Pokedex.cpp
-        Party.h
+        Core/Pokedex.cpp
+        Core/PokeParty.h
+        Core/PokeStorage.h
+        Core/Pokemon.h
+        Core/PokeParty.cpp
+        Core/PokeStorage.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

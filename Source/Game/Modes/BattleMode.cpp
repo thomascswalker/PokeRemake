@@ -1,9 +1,8 @@
 #include "BattleMode.h"
 
+#include "../BattleView.h"
 #include "Application/Application.h"
 #include "Engine/Game.h"
-
-#include "BattleView.h"
 
 bool PBattleMode::Load()
 {

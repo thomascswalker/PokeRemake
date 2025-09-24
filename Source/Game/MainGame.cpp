@@ -1,13 +1,11 @@
 #include "MainGame.h"
 
 #include "Application/Application.h"
-
-#include "BattleMode.h"
-#include "MapMode.h"
-
-PMainGame::PMainGame()
-{
-}
+#include "Core/Pokedex.h"
+#include "Core/PokeParty.h"
+#include "Core/PokeStorage.h"
+#include "Modes/BattleMode.h"
+#include "Modes/MapMode.h"
 
 bool PMainGame::PreStart()
 {
@@ -15,14 +13,26 @@ bool PMainGame::PreStart()
 	{
 		return false;
 	}
+
 	AddGameMode<PMapMode>();
 	AddGameMode<PBattleMode>();
+
 	return true;
 }
+
 bool PMainGame::Start()
 {
-	SPokeDef Bulbasaur = *Pokedex.Get(0);
-	Storage.Add({ Bulbasaur, 1, 0 });
-	Party.Add(Storage.Get(0));
+	// Load the pokedex
+	auto Mgr = PPokedexManager::Instance();
+	Mgr->Init();
+
+	auto PlayerStorage = GetPlayerStorage();
+	auto Mon = PlayerStorage->Construct(ID_BULBASAUR);
+
+	auto PlayerParty = GetPlayerParty();
+	PlayerParty->Add(Mon);
+
+	// auto Mon = gPlayerStorage->Construct(ID_BULBASAUR);
+	// gPlayerParty->Add(Mon);
 	return PGame::Start();
 }

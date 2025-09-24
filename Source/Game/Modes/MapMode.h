@@ -1,10 +1,9 @@
 #pragma once
 
+#include "../FadeTransition.h"
+#include "../Interface/TransitionOverlay.h"
 #include "Engine/GameMode.h"
 #include "Engine/MapManager.h"
-#include "Interface/TransitionOverlay.h"
-
-#include "FadeTransition.h"
 
 DECLARE_MULTICAST_DELEGATE(DGameMapLoaded);
 DECLARE_MULTICAST_DELEGATE(DGameMapUnloaded);
