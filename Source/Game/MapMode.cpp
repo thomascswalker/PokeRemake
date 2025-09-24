@@ -9,7 +9,7 @@
 PMapMode::PMapMode()
 {
 	// Convenience vars
-	mWorld = GetWorld();
+	mWorld = GWorld;
 	mMapManager = GetMapManager();
 
 	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
@@ -26,7 +26,7 @@ bool PMapMode::Load()
 
 	LogDebug("PreStart: Constructing actors.");
 	auto Player = ConstructActor<PPlayerCharacter>();
-	GetWorld()->SetPlayerCharacter(Player);
+	GWorld->SetPlayerCharacter(Player);
 
 	auto	 JsonPosition = mSaveState[PLAYER_POSITION];
 	FVector2 Position(JsonPosition);
@@ -80,7 +80,8 @@ void PMapMode::OnGameMapStateChanged(EMapState State)
 		case MS_Unloading:
 			LogInfo("Map unloading...");
 			TransitionOverlay = mWorld->ConstructWidget<PTransitionOverlay>();
-			GetHUD<PGameHUD>()->AddChild(TransitionOverlay);
+			LogWarning("Reimplement PGameHUD Add TransitionOverlay on PMapMode");
+			// GetHUD<PGameHUD>()->AddChild(TransitionOverlay);
 			TransitionOverlay->Fade(FM_Out);
 			TransitionOverlay->FadedOut.AddRaw(this, &PMapMode::OnFadeOutComplete);
 			TransitionOverlay->FadedIn.AddRaw(this, &PMapMode::OnFadeInComplete);
@@ -116,7 +117,7 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				if (!GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
+				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
 				{
 					Event->Invalidate();
 				}

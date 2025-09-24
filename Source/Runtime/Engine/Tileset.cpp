@@ -99,11 +99,11 @@ bool TilesetManager::LoadTileset(const std::string& Name)
 		LogError("No tileset with name {}", Name.c_str());
 		return false;
 	}
-	auto Tex = TextureManager::Get(Name);
+	auto Tex = PTextureManager::Get(Name);
 	if (!Tex)
 	{
 		// If not found, force a reload
-		Tex = TextureManager::Load(Name + ".png");
+		Tex = PTextureManager::Load(Name + ".png");
 		if (!Tex)
 		{
 			LogError("Failed to load tileset {}", Name.c_str());

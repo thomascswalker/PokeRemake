@@ -13,8 +13,8 @@
 PPlayerCharacter::PPlayerCharacter()
 {
 	mPosition.Z = Drawing::Z_Player;
-	mCameraComponent = GetWorld()->ConstructComponent<PCameraComponent>(this);
-	mSpriteComponent->GetSprite()->SetTexture(TextureManager::Get(TEXTURE_ASH));
+	mCameraComponent = GWorld->ConstructComponent<PCameraComponent>(this);
+	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
@@ -168,7 +168,7 @@ void PPlayerCharacter::Interact()
 	FVector2 Forward = DirectionToVector(GetMovementComponent()->GetMovementDirection());
 	FVector2 TargetPosition = GetPosition2D() + (Forward * BLOCK_SIZE);
 
-	if (auto Actor = GetWorld()->GetActorAtPosition(TargetPosition))
+	if (auto Actor = GWorld->GetActorAtPosition(TargetPosition))
 	{
 		if (auto Interactable = dynamic_cast<IInteractable*>(Actor))
 		{

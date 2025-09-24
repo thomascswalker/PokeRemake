@@ -7,14 +7,13 @@
 
 void PActor::OnMouseEvent(SInputEvent* Event)
 {
-	const auto Renderer = GetRenderer();
 	mMousePosition = Event->MousePosition;
 
 	// Convert the current world bounds of this actor to a screen position
 	FRect WorldRect = GetWorldBounds();
 	FRect ScreenRect;
 
-	Renderer->WorldToScreen(WorldRect, &ScreenRect);
+	GRenderer->WorldToScreen(WorldRect, &ScreenRect);
 
 	const bool NewMouseState = ScreenRect.Contains(mMousePosition);
 
@@ -29,7 +28,7 @@ void PActor::OnMouseEvent(SInputEvent* Event)
 		mMouseOver = false;
 	}
 
-	bool NewClickState = Renderer->GetMouseLeftDown();
+	bool NewClickState = GRenderer->GetMouseLeftDown();
 	if (!mMouseDown && NewClickState && mMouseOver)
 	{
 		mMouseDown = true;

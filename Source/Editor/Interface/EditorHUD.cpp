@@ -35,7 +35,7 @@ std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 
 bool PEditorHUD::PreStart()
 {
-	World = GetWorld();
+	World = GWorld;
 	assert(World != nullptr);
 	EditorGame = dynamic_cast<PEditorGame*>(GetGame());
 	assert(EditorGame != nullptr);
@@ -384,7 +384,7 @@ void PEditorHUD::OnSelectionChange(PActor* Actor)
 	SelectPanel->RemoveAllChildren();
 	if (!Actor && ActorParamView != nullptr)
 	{
-		GetWorld()->DestroyWidget(ActorParamView);
+		GWorld->DestroyWidget(ActorParamView);
 		return;
 	}
 
@@ -433,6 +433,6 @@ void PEditorHUD::OnActorDestroyed(PActor* Actor)
 	if (Actor && ActorParamView != nullptr)
 	{
 		SelectPanel->RemoveAllChildren();
-		GetWorld()->DestroyWidget(ActorParamView);
+		GWorld->DestroyWidget(ActorParamView);
 	}
 }

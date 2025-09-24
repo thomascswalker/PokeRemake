@@ -1,12 +1,14 @@
 #include "World.h"
 
-#include "../Interface/Game/GameHUD.h"
+#include "../../Game/Interface/GameHUD.h"
 #include "Actors/Character.h"
 #include "Core/Logging.h"
 #include "Engine/Input.h"
 #include "Interface/Layout.h"
 
 #include "MapManager.h"
+
+PWorld* GWorld = nullptr;
 
 bool PWorld::Start()
 {
@@ -33,16 +35,9 @@ bool PWorld::Start()
 
 	return true;
 }
+
 bool PWorld::End()
 {
-	for (auto& Component : GetComponents())
-	{
-		DestroyComponentInternal(Component);
-	}
-	for (auto& Actor : GetActors())
-	{
-		DestroyActorInternal(Actor);
-	}
 	mMapManager.ClearMaps();
 	mTimerManager.ClearAllTimers();
 	return true;
@@ -52,23 +47,18 @@ void PWorld::Tick(float DeltaTime)
 {
 	mTimerManager.Tick(DeltaTime);
 
-	auto R = GetRenderer();
-
-	// If there's a root widget, set it to span the width and height of the screen
+	// Set the root widget to span the width and height of the screen
 	// and layout all of its children recursively.
-	if (mHUD)
+	auto ScreenSize = GRenderer->GetScreenSize();
+	mRootWidget->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
+
+	// Recursively construct the layout of all widgets
+	Layout::Layout(mRootWidget.get());
+
+	// Tick each widget
+	for (const auto& W : mWidgets)
 	{
-		// Resize the main root widget to fit the screen size
-		auto ScreenSize = R->GetScreenSize();
-		mHUD->SetFixedSize({ ScreenSize.X, ScreenSize.Y });
-
-		// Recursively construct the layout of all widgets
-		Layout::Layout(mHUD.get());
-
-		for (const auto& W : mWidgets)
-		{
-			W->Tick(DeltaTime);
-		}
+		W->Tick(DeltaTime);
 	}
 
 	auto Comps = GetComponents();
@@ -83,120 +73,32 @@ void PWorld::Tick(float DeltaTime)
 	}
 }
 
-void PWorld::PostTick()
-{
-	for (auto Actor : mDestroyableActors)
-	{
-		DestroyActorInternal(Actor);
-	}
-	mDestroyableActors.clear();
-
-	for (auto Widget : mDestroyableWidgets)
-	{
-		DestroyWidgetInternal(Widget);
-	}
-	mDestroyableWidgets.clear();
-}
-
-void PWorld::DestroyObject(PObject* Object)
-{
-	mDestroyableObjects.emplace_back(Object);
-}
-
 void PWorld::DestroyActor(PActor* Actor)
 {
-	mDestroyableActors.emplace_back(Actor);
+	GGameInstance->DestroyObject(Actor);
 	Actor->Destroyed.Broadcast(Actor);
+	for (auto Component : Actor->GetComponents())
+	{
+		DestroyComponent(Component);
+	}
 	for (auto Child : Actor->GetChildren())
 	{
 		DestroyActor(Child);
 	}
+	mActors.erase(std::ranges::find(mActors, Actor));
 }
 
 void PWorld::DestroyAllActors()
 {
 	for (auto Actor : mActors)
 	{
-		DestroyActor(Actor.get());
+		DestroyActor(Actor);
 	}
 }
 
-void PWorld::DestroyActorInternal(const PActor* Actor)
+PWorld::PWorld()
 {
-	if (!Actor)
-	{
-		return;
-	}
-
-	std::shared_ptr<PActor> SharedActor;
-	for (auto Ptr : mActors)
-	{
-		if (Ptr.get() == Actor)
-		{
-			SharedActor = Ptr;
-			break;
-		}
-	}
-	if (!SharedActor)
-	{
-		return;
-	}
-
-	for (auto Component : Actor->GetComponents())
-	{
-		DestroyComponentInternal(Component);
-	}
-
-	mActors.erase(std::ranges::find(mActors, SharedActor));
-}
-
-void PWorld::DestroyComponentInternal(const PComponent* Component)
-{
-	std::shared_ptr<PComponent> SharedComponent;
-	for (auto Ptr : mComponents)
-	{
-		if (Ptr.get() == Component)
-		{
-			SharedComponent = Ptr;
-			break;
-		}
-	}
-	if (!SharedComponent)
-	{
-		return;
-	}
-
-	mComponents.erase(std::ranges::find(mComponents, SharedComponent));
-}
-
-void PWorld::DestroyWidgetInternal(PWidget* Widget)
-{
-	std::shared_ptr<PWidget> SharedWidget;
-
-	// Unparent this widget
-	Widget->Unparent();
-
-	// Destroy all children, recursively
-	for (auto Child : Widget->GetChildren())
-	{
-		DestroyWidgetInternal(Child);
-	}
-
-	//
-	for (auto Ptr : mWidgets)
-	{
-		if (Ptr.get() == Widget)
-		{
-			SharedWidget = Ptr;
-			break;
-		}
-	}
-	if (!SharedWidget)
-	{
-		return;
-	}
-
-	mWidgets.erase(std::ranges::find(mWidgets, SharedWidget));
+	mRootWidget = std::make_shared<PWidget>();
 }
 
 std::vector<PActor*> PWorld::GetActors() const
@@ -204,7 +106,7 @@ std::vector<PActor*> PWorld::GetActors() const
 	std::vector<PActor*> Actors;
 	for (const auto& Actor : mActors)
 	{
-		Actors.push_back(Actor.get());
+		Actors.push_back(Actor);
 	}
 	return Actors;
 }
@@ -214,7 +116,7 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 	std::vector<IDrawable*> Drawables;
 	for (const auto& Actor : mActors)
 	{
-		if (auto Drawable = dynamic_cast<IDrawable*>(Actor.get()))
+		if (auto Drawable = dynamic_cast<IDrawable*>(Actor))
 		{
 			Drawables.push_back(Drawable);
 		}
@@ -222,7 +124,7 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 
 	for (const auto& Component : mComponents)
 	{
-		if (auto Drawable = dynamic_cast<IDrawable*>(Component.get()))
+		if (auto Drawable = dynamic_cast<IDrawable*>(Component))
 		{
 			Drawables.push_back(Drawable);
 		}
@@ -236,12 +138,17 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 	return Drawables;
 }
 
+void PWorld::DestroyComponent(PComponent* Component)
+{
+	GGameInstance->DestroyObject(Component);
+	mComponents.erase(std::ranges::find(mComponents, Component));
+}
 std::vector<PComponent*> PWorld::GetComponents() const
 {
 	std::vector<PComponent*> Components;
 	for (const auto& Component : mComponents)
 	{
-		Components.push_back(Component.get());
+		Components.push_back(Component);
 	}
 	return Components;
 }
@@ -251,18 +158,19 @@ std::vector<PWidget*> PWorld::GetWidgets() const
 	std::vector<PWidget*> Widgets;
 	for (const auto& Widget : mWidgets)
 	{
-		Widgets.push_back(Widget.get());
+		Widgets.push_back(Widget);
 	}
 	return Widgets;
 }
 
 void PWorld::DestroyWidget(PWidget* Widget)
 {
-	mDestroyableWidgets.emplace_back(Widget);
+	GGameInstance->DestroyObject(Widget);
 	for (auto Child : Widget->GetChildren())
 	{
 		DestroyWidget(Child);
 	}
+	mWidgets.erase(std::ranges::find(mWidgets, Widget));
 }
 
 PPlayerCharacter* PWorld::GetPlayerCharacter() const
@@ -280,13 +188,13 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 	for (const auto& Actor : mActors)
 	{
 		// Skip actors that are not characters
-		if (dynamic_cast<PGameMap*>(Actor.get()))
+		if (dynamic_cast<PGameMap*>(Actor))
 		{
 			continue;
 		}
 		if (Actor->GetPosition2D() == Position)
 		{
-			return Actor.get();
+			return Actor;
 		}
 	}
 	return nullptr;
@@ -299,7 +207,7 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 	{
 		if (Actor->GetWorldBounds().Contains(Position))
 		{
-			OutActors.push_back(Actor.get());
+			OutActors.push_back(Actor);
 		}
 	}
 	return OutActors;
@@ -308,9 +216,9 @@ std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 bool PWorld::ProcessEvents(SInputEvent* Event)
 {
 	// First process all widget events as these are the layer 'above' the game view
-	if (mHUD)
+	if (mRootWidget)
 	{
-		if (mHUD->ProcessEvents(Event))
+		if (mRootWidget->ProcessEvents(Event))
 		{
 			return true;
 		}
@@ -345,7 +253,7 @@ TArray<PActor*> PWorld::GetSelectableActors() const
 		{
 			continue;
 		}
-		Actors.Add(Actor.get());
+		Actors.Add(Actor);
 	}
 	return Actors;
 }

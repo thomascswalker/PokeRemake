@@ -13,7 +13,7 @@ class PDialogBox : public PBox
 public:
 	bool Start() override
 	{
-		mTexture = TextureManager::Get("DialogBox");
+		mTexture = PTextureManager::Get("DialogBox");
 		return true;
 	}
 

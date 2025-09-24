@@ -13,7 +13,7 @@ PDropdownView::PDropdownView(const std::vector<std::string>& InStrings)
 	for (int32_t Index = 0; Index < InStrings.size(); Index++)
 	{
 		auto	 Item = InStrings[Index];
-		PButton* Button = GetWorld()->ConstructWidget<PButton>(Item);
+		PButton* Button = GWorld->ConstructWidget<PButton>(Item);
 		Button->SetResizeModeW(RM_Grow);
 		Button->SetResizeModeH(RM_Fixed);
 		Button->SetFixedHeight(20);
@@ -55,7 +55,7 @@ PDropdown::PDropdown()
 	mText->SetText("");
 	mCheckable = true;
 
-	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
+	mDropdownView = GWorld->ConstructWidget<PDropdownView>(mItems);
 	mDropdownView->SetVisible(false);
 
 	ItemClicked.AddRaw(this, &PDropdown::OnItemClicked);
@@ -81,7 +81,7 @@ PDropdown::PDropdown(const std::vector<std::string>& InItems)
 		mText->SetText("");
 	}
 
-	mDropdownView = GetWorld()->ConstructWidget<PDropdownView>(mItems);
+	mDropdownView = GWorld->ConstructWidget<PDropdownView>(mItems);
 	mDropdownView->SetVisible(false);
 	mDropdownView->mDropdown = this;
 

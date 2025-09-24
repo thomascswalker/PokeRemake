@@ -3,12 +3,12 @@
 
 class PSpriteComponent : public PComponent, public IDrawable
 {
-	std::shared_ptr<PSprite> mSprite;
-	FVector2				 mOffset{};
+	PSprite* mSprite;
+	FVector2 mOffset{};
 
 public:
 	PSpriteComponent(float InSpeed = DEFAULT_ANIM_SPEED);
-	~PSpriteComponent() override = default;
+	~PSpriteComponent() override;
 
 	PSpriteComponent(const PSpriteComponent& other)
 		: PComponent{ other },
@@ -51,7 +51,7 @@ public:
 
 	PSprite* GetSprite()
 	{
-		return mSprite.get();
+		return mSprite;
 	}
 
 	void SetSize(float Size)

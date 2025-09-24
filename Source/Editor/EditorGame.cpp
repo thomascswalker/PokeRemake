@@ -28,7 +28,7 @@ PEditorGame::PEditorGame()
 bool PEditorGame::PreStart()
 {
 	PGame::PreStart();
-	GetSettings()->DebugDraw = true;
+	GSettings->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();
 
@@ -47,7 +47,7 @@ bool PEditorGame::Start()
 	PGame::Start();
 
 	// Bind the world actor clicked event to handle selection within the editor.
-	GetWorld()->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
+	GWorld->ActorClicked.AddRaw(this, &PEditorGame::OnActorClicked);
 
 	return true;
 }
@@ -289,7 +289,7 @@ void PEditorGame::PaintTile(STile* Tile)
 	// Set adjacent tiles
 	if (mBrushSize == BS_Large)
 	{
-		auto MousePosition = GetRenderer()->GetMouseWorldPosition();
+		auto MousePosition = GRenderer->GetMouseWorldPosition();
 
 		// TODO: Clean this up
 		if (auto Tile2 = GameMap->GetTileAtPosition(MousePosition + FVector2(TILE_SIZE, 0)))

@@ -10,7 +10,7 @@ PEditorView::PEditorView()
 	mBlocking     = false;
 	mSelectable   = false;
 
-	const auto W     = GetWorld();
+	const auto W     = GWorld;
 	mCameraComponent = W->ConstructComponent<PCameraComponent>(this);
 }
 

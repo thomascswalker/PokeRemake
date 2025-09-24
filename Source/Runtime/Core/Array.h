@@ -44,8 +44,12 @@ public:
 	{
 		mData = DataType(InList.begin(), InList.end());
 	}
-
-	~TArray() = default;
+	//
+	// ~TArray()
+	// {
+	// 	mData.clear();
+	// 	mData.~DataType();
+	// };
 
 	/* STL */
 	IterType begin()

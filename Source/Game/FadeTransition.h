@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Transition.h"
-#include "Interface/Game/GameHUD.h"
+#include "Interface/GameHUD.h"
 #include "Interface/TransitionOverlay.h"
 
 struct SFadeTransition : STransition
@@ -14,14 +14,16 @@ struct SFadeTransition : STransition
 
 		Duration = 100.0f;
 
-		Overlay = GetWorld()->ConstructWidget<PTransitionOverlay>();
+		Overlay = GWorld->ConstructWidget<PTransitionOverlay>();
 		if (!Overlay)
 		{
 			LogError("Failed to construct fade transition overlay.");
 			return;
 		}
-		auto HUD = GetHUD<PGameHUD>();
-		HUD->AddChild(Overlay);
+
+		LogWarning("Reimplement HUD on SFadeTransition");
+		// auto HUD = GetHUD<PGameHUD>();
+		// HUD->AddChild(Overlay);
 
 		Overlay->Fade(FM_Out);
 		Overlay->FadedOut.AddRaw(this, &SFadeTransition::End);
@@ -38,7 +40,7 @@ struct SFadeTransition : STransition
 			return;
 		}
 		Overlay->Unparent();
-		GetWorld()->DestroyWidget(Overlay);
+		GWorld->DestroyWidget(Overlay);
 
 		STransition::End();
 	}

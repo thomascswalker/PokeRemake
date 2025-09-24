@@ -15,7 +15,7 @@ class PGame : public PObject, public IInputHandler
 protected:
 	/* Actors/Objects */
 	std::shared_ptr<PWorld>	   mWorld;
-	std::shared_ptr<PSettings> mSettings;
+	std::shared_ptr<SSettings> mSettings;
 	PCameraView*			   mActiveCameraView = nullptr;
 
 	/* Game State */
@@ -35,7 +35,6 @@ public:
 	bool Start() override;
 	bool End() override;
 	void Tick(float DeltaTime) override;
-	void PostTick() override;
 
 	PWorld* GetWorld() const
 	{
@@ -51,11 +50,6 @@ public:
 	PCameraView* GetCameraView() const
 	{
 		return mActiveCameraView;
-	}
-
-	PSettings* GetSettings() const
-	{
-		return mSettings.get();
 	}
 
 	void OnKeyUp(SInputEvent* Event) override;
