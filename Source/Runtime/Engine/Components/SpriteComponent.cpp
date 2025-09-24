@@ -4,7 +4,12 @@
 
 PSpriteComponent::PSpriteComponent(float InSpeed)
 {
-	mSprite = GetWorld()->ConstructObject<PSprite>(InSpeed);
+	mSprite = GWorld->ConstructObject<PSprite>(InSpeed);
+}
+
+PSpriteComponent::~PSpriteComponent()
+{
+	GGameInstance->DestroyObject(mSprite);
 }
 
 bool PSpriteComponent::Draw(const PRenderer* Renderer) const
@@ -14,7 +19,7 @@ bool PSpriteComponent::Draw(const PRenderer* Renderer) const
 	{
 		LogError("Texture is nullptr: {}", mInternalName.c_str());
 		LogError("Textures:");
-		for (auto Tex : TextureManager::GetTextures() | std::views::values)
+		for (auto Tex : PTextureManager::GetTextures() | std::views::values)
 		{
 			LogError("\t{}", Tex->GetName().c_str());
 		}

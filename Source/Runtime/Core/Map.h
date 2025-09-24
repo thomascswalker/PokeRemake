@@ -33,8 +33,12 @@ public:
 	{
 		mData = DataType(InList.begin(), InList.end());
 	}
-
-	~TMap() = default;
+	//
+	// ~TMap()
+	// {
+	// 	mData.clear();
+	// 	mData.~DataType();
+	// };
 
 	TMap(const TMap& other)
 		: mData{ other.mData } {}

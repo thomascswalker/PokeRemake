@@ -9,6 +9,8 @@
 #include "Engine/World.h"
 #include "stb/stb_truetype.h"
 
+PRenderer* GRenderer = nullptr;
+
 #if _EDITOR
 std::string gDefaultFont = "Roboto";
 #else
@@ -45,7 +47,7 @@ float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Posit
 		}
 		else
 		{
-			SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+			SDL_RenderTexture(Context.Renderer, gCurrentFont.Texture, &Source, &Dest);
 			X += Info->xadvance * Aspect;
 		}
 	}
@@ -58,25 +60,31 @@ float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Posit
 
 bool PRenderer::Initialize()
 {
-	SDL_SetDefaultTextureScaleMode(mContext->Renderer, gTextureScaleMode);
-	SDL_SetRenderTextureAddressMode(mContext->Renderer, gTextureAddressMode, gTextureAddressMode);
+	SDL_SetDefaultTextureScaleMode(Context.Renderer, gTextureScaleMode);
+	SDL_SetRenderTextureAddressMode(Context.Renderer, gTextureAddressMode, gTextureAddressMode);
 
-	mRenderTarget = SDL_GetRenderTarget(mContext->Renderer);
+	mRenderTarget = SDL_GetRenderTarget(Context.Renderer);
 	LoadFont(gDefaultFont);
 
 	return true;
 }
 
-void PRenderer::PostInitialize() const {}
-
 void PRenderer::Uninitialize() const
 {
-	TextureManager::UnloadSDL();
+	PTextureManager::UnloadSDL();
 }
 
 void PRenderer::OnResize(const FVector2& Size)
 {
-	SDL_SetRenderLogicalPresentation(mContext->Renderer, Size.X, Size.Y, SDL_LOGICAL_PRESENTATION_DISABLED);
+	SDL_SetRenderLogicalPresentation(Context.Renderer, Size.X, Size.Y, SDL_LOGICAL_PRESENTATION_DISABLED);
+}
+SDL_Renderer* PRenderer::GetSDLRenderer()
+{
+	return Context.Renderer;
+}
+SDL_Window* PRenderer::GetRenderWindow() const
+{
+	return SDL_GetRenderWindow(Context.Renderer);
 }
 
 void PRenderer::LoadFont(const std::string& Name) const
@@ -125,7 +133,7 @@ void PRenderer::LoadFont(const std::string& Name) const
 
 	free(Bitmap);
 	free(FontBuffer);
-	gCurrentFont.Texture = SDL_CreateTexture(mContext->Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+	gCurrentFont.Texture = SDL_CreateTexture(Context.Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
 											 FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
@@ -137,56 +145,54 @@ void PRenderer::UnloadFonts() {}
 bool PRenderer::Render(float DeltaTime) const
 {
 	SetDrawColor(PColor::UIBackground);
-	SDL_RenderClear(mContext->Renderer);
+	SDL_RenderClear(Context.Renderer);
 
-	bool DebugDraw = GetSettings()->DebugDraw;
+	bool DebugDraw = GSettings->DebugDraw;
 
-	if (!GetCameraView())
+	if (!mCameraView)
 	{
 		return false;
 	}
 
 	// Draw all renderables in the world
-	if (const PWorld* World = GetWorld())
+
+	// Main draw
+	auto Drawables = GWorld->GetDrawables();
+	for (IDrawable* Drawable : Drawables)
 	{
-		// Main draw
-		auto Drawables = World->GetDrawables();
+		VALIDATE(Drawable->Draw(this),
+				 dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
+	}
+
+	// Debug draw
+	if (DebugDraw)
+	{
 		for (IDrawable* Drawable : Drawables)
 		{
-			VALIDATE(Drawable->Draw(this),
+			VALIDATE(Drawable->DebugDraw(this),
 					 dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
 		}
+	}
 
-		// Debug draw
-		if (DebugDraw)
-		{
-			for (IDrawable* Drawable : Drawables)
-			{
-				VALIDATE(Drawable->DebugDraw(this),
-						 dynamic_cast<PObject*>(Drawable)->GetInternalName().c_str());
-			}
-		}
+	if (const auto Root = GWorld->GetRootWidget())
+	{
+		// Recursively draw all widgets, but not the root widget
+		VALIDATE(Root->DrawChildren(this), "Failed to draw.");
+	}
 
-		if (const auto Root = World->GetHUD())
+	// Draw floating
+	auto Visible = PWidget::sVisible;
+	auto Floating = PWidget::sFloating;
+	for (const auto Widget : Floating)
+	{
+		if (!Widget->GetVisible())
 		{
-			// Recursively draw all widgets, but not the root widget
-			VALIDATE(Root->DrawChildren(this), "Failed to draw.");
+			continue;
 		}
-
-		// Draw floating
-		auto Visible = PWidget::sVisible;
-		auto Floating = PWidget::sFloating;
-		for (const auto Widget : Floating)
-		{
-			if (!Widget->GetVisible())
-			{
-				continue;
-			}
-			Widget->PreDraw(this);
-			Widget->Draw(this);
-			Widget->PostDraw(this);
-			VALIDATE(Widget->DrawChildren(this), "Failed to draw.");
-		}
+		Widget->PreDraw(this);
+		Widget->Draw(this);
+		Widget->PostDraw(this);
+		VALIDATE(Widget->DrawChildren(this), "Failed to draw.");
 	}
 
 	// Over everything, render current DT in seconds
@@ -194,19 +200,19 @@ bool PRenderer::Render(float DeltaTime) const
 	SetDrawColor(PColor::Green);
 	DrawText(std::to_string(DeltaTime), { ScreenSize.X - 100, 20 }, 14.0f, true);
 
-	SDL_RenderPresent(mContext->Renderer);
+	SDL_RenderPresent(Context.Renderer);
 	return true;
 }
 
 void PRenderer::SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const
 {
-	SDL_SetRenderDrawBlendMode(mContext->Renderer, BlendMode);
+	SDL_SetRenderDrawBlendMode(Context.Renderer, BlendMode);
 }
 
 PColor PRenderer::GetDrawColor() const
 {
 	uint8_t R, G, B, A;
-	SDL_GetRenderDrawColor(mContext->Renderer, &R, &G, &B, &A);
+	SDL_GetRenderDrawColor(Context.Renderer, &R, &G, &B, &A);
 	return PColor{ R, G, B, A };
 }
 
@@ -214,11 +220,10 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 {
 	const auto ScreenSize = GetScreenSize();
 
-	const auto CameraView = GetGame()->GetCameraView();
-	if (CameraView)
+	if (mCameraView)
 	{
-		const auto ViewPosition = CameraView->GetPosition();
-		const auto Offset = (WorldPosition - ViewPosition) * CameraView->GetZoom() * RENDER_SCALE;
+		const auto ViewPosition = mCameraView->GetPosition();
+		const auto Offset = (WorldPosition - ViewPosition) * mCameraView->GetZoom() * RENDER_SCALE;
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
@@ -242,12 +247,12 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 {
 	const auto ScreenSize = GetScreenSize();
 
-	if (const auto CameraView = GetCameraView())
+	if (mCameraView)
 	{
-		auto Offset = (ScreenPosition / RENDER_SCALE / 0.5f) - ScreenSize;
-		auto Position2D = Offset / CameraView->GetZoom();
+		auto Offset = ScreenPosition / RENDER_SCALE / 0.5f - ScreenSize;
+		auto Position2D = Offset / mCameraView->GetZoom();
 
-		const auto ViewPosition = CameraView->GetPosition();
+		const auto ViewPosition = mCameraView->GetPosition();
 		const auto ViewPosition2D = FVector2(ViewPosition.X, ViewPosition.Y);
 
 		*WorldPosition = Position2D + ViewPosition2D;
@@ -258,14 +263,14 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 
 void PRenderer::SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const
 {
-	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, A);
+	SDL_SetRenderDrawColor(Context.Renderer, R, G, B, A);
 	if (A < 255) // Is there transparency?
 	{
-		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawBlendMode(Context.Renderer, SDL_BLENDMODE_BLEND);
 	}
 	else
 	{
-		SDL_SetRenderDrawBlendMode(mContext->Renderer, SDL_BLENDMODE_NONE);
+		SDL_SetRenderDrawBlendMode(Context.Renderer, SDL_BLENDMODE_NONE);
 	}
 }
 
@@ -277,20 +282,20 @@ void PRenderer::SetDrawColor(const PColor& Color) const
 void PRenderer::SetDrawAlpha(uint8_t Alpha) const
 {
 	uint8_t R, G, B, A;
-	SDL_GetRenderDrawColor(mContext->Renderer, &R, &G, &B, &A);
-	SDL_SetRenderDrawColor(mContext->Renderer, R, G, B, Alpha);
+	SDL_GetRenderDrawColor(Context.Renderer, &R, &G, &B, &A);
+	SDL_SetRenderDrawColor(Context.Renderer, R, G, B, Alpha);
 }
 
 void PRenderer::SetClipRect(const FRect& ClipRect) const
 {
 	SDL_Rect Clip = ClipRect.ToSDL_Rect();
-	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	SDL_SetRenderClipRect(Context.Renderer, &Clip);
 }
 
 void PRenderer::ReleaseClipRect() const
 {
-	SDL_Rect Clip = { 0, 0, (int)GetScreenWidth(), (int)GetScreenHeight() };
-	SDL_SetRenderClipRect(mContext->Renderer, &Clip);
+	SDL_Rect Clip = { 0, 0, static_cast<int>(GetScreenWidth()), static_cast<int>(GetScreenHeight()) };
+	SDL_SetRenderClipRect(Context.Renderer, &Clip);
 }
 
 void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
@@ -301,22 +306,22 @@ void PRenderer::DrawPoint(const FVector2& V, float Thickness) const
 			V.X - Thickness / 2.0f, V.Y - Thickness / 2.0f, Thickness,
 			Thickness
 		};
-		SDL_RenderFillRect(mContext->Renderer, &R);
+		SDL_RenderFillRect(Context.Renderer, &R);
 	}
 	else
 	{
-		SDL_RenderPoint(mContext->Renderer, V.X, V.Y);
+		SDL_RenderPoint(Context.Renderer, V.X, V.Y);
 	}
 }
 
 void PRenderer::DrawLine(float X1, float Y1, float X2, float Y2) const
 {
-	SDL_RenderLine(mContext->Renderer, X1, Y1, X2, Y2);
+	SDL_RenderLine(Context.Renderer, X1, Y1, X2, Y2);
 }
 
 void PRenderer::DrawLine(const FVector2& Start, const FVector2& End) const
 {
-	SDL_RenderLine(mContext->Renderer, Start.X, Start.Y, End.X, End.Y);
+	SDL_RenderLine(Context.Renderer, Start.X, Start.Y, End.X, End.Y);
 }
 
 void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
@@ -349,7 +354,7 @@ void PRenderer::DrawRect(const FRect& Rect, float Thickness) const
 	else
 	{
 		SRect = { Rect.X, Rect.Y, Rect.W, Rect.H };
-		SDL_RenderRect(mContext->Renderer, &SRect);
+		SDL_RenderRect(Context.Renderer, &SRect);
 	}
 }
 
@@ -360,14 +365,14 @@ void PRenderer::DrawFillRect(const FRect& Rect) const
 		return;
 	}
 	const SDL_FRect SRect(Rect.X, Rect.Y, Rect.W, Rect.H);
-	SDL_RenderFillRect(mContext->Renderer, &SRect);
+	SDL_RenderFillRect(Context.Renderer, &SRect);
 }
 
 void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 							const std::vector<int32_t>&	 Indexes) const
 {
 	float R, G, B, A;
-	SDL_GetRenderDrawColorFloat(mContext->Renderer, &R, &G, &B, &A);
+	SDL_GetRenderDrawColorFloat(Context.Renderer, &R, &G, &B, &A);
 	std::vector<SDL_Vertex> SDLVertices;
 	for (size_t i = 0; i < Vertices.size(); ++i)
 	{
@@ -377,7 +382,7 @@ void PRenderer::DrawPolygon(const std::vector<FVector2>& Vertices,
 		V.color = { R, G, B, A };
 		SDLVertices.emplace_back(V);
 	}
-	SDL_RenderGeometry(mContext->Renderer, nullptr, SDLVertices.data(),
+	SDL_RenderGeometry(Context.Renderer, nullptr, SDLVertices.data(),
 					   static_cast<int>(SDLVertices.size()), Indexes.data(),
 					   static_cast<int>(Indexes.size()));
 }
@@ -426,7 +431,7 @@ void PRenderer::DrawChar(char Char, const FVector2& Position, float FontSize) co
 	SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
 	SDL_FRect  Dest(Position.X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
 					(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
-	SDL_RenderTexture(mContext->Renderer, gCurrentFont.Texture, &Source, &Dest);
+	SDL_RenderTexture(Context.Renderer, gCurrentFont.Texture, &Source, &Dest);
 
 	// Reset draw color mod
 	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
@@ -463,7 +468,7 @@ void PRenderer::DrawLineAt(const FVector2& Start, const FVector2& End) const
 	FVector2 ScreenEnd;
 	if (WorldToScreen(Start, &ScreenStart) && WorldToScreen(End, &ScreenEnd))
 	{
-		SDL_RenderLine(mContext->Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
+		SDL_RenderLine(Context.Renderer, ScreenStart.X, ScreenStart.Y, ScreenEnd.X, ScreenEnd.Y);
 	}
 }
 
@@ -514,7 +519,7 @@ void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const 
 	SDL_Texture* Tex = Texture->GetSDLTexture();
 	auto		 Source2 = Source.ToSDL_FRect();
 	auto		 Dest2 = Dest.ToSDL_FRect();
-	SDL_RenderTexture(mContext->Renderer, Tex, &Source2, &Dest2);
+	SDL_RenderTexture(Context.Renderer, Tex, &Source2, &Dest2);
 }
 
 void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
@@ -531,7 +536,7 @@ void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, cons
 	const SDL_FRect SDLSource = Source.ToSDL_FRect();
 	const SDL_FRect SDLDest = ScreenRect.ToSDL_FRect();
 
-	SDL_RenderTexture(mContext->Renderer, Tex, &SDLSource, &SDLDest);
+	SDL_RenderTexture(Context.Renderer, Tex, &SDLSource, &SDLDest);
 }
 
 void PRenderer::DrawSpriteAt(const PTexture* Texture, const FRect& Dest,
@@ -605,7 +610,7 @@ FVector2 PRenderer::GetMousePosition() const
 FVector2 PRenderer::GetMouseWorldPosition() const
 {
 	FVector2 MouseWorldPosition;
-	GetRenderer()->ScreenToWorld(GetMousePosition(), &MouseWorldPosition);
+	ScreenToWorld(GetMousePosition(), &MouseWorldPosition);
 	return MouseWorldPosition;
 }
 
@@ -616,7 +621,7 @@ bool PRenderer::GetMouseLeftDown() const
 
 PActor* PRenderer::GetActorUnderMouse() const
 {
-	auto W = GetWorld();
+	auto W = GWorld;
 	for (const auto& Actor : W->GetActors())
 	{
 		if (Actor->mMouseOver)
@@ -630,7 +635,7 @@ PActor* PRenderer::GetActorUnderMouse() const
 TArray<PActor*> PRenderer::GetActorsUnderMouse() const
 {
 	TArray<PActor*> Actors;
-	auto			W = GetWorld();
+	auto			W = GWorld;
 	for (const auto& Actor : W->GetActors())
 	{
 		if (Actor->mMouseOver)

@@ -122,7 +122,7 @@ bool PMapManager::UnloadMap(const std::string& Name)
 	}
 
 	// Destroy the map actor
-	GetWorld()->DestroyActor(GameMap);
+	GWorld->DestroyActor(GameMap);
 
 	// Remove the map from the list of active maps
 	mActiveMaps.Remove(Name);
@@ -134,8 +134,6 @@ bool PMapManager::UnloadMap(const std::string& Name)
 
 void PMapManager::UnloadSwitchMap()
 {
-	LogInfo("Unloading switch map.");
-
 	// Clear the timer which triggered this deferred map unloading
 	GetTimerManager()->ClearTimer(mUnloadHandle);
 
@@ -149,7 +147,7 @@ void PMapManager::UnloadSwitchMap()
 		LogError("Failed to load map: {}", mSwitchMap.NewMap.c_str());
 		return;
 	}
-	if (auto Player = GetWorld()->GetPlayerCharacter())
+	if (auto Player = GWorld->GetPlayerCharacter())
 	{
 		Player->GetMovementComponent()->SetMovementDirection(mSwitchMap.ExitDirection);
 		Player->GetMovementComponent()->SnapToPosition(mSwitchMap.NewPosition, GameMap);
@@ -163,7 +161,6 @@ void PMapManager::UnloadSwitchMap()
 bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap, const FVector2& NewPosition,
 							EOrientation ExitDirection, float Delay)
 {
-	LogInfo("Switching map");
 	mSwitchMap = {
 		OldMap,
 		NewMap,
@@ -182,7 +179,7 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 
 PGameMap* PMapManager::GetMapUnderMouse()
 {
-	auto Actors = GetRenderer()->GetActorsUnderMouse();
+	auto Actors = GRenderer->GetActorsUnderMouse();
 	for (auto Actor : Actors)
 	{
 		if (auto GameMap = dynamic_cast<PGameMap*>(Actor))

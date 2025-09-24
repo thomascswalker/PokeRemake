@@ -22,7 +22,7 @@ public:
 	template <typename T, typename... ArgsType>
 	SViewItem* AddItem(ArgsType&&... Args)
 	{
-		T* Widget       = GetWorld()->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
+		T* Widget       = GWorld->ConstructWidget<T>(std::forward<ArgsType>(Args)...);
 		SViewItem* Item = &mItems.emplace_back(Widget);
 		this->AddChild(Item->GetWidget<T>());
 		return Item;

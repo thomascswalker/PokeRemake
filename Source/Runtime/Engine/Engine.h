@@ -1,27 +1,17 @@
 #pragma once
 
 #include "Game.h"
+#include "GameInstance.h"
 
-class PEngine
+class PEngine : public PObject
 {
 	/* State */
 	bool mIsRunning = false;
 
-	/* Actors/Objects */
-	std::unique_ptr<PGame> mGame;
+	std::unique_ptr<PGame> mGame = nullptr;
+	PGameInstance		   mGameInstance;
 
 public:
-	PEngine();
-	~PEngine() = default;
-	void Stop();
-	void Tick(float DeltaTime) const;
-	void PostTick() const;
-
-	bool IsRunning() const
-	{
-		return mIsRunning;
-	}
-
 	/**
 	 * @brief Initialize and start the engine
 	 * - Sets the engine to running.
@@ -29,47 +19,53 @@ public:
 	 * - Starts the game.
 	 * - Constructs the HUD.
 	 *
-	 * @tparam GameType The game type to construct.
-	 * @tparam HUDType The HUD type to construct.
+	 * @tparam TGameType The game type to construct.
 	 * @return
 	 */
-	template <class GameType, class HUDType>
-	bool Start()
+	template <class TGameType>
+	bool Init()
 	{
 		LogDebug("Starting engine.");
 		mIsRunning = true;
 
+		// Construct game instance
+		GGameInstance = &mGameInstance;
+
 		// Construct the game
-		mGame = std::make_unique<GameType>();
+		mGame = std::make_unique<TGameType>();
 
 		// Bind the game ending to stopping the engine
 		mGame->GameEnded.AddRaw(this, &PEngine::Stop);
 
-		// Attempt to start the game. If this fails, exit the engine and therefore
-		// the application.
-		if (!mGame->PreStart())
-		{
-			LogError("Failed to pre-start game");
-			mIsRunning = false;
-			return false;
-		}
-		// Inbetween PreStart and Start, construct the HUD.
-		mGame->GetWorld()->CreateHUD<HUDType>();
-
-		if (!mGame->Start())
-		{
-			LogError("Failed to start game.");
-			mIsRunning = false;
-			return false;
-		}
-
 		return true;
+	}
+
+	bool PreStart() override;
+	bool Start() override;
+	void Stop();
+	void Tick(float DeltaTime) override;
+	void PostTick() const;
+
+	bool IsRunning() const
+	{
+		return mIsRunning;
 	}
 
 	PGame* GetGame() const
 	{
 		return mGame.get();
 	}
+
+	template <typename T>
+	T* GetGameAs() const
+	{
+		return dynamic_cast<T*>(mGame.get());
+	}
+
+	PGameInstance* GetGameInstance()
+	{
+		return &mGameInstance;
+	}
 };
 
-DECLARE_STATIC_GLOBAL_GETTER(Engine)
+extern PEngine* GEngine;

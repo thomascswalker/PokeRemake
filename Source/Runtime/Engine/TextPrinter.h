@@ -25,13 +25,13 @@ class PTextPrinter : public PObject
 public:
 	void Play()
 	{
-		GetWorld()->GetTimerManager()->SetTimer(mTimerHandle, this, &PTextPrinter::NextChar, mAnimationSpeed, true);
+		GWorld->GetTimerManager()->SetTimer(mTimerHandle, this, &PTextPrinter::NextChar, mAnimationSpeed, true);
 		mPrinting = true;
 	}
 
 	void Stop()
 	{
-		GetWorld()->GetTimerManager()->ClearTimer(mTimerHandle);
+		GWorld->GetTimerManager()->ClearTimer(mTimerHandle);
 		mCursor = 0;
 		mPrinting = false;
 	}

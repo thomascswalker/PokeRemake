@@ -72,4 +72,4 @@ public:
 	void PaintTile(STile* Tile);
 };
 
-PEditorGame* GetEditorGame();
+extern PEditorGame* GEditorGame;

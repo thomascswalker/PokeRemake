@@ -146,7 +146,7 @@ STile* PGameMap::GetTileAtPosition(const FVector2& Position) const
 
 STile* PGameMap::GetTileUnderMouse() const
 {
-	return GetTileAtPosition(GetRenderer()->GetMouseWorldPosition());
+	return GetTileAtPosition(GRenderer->GetMouseWorldPosition());
 }
 
 STile* PGameMap::GetTileAt(int X, int Y) const
