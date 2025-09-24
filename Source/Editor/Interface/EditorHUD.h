@@ -11,12 +11,12 @@ class PEditorHUD : public PHUD
 	DEditModeChanged EditModeChanged;
 
 public:
-	bool	   PreStart() override;
+	PEditorHUD();
 	void	   SetupInterface();
 	PGridView* ConstructTilesetView(STileset* Tileset);
 	PGridView* ConstructActorView();
 	PWidget*   ConstructParamRow(PParameter* Param);
-	PWidget*   ConstructParamView(const IParamBlock* ParamBlock, const std::string& Title);
+	PWidget*   ConstructParamView(IParamBlock* ParamBlock, const std::string& Title);
 
 	// Menu bar
 	void OnNewButtonClicked();

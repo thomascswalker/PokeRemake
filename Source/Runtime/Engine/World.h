@@ -48,6 +48,7 @@ public:
 	template <IS_SUBCLASS_OF(PObject), typename... ArgsType>
 	T* ConstructObject(ArgsType&&... Args)
 	{
+		ASSERT(GGameInstance != nullptr, "Game Instance is not initialized.");
 		T* Object = GGameInstance->ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Object->GenerateInternalName();
 		return Object;

@@ -8,7 +8,6 @@
 #include "Engine/World.h"
 #include "Interface/ButtonGroup.h"
 #include "Interface/EditText.h"
-#include "Interface/Group.h"
 #include "Interface/Menu.h"
 #include "Interface/Panel.h"
 #include "Interface/ScrollArea.h"
@@ -16,8 +15,7 @@
 
 #include "EditorGame.h"
 
-static PWorld*		World = nullptr;
-static PEditorGame* EditorGame = nullptr;
+PEditorGame* GEditorGame = nullptr;
 
 static PWidget*							 MainPanel = nullptr;
 static PPanel*							 SelectPanel = nullptr;
@@ -33,12 +31,9 @@ std::vector<std::pair<std::string, std::string>> gDefaultFilters = {
 	{ "JSON", "JSON" },
 };
 
-bool PEditorHUD::PreStart()
+PEditorHUD::PEditorHUD()
 {
-	World = GWorld;
-	assert(World != nullptr);
-	EditorGame = dynamic_cast<PEditorGame*>(GetGame());
-	assert(EditorGame != nullptr);
+	GEditorGame = GEngine->GetGameAs<PEditorGame>();
 
 	ActorManager::LoadActorDefs();
 	for (auto& [K, V] : ActorManager::GetActorDefs().items())
@@ -50,9 +45,7 @@ bool PEditorHUD::PreStart()
 
 	// Default edit menu
 	OnSelectButtonClicked();
-	EditorGame->SelectionChanged.AddRaw(this, &PEditorHUD::OnSelectionChange);
-
-	return true;
+	GEditorGame->SelectionChanged.AddRaw(this, &PEditorHUD::OnSelectionChange);
 }
 
 void PEditorHUD::SetupInterface()
@@ -82,7 +75,7 @@ void PEditorHUD::SetupInterface()
 	AddChild(MenuBar);
 
 	// Main panel
-	MainPanel = World->ConstructWidget<PWidget>();
+	MainPanel = GWorld->ConstructWidget<PWidget>();
 	MainPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->SetResizeModeW(RM_Fixed);
 	MainPanel->SetFixedWidth(340);
@@ -90,19 +83,19 @@ void PEditorHUD::SetupInterface()
 
 	// Select
 
-	SelectPanel = World->ConstructWidget<PPanel>();
+	SelectPanel = GWorld->ConstructWidget<PPanel>();
 	SelectPanel->SetResizeModeH(RM_Fit);
 	SelectPanel->SetLayoutMode(LM_Vertical);
 	MainPanel->AddChild(SelectPanel);
 
 	// Tiles
 
-	TilePanel = World->ConstructWidget<PPanel>();
+	TilePanel = GWorld->ConstructWidget<PPanel>();
 	TilePanel->SetLayoutMode(LM_Vertical);
-	auto ScrollArea = World->ConstructWidget<PScrollArea>();
+	auto ScrollArea = GWorld->ConstructWidget<PScrollArea>();
 	TilePanel->AddChild(ScrollArea);
 	// Create a button group for all tiles across all tilesets
-	TilesetViewButtonGroup = World->ConstructWidget<PButtonGroup>();
+	TilesetViewButtonGroup = GWorld->ConstructWidget<PButtonGroup>();
 	// Construct each widget for each tile in each tileset
 	for (const auto Tileset : TilesetManager::GetTilesets())
 	{
@@ -113,7 +106,7 @@ void PEditorHUD::SetupInterface()
 
 	// Actors
 	ActorViewButtonGroup = ConstructWidget<PButtonGroup>();
-	ActorPanel = World->ConstructWidget<PPanel>();
+	ActorPanel = GWorld->ConstructWidget<PPanel>();
 	ActorPanel->SetLayoutMode(LM_Vertical);
 	auto ActorView = ConstructActorView();
 	ActorPanel->AddChild(ActorView);
@@ -125,15 +118,11 @@ void PEditorHUD::SetupInterface()
 
 PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 {
-	if (!World || !EditorGame)
-	{
-		return nullptr;
-	}
 	const int ItemSize = 20;
 	const int ViewWidth = Tileset->Width * ItemSize;
 	const int ViewHeight = Tileset->Height * ItemSize;
 
-	PGridView* GridView = World->ConstructWidget<PGridView>();
+	PGridView* GridView = GWorld->ConstructWidget<PGridView>();
 	GridView->SetGridCount(Tileset->Width);
 	GridView->SetFixedWidth(ViewWidth);
 	GridView->SetResizeMode(RM_Fixed, RM_Fixed);
@@ -163,11 +152,11 @@ PGridView* PEditorHUD::ConstructTilesetView(STileset* Tileset)
 
 PGridView* PEditorHUD::ConstructActorView()
 {
-	if (!World || !EditorGame)
+	if (!GWorld || !GEditorGame)
 	{
 		return nullptr;
 	}
-	PGridView* GridView = World->ConstructWidget<PGridView>();
+	PGridView* GridView = GWorld->ConstructWidget<PGridView>();
 	GridView->Padding = { 5 };
 	GridView->SetGridCount(1);
 
@@ -246,7 +235,7 @@ PWidget* PEditorHUD::ConstructParamRow(PParameter* Param)
 	return ParamRow;
 }
 
-PWidget* PEditorHUD::ConstructParamView(const IParamBlock* ParamBlock, const std::string& Title)
+PWidget* PEditorHUD::ConstructParamView(IParamBlock* ParamBlock, const std::string& Title)
 {
 	auto ParamBlockView = ConstructWidget<PBox>();
 	ParamBlockView->Padding = { 5 };
@@ -273,13 +262,13 @@ void PEditorHUD::OnSizeYChanged(float Value)
 
 void PEditorHUD::OnNewButtonClicked()
 {
-	World->DestroyAllActors();
+	GWorld->DestroyAllActors();
 	GetMapManager()->ClearMaps();
 }
 
 void PEditorHUD::OnCreateButtonClicked()
 {
-	auto CurrentTileset = EditorGame->GetCurrentTileset();
+	auto CurrentTileset = GEditorGame->GetCurrentTileset();
 	int	 TileCountX = mNewMapSizeX * 2;
 	int	 TileCountY = mNewMapSizeY * 2;
 	LogDebug("Creating new map: [{}, {}]", TileCountX, TileCountY);
@@ -309,7 +298,7 @@ void PEditorHUD::OnSaveButtonClicked()
 {
 	JSON Json;
 
-	for (const auto Actor : World->GetActors())
+	for (const auto Actor : GWorld->GetActors())
 	{
 		if (auto GameMap = dynamic_cast<PGameMap*>(Actor))
 		{
@@ -376,7 +365,7 @@ void PEditorHUD::OnActorsButtonClicked()
 
 void PEditorHUD::OnExitButtonClicked()
 {
-	GetGame()->End();
+	GEditorGame->End();
 }
 
 void PEditorHUD::OnSelectionChange(PActor* Actor)
@@ -391,7 +380,7 @@ void PEditorHUD::OnSelectionChange(PActor* Actor)
 	// Destroy this widget when the actor is destroyed
 	Actor->Destroyed.AddRaw(this, &PEditorHUD::OnActorDestroyed);
 
-	ActorParamView = ConstructParamView(Actor, Actor->GetClassName());
+	ActorParamView = ConstructParamView(dynamic_cast<IParamBlock*>(Actor), Actor->GetClassName());
 	SelectPanel->AddChild(ActorParamView);
 
 	if (Actor->GetComponentsCount() > 0)
@@ -404,7 +393,7 @@ void PEditorHUD::OnSelectionChange(PActor* Actor)
 
 		for (auto Comp : Actor->GetComponents())
 		{
-			auto CompParamView = ConstructParamView(Comp, Comp->GetClassName());
+			auto CompParamView = ConstructParamView(dynamic_cast<IParamBlock*>(Comp), Comp->GetClassName());
 			CompGroup->AddChild(CompParamView);
 		}
 
@@ -417,15 +406,15 @@ void PEditorHUD::OnTilesetButtonChecked(bool State)
 	auto Sender = GetSender<PButton>();
 	auto Item = Sender->GetCustomData<STileItem>();
 
-	EditorGame->SetCurrentTileset(Item->Tileset);
-	EditorGame->SetCurrentTilesetItem(State ? Item : nullptr);
+	GEditorGame->SetCurrentTileset(Item->Tileset);
+	GEditorGame->SetCurrentTilesetItem(State ? Item : nullptr);
 }
 
 void PEditorHUD::OnActorButtonChecked(bool State)
 {
 	auto Sender = GetSender<PButton>();
 	auto Item = Sender->GetCustomData<SActorItem>();
-	EditorGame->SetCurrentActorItem(State ? Item : nullptr);
+	GEditorGame->SetCurrentActorItem(State ? Item : nullptr);
 }
 
 void PEditorHUD::OnActorDestroyed(PActor* Actor)

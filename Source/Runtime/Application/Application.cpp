@@ -77,7 +77,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 		return false;
 	}
 #if _EDITOR
-	SDL_SetWindowResizable(GSDLContext->Window, true);
+	SDL_SetWindowResizable(GRenderer->Context.Window, true);
 #endif
 
 	if (!GRenderer || !GRenderer->Initialize())
@@ -111,9 +111,6 @@ void PApplication::Uninitialize() const
 
 	LogDebug("Cleaning up all SDL subsystems");
 	SDL_Quit();
-
-	GEngine->~PEngine();
-	GRenderer->~PRenderer();
 
 	GEngine = nullptr;
 	GRenderer = nullptr;

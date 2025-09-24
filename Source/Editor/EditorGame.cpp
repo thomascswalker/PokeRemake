@@ -10,6 +10,7 @@
 #include "Engine/Actors/SceneryActor.h"
 #include "Engine/Input.h"
 #include "Engine/MapManager.h"
+#include "Interface/EditorHUD.h"
 #include "Interface/Group.h"
 #include "Interface/Spinner.h"
 
@@ -17,7 +18,7 @@
 
 PEditorGame* GetEditorGame()
 {
-	return dynamic_cast<PEditorGame*>(GetGame());
+	return dynamic_cast<PEditorGame*>(GEngine->GetGame());
 }
 
 PEditorGame::PEditorGame()
@@ -28,6 +29,10 @@ PEditorGame::PEditorGame()
 bool PEditorGame::PreStart()
 {
 	PGame::PreStart();
+
+	auto HUD = GWorld->ConstructWidget<PEditorHUD>();
+	GWorld->GetRootWidget()->AddChild(HUD);
+
 	GSettings->DebugDraw = true;
 
 	const auto EditorView = mWorld->ConstructActor<PEditorView>();

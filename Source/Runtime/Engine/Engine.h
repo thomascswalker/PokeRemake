@@ -28,11 +28,11 @@ public:
 		LogDebug("Starting engine.");
 		mIsRunning = true;
 
-		// Construct the game
-		mGame = std::make_unique<TGameType>();
-
 		// Construct game instance
 		GGameInstance = &mGameInstance;
+
+		// Construct the game
+		mGame = std::make_unique<TGameType>();
 
 		// Bind the game ending to stopping the engine
 		mGame->GameEnded.AddRaw(this, &PEngine::Stop);
@@ -54,6 +54,12 @@ public:
 	PGame* GetGame() const
 	{
 		return mGame.get();
+	}
+
+	template <typename T>
+	T* GetGameAs() const
+	{
+		return dynamic_cast<T*>(mGame.get());
 	}
 
 	PGameInstance* GetGameInstance()

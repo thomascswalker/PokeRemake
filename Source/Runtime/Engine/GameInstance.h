@@ -42,7 +42,6 @@ public:
 	{
 		GSettings = &mSettings;
 	};
-	~PGameInstance() override = default;
 
 	void Tick(float DeltaTime) override
 	{
