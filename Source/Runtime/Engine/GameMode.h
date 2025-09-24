@@ -19,7 +19,9 @@ public:
 	}
 
 	virtual bool Load() = 0;
+	void		 PostLoad();
 	virtual bool Unload() = 0;
+	void		 PostUnload();
 	virtual void LoadDeferred() {}
 	virtual void UnloadDeferred() {}
 

@@ -42,8 +42,6 @@ bool PEditorGame::PreStart()
 		LogError("Failed to create Editor View");
 	}
 
-	UpdateCameraView();
-
 	return true;
 }
 

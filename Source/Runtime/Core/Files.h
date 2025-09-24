@@ -160,16 +160,40 @@ namespace Files
 		return true;
 	}
 
-	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory)
+	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory, bool Recurse = false)
 	{
 		std::vector<std::string> OutFiles;
 
 		auto Path = GetRootPath() / std::filesystem::path(Directory);
-		for (const auto& Entry : std::filesystem::directory_iterator(Path))
+
+		if (!Recurse)
 		{
-			OutFiles.push_back(Entry.path().string());
+			for (const auto& Entry : std::filesystem::directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
+		}
+		else
+		{
+			for (const auto& Entry : std::filesystem::recursive_directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
 		}
 
 		return OutFiles;
+	}
+
+	inline bool IsDirectory(const std::string& FileName)
+	{
+		return std::filesystem::is_directory(FileName);
 	}
 } // namespace Files
