@@ -37,7 +37,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 
 	if (!Data)
 	{
-		LogError("Unable to load image: {}", stbi_failure_reason());
+		LogError("Unable to load texture '{}': {}", FileName.c_str(), stbi_failure_reason());
 		return nullptr;
 	}
 
@@ -52,7 +52,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 
 void PTextureManager::LoadAllTextures()
 {
-	const auto Textures = Files::GetFilesInDirectory("Resources/Textures");
+	const auto Textures = Files::GetFilesInDirectory("Resources/Textures", true);
 	for (const auto& Texture : Textures)
 	{
 		Load(Texture);

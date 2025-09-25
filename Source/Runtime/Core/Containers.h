@@ -49,4 +49,20 @@ namespace Containers
 	{
 		return Container.contains(Key);
 	}
+
+	template <typename T, typename D>
+	T* ToRaw(const std::shared_ptr<D>& Data)
+	{
+		return dynamic_cast<T*>(Data.get());
+	}
+
+	template <typename T, typename D>
+	std::vector<T*> ToRaw(std::vector<std::shared_ptr<D>>& Data)
+	{
+		std::vector<T*> Result;
+		Result.reserve(Data.size());
+		std::transform(Data.begin(), Data.end(), Result.begin(), ToRaw<T, D>);
+		return Result;
+	}
+
 } // namespace Containers
