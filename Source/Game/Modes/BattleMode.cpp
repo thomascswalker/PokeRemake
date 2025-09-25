@@ -4,6 +4,7 @@
 #include "Engine/Game.h"
 
 #include "BattleView.h"
+#include "MainGame.h"
 
 bool PBattleMode::Load()
 {
@@ -25,7 +26,13 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				GEngine->GetGame()->SetAndLoadCurrentGameMode("MapMode");
+				SGameEvent GameEvent = { this, EGameEventType::BattleEnd };
+				GEngine->GetGame()->HandleGameEvent(GameEvent);
+
+				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("MapMode"))
+				{
+					Event->Invalidate();
+				}
 				break;
 			}
 		default:

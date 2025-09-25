@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -16,6 +17,7 @@ inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Maps",
 	"Resources\\ActorDefs",
 	"Resources\\Styles",
+	"Resources\\Pokedex"
 };
 
 namespace Files
@@ -76,7 +78,7 @@ namespace Files
 		else
 		{
 			const char* Error = NFD_GetError();
-			if (Error != nullptr && strlen(Error) > 0)
+			if (Error != nullptr && std::strlen(Error) > 0)
 			{
 				LogError("Failed to open file dialog: {}", Error);
 				return false;
@@ -158,14 +160,32 @@ namespace Files
 		return true;
 	}
 
-	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory)
+	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory, bool Recurse = false)
 	{
 		std::vector<std::string> OutFiles;
 
 		auto Path = GetRootPath() / std::filesystem::path(Directory);
-		for (const auto& Entry : std::filesystem::directory_iterator(Path))
+		if (!Recurse)
 		{
-			OutFiles.push_back(Entry.path().string());
+			for (const auto& Entry : std::filesystem::directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
+		}
+		else
+		{
+			for (const auto& Entry : std::filesystem::recursive_directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
 		}
 
 		return OutFiles;

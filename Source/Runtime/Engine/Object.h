@@ -8,6 +8,7 @@ class PObject
 protected:
 	std::string mInternalName;
 	bool		mSerializable = true;
+	bool		mPendingDestruction = false;
 
 public:
 	PObject() = default;
@@ -70,5 +71,15 @@ public:
 	bool IsSerializable() const
 	{
 		return mSerializable;
+	}
+
+	bool IsPendingDestruction() const
+	{
+		return mPendingDestruction;
+	}
+
+	void MarkPendingDestruction()
+	{
+		mPendingDestruction = true;
 	}
 };

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <exception>
 #include <memory>
 #include <tuple>
 #include <vector>
@@ -13,7 +14,11 @@
 
 #ifndef DELEGATE_ASSERT
 #include <assert.h>
-#define DELEGATE_ASSERT(expression, ...) assert(expression)
+#define DELEGATE_ASSERT(expression, ...)                            \
+	if (!expression)                                                \
+	{                                                               \
+		throw std::runtime_error("Assertion failed: " #expression); \
+	}
 #endif
 
 #ifndef DELEGATE_STATIC_ASSERT

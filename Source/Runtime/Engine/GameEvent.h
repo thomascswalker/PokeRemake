@@ -1,28 +1,60 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
+
+enum class EGameEventType
+{
+	// Misc
+	Default = 0,
+	// Dialog boxes
+	Dialog = 100,
+	// Battle
+	BattleStart = 200,
+	BattleEnd,
+};
+
+static const char* GameEventTypeToString(EGameEventType Type)
+{
+	switch (Type)
+	{
+		case EGameEventType::Dialog:
+			return "Dialog";
+		default:
+			return "Unknown";
+	}
+}
 
 struct SGameEvent
 {
 private:
-	void* mData;
+	void* mData = nullptr;
 
 public:
-	PObject*	Instigator;
-	std::string Name;
+	PObject*	   Instigator;
+	EGameEventType Type;
 
-	template <typename T>
-	SGameEvent(PObject* InInstigator, const std::string& InName, T* InData)
+	template <typename T = void>
+	SGameEvent(PObject* InInstigator, EGameEventType InType, T* InData = nullptr)
 	{
 		Instigator = InInstigator;
-		Name = InName;
-		mData = std::malloc(sizeof(T));
-		std::memcpy(mData, InData, sizeof(T));
+		Type = InType;
+		if (InData && !std::is_void_v<T>)
+		{
+			mData = std::malloc(sizeof(T));
+			if (mData)
+			{
+				std::memcpy(mData, InData, sizeof(T));
+			}
+		}
 	}
 
 	~SGameEvent()
 	{
-		std::free(mData);
+		if (mData)
+		{
+			std::free(mData);
+		}
 		mData = nullptr;
 	}
 
@@ -34,6 +66,6 @@ public:
 
 	std::string ToString() const
 	{
-		return std::format("GameEvent: {} from {}", Name.c_str(), Instigator->GetClassName().c_str());
+		return std::format("GameEvent: {} from {}", GameEventTypeToString(Type), Instigator->GetClassName().c_str());
 	}
 };

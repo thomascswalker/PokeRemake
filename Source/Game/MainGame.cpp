@@ -2,9 +2,8 @@
 
 #include "Application/Application.h"
 #include "Engine/Actors/Interactable.h"
-
-#include "BattleMode.h"
-#include "MapMode.h"
+#include "Modes/BattleMode.h"
+#include "Modes/MapMode.h"
 
 bool PMainGame::PreStart()
 {
@@ -12,39 +11,53 @@ bool PMainGame::PreStart()
 	{
 		return false;
 	}
+
 	AddGameMode<PMapMode>();
 	AddGameMode<PBattleMode>();
+
+	return true;
+}
+
+bool PMainGame::Start()
+{
+	if (!PGame::Start())
+	{
+		return false;
+	}
+	mHUD = ConstructWidget<PGameHUD>();
+	GWorld->GetRootWidget()->AddChild(mHUD);
 	return true;
 }
 
 bool PMainGame::HandleGameEvent(SGameEvent& Event)
 {
-	auto Data = Event.GetData<SInteractData>();
-	if (!mDialogBox)
+	switch (Event.Type)
 	{
-		ShowDialogBox(Data->Message);
-	}
-	else
-	{
-		CloseDialogBox();
+		case EGameEventType::Dialog:
+			{
+				if (!mHUD->IsDialogBoxVisible())
+				{
+					mHUD->StartDialogBox(Event.GetData<SInteractData>()->Message);
+				}
+				else
+				{
+					mHUD->EndDialogBox();
+				}
+				break;
+			}
+		case EGameEventType::BattleStart:
+			{
+				mHUD->EndDialogBox();
+				mHUD->StartBattleHUD();
+				break;
+			}
+		case EGameEventType::BattleEnd:
+			{
+				mHUD->EndBattleHUD();
+				break;
+			}
+		default:
+			break;
 	}
 	return true;
-}
-
-void PMainGame::ShowDialogBox(const std::string& Text)
-{
-	SetInputContext(IC_Dialog);
-	mDialogBox = GWorld->ConstructWidget<PDialogBox>();
-	mDialogBox->SetText(Text);
-	mDialogBox->Print();
-	GWorld->GetRootWidget()->AddChild(mDialogBox);
-}
-
-void PMainGame::CloseDialogBox()
-{
-	RestoreInputContext();
-	mDialogBox->Print();
-	GWorld->GetRootWidget()->RemoveChild(mDialogBox);
-	GWorld->DestroyWidget(mDialogBox);
-	mDialogBox = nullptr;
 }

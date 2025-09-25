@@ -1,19 +1,17 @@
 #pragma once
 
 #include "Engine/Game.h"
-#include "Interface/DialogBox.h"
+#include "Interface/GameHUD.h"
 
 class PMainGame : public PGame
 {
-	PDialogBox* mDialogBox;
+	PGameHUD* mHUD = nullptr;
 
 public:
 	~PMainGame() override {}
 
 	bool PreStart() override;
+	bool Start() override;
 
 	bool HandleGameEvent(SGameEvent& Event) override;
-
-	void ShowDialogBox(const std::string& Text);
-	void CloseDialogBox();
 };

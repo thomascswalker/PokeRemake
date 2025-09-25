@@ -55,7 +55,8 @@ void PGame::Tick(float DeltaTime)
 
 void PGame::UpdateCameraView()
 {
-	for (auto Comp : mWorld->GetComponents())
+	auto Comps = mWorld->GetComponents();
+	for (auto Comp : Comps)
 	{
 		// Just set the first camera component found as the active camera
 		if (auto CameraComp = dynamic_cast<PCameraComponent*>(Comp))
