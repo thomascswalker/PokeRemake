@@ -18,34 +18,46 @@ bool PMainGame::PreStart()
 	return true;
 }
 
-bool PMainGame::HandleGameEvent(SGameEvent& Event)
+bool PMainGame::Start()
 {
-	auto Data = Event.GetData<SInteractData>();
-	if (!mDialogBox)
+	if (!PGame::Start())
 	{
-		ShowDialogBox(Data->Message);
+		return false;
 	}
-	else
-	{
-		CloseDialogBox();
-	}
+	mHUD = ConstructWidget<PGameHUD>();
+	GWorld->GetRootWidget()->AddChild(mHUD);
 	return true;
 }
 
-void PMainGame::ShowDialogBox(const std::string& Text)
+bool PMainGame::HandleGameEvent(SGameEvent& Event)
 {
-	SetInputContext(IC_Dialog);
-	mDialogBox = GWorld->ConstructWidget<PDialogBox>();
-	mDialogBox->SetText(Text);
-	mDialogBox->Print();
-	GWorld->GetRootWidget()->AddChild(mDialogBox);
-}
-
-void PMainGame::CloseDialogBox()
-{
-	RestoreInputContext();
-	mDialogBox->Print();
-	GWorld->GetRootWidget()->RemoveChild(mDialogBox);
-	GWorld->DestroyWidget(mDialogBox);
-	mDialogBox = nullptr;
+	switch (Event.Type)
+	{
+		case EGameEventType::Dialog:
+			{
+				if (!mHUD->IsDialogBoxVisible())
+				{
+					mHUD->StartDialogBox(Event.GetData<SInteractData>()->Message);
+				}
+				else
+				{
+					mHUD->EndDialogBox();
+				}
+				break;
+			}
+		case EGameEventType::BattleStart:
+			{
+				mHUD->EndDialogBox();
+				mHUD->StartBattleHUD();
+				break;
+			}
+		case EGameEventType::BattleEnd:
+			{
+				mHUD->EndBattleHUD();
+				break;
+			}
+		default:
+			break;
+	}
+	return true;
 }

@@ -18,13 +18,16 @@ PMapMode::PMapMode()
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 }
 
+std::string PMapMode::GetName()
+{
+	return "MapMode";
+}
+
 bool PMapMode::Load()
 {
-	LogDebug("Load Save State: {}", mSaveState.dump(2).c_str());
 	// Load the map from JSON
 	auto Map = mMapManager->LoadMap(mSaveState[PLAYER_MAP], false);
 
-	LogDebug("PreStart: Constructing actors.");
 	auto Player = ConstructActor<PPlayerCharacter>();
 	GWorld->SetPlayerCharacter(Player);
 
@@ -61,8 +64,6 @@ bool PMapMode::Unload()
 
 	// Unset the player character
 	mWorld->SetPlayerCharacter(nullptr);
-
-	LogDebug("Unload Save State: {}", mSaveState.dump(2).c_str());
 
 	return true;
 }
@@ -112,6 +113,9 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
+				SGameEvent GameEvent = { this, EGameEventType::BattleStart };
+				GEngine->GetGame()->HandleGameEvent(GameEvent);
+
 				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
 				{
 					Event->Invalidate();

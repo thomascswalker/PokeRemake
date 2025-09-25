@@ -12,23 +12,12 @@ PWorld* GWorld = nullptr;
 
 bool PWorld::Start()
 {
-	LogDebug("Starting world");
-
-	LogDebug("Starting {} actors.", GetActors().size());
-	for (const auto& Actor : GetActors())
+	// Attempt to start all objects
+	for (const auto& Object : GGameInstance->GetObjects())
 	{
-		if (!Actor->Start())
+		if (!Object->Start())
 		{
-			LogError("Failed to start actor");
-			return false;
-		}
-	}
-	LogDebug("Starting {} components.", GetComponents().size());
-	for (const auto& Component : GetComponents())
-	{
-		if (!Component->Start())
-		{
-			LogError("Failed to start component");
+			LogError("Failed to start object: {}", Object->GetClassName().c_str());
 			return false;
 		}
 	}
@@ -45,6 +34,7 @@ bool PWorld::End()
 
 void PWorld::Tick(float DeltaTime)
 {
+	// Tick all timers
 	mTimerManager.Tick(DeltaTime);
 
 	// Set the root widget to span the width and height of the screen

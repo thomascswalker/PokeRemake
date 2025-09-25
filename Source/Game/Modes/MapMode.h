@@ -20,10 +20,7 @@ class PMapMode : public PGameMode
 public:
 	PMapMode();
 
-	std::string GetName() override
-	{
-		return "MapMode";
-	}
+	std::string GetName() override;
 
 	bool Load() override;
 	bool Unload() override;

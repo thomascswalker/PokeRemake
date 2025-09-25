@@ -6,7 +6,7 @@
 
 void PInteractionComponent::Interact(PPlayerCharacter* Player)
 {
-	SGameEvent Event(this, "Dialog", &mData);
+	SGameEvent Event(this, EGameEventType::Dialog, &mData);
 	GEngine->GetGame()->HandleGameEvent(Event);
 }
 
