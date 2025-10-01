@@ -1,8 +1,9 @@
 #pragma once
 
+#include <ctype.h>
 #include <format>
+#include <functional>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 namespace String
@@ -62,5 +63,25 @@ namespace String
 	std::string ToString(const std::vector<T>& Container)
 	{
 		return std::format("[{}]", String::Join(Container, ",").c_str());
+	}
+
+	inline std::string ToLower(const std::string& Text)
+	{
+		std::string Result;
+		for (auto C : Text)
+		{
+			Result.push_back(tolower(C));
+		}
+		return Result;
+	}
+
+	inline std::string ToUpper(const std::string& Text)
+	{
+		std::string Result;
+		for (auto C : Text)
+		{
+			Result.push_back(toupper(C));
+		}
+		return Result;
 	}
 } // namespace String

@@ -1,10 +1,11 @@
 #include "PokeStorage.h"
 
-static PPokemonStorage gPlayerStorage;
+PPokemonStorage* GPlayerStorage = nullptr;
 
 SPokemon* PPokemonStorage::Construct(uint32_t Id, uint32_t Level, uint32_t Experience)
 {
-	auto Def = PPokedexManager::Instance()->Get(Id);
+	auto Dex = PPokedexManager::Instance();
+	auto Def = Dex->GetById(Id);
 	mPokemon.push_back({ *Def, Level, Experience });
 	return &mPokemon.back();
 }
@@ -18,9 +19,4 @@ bool PPokemonStorage::Add(const SPokemon& Pokemon)
 SPokemon* PPokemonStorage::Get(int32_t Index)
 {
 	return &mPokemon[Index];
-}
-
-PPokemonStorage* GetPlayerStorage()
-{
-	return &gPlayerStorage;
 }

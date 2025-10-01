@@ -8,7 +8,7 @@ class PEngine : public PObject
 	/* State */
 	bool mIsRunning = false;
 
-	std::unique_ptr<PGame> mGame = nullptr;
+	std::shared_ptr<PGame> mGame = nullptr;
 	PGameInstance		   mGameInstance;
 
 public:
@@ -32,7 +32,7 @@ public:
 		GGameInstance = &mGameInstance;
 
 		// Construct the game
-		mGame = std::make_unique<TGameType>();
+		mGame = std::make_shared<TGameType>();
 
 		// Bind the game ending to stopping the engine
 		mGame->GameEnded.AddRaw(this, &PEngine::Stop);

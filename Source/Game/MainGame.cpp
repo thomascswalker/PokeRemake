@@ -1,9 +1,14 @@
 #include "MainGame.h"
 
 #include "Application/Application.h"
+#include "Battle/BattleMode.h"
 #include "Engine/Actors/Interactable.h"
-#include "Modes/BattleMode.h"
 #include "Modes/MapMode.h"
+
+static JSON GDefaultMapData = {
+	{	  PLAYER_MAP,			  MAP_PALLET_TOWN },
+	{ PLAYER_POSITION, JSON::array({ 800, 800 }) }
+};
 
 bool PMainGame::PreStart()
 {
@@ -12,8 +17,23 @@ bool PMainGame::PreStart()
 		return false;
 	}
 
-	AddGameMode<PMapMode>();
+	mHUD = ConstructWidget<PGameHUD>();
+
+	auto MapMode = AddGameMode<PMapMode>();
+	auto MapState = MapMode->GetState();
+	*MapState = GDefaultMapData;
+
 	AddGameMode<PBattleMode>();
+
+	// Load all pokemon info
+	if (!PPokedexManager::Instance()->Init())
+	{
+		return false;
+	}
+
+	// Initialize Player Party
+	auto Mon = mPlayerStorage.Construct(ID_BULBASAUR, 5);
+	mPlayerParty.Add(Mon);
 
 	return true;
 }
@@ -24,8 +44,11 @@ bool PMainGame::Start()
 	{
 		return false;
 	}
-	mHUD = ConstructWidget<PGameHUD>();
 	GWorld->GetRootWidget()->AddChild(mHUD);
+
+	GPlayerParty = &mPlayerParty;
+	GPlayerStorage = &mPlayerStorage;
+
 	return true;
 }
 
@@ -37,27 +60,56 @@ bool PMainGame::HandleGameEvent(SGameEvent& Event)
 			{
 				if (!mHUD->IsDialogBoxVisible())
 				{
-					mHUD->StartDialogBox(Event.GetData<SInteractData>()->Message);
+					return StartDialogBox(&Event);
 				}
-				else
-				{
-					mHUD->EndDialogBox();
-				}
-				break;
+
+				return EndDialogBox();
 			}
 		case EGameEventType::BattleStart:
 			{
-				mHUD->EndDialogBox();
-				mHUD->StartBattleHUD();
-				break;
+				return StartBattle(&Event);
 			}
 		case EGameEventType::BattleEnd:
 			{
-				mHUD->EndBattleHUD();
-				break;
+				return EndBattle();
 			}
 		default:
 			break;
 	}
+	return true;
+}
+
+bool PMainGame::StartDialogBox(SGameEvent* Event)
+{
+	SInteractContext* Context = Event->GetData<SInteractContext>();
+	if (!Context)
+	{
+		return false;
+	}
+	mHUD->StartDialogBox(Context->Message);
+	return true;
+}
+
+bool PMainGame::EndDialogBox()
+{
+	mHUD->EndDialogBox();
+	return true;
+}
+
+bool PMainGame::StartBattle(SGameEvent* Event)
+{
+	SBattleContext* Context = Event->GetData<SBattleContext>();
+	if (!Context)
+	{
+		return false;
+	}
+	mHUD->EndDialogBox();
+	mHUD->StartBattleHUD();
+	return true;
+}
+
+bool PMainGame::EndBattle()
+{
+	mHUD->EndBattleHUD();
 	return true;
 }

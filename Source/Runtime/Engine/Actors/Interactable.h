@@ -2,20 +2,20 @@
 
 #include "Core/CoreFwd.h"
 
-struct SInteractData
+struct SInteractContext
 {
 	std::string Name = "Default Name";
 	std::string Message = "Default message.";
 
-	SInteractData() = default;
-	SInteractData(const std::string& InName, const std::string& InMessage) : Name(InName), Message(InMessage) {}
+	SInteractContext() = default;
+	SInteractContext(const std::string& InName, const std::string& InMessage) : Name(InName), Message(InMessage) {}
 
-	SInteractData(const SInteractData& Other)
+	SInteractContext(const SInteractContext& Other)
 	{
 		Name = Other.Name;
 	};
 
-	SInteractData& operator=(const SInteractData& Other)
+	SInteractContext& operator=(const SInteractContext& Other)
 	{
 		Name = Other.Name;
 		return *this;

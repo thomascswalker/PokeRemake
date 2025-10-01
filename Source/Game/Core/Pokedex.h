@@ -5,6 +5,7 @@
 #include "Core/Array.h"
 #include "Core/Json.h"
 #include "Core/Singleton.h"
+#include "Engine/Texture.h"
 
 #define ID_BULBASAUR  1
 #define ID_IVYSAUR	  2
@@ -163,16 +164,19 @@ class PPokedexManager;
 
 struct SPokemonDef
 {
-	int32_t					 Id;
+	int32_t					 Id = 0;
 	std::string				 Name;
 	std::vector<std::string> Types;
 
-	uint32_t MaxHp;
-	uint32_t Attack;
-	uint32_t Defense;
-	uint32_t SpAttack;
-	uint32_t SpDefense;
-	uint32_t Speed;
+	uint32_t MaxHp = 0;
+	uint32_t Attack = 0;
+	uint32_t Defense = 0;
+	uint32_t SpAttack = 0;
+	uint32_t SpDefense = 0;
+	uint32_t Speed = 0;
+
+	PTexture* Front = nullptr;
+	PTexture* Back = nullptr;
 
 	SPokemonDef() = default;
 	SPokemonDef(const JSON& Json)
@@ -188,6 +192,12 @@ struct SPokemonDef
 		SpAttack = Stats["Sp. Attack"].get<uint32_t>();
 		SpDefense = Stats["Sp. Defense"].get<uint32_t>();
 		Speed = Stats["Speed"].get<uint32_t>();
+
+		std::string FmtName = Json.contains("AlternateName") ? Json["AlternateName"].get<std::string>() : Name;
+		std::string FrontFileName = std::format("{}Front", FmtName.c_str());
+		Front = PTextureManager::Get(FrontFileName);
+		std::string BackFileName = std::format("{}Back", FmtName.c_str());
+		Back = PTextureManager::Get(BackFileName);
 	}
 
 	JSON Serialize() const
@@ -218,8 +228,13 @@ class PPokedexManager : public ISingleton<PPokedexManager>
 {
 	TArray<SPokemonDef> Defs;
 
+	bool LoadDefs();
+	bool LoadSprites();
+
 public:
-	void		 Init();
+	bool Init();
+
 	SPokemonDef* Get(int32_t Index);
+	SPokemonDef* GetById(int32_t Id);
 	SPokemonDef* GetByName(const std::string& Name);
 };

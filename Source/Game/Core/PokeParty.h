@@ -13,7 +13,7 @@ enum EPartyType
 class PPokemonParty
 {
 	std::array<SPokemon*, 6> mPokemon;
-	EPartyType				 mType;
+	EPartyType				 mType = PT_Player;
 
 	int32_t GetFirstAvailableSlot() const
 	{
@@ -28,6 +28,11 @@ class PPokemonParty
 	}
 
 public:
+	PPokemonParty()
+	{
+		mPokemon.fill(nullptr);
+	};
+
 	PPokemonParty(EPartyType Type) : mType(Type)
 	{
 		mPokemon.fill(nullptr);
@@ -76,6 +81,8 @@ public:
 	{
 		std::swap(mPokemon[Index1], mPokemon[Index2]);
 	}
+
+	void Clear() { mPokemon.fill(nullptr); }
 };
 
-PPokemonParty* GetPlayerParty();
+extern PPokemonParty* GPlayerParty;

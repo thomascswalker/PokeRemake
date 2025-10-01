@@ -35,6 +35,7 @@ bool PGameHUD::IsDialogBoxVisible()
 void PGameHUD::StartBattleHUD()
 {
 	SetInputContext(IC_Battle);
+
 	mBattleHUD = ConstructWidget<PBattleHUD>();
 	PWidget::AddChild(mBattleHUD);
 }
@@ -43,6 +44,7 @@ void PGameHUD::EndBattleHUD()
 {
 	SetInputContext(IC_Default);
 	mBattleHUD->Unparent();
+
 	GWorld->DestroyWidget(mBattleHUD);
 	mBattleHUD = nullptr;
 }

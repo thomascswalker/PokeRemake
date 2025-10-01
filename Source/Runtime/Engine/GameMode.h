@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameEvent.h"
 #include "Input.h"
 #include "Object.h"
 #include "Transition.h"
@@ -7,10 +8,9 @@
 class PGameMode : public PObject, public IInputHandler
 {
 protected:
-	bool mLoaded = false;
-	JSON mSaveState;
-
 	PTransitionManager mTransitionManager;
+	JSON			   mState;
+	bool			   mLoaded = false;
 
 public:
 	virtual std::string GetName()
@@ -20,16 +20,12 @@ public:
 
 	virtual bool Load() = 0;
 	virtual bool Unload() = 0;
-	virtual void LoadDeferred() {}
-	virtual void UnloadDeferred() {}
 
-	bool GetLoaded() const
-	{
-		return mLoaded;
-	}
+	bool IsLoaded() const { return mLoaded; }
+	void SetLoaded(bool State) { mLoaded = State; }
+	void ToggleLoaded() { mLoaded = !mLoaded; }
 
-	void SetLoaded(bool State)
-	{
-		mLoaded = State;
-	}
+	JSON* GetState() { return &mState; }
+
+	virtual bool HandleGameEvent(SGameEvent& GameEvent) = 0;
 };

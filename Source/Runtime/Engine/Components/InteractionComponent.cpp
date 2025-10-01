@@ -7,7 +7,8 @@
 void PInteractionComponent::Interact(PPlayerCharacter* Player)
 {
 	SGameEvent Event(this, EGameEventType::Dialog, &mData);
-	GEngine->GetGame()->HandleGameEvent(Event);
+	// GEngine->GetGame()->HandleGameEvent(Event);
+	GGameMode->HandleGameEvent(Event);
 }
 
 void PInteractionComponent::Deserialize(const JSON& Data)

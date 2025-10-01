@@ -1,9 +1,9 @@
 #pragma once
 
+#include "../Battle/BattleHUD.h"
 #include "Interface/HUD.h"
 #include "Interface/Spacer.h"
 
-#include "BattleHUD.h"
 #include "DialogBox.h"
 
 class PGameHUD : public PHUD

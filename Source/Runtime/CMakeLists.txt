@@ -63,7 +63,6 @@ set(SOURCES
         Engine/MapManager.cpp
         Engine/Object.cpp
         Engine/ParamBlock.h
-        Engine/SaveState.h
         Engine/Serialization.cpp
         Engine/Settings.h
         Engine/Sprite.cpp

@@ -1,10 +1,12 @@
 #include "MapMode.h"
 
 #include "Application/Application.h"
+#include "Battle/BattleManager.h"
+#include "Core/GameConstants.h"
+#include "Engine/Actors/Interactable.h"
 #include "Interface/Button.h"
 
-#define PLAYER_MAP		"MapName"
-#define PLAYER_POSITION "PlayerPosition"
+#include "MainGame.h"
 
 PMapMode::PMapMode()
 {
@@ -12,28 +14,29 @@ PMapMode::PMapMode()
 	mWorld = GWorld;
 	mMapManager = GetMapManager();
 
-	mSaveState[PLAYER_MAP] = MAP_PALLET_TOWN;
-	mSaveState[PLAYER_POSITION] = JSON::array({ 800, 800 });
-
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
+
+	mState = SMapContext::Schema();
 }
 
 std::string PMapMode::GetName()
 {
-	return "MapMode";
+	return MAP_MODE;
 }
 
 bool PMapMode::Load()
 {
 	// Load the map from JSON
-	auto Map = mMapManager->LoadMap(mSaveState[PLAYER_MAP], false);
+	auto Map = mMapManager->LoadMap(mState[PLAYER_MAP], false);
 
 	auto Player = ConstructActor<PPlayerCharacter>();
 	GWorld->SetPlayerCharacter(Player);
 
-	auto	 JsonPosition = mSaveState[PLAYER_POSITION];
+	auto	 JsonPosition = mState[PLAYER_POSITION];
 	FVector2 Position(JsonPosition);
 	Player->GetMovementComponent()->SnapToPosition(Position, Map);
+
+	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 
 	SetInputContext(IC_Default);
 	return true;
@@ -45,7 +48,7 @@ bool PMapMode::Unload()
 
 	// Current position
 	auto PlayerPosition = Player->GetPosition2D();
-	mSaveState[PLAYER_POSITION] = PlayerPosition.ToJson();
+	mState[PLAYER_POSITION] = PlayerPosition.ToJson();
 
 	// Current map
 	auto Map = mMapManager->GetMapAtPosition(PlayerPosition);
@@ -54,7 +57,7 @@ bool PMapMode::Unload()
 		LogError("No map at position: {}", PlayerPosition.ToString().c_str());
 		return false;
 	}
-	mSaveState[PLAYER_MAP] = Map->GetMapName();
+	mState[PLAYER_MAP] = Map->GetMapName();
 
 	// Destroy all actors
 	mWorld->DestroyAllActors();
@@ -113,16 +116,51 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				SGameEvent GameEvent = { this, EGameEventType::BattleStart };
-				GEngine->GetGame()->HandleGameEvent(GameEvent);
+				SBattleContext Context;
+				Context.BattleId = 1;
 
-				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("BattleMode"))
+				SGameEvent GameEvent = { this, EGameEventType::BattleStart, &Context };
+				if (!HandleGameEvent(GameEvent))
 				{
 					Event->Invalidate();
 				}
+
 				break;
 			}
 		default:
 			break;
 	}
+}
+
+bool PMapMode::HandleGameEvent(SGameEvent& GameEvent)
+{
+	JSON* GameState = nullptr;
+
+	switch (GameEvent.Type)
+	{
+		case EGameEventType::Dialog:
+			if (!mHUD->IsDialogBoxVisible())
+			{
+				mHUD->StartDialogBox(GameEvent.GetData<SInteractContext>()->Message);
+			}
+			else
+			{
+				mHUD->EndDialogBox();
+			}
+			break;
+		case EGameEventType::BattleStart:
+			// Update the battle state with the incoming battle ID to be loaded
+			GameState = GEngine->GetGame()->GetGameMode(BATTLE_MODE)->GetState();
+			GameState->operator[]("BattleId") = GameEvent.GetData<SBattleContext>()->BattleId;
+
+			// First load the new game mode
+			if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE))
+			{
+				return false;
+			}
+			break;
+		default:
+			break;
+	}
+	return true;
 }

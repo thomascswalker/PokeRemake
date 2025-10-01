@@ -5,6 +5,8 @@
 #include "Core/CSS.h"
 #include "Core/Logging.h"
 
+PGameMode* GGameMode = nullptr;
+
 PGame::PGame()
 {
 	// Construct the world
@@ -31,6 +33,15 @@ bool PGame::Start()
 	assert(mWorld != nullptr);
 	mWorld->Start();
 	assert(mGameMode != nullptr);
+
+	ASSERT(mGameModes.Size() != 0, "No game modes added.");
+
+	for (auto Mode : mGameModes | std::views::values)
+	{
+		Mode->Start();
+	}
+
+	ASSERT(mGameMode != nullptr, "No game mode set.");
 	if (!LoadCurrentGameMode())
 	{
 		return false;
@@ -62,12 +73,9 @@ void PGame::UpdateCameraView()
 		if (auto CameraComp = dynamic_cast<PCameraComponent*>(Comp))
 		{
 			GRenderer->SetCameraView(CameraComp->GetCameraView());
-			LogDebug("Found active camera");
 			return;
 		}
 	}
-
-	LogError("No camera found");
 }
 
 void PGame::OnKeyUp(SInputEvent* Event)
@@ -115,7 +123,7 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 	auto NewGameMode = GetGameMode(Name);
 
 	// Unload the current game mode
-	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->GetLoaded())
+	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->IsLoaded())
 	{
 		if (!mGameMode->Unload())
 		{
@@ -134,13 +142,18 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 	}
 #endif
 	mGameMode = NewGameMode;
+	GGameMode = mGameMode;
 	return true;
 }
 
 bool PGame::LoadCurrentGameMode()
 {
+	if (!GGameMode)
+	{
+		GGameMode = mGameMode;
+	}
 	mGameMode->Start();
-	if (mGameMode->GetLoaded())
+	if (mGameMode->IsLoaded())
 	{
 		LogWarning("Game mode is already loaded.");
 		return true;

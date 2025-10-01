@@ -3,14 +3,14 @@
 #include "Core/Files.h"
 #include "Core/Json.h"
 
-void PPokedexManager::Init()
+bool PPokedexManager::LoadDefs()
 {
 	const auto	FileName = Files::FindFile("Pokedex.JSON");
 	std::string Buffer;
 	if (!Files::ReadFile(FileName, Buffer))
 	{
-		LogError("Failed to read Pokedex file");
-		return;
+		LogError("Failed to read 'Pokedex.JSON'");
+		return false;
 	}
 	JSON Data = JSON::parse(Buffer);
 
@@ -19,9 +19,35 @@ void PPokedexManager::Init()
 		auto NewDef = SPokemonDef(Item);
 		Defs.Add(NewDef);
 	}
+	return true;
 }
 
-SPokemonDef* PPokedexManager::Get(int32_t Index) { return &Defs[Index]; }
+bool PPokedexManager::LoadSprites()
+{
+	return true;
+}
+
+bool PPokedexManager::Init()
+{
+	if (!LoadDefs())
+	{
+		LogError("Failed to load Pokemon definitions.");
+		return false;
+	}
+
+	if (!LoadSprites())
+	{
+		return false;
+	}
+
+	return true;
+}
+SPokemonDef* PPokedexManager::Get(int32_t Index)
+{
+	return &Defs[Index];
+}
+
+SPokemonDef* PPokedexManager::GetById(int32_t Id) { return &Defs[Id - 1]; }
 
 SPokemonDef* PPokedexManager::GetByName(const std::string& Name)
 {

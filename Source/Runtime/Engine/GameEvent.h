@@ -3,6 +3,8 @@
 #include <string>
 #include <type_traits>
 
+#include "Object.h"
+
 enum class EGameEventType
 {
 	// Misc
