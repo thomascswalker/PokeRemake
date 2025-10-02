@@ -22,7 +22,7 @@ PMapMode::PMapMode()
 
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 
-	mState.Data = SMapContext::Schema();
+	mState.Data = GDefaultMapData;
 }
 
 std::string PMapMode::GetName()
@@ -32,21 +32,19 @@ std::string PMapMode::GetName()
 
 bool PMapMode::PreStart()
 {
-	mState.Data = GDefaultMapData;
 	return true;
 }
 
 bool PMapMode::Load()
 {
 	// Load the map from JSON
-	auto Map = mMapManager->LoadMap(mState[PLAYER_MAP], false);
+	auto Map = mMapManager->LoadMap(mState.Get<std::string>(PLAYER_MAP), false);
 
 	auto Player = ConstructActor<PPlayerCharacter>();
 	GWorld->SetPlayerCharacter(Player);
-
-	auto	 JsonPosition = mState[PLAYER_POSITION];
-	FVector2 Position(JsonPosition);
-	Player->GetMovementComponent()->SnapToPosition(Position, Map);
+	Player->GetMovementComponent()->SnapToPosition(
+		FVector2(mState.GetRaw(PLAYER_POSITION)),
+		Map);
 
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 
@@ -60,7 +58,7 @@ bool PMapMode::Unload()
 
 	// Current position
 	auto PlayerPosition = Player->GetPosition2D();
-	mState[PLAYER_POSITION] = PlayerPosition.ToJson();
+	mState.Set(PLAYER_POSITION, PlayerPosition.ToJson());
 
 	// Current map
 	auto Map = mMapManager->GetMapAtPosition(PlayerPosition);
@@ -69,7 +67,7 @@ bool PMapMode::Unload()
 		LogError("No map at position: {}", PlayerPosition.ToString().c_str());
 		return false;
 	}
-	mState[PLAYER_MAP] = Map->GetMapName();
+	mState.Set(PLAYER_MAP, Map->GetMapName());
 
 	// Destroy all actors
 	mWorld->DestroyAllActors();

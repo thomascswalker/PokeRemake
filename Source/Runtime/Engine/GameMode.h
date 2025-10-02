@@ -9,6 +9,11 @@ struct SGameState
 {
 	JSON Data;
 
+	JSON GetRaw(const std::string& Key)
+	{
+		return Data[Key];
+	}
+
 	template <typename T>
 	T Get(const std::string& Key)
 	{
@@ -16,7 +21,7 @@ struct SGameState
 	}
 
 	template <typename T>
-	void Set(const std::string& Key, T& Value)
+	void Set(const std::string& Key, const T& Value)
 	{
 		Data[Key] = Value;
 	}
