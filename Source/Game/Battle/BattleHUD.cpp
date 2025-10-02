@@ -1,3 +1,7 @@
+/**
+ * Manages and draws the entire Battle HUD when in Battle Mode.
+ */
+
 #include "BattleHUD.h"
 
 PBattleHUD::PBattleHUD()
@@ -26,41 +30,33 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 {
 	// White background
 	Renderer->SetDrawColor(255, 255, 255, 255);
-	Renderer->DrawFillRect({ 0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT });
+	Renderer->DrawFillRect({ 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT });
 
-	// Draw the player pokemon
+	// Draw the player Pokémon
 	if (auto Mon = GBattleManager->GetPlayerMon())
 	{
 		// Draw sprite
-		auto	 Sprite = Mon->GetBackTexture();
-		FVector2 Position = { PLAYER_SPRITE_X, PLAYER_SPRITE_Y - 100 /* Height of dialog box */ + 50 /* Offset within the sprite */ };
-		FRect	 Rect(Position, FVector2(SPRITE_SIZE, SPRITE_SIZE));
+		auto  Sprite = Mon->GetBackTexture();
+		FRect Rect(PLAYER_MON_X, PLAYER_MON_Y, BATTLE_MON_SIZE, BATTLE_MON_SIZE);
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
 
-		Renderer->SetDrawColor(255, 0, 0, 255);
-		Renderer->DrawRect(Rect);
-
-		// Draw level
+		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		FVector2 LevelPosition = { SPRITE_SIZE * 1.5f, SPRITE_SIZE + 30 };
-		Renderer->DrawText(Mon->GetDisplayLevel(), LevelPosition, NAME_FONT_SIZE);
+		Renderer->DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y }, NAME_FONT_SIZE);
+		Renderer->DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y }, NAME_FONT_SIZE);
 	}
 
-	// Draw the pokemon being battled
+	// Draw the Pokémon being battled
 	if (auto Mon = GBattleManager->GetBattleMon())
 	{
 		// Draw sprite
-		auto	 Sprite = Mon->GetFrontTexture();
-		FVector2 Position = { BATTLE_SPRITE_X, BATTLE_SPRITE_Y };
-		FRect	 Rect(Position, FVector2(SPRITE_SIZE, SPRITE_SIZE));
+		auto  Sprite = Mon->GetFrontTexture();
+		FRect Rect(BATTLE_MON_X, BATTLE_MON_Y, BATTLE_MON_SIZE, BATTLE_MON_SIZE);
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
 
-		Renderer->SetDrawColor(255, 0, 0, 255);
-		Renderer->DrawRect(Rect);
-
-		// Draw level
+		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		FVector2 LevelPosition = { SPRITE_SIZE * 0.5f, 30 };
-		Renderer->DrawText(Mon->GetDisplayLevel(), LevelPosition, NAME_FONT_SIZE);
+		Renderer->DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y }, NAME_FONT_SIZE);
+		Renderer->DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y }, NAME_FONT_SIZE);
 	}
 }

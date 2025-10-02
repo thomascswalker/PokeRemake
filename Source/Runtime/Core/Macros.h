@@ -41,18 +41,13 @@
 #define PREPEND(Prefix, Class) STRINGIFY(Prefix##Class)
 #define PCLASS(Class)		   P##Class
 
-#if DEBUG
 #define VALIDATE(Pred, Msg)                                                      \
 	if (!(Pred))                                                                 \
 	{                                                                            \
 		LogError("Validation error in {} at line {}: {}", #Pred, __LINE__, Msg); \
 		return false;                                                            \
 	}
-#else
-#define VALIDATE(Pred, Msg)
-#endif
 
-#if DEBUG
 #define ASSERT(condition, message)                                         \
 	if (!(condition))                                                      \
 	{                                                                      \
@@ -60,6 +55,3 @@
 				  << " line " << __LINE__ << ": " << message << std::endl; \
 		throw std::logic_error("Logic error!");                            \
 	}
-#else
-#define ASSERT(condition, message)
-#endif

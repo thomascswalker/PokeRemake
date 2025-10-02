@@ -25,7 +25,7 @@ class PRenderer : public PObject
 	SDL_Texture* mRenderTarget;
 	PCameraView* mCameraView;
 
-	float DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize) const;
+	float DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize, float Gap = 0) const;
 
 public:
 	SRenderContext Context;
@@ -90,7 +90,7 @@ public:
 	void  DrawPolygon(const std::vector<FVector2>& Vertices, const std::vector<int>& Indexes) const;
 	void  DrawGrid() const;
 	void  DrawChar(char Char, const FVector2& Position, float FontSize) const;
-	float DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false) const;
+	float DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false, float Gap = 0) const;
 	void  DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;

@@ -37,9 +37,10 @@ bool PPokedexManager::Init()
 
 	if (!LoadSprites())
 	{
+		LogError("Failed to load Pokemon sprites.");
 		return false;
 	}
-
+	LogInfo("Loaded Pokemon definitions.");
 	return true;
 }
 SPokemonDef* PPokedexManager::Get(int32_t Index)

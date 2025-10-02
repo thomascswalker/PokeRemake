@@ -25,6 +25,7 @@ bool PEngine::Start()
 		mIsRunning = false;
 		return false;
 	}
+	LogInfo("Started game");
 	return true;
 }
 
