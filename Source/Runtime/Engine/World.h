@@ -19,15 +19,12 @@ DECLARE_MULTICAST_DELEGATE(DActorSelected, PActor*);
 
 class PWorld : public PObject, public IInputHandler
 {
-	PPlayerCharacter*		 mPlayerCharacter = nullptr;
-	std::vector<PActor*>	 mActors;
-	std::vector<PComponent*> mComponents;
+	PPlayerCharacter* mPlayerCharacter = nullptr;
 
 	PTimerManager mTimerManager;
 	PMapManager	  mMapManager;
 
 	std::shared_ptr<PWidget> mRootWidget;
-	std::vector<PWidget*>	 mWidgets;
 
 public:
 	PWorld();
@@ -58,7 +55,6 @@ public:
 	T* ConstructActor(ArgsType&&... Args)
 	{
 		auto Actor = ConstructObject<T>(std::forward<ArgsType>(Args)...);
-		mActors.push_back(Actor);
 
 #if _EDITOR
 		Actor->InitializeParameters();
@@ -79,12 +75,6 @@ public:
 
 	void DestroyAllActors();
 
-	template <typename T>
-	void RegisterActor(T* Actor)
-	{
-		mActors.push_back(ConstructObject<T>(Actor));
-	}
-
 	template <IS_SUBCLASS_OF(PActor), typename... ArgsType>
 	T* SpawnActor(ArgsType&&... Args)
 	{
@@ -99,7 +89,7 @@ public:
 	std::vector<T*> GetActorsOfType() const
 	{
 		std::vector<T*> OutActors;
-		for (const auto& Actor : mActors)
+		for (const auto& Actor : GGameInstance->GetObjects<PActor>())
 		{
 			if (auto TypedActor = dynamic_cast<T*>(Actor))
 			{
@@ -125,7 +115,6 @@ public:
 		Component->InitializeParameters();
 #endif
 		Component->Start();
-		mComponents.push_back(Component);
 		return Component;
 	}
 
@@ -140,14 +129,7 @@ public:
 	{
 		auto Widget = ConstructObject<T>(std::forward<ArgsType>(Args)...);
 		Widget->Start();
-		mWidgets.push_back(Widget);
 		return Widget;
-	}
-
-	template <typename T>
-	void RegisterWidget(T* Widget)
-	{
-		mWidgets.push_back(ConstructObject<T>(Widget));
 	}
 
 	std::vector<PWidget*> GetWidgets() const;

@@ -34,22 +34,27 @@ static TMap<EInputContext, SInputContext> gInputContextMap = {
 		SDLK_D,
 		SDLK_E,
 		SDLK_Q },
-	  {} }											  },
+	  {} }												 },
 	{ IC_Dialog,
 	  { IC_Dialog,
 		{
 		SDLK_E,
 		},
-		{} }											  },
+		{} }												 },
 	{ IC_Battle,
 	  { IC_Battle,
-		{ SDLK_Q } }									  },
+		{ SDLK_W,
+	  SDLK_S,
+	  SDLK_A,
+	  SDLK_D,
+	  SDLK_E,
+	  SDLK_Q, SDLK_RIGHT, SDLK_LEFT, SDLK_UP, SDLK_DOWN } } },
 	// Editor
 	{
 		IC_Select,
 		{ IC_Select,
 	  { DEFAULT_EDITOR_KEYS },
-	  { DEFAULT_EDITOR_MOUSE } }						 },
+	  { DEFAULT_EDITOR_MOUSE } }							 },
 	{	  IC_Tile,
 	  { IC_Tile,
 		{ DEFAULT_EDITOR_KEYS },
@@ -62,7 +67,7 @@ static TMap<EInputContext, SInputContext> gInputContextMap = {
 	{
 		// Allow any keys to be pressed on Text input
 		IC_Text,
-		{ IC_Text, { /* Keys */ }, { /* Mouse */ }, true } }
+		{ IC_Text, { /* Keys */ }, { /* Mouse */ }, true }   }
 };
 
 void SetInputContext(EInputContext Type)

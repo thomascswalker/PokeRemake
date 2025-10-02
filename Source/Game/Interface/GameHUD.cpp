@@ -1,30 +1,50 @@
 #include "GameHUD.h"
 
-#include "Application/Application.h"
-
 PGameHUD::PGameHUD()
 {
 	SetLayoutMode(LM_Vertical);
 }
 
-void PGameHUD::DialogBox(const std::string& Text)
+void PGameHUD::StartDialogBox(const std::string& Text)
 {
-	// Create dialog box
-	if (mDialogBox == nullptr)
+	SetInputContext(IC_Dialog);
+	mDialogBox = ConstructWidget<PDialogBox>();
+	PWidget::AddChild(mDialogBox);
+	mDialogBox->SetText(Text);
+	mDialogBox->Print();
+}
+
+void PGameHUD::EndDialogBox()
+{
+	if (!mDialogBox)
 	{
-		SetInputContext(IC_Dialog);
-		mDialogBox = ConstructWidget<PDialogBox>();
-		PWidget::AddChild(mDialogBox);
-		mDialogBox->SetText(Text);
-		mDialogBox->Print();
+		return;
 	}
-	// Destroy dialog box
-	else
-	{
-		RestoreInputContext();
-		mDialogBox->EndPrint();
-		mDialogBox->Unparent();
-		GWorld->DestroyWidget(mDialogBox);
-		mDialogBox = nullptr;
-	}
+	RestoreInputContext();
+	mDialogBox->EndPrint();
+	mDialogBox->Unparent();
+	GWorld->DestroyWidget(mDialogBox);
+	mDialogBox = nullptr;
+}
+
+bool PGameHUD::IsDialogBoxVisible()
+{
+	return mDialogBox != nullptr;
+}
+
+void PGameHUD::StartBattleHUD()
+{
+	SetInputContext(IC_Battle);
+
+	mBattleHUD = ConstructWidget<PBattleHUD>();
+	PWidget::AddChild(mBattleHUD);
+}
+
+void PGameHUD::EndBattleHUD()
+{
+	SetInputContext(IC_Default);
+	mBattleHUD->Unparent();
+
+	GWorld->DestroyWidget(mBattleHUD);
+	mBattleHUD = nullptr;
 }

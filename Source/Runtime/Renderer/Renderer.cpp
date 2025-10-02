@@ -14,18 +14,18 @@ PRenderer* GRenderer = nullptr;
 #if _EDITOR
 std::string gDefaultFont = "Roboto";
 #else
-std::string gDefaultFont = "Pokemon";
+std::string GDefaultFont = "Pokemon";
 #endif
-static PFont gCurrentFont;
+static PFont GCurrentFont;
 
-constexpr auto gTextureScaleMode = SDL_SCALEMODE_NEAREST;
-constexpr auto gTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
+constexpr auto GTextureScaleMode = SDL_SCALEMODE_NEAREST;
+constexpr auto GTextureAddressMode = SDL_TEXTURE_ADDRESS_WRAP;
 
-float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize) const
+float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Position, float FontSize, float Gap) const
 {
 	// uint8_t R, G, B, A;
 	auto Color = GetDrawColor();
-	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+	SDL_SetTextureColorMod(GCurrentFont.Texture, Color.R, Color.G, Color.B);
 
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
@@ -36,35 +36,35 @@ float PRenderer::DrawTextInternal(const std::string& Text, const FVector2& Posit
 	float Y = Position.Y;
 	for (const auto& C : Text)
 	{
-		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		const auto Info = &GCurrentFont.CharacterData[C - FONT_CHAR_START];
 		SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
 		SDL_FRect  Dest(X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
 						(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
 		if (C == '\n')
 		{
-			Y += Aspect * FontSize * 2;
+			Y += Gap == 0 ? Aspect * FontSize * 2 : Gap;
 			X = Position.X;
 		}
 		else
 		{
-			SDL_RenderTexture(Context.Renderer, gCurrentFont.Texture, &Source, &Dest);
+			SDL_RenderTexture(Context.Renderer, GCurrentFont.Texture, &Source, &Dest);
 			X += Info->xadvance * Aspect;
 		}
 	}
 
 	// Reset draw color mod
-	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
+	SDL_SetTextureColorMod(GCurrentFont.Texture, 255, 255, 255);
 
 	return Width;
 }
 
 bool PRenderer::Initialize()
 {
-	SDL_SetDefaultTextureScaleMode(Context.Renderer, gTextureScaleMode);
-	SDL_SetRenderTextureAddressMode(Context.Renderer, gTextureAddressMode, gTextureAddressMode);
+	SDL_SetDefaultTextureScaleMode(Context.Renderer, GTextureScaleMode);
+	SDL_SetRenderTextureAddressMode(Context.Renderer, GTextureAddressMode, GTextureAddressMode);
 
 	mRenderTarget = SDL_GetRenderTarget(Context.Renderer);
-	LoadFont(gDefaultFont);
+	LoadFont(GDefaultFont);
 
 	return true;
 }
@@ -105,8 +105,8 @@ void PRenderer::LoadFont(const std::string& Name) const
 	fread(FontBuffer, Size, 1, FontFile);
 	fclose(FontFile);
 
-	gCurrentFont.Info = stbtt_fontinfo();
-	if (!stbtt_InitFont(&gCurrentFont.Info, FontBuffer, 0))
+	GCurrentFont.Info = stbtt_fontinfo();
+	if (!stbtt_InitFont(&GCurrentFont.Info, FontBuffer, 0))
 	{
 		LogError("Failed to initialize font: {}", FontFileName.c_str());
 		free(FontBuffer);
@@ -118,25 +118,25 @@ void PRenderer::LoadFont(const std::string& Name) const
 	const auto	 Bitmap = static_cast<uint8_t*>(malloc(TempSize));
 	stbtt_BakeFontBitmap(FontBuffer, 0, FONT_ATLAS_BAKE_SCALE, Bitmap, FONT_ATLAS_SIZE,
 						 FONT_ATLAS_SIZE, FONT_CHAR_START, FONT_CHAR_COUNT,
-						 gCurrentFont.CharacterData);
+						 GCurrentFont.CharacterData);
 
-	gCurrentFont.Bitmap = static_cast<uint8_t*>(malloc(TempSize * 4));
+	GCurrentFont.Bitmap = static_cast<uint8_t*>(malloc(TempSize * 4));
 
 	// Expand the baked font atlas to RGBA format
 	for (int i = 0; i < FONT_ATLAS_SIZE * FONT_ATLAS_SIZE; i++)
 	{
-		gCurrentFont.Bitmap[i * 4] = Bitmap[i];
-		gCurrentFont.Bitmap[i * 4 + 1] = Bitmap[i];
-		gCurrentFont.Bitmap[i * 4 + 2] = Bitmap[i];
-		gCurrentFont.Bitmap[i * 4 + 3] = Bitmap[i];
+		GCurrentFont.Bitmap[i * 4] = Bitmap[i];
+		GCurrentFont.Bitmap[i * 4 + 1] = Bitmap[i];
+		GCurrentFont.Bitmap[i * 4 + 2] = Bitmap[i];
+		GCurrentFont.Bitmap[i * 4 + 3] = Bitmap[i];
 	}
 
 	free(Bitmap);
 	free(FontBuffer);
-	gCurrentFont.Texture = SDL_CreateTexture(Context.Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
+	GCurrentFont.Texture = SDL_CreateTexture(Context.Renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
 											 FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
 	const SDL_Rect Rect(0, 0, FONT_ATLAS_SIZE, FONT_ATLAS_SIZE);
-	SDL_UpdateTexture(gCurrentFont.Texture, &Rect, gCurrentFont.Bitmap,
+	SDL_UpdateTexture(GCurrentFont.Texture, &Rect, GCurrentFont.Bitmap,
 					  FONT_ATLAS_SIZE * sizeof(uint32_t));
 }
 
@@ -151,6 +151,7 @@ bool PRenderer::Render(float DeltaTime) const
 
 	if (!mCameraView)
 	{
+		LogError("No camera view.");
 		return false;
 	}
 
@@ -223,7 +224,7 @@ bool PRenderer::WorldToScreen(const FVector2& WorldPosition, FVector2* ScreenPos
 	if (mCameraView)
 	{
 		const auto ViewPosition = mCameraView->GetPosition();
-		const auto Offset = (WorldPosition - ViewPosition) * mCameraView->GetZoom() * RENDER_SCALE;
+		const auto Offset = (WorldPosition - ViewPosition) * mCameraView->GetZoom();
 
 		*ScreenPosition = (Offset + ScreenSize) * 0.5f;
 		return true;
@@ -249,7 +250,7 @@ bool PRenderer::ScreenToWorld(const FVector2& ScreenPosition, FVector2* WorldPos
 
 	if (mCameraView)
 	{
-		auto Offset = ScreenPosition / RENDER_SCALE / 0.5f - ScreenSize;
+		auto Offset = ScreenPosition / 0.5f - ScreenSize;
 		auto Position2D = Offset / mCameraView->GetZoom();
 
 		const auto ViewPosition = mCameraView->GetPosition();
@@ -420,24 +421,24 @@ void PRenderer::DrawChar(char Char, const FVector2& Position, float FontSize) co
 {
 	// uint8_t R, G, B, A;
 	auto Color = GetDrawColor();
-	SDL_SetTextureColorMod(gCurrentFont.Texture, Color.R, Color.G, Color.B);
+	SDL_SetTextureColorMod(GCurrentFont.Texture, Color.R, Color.G, Color.B);
 
 	// Aspect ratio of the pixel height we render at to the pixel height we baked the
 	// font atlas at.
 	const float Aspect = FontSize / FONT_ATLAS_BAKE_SCALE;
 	const float Y = Position.Y;
 
-	const auto Info = &gCurrentFont.CharacterData[Char - FONT_CHAR_START];
+	const auto Info = &GCurrentFont.CharacterData[Char - FONT_CHAR_START];
 	SDL_FRect  Source(Info->x0, Info->y0, Info->x1 - Info->x0, Info->y1 - Info->y0);
 	SDL_FRect  Dest(Position.X + Info->xoff * Aspect, Y + Info->yoff * Aspect,
 					(Info->x1 - Info->x0) * Aspect, (Info->y1 - Info->y0) * Aspect);
-	SDL_RenderTexture(Context.Renderer, gCurrentFont.Texture, &Source, &Dest);
+	SDL_RenderTexture(Context.Renderer, GCurrentFont.Texture, &Source, &Dest);
 
 	// Reset draw color mod
-	SDL_SetTextureColorMod(gCurrentFont.Texture, 255, 255, 255);
+	SDL_SetTextureColorMod(GCurrentFont.Texture, 255, 255, 255);
 }
 
-float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow) const
+float PRenderer::DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow, float Gap) const
 {
 	FVector2 AlignedPosition = Position;
 
@@ -446,13 +447,13 @@ float PRenderer::DrawText(const std::string& Text, const FVector2& Position, flo
 	{
 		auto Color = GetDrawColor();
 		SetDrawColor(0, 0, 0, 255);
-		DrawTextInternal(Text, AlignedPosition + FVector2{ -1, -1 }, FontSize);
-		DrawTextInternal(Text, AlignedPosition + FVector2{ -1, 1 }, FontSize);
-		DrawTextInternal(Text, AlignedPosition + FVector2{ 1, -1 }, FontSize);
-		DrawTextInternal(Text, AlignedPosition + FVector2{ 1, 1 }, FontSize);
+		DrawTextInternal(Text, AlignedPosition + FVector2{ -1, -1 }, FontSize, Gap);
+		DrawTextInternal(Text, AlignedPosition + FVector2{ -1, 1 }, FontSize, Gap);
+		DrawTextInternal(Text, AlignedPosition + FVector2{ 1, -1 }, FontSize, Gap);
+		DrawTextInternal(Text, AlignedPosition + FVector2{ 1, 1 }, FontSize, Gap);
 		SetDrawColor(Color);
 	}
-	return DrawTextInternal(Text, AlignedPosition, FontSize);
+	return DrawTextInternal(Text, AlignedPosition, FontSize, Gap);
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const
@@ -558,7 +559,7 @@ float PRenderer::GetTextWidth(const std::string& Text, const float FontSize) con
 	float		Width = 0;
 	for (const auto& C : Text)
 	{
-		const auto Info = &gCurrentFont.CharacterData[C - FONT_CHAR_START];
+		const auto Info = &GCurrentFont.CharacterData[C - FONT_CHAR_START];
 		Width += Info->xadvance * Aspect;
 	}
 	return Width;

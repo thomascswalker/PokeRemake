@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -16,6 +17,7 @@ inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Maps",
 	"Resources\\ActorDefs",
 	"Resources\\Styles",
+	"Resources\\Pokedex"
 };
 
 namespace Files
@@ -40,14 +42,38 @@ namespace Files
 		return FileName.substr(0, FileName.find_last_of('/'));
 	}
 
-	inline std::string FindFile(const std::string& FileName)
+	inline std::string FindFile(const std::string& FileName, bool Recurse = true)
 	{
-		for (const auto& Path : gResourcePaths)
+		auto ResourcesPath = GetRootPath() / "Resources";
+
+		if (!Recurse)
 		{
-			auto FullPath = GetRootPath() / std::filesystem::path(Path) / FileName;
-			if (std::filesystem::exists(FullPath))
+			for (auto File : std::filesystem::directory_iterator(ResourcesPath))
 			{
-				return FullPath.string();
+				if (!File.is_regular_file())
+				{
+					continue;
+				}
+				std::string LowerPath = String::ToLower(File.path().filename().string());
+				if (LowerPath == String::ToLower(FileName))
+				{
+					return File.path().string();
+				}
+			}
+		}
+		else
+		{
+			for (auto File : std::filesystem::recursive_directory_iterator(ResourcesPath))
+			{
+				if (!File.is_regular_file())
+				{
+					continue;
+				}
+				std::string LowerPath = String::ToLower(File.path().filename().string());
+				if (LowerPath == String::ToLower(FileName))
+				{
+					return File.path().string();
+				}
 			}
 		}
 		return "";
@@ -76,7 +102,7 @@ namespace Files
 		else
 		{
 			const char* Error = NFD_GetError();
-			if (Error != nullptr && strlen(Error) > 0)
+			if (Error != nullptr && std::strlen(Error) > 0)
 			{
 				LogError("Failed to open file dialog: {}", Error);
 				return false;
@@ -158,14 +184,32 @@ namespace Files
 		return true;
 	}
 
-	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory)
+	inline std::vector<std::string> GetFilesInDirectory(const std::string& Directory, bool Recurse = false)
 	{
 		std::vector<std::string> OutFiles;
 
 		auto Path = GetRootPath() / std::filesystem::path(Directory);
-		for (const auto& Entry : std::filesystem::directory_iterator(Path))
+		if (!Recurse)
 		{
-			OutFiles.push_back(Entry.path().string());
+			for (const auto& Entry : std::filesystem::directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
+		}
+		else
+		{
+			for (const auto& Entry : std::filesystem::recursive_directory_iterator(Path))
+			{
+				if (!Entry.is_regular_file())
+				{
+					continue;
+				}
+				OutFiles.push_back(Entry.path().string());
+			}
 		}
 
 		return OutFiles;

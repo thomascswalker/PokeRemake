@@ -3,6 +3,7 @@
 #define DEFAULT_FOV 90.0f
 
 #include "Core/Matrix.h"
+
 #include "Object.h"
 
 constexpr float gMinZoom = 0.1f;
@@ -21,18 +22,18 @@ class PCameraView : public PObject
 protected:
 	// 2D
 	FVector2 mPosition;
-	float mZoom = 1.0f;
+	float	 mZoom = 1.0f;
 
 	// 3D
-	float mFOV          = DEFAULT_FOV;
+	float	  mFOV = DEFAULT_FOV;
 	EViewMode mViewMode = VM_Orthographic;
-	FVector2 mDirection;
+	FVector2  mDirection;
 
 public:
 	void Tick(float DeltaTime) override {}
 
 	PComponent* GetComponent() const;
-	void SetComponent(PComponent* Component);
+	void		SetComponent(PComponent* Component);
 
 	float GetFOV() const
 	{
@@ -61,11 +62,7 @@ public:
 
 	FVector2 GetPosition() const
 	{
-#ifdef OFFSET_CAMERA
 		return mPosition + FVector2(TILE_SIZE, TILE_SIZE);
-#else
-		return mPosition;
-#endif
 	}
 
 	float GetZoom() const
@@ -81,14 +78,14 @@ public:
 	void AddZoom(float Value)
 	{
 		float NewZoom = mZoom + Value * 0.1f;
-		mZoom         = std::min(gMaxZoom, std::max(gMinZoom, NewZoom));
+		mZoom = std::min(gMaxZoom, std::max(gMinZoom, NewZoom));
 	}
 
 	FMatrix GetViewMatrix() const
 	{
-		auto Target = FVector3(0.0f, 0.0f, 0.0f);
-		auto Up     = FVector3(0.0f, 1.0f, 0.0f);
-		FMatrix M   = MakeLookAtMatrix({mPosition.X, mPosition.Y, 0}, Target, Up);
+		auto	Target = FVector3(0.0f, 0.0f, 0.0f);
+		auto	Up = FVector3(0.0f, 1.0f, 0.0f);
+		FMatrix M = MakeLookAtMatrix({ mPosition.X, mPosition.Y, 0 }, Target, Up);
 		// LogDebug("{}", M.ToString().c_str());
 		return M;
 	}

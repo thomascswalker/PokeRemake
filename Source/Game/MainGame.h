@@ -1,19 +1,31 @@
 #pragma once
 
+#include "Core/PokeParty.h"
+#include "Core/PokeStorage.h"
 #include "Engine/Game.h"
-#include "Interface/DialogBox.h"
+#include "Interface/GameHUD.h"
 
 class PMainGame : public PGame
 {
-	PDialogBox* mDialogBox;
+	PGameHUD* mHUD = nullptr;
+
+	PPokemonParty	mPlayerParty;
+	PPokemonStorage mPlayerStorage;
 
 public:
+	PMainGame() : mPlayerParty() {}
 	~PMainGame() override {}
 
 	bool PreStart() override;
+	bool Start() override;
+
+	PGameHUD* GetHUD() { return mHUD; }
 
 	bool HandleGameEvent(SGameEvent& Event) override;
 
-	void ShowDialogBox(const std::string& Text);
-	void CloseDialogBox();
+	bool StartDialogBox(SGameEvent* Event);
+	bool EndDialogBox();
+
+	bool StartBattle(SGameEvent* Event);
+	bool EndBattle();
 };

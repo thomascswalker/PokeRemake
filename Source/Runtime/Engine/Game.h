@@ -66,6 +66,7 @@ public:
 		{
 			mGameMode = Mode.get();
 		}
+
 		return dynamic_cast<T*>(mGameModes[Name].get());
 	}
 
@@ -91,3 +92,5 @@ public:
 		return true;
 	}
 };
+
+extern PGameMode* GGameMode;

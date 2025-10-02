@@ -5,7 +5,7 @@
 
 class PInteractionComponent : public PComponent
 {
-    SInteractData mData;
+    SInteractContext mData;
     bool mInitialized = false;
 
 public:
@@ -23,7 +23,7 @@ public:
         return *this;
     }
 
-    SInteractData* GetInteractData()
+    SInteractContext* GetInteractData()
     {
         return &mData;
     }

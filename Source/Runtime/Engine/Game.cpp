@@ -5,6 +5,8 @@
 #include "Core/CSS.h"
 #include "Core/Logging.h"
 
+PGameMode* GGameMode = nullptr;
+
 PGame::PGame()
 {
 	// Construct the world
@@ -31,6 +33,15 @@ bool PGame::Start()
 	assert(mWorld != nullptr);
 	mWorld->Start();
 	assert(mGameMode != nullptr);
+
+	ASSERT(mGameModes.Size() != 0, "No game modes added.");
+
+	for (auto Mode : mGameModes | std::views::values)
+	{
+		Mode->Start();
+	}
+
+	ASSERT(mGameMode != nullptr, "No game mode set.");
 	if (!LoadCurrentGameMode())
 	{
 		return false;
@@ -55,18 +66,16 @@ void PGame::Tick(float DeltaTime)
 
 void PGame::UpdateCameraView()
 {
-	for (auto Comp : mWorld->GetComponents())
+	auto Comps = mWorld->GetComponents();
+	for (auto Comp : Comps)
 	{
 		// Just set the first camera component found as the active camera
 		if (auto CameraComp = dynamic_cast<PCameraComponent*>(Comp))
 		{
 			GRenderer->SetCameraView(CameraComp->GetCameraView());
-			LogDebug("Found active camera");
 			return;
 		}
 	}
-
-	LogError("No camera found");
 }
 
 void PGame::OnKeyUp(SInputEvent* Event)
@@ -102,19 +111,17 @@ bool PGame::ProcessEvents(SInputEvent* Event)
 
 bool PGame::SetCurrentGameMode(const std::string& Name)
 {
-#if _DEBUG
 	if (!mGameModes.Contains(Name))
 	{
 		LogError("Target game mode {} does not exist.", Name.c_str());
 		return false;
 	}
-#endif
 
 	// Get the new game mode
 	auto NewGameMode = GetGameMode(Name);
 
 	// Unload the current game mode
-	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->GetLoaded())
+	if (mGameMode != nullptr && mGameMode != NewGameMode && mGameMode->IsLoaded())
 	{
 		if (!mGameMode->Unload())
 		{
@@ -125,21 +132,25 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 		OnGameModeUnloaded(mGameMode);
 	}
 
-#if _DEBUG
 	if (!NewGameMode)
 	{
 		LogError("New game mode {} cannot be retrieved.", Name.c_str());
 		return false;
 	}
-#endif
+
 	mGameMode = NewGameMode;
+	GGameMode = mGameMode;
 	return true;
 }
 
 bool PGame::LoadCurrentGameMode()
 {
+	if (!GGameMode)
+	{
+		GGameMode = mGameMode;
+	}
 	mGameMode->Start();
-	if (mGameMode->GetLoaded())
+	if (mGameMode->IsLoaded())
 	{
 		LogWarning("Game mode is already loaded.");
 		return true;

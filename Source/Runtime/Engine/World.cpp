@@ -12,23 +12,12 @@ PWorld* GWorld = nullptr;
 
 bool PWorld::Start()
 {
-	LogDebug("Starting world");
-
-	LogDebug("Starting {} actors.", GetActors().size());
-	for (const auto& Actor : GetActors())
+	// Attempt to start all objects
+	for (const auto& Object : GGameInstance->GetObjects())
 	{
-		if (!Actor->Start())
+		if (!Object->Start())
 		{
-			LogError("Failed to start actor");
-			return false;
-		}
-	}
-	LogDebug("Starting {} components.", GetComponents().size());
-	for (const auto& Component : GetComponents())
-	{
-		if (!Component->Start())
-		{
-			LogError("Failed to start component");
+			LogError("Failed to start object: {}", Object->GetClassName().c_str());
 			return false;
 		}
 	}
@@ -45,6 +34,7 @@ bool PWorld::End()
 
 void PWorld::Tick(float DeltaTime)
 {
+	// Tick all timers
 	mTimerManager.Tick(DeltaTime);
 
 	// Set the root widget to span the width and height of the screen
@@ -55,28 +45,16 @@ void PWorld::Tick(float DeltaTime)
 	// Recursively construct the layout of all widgets
 	Layout::Layout(mRootWidget.get());
 
-	// Tick each widget
-	for (const auto& W : mWidgets)
+	// Tick all objects
+	for (const auto& Object : GGameInstance->GetObjects())
 	{
-		W->Tick(DeltaTime);
-	}
-
-	auto Comps = GetComponents();
-	for (auto& Component : GetComponents())
-	{
-		Component->Tick(DeltaTime);
-	}
-
-	for (auto& Actor : GetActors())
-	{
-		Actor->Tick(DeltaTime);
+		Object->Tick(DeltaTime);
 	}
 }
 
 void PWorld::DestroyActor(PActor* Actor)
 {
 	GGameInstance->DestroyObject(Actor);
-	Actor->Destroyed.Broadcast(Actor);
 	for (auto Component : Actor->GetComponents())
 	{
 		DestroyComponent(Component);
@@ -85,12 +63,11 @@ void PWorld::DestroyActor(PActor* Actor)
 	{
 		DestroyActor(Child);
 	}
-	mActors.erase(std::ranges::find(mActors, Actor));
 }
 
 void PWorld::DestroyAllActors()
 {
-	for (auto Actor : mActors)
+	for (auto Actor : GetActors())
 	{
 		DestroyActor(Actor);
 	}
@@ -103,18 +80,13 @@ PWorld::PWorld()
 
 std::vector<PActor*> PWorld::GetActors() const
 {
-	std::vector<PActor*> Actors;
-	for (const auto& Actor : mActors)
-	{
-		Actors.push_back(Actor);
-	}
-	return Actors;
+	return GGameInstance->GetObjects<PActor>();
 }
 
 std::vector<IDrawable*> PWorld::GetDrawables() const
 {
 	std::vector<IDrawable*> Drawables;
-	for (const auto& Actor : mActors)
+	for (const auto& Actor : GetActors())
 	{
 		if (auto Drawable = dynamic_cast<IDrawable*>(Actor))
 		{
@@ -122,7 +94,7 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 		}
 	}
 
-	for (const auto& Component : mComponents)
+	for (const auto& Component : GetComponents())
 	{
 		if (auto Drawable = dynamic_cast<IDrawable*>(Component))
 		{
@@ -141,26 +113,16 @@ std::vector<IDrawable*> PWorld::GetDrawables() const
 void PWorld::DestroyComponent(PComponent* Component)
 {
 	GGameInstance->DestroyObject(Component);
-	mComponents.erase(std::ranges::find(mComponents, Component));
 }
+
 std::vector<PComponent*> PWorld::GetComponents() const
 {
-	std::vector<PComponent*> Components;
-	for (const auto& Component : mComponents)
-	{
-		Components.push_back(Component);
-	}
-	return Components;
+	return GGameInstance->GetObjects<PComponent>();
 }
 
 std::vector<PWidget*> PWorld::GetWidgets() const
 {
-	std::vector<PWidget*> Widgets;
-	for (const auto& Widget : mWidgets)
-	{
-		Widgets.push_back(Widget);
-	}
-	return Widgets;
+	return GGameInstance->GetObjects<PWidget>();
 }
 
 void PWorld::DestroyWidget(PWidget* Widget)
@@ -170,7 +132,6 @@ void PWorld::DestroyWidget(PWidget* Widget)
 	{
 		DestroyWidget(Child);
 	}
-	mWidgets.erase(std::ranges::find(mWidgets, Widget));
 }
 
 PPlayerCharacter* PWorld::GetPlayerCharacter() const
@@ -185,7 +146,7 @@ void PWorld::SetPlayerCharacter(PPlayerCharacter* PlayerCharacter)
 
 PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 {
-	for (const auto& Actor : mActors)
+	for (const auto& Actor : GetActors())
 	{
 		// Skip actors that are not characters
 		if (dynamic_cast<PGameMap*>(Actor))
@@ -203,7 +164,7 @@ PActor* PWorld::GetActorAtPosition(const FVector2& Position) const
 std::vector<PActor*> PWorld::GetActorsAtPosition(const FVector2& Position) const
 {
 	std::vector<PActor*> OutActors;
-	for (auto Actor : mActors)
+	for (auto Actor : GetActors())
 	{
 		if (Actor->GetWorldBounds().Contains(Position))
 		{

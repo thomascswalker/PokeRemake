@@ -17,6 +17,7 @@ set(SOURCES
         Core/Array.h
         Core/Bitmask.h
         Core/CFwd.h
+        Core/CSS.h
         Core/Color.cpp
         Core/Common.h
         Core/Constants.h
@@ -32,6 +33,7 @@ set(SOURCES
         Core/Map.h
         Core/Matrix.h
         Core/Meta.cpp
+        Core/Singleton.h
         Core/String.h
         Core/Time.h
         Core/Vector.h
@@ -60,12 +62,17 @@ set(SOURCES
         Engine/InputContext.cpp
         Engine/MapManager.cpp
         Engine/Object.cpp
-        Engine/SaveState.h
+        Engine/ParamBlock.h
         Engine/Serialization.cpp
         Engine/Settings.h
+        Engine/Sprite.cpp
         Engine/Sprite.h
+        Engine/TextPrinter.h
         Engine/Texture.cpp
         Engine/Tileset.cpp
+        Engine/Timer.cpp
+        Engine/Timer.h
+        Engine/Transition.h
         Engine/World.cpp
         Interface/AbstractButton.cpp
         Interface/Box.h
@@ -73,8 +80,7 @@ set(SOURCES
         Interface/ButtonGroup.h
         Interface/Divider.h
         Interface/Dropdown.cpp
-        ../Game/Interface/DialogBox.h
-        ../Game/Interface/GameHUD.cpp
+        Interface/EditText.h
         Interface/GridView.h
         Interface/Group.h
         Interface/HUD.h
@@ -82,6 +88,7 @@ set(SOURCES
         Interface/ItemView.h
         Interface/Layout.h
         Interface/Menu.cpp
+        Interface/Padding.h
         Interface/Panel.h
         Interface/ScrollArea.h
         Interface/Spacer.h

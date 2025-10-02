@@ -66,6 +66,10 @@ class PSprite;
 class PText;
 class PWidget;
 class PWorld;
+class PGameMode;
+
+// Structs
+struct SGameState;
 
 /* Interfaces */
 

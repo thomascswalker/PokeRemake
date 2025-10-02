@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Containers.h"
 #include "Core/Meta.h"
 
 #include "Object.h"
@@ -37,19 +38,24 @@ class PGameInstance : public PObject
 		mObjects.erase(std::ranges::find(mObjects, SharedObject));
 	}
 
-public:
-	PGameInstance()
-	{
-		GSettings = &mSettings;
-	};
-
-	void Tick(float DeltaTime) override
+	void Cleanup()
 	{
 		for (auto Object : mDestroyableObjects)
 		{
 			DestroyObjectInternal(Object);
 		}
 		mDestroyableObjects.clear();
+	}
+
+public:
+	PGameInstance()
+	{
+		GSettings = &mSettings;
+	}
+
+	void Tick(float DeltaTime) override
+	{
+		Cleanup();
 	}
 
 	template <IS_SUBCLASS_OF(PObject), typename... ArgsType>
@@ -63,7 +69,22 @@ public:
 
 	void DestroyObject(PObject* Object)
 	{
-		mDestroyableObjects.emplace_back(Object);
+		Object->MarkPendingDestruction();
+		mDestroyableObjects.push_back(Object);
+	}
+
+	template <typename T = PObject>
+	std::vector<T*> GetObjects()
+	{
+		std::vector<T*> Result;
+		for (auto Object : mObjects)
+		{
+			if (T* CastObject = dynamic_cast<T*>(Object.get()))
+			{
+				Result.push_back(CastObject);
+			}
+		}
+		return Result;
 	}
 };
 
