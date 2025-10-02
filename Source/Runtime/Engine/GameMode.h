@@ -5,11 +5,33 @@
 #include "Object.h"
 #include "Transition.h"
 
+struct SGameState
+{
+	JSON Data;
+
+	template <typename T>
+	T Get(const std::string& Key)
+	{
+		return Data[Key].get<T>();
+	}
+
+	template <typename T>
+	void Set(const std::string& Key, T& Value)
+	{
+		Data[Key] = Value;
+	}
+
+	JSON operator[](const std::string& Key)
+	{
+		return Data[Key];
+	}
+};
+
 class PGameMode : public PObject, public IInputHandler
 {
 protected:
 	PTransitionManager mTransitionManager;
-	JSON			   mState;
+	SGameState		   mState;
 	bool			   mLoaded = false;
 
 public:
@@ -25,7 +47,7 @@ public:
 	void SetLoaded(bool State) { mLoaded = State; }
 	void ToggleLoaded() { mLoaded = !mLoaded; }
 
-	JSON* GetState() { return &mState; }
+	SGameState* GetState() { return &mState; }
 
 	virtual bool HandleGameEvent(SGameEvent& GameEvent) = 0;
 };

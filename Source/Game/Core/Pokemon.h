@@ -17,11 +17,12 @@ public:
 	SPokemon(const SPokemonDef& Def, uint32_t Level, uint32_t Experience)
 		: mDef(Def), mHp{ 0 }, mLevel(Level), mExperience(Experience) {}
 
-	std::string GetDisplayName() const { return mDef.Name; }
+	std::string GetDisplayName() const { return String::ToUpper(mDef.Name); }
 
-	uint32_t GetLevel() const { return mLevel; }
-	void	 SetLevel(uint32_t Level) { this->mLevel = Level; }
-	void	 LevelUp() { this->mLevel++; }
+	uint32_t	GetLevel() const { return mLevel; }
+	void		SetLevel(uint32_t Level) { this->mLevel = Level; }
+	void		LevelUp() { this->mLevel++; }
+	std::string GetDisplayLevel() const { return std::format("L{}", this->mLevel); }
 
 	uint32_t GetExperience() const { return mExperience; }
 	void	 AddExperience(uint32_t Exp) { this->mExperience = Exp; }

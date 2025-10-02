@@ -5,6 +5,8 @@
 
 #include "BattleManager.h"
 
+#define STATE_BATTLE_ID "BattleId"
+
 class PBattleMode : public PGameMode
 {
 	PBattleManager mBattleManager;

@@ -111,7 +111,7 @@ bool PGame::ProcessEvents(SInputEvent* Event)
 
 bool PGame::SetCurrentGameMode(const std::string& Name)
 {
-#if _DEBUG
+#if DEBUG
 	if (!mGameModes.Contains(Name))
 	{
 		LogError("Target game mode {} does not exist.", Name.c_str());
@@ -134,7 +134,7 @@ bool PGame::SetCurrentGameMode(const std::string& Name)
 		OnGameModeUnloaded(mGameMode);
 	}
 
-#if _DEBUG
+#if DEBUG
 	if (!NewGameMode)
 	{
 		LogError("New game mode {} cannot be retrieved.", Name.c_str());

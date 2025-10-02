@@ -2,6 +2,7 @@
 
 #include "Application/Application.h"
 #include "Battle/BattleManager.h"
+#include "Battle/BattleMode.h"
 #include "Core/GameConstants.h"
 #include "Engine/Actors/Interactable.h"
 #include "Interface/Button.h"
@@ -21,7 +22,7 @@ PMapMode::PMapMode()
 
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 
-	mState = SMapContext::Schema();
+	mState.Data = SMapContext::Schema();
 }
 
 std::string PMapMode::GetName()
@@ -31,7 +32,7 @@ std::string PMapMode::GetName()
 
 bool PMapMode::PreStart()
 {
-	mState = GDefaultMapData;
+	mState.Data = GDefaultMapData;
 	return true;
 }
 
@@ -128,7 +129,7 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 		case SDLK_Q:
 			{
 				SBattleContext Context;
-				Context.Battle = GBattleManager->GetBattle(BATTLE_ID_GARY_OAK_LAB);
+				Context.Trainer = GBattleManager->GetTrainer(BATTLE_ID_GARY_OAK_LAB);
 
 				SGameEvent GameEvent = { this, EGameEventType::BattleStart, &Context };
 				if (!HandleGameEvent(GameEvent))
@@ -161,8 +162,7 @@ bool PMapMode::HandleGameEvent(SGameEvent& GameEvent)
 			break;
 		case EGameEventType::BattleStart:
 			// Update the battle state with the incoming battle ID to be loaded
-			GameState = GEngine->GetGame()->GetGameMode(BATTLE_MODE)->GetState();
-			GameState->operator[]("BattleId") = GameEvent.GetData<SBattleContext>()->Battle->Id;
+			GEngine->GetGameState(BATTLE_MODE)->Set(STATE_BATTLE_ID, GameEvent.GetData<SBattleContext>()->Trainer->Id);
 
 			// First load the new game mode
 			if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE))

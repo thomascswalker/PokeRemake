@@ -9,7 +9,7 @@
 
 PBattleMode::PBattleMode()
 {
-	mState = SBattleContext::Schema();
+	mState.Data = SBattleContext::Schema();
 	GBattleManager = &mBattleManager;
 }
 
@@ -29,8 +29,9 @@ bool PBattleMode::Load()
 {
 	SetInputContext(IC_Battle);
 
-	auto Id = mState["BattleId"].get<int32_t>();
-	mBattleManager.SetCurrentBattleId(Id);
+	auto Id = mState.Get<int32_t>(STATE_BATTLE_ID);
+	mBattleManager.StartTrainerBattle(Id);
+	// mBattleManager.StartWildBattle(ID_MAGMAR, 50);
 	mBattleManager.SetPlayerMon(GPlayerParty->Get(0));
 
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
@@ -63,7 +64,14 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 			}
 		case SDLK_RIGHT:
 			{
-				GBattleManager->NextBattleMon();
+				GBattleManager->SwapNextBattleMon();
+				mHUD->EndBattleHUD();
+				mHUD->StartBattleHUD();
+				break;
+			}
+		case SDLK_LEFT:
+			{
+				GBattleManager->SwapPrevBattleMon();
 				mHUD->EndBattleHUD();
 				mHUD->StartBattleHUD();
 				break;
@@ -79,7 +87,7 @@ bool PBattleMode::HandleGameEvent(SGameEvent& GameEvent)
 	{
 		case EGameEventType::BattleEnd:
 			{
-				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode("MapMode"))
+				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(MAP_MODE))
 				{
 					return false;
 				}

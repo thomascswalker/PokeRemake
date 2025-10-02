@@ -66,6 +66,16 @@ public:
 	{
 		return &mGameInstance;
 	}
+
+	SGameState* GetCurrentGameState()
+	{
+		return mGame->GetCurrentGameMode()->GetState();
+	}
+
+	SGameState* GetGameState(const std::string& Name)
+	{
+		return mGame->GetGameMode(Name)->GetState();
+	}
 };
 
 extern PEngine* GEngine;

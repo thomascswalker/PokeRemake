@@ -5,7 +5,7 @@
 #include "../Core/PokeStorage.h"
 #include "Engine/Object.h"
 
-struct SBattle
+struct STrainer
 {
 	int32_t			Id;
 	std::string		Name;
@@ -14,8 +14,8 @@ struct SBattle
 
 struct SBattleContext
 {
-	// Pointer to the battle definition
-	SBattle* Battle = nullptr;
+	// Pointer to the trainer definition
+	STrainer* Trainer = nullptr;
 
 	// The opposing party
 	PPokemonParty BattleParty;
@@ -38,21 +38,27 @@ struct SBattleContext
 
 class PBattleManager : public PObject
 {
-	std::map<int32_t, SBattle> mBattles;
-	PPokemonParty			   mBattleParty;
-	SBattleContext			   mContext;
+	std::map<int32_t, STrainer> mTrainers;
+	SBattleContext				mContext;
 
 public:
 	bool PreStart() override;
 
-	SBattle* GetBattle(int32_t Id);
+	/* Any battle */
 
-	int32_t GetCurrentBattleId() const { return mContext.Battle->Id; }
-	void	SetCurrentBattleId(int32_t Id);
+	PPokemonParty* GetCurrentBattleParty() { return &mContext.BattleParty; }
+	EPartyType	   GetCurrentBattlePartyType() const { return mContext.BattleParty.GetType(); }
 
-	PPokemonStorage* GetCurrentBattleStorage(int32_t Id);
-	PPokemonParty*	 GetCurrentBattleParty() { return &mBattleParty; }
-	std::string		 GetCurrentBattleName() const;
+	void StartTrainerBattle(int32_t Id);
+	void StartWildBattle(int32_t Id, int32_t Level);
+
+	/* Trainers */
+
+	STrainer* GetTrainer(int32_t Id);
+	int32_t	  GetCurrentTrainerId() const { return mContext.Trainer->Id; }
+
+	PPokemonStorage* GetCurrentTrainerStorage(int32_t Id);
+	std::string		 GetCurrentTrainerName() const;
 
 	SPokemon* GetPlayerMon() const
 	{
@@ -76,10 +82,11 @@ public:
 
 	void SetBattleMon(int32_t Index)
 	{
-		mContext.BattleMon = mBattleParty.Get(Index);
+		mContext.BattleMon = mContext.BattleParty.Get(Index);
 	}
 
-	void NextBattleMon();
+	void SwapNextBattleMon();
+	void SwapPrevBattleMon();
 };
 
 extern PBattleManager* GBattleManager;

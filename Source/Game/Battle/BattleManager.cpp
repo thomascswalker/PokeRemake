@@ -3,6 +3,7 @@
 #include "Core/GameConstants.h"
 
 PBattleManager* GBattleManager = nullptr;
+SPokemon		GWildMon;
 
 bool PBattleManager::PreStart()
 {
@@ -24,58 +25,99 @@ bool PBattleManager::PreStart()
 	for (auto& Battle : Data)
 	{
 		int32_t Id = Battle["Id"];
-		mBattles[Id] = { .Id = Battle["Id"], .Name = Battle["Name"] };
+		mTrainers[Id] = { .Id = Battle["Id"], .Name = Battle["Name"] };
 		for (auto Mon : Battle["Mons"])
 		{
-			mBattles[Id].Storage.Construct(Mon["Id"], Mon["Level"]);
+			mTrainers[Id].Storage.Construct(Mon["Id"], Mon["Level"]);
 		}
 	}
 
 	return true;
 }
 
-SBattle* PBattleManager::GetBattle(int32_t Id)
+void PBattleManager::StartTrainerBattle(int32_t Id)
 {
-	return &mBattles[Id];
-}
-
-void PBattleManager::SetCurrentBattleId(int32_t Id)
-{
-	if (mBattles.contains(Id))
+	mContext.BattleParty.SetType(PT_Trainer);
+	auto BattleParty = &mContext.BattleParty;
+	if (mTrainers.contains(Id))
 	{
-		mContext.Battle = &mBattles[Id];
-		mBattleParty.Clear();
-		for (auto& Mon : mBattles.at(Id).Storage.GetAll())
+		mContext.Trainer = &mTrainers[Id];
+		BattleParty->Clear();
+		for (auto& Mon : mTrainers.at(Id).Storage.GetAll())
 		{
-			mBattleParty.Add(&Mon);
+			BattleParty->Add(&Mon);
 		}
 	}
-	mContext.BattleMon = mBattleParty.Get(0);
+	mContext.BattleMon = BattleParty->Get(0);
 }
-PPokemonStorage* PBattleManager::GetCurrentBattleStorage(int32_t Id)
+
+void PBattleManager::StartWildBattle(int32_t Id, int32_t Level)
 {
-	if (!mBattles.contains(Id))
+	mContext.BattleParty.SetType(PT_Wild);
+	mContext.BattleParty.Clear();
+	GWildMon = SPokemon(*PPokedexManager::Instance()->GetById(Id), Level, 0);
+	mContext.BattleParty.Add(&GWildMon);
+	mContext.BattleMon = mContext.BattleParty.Get(0);
+}
+
+STrainer* PBattleManager::GetTrainer(int32_t Id)
+{
+	return &mTrainers[Id];
+}
+
+PPokemonStorage* PBattleManager::GetCurrentTrainerStorage(int32_t Id)
+{
+	if (!mTrainers.contains(Id))
 	{
 		return nullptr;
 	}
-	return &mBattles[Id].Storage;
+	return &mTrainers[Id].Storage;
 }
-std::string PBattleManager::GetCurrentBattleName() const
+
+std::string PBattleManager::GetCurrentTrainerName() const
 {
-	if (!mContext.Battle)
+	if (!mContext.Trainer)
 	{
 		return "";
 	}
-	return mContext.Battle->Name;
+	return mContext.Trainer->Name;
 }
-void PBattleManager::NextBattleMon()
+
+void PBattleManager::SwapNextBattleMon()
 {
 	if (mContext.BattleMon == nullptr)
 	{
 		LogError("No battle mon set.");
 		return;
 	}
-	int32_t Index = mBattleParty.GetIndex(mContext.BattleMon);
-	int32_t NewIndex = Index == mBattleParty.GetCount() - 1 ? 0 : Index + 1;
+
+	// If there's only one Pokemon in the party, we can't swap
+	auto Count = mContext.BattleParty.GetCount();
+	if (Count == 1)
+	{
+		return;
+	}
+
+	int32_t Index = mContext.BattleParty.GetIndex(mContext.BattleMon);
+	int32_t NewIndex = Index == Count - 1 ? 0 : Index + 1;
+	SetBattleMon(NewIndex);
+}
+void PBattleManager::SwapPrevBattleMon()
+{
+	if (mContext.BattleMon == nullptr)
+	{
+		LogError("No battle mon set.");
+		return;
+	}
+
+	// If there's only one Pokemon in the party, we can't swap
+	auto Count = mContext.BattleParty.GetCount();
+	if (Count == 1)
+	{
+		return;
+	}
+
+	int32_t Index = mContext.BattleParty.GetIndex(mContext.BattleMon);
+	int32_t NewIndex = Index == 0 ? Count - 1 : Index - 1;
 	SetBattleMon(NewIndex);
 }

@@ -8,7 +8,7 @@ PBattleHUD::PBattleHUD()
 	std::string BattleText = "Default text.";
 	if (auto BattleMon = GBattleManager->GetBattleMon())
 	{
-		BattleText = std::format("{} sent out \n{}", GBattleManager->GetCurrentBattleName().c_str(), BattleMon->GetDisplayName().c_str());
+		BattleText = std::format("{} sent out \n{}", GBattleManager->GetCurrentTrainerName().c_str(), BattleMon->GetDisplayName().c_str());
 	}
 	mDialogBox->SetText(BattleText);
 	mDialogBox->Print();
@@ -29,26 +29,38 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 	Renderer->DrawFillRect({ 0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT });
 
 	// Draw the player pokemon
-	if (auto PlayerMon = GBattleManager->GetPlayerMon())
+	if (auto Mon = GBattleManager->GetPlayerMon())
 	{
-		auto	 Sprite = PlayerMon->GetBackTexture();
+		// Draw sprite
+		auto	 Sprite = Mon->GetBackTexture();
 		FVector2 Position = { PLAYER_SPRITE_X, PLAYER_SPRITE_Y - 100 /* Height of dialog box */ + 50 /* Offset within the sprite */ };
 		FRect	 Rect(Position, FVector2(SPRITE_SIZE, SPRITE_SIZE));
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
 
 		Renderer->SetDrawColor(255, 0, 0, 255);
 		Renderer->DrawRect(Rect);
+
+		// Draw level
+		Renderer->SetDrawColor(0, 0, 0, 255);
+		FVector2 LevelPosition = { SPRITE_SIZE * 1.5f, SPRITE_SIZE + 30 };
+		Renderer->DrawText(Mon->GetDisplayLevel(), LevelPosition, NAME_FONT_SIZE);
 	}
 
 	// Draw the pokemon being battled
-	if (auto BattleMon = GBattleManager->GetBattleMon())
+	if (auto Mon = GBattleManager->GetBattleMon())
 	{
-		auto	 Sprite = BattleMon->GetFrontTexture();
+		// Draw sprite
+		auto	 Sprite = Mon->GetFrontTexture();
 		FVector2 Position = { BATTLE_SPRITE_X, BATTLE_SPRITE_Y };
 		FRect	 Rect(Position, FVector2(SPRITE_SIZE, SPRITE_SIZE));
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
 
 		Renderer->SetDrawColor(255, 0, 0, 255);
 		Renderer->DrawRect(Rect);
+
+		// Draw level
+		Renderer->SetDrawColor(0, 0, 0, 255);
+		FVector2 LevelPosition = { SPRITE_SIZE * 0.5f, 30 };
+		Renderer->DrawText(Mon->GetDisplayLevel(), LevelPosition, NAME_FONT_SIZE);
 	}
 }
