@@ -5,18 +5,31 @@
 #include "../Core/PokeStorage.h"
 #include "Engine/Object.h"
 
-#define BATTLE_ID_GARY_OAK_LAB 1
+struct SBattle
+{
+	int32_t			Id;
+	std::string		Name;
+	PPokemonStorage Storage;
+};
 
 struct SBattleContext
 {
+	// Pointer to the battle definition
+	SBattle* Battle = nullptr;
+
+	// The opposing party
+	PPokemonParty BattleParty;
+
+	// Pointer to the player's current Pokemon
 	SPokemon* PlayerMon = nullptr;
+
+	// Pointer to the opponent's current Pokemon
 	SPokemon* BattleMon = nullptr;
-	uint32_t  BattleId = 0;
 
 	static JSON Schema()
 	{
 		return {
-			{  "BattleId",		  0 },
+			{  "BattleId", nullptr },
 			{ "PlayerMon", nullptr },
 			{ "BattleMon", nullptr }
 		};
@@ -25,38 +38,21 @@ struct SBattleContext
 
 class PBattleManager : public PObject
 {
-	std::map<int32_t, PPokemonStorage> mBattles;
-	PPokemonParty					   mBattleParty;
-	SBattleContext					   mContext;
+	std::map<int32_t, SBattle> mBattles;
+	PPokemonParty			   mBattleParty;
+	SBattleContext			   mContext;
 
 public:
-	bool Start() override;
+	bool PreStart() override;
 
-	int32_t GetBattleId() const { return mContext.BattleId; }
-	void	SetBattleId(int32_t Id)
-	{
-		mContext.BattleId = Id;
-		if (mBattles.contains(Id))
-		{
-			mBattleParty.Clear();
-			for (auto& Mon : mBattles.at(Id).GetAll())
-			{
-				mBattleParty.Add(&Mon);
-			}
-		}
-		mContext.BattleMon = mBattleParty.Get(0);
-	}
+	SBattle* GetBattle(int32_t Id);
 
-	PPokemonStorage* GetBattleStorage(int32_t Id)
-	{
-		if (!mBattles.contains(Id))
-		{
-			return nullptr;
-		}
-		return &mBattles[Id];
-	}
+	int32_t GetCurrentBattleId() const { return mContext.Battle->Id; }
+	void	SetCurrentBattleId(int32_t Id);
 
-	PPokemonParty* GetBattleParty() { return &mBattleParty; }
+	PPokemonStorage* GetCurrentBattleStorage(int32_t Id);
+	PPokemonParty*	 GetCurrentBattleParty() { return &mBattleParty; }
+	std::string		 GetCurrentBattleName() const;
 
 	SPokemon* GetPlayerMon() const
 	{
@@ -77,6 +73,13 @@ public:
 	{
 		mContext.BattleMon = BattleMon;
 	}
+
+	void SetBattleMon(int32_t Index)
+	{
+		mContext.BattleMon = mBattleParty.Get(Index);
+	}
+
+	void NextBattleMon();
 };
 
 extern PBattleManager* GBattleManager;

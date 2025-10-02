@@ -5,11 +5,6 @@
 #include "Engine/Actors/Interactable.h"
 #include "Modes/MapMode.h"
 
-static JSON GDefaultMapData = {
-	{	  PLAYER_MAP,			  MAP_PALLET_TOWN },
-	{ PLAYER_POSITION, JSON::array({ 800, 800 }) }
-};
-
 bool PMainGame::PreStart()
 {
 	if (!PGame::PreStart())
@@ -17,19 +12,20 @@ bool PMainGame::PreStart()
 		return false;
 	}
 
-	mHUD = ConstructWidget<PGameHUD>();
-
-	auto MapMode = AddGameMode<PMapMode>();
-	auto MapState = MapMode->GetState();
-	*MapState = GDefaultMapData;
-
-	AddGameMode<PBattleMode>();
-
 	// Load all pokemon info
 	if (!PPokedexManager::Instance()->Init())
 	{
 		return false;
 	}
+
+	// Construct the main HUD used across all modes (map, battle, storage, etc.)
+	mHUD = ConstructWidget<PGameHUD>();
+
+	auto MapMode = AddGameMode<PMapMode>();
+	MapMode->PreStart();
+
+	auto BattleMode = AddGameMode<PBattleMode>();
+	BattleMode->PreStart();
 
 	// Initialize Player Party
 	auto Mon = mPlayerStorage.Construct(ID_BULBASAUR, 5);

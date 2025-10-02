@@ -8,6 +8,11 @@
 
 #include "MainGame.h"
 
+static JSON GDefaultMapData = {
+	{	  PLAYER_MAP,			  MAP_PALLET_TOWN },
+	{ PLAYER_POSITION, JSON::array({ 800, 800 }) }
+};
+
 PMapMode::PMapMode()
 {
 	// Convenience vars
@@ -22,6 +27,12 @@ PMapMode::PMapMode()
 std::string PMapMode::GetName()
 {
 	return MAP_MODE;
+}
+
+bool PMapMode::PreStart()
+{
+	mState = GDefaultMapData;
+	return true;
 }
 
 bool PMapMode::Load()
@@ -117,7 +128,7 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 		case SDLK_Q:
 			{
 				SBattleContext Context;
-				Context.BattleId = 1;
+				Context.Battle = GBattleManager->GetBattle(BATTLE_ID_GARY_OAK_LAB);
 
 				SGameEvent GameEvent = { this, EGameEventType::BattleStart, &Context };
 				if (!HandleGameEvent(GameEvent))
@@ -151,7 +162,7 @@ bool PMapMode::HandleGameEvent(SGameEvent& GameEvent)
 		case EGameEventType::BattleStart:
 			// Update the battle state with the incoming battle ID to be loaded
 			GameState = GEngine->GetGame()->GetGameMode(BATTLE_MODE)->GetState();
-			GameState->operator[]("BattleId") = GameEvent.GetData<SBattleContext>()->BattleId;
+			GameState->operator[]("BattleId") = GameEvent.GetData<SBattleContext>()->Battle->Id;
 
 			// First load the new game mode
 			if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE))

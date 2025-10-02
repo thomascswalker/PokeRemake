@@ -13,6 +13,7 @@ class PBattleMode : public PGameMode
 public:
 	PBattleMode();
 
+	bool		PreStart() override;
 	bool		Start() override;
 	bool		Load() override;
 	bool		Unload() override;

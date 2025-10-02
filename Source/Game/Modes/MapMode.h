@@ -41,6 +41,8 @@ public:
 
 	std::string GetName() override;
 
+	bool PreStart() override;
+
 	bool Load() override;
 	bool Unload() override;
 

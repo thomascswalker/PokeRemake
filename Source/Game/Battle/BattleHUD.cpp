@@ -8,7 +8,7 @@ PBattleHUD::PBattleHUD()
 	std::string BattleText = "Default text.";
 	if (auto BattleMon = GBattleManager->GetBattleMon())
 	{
-		BattleText = std::format("Encountered\n{}", BattleMon->GetDisplayName().c_str());
+		BattleText = std::format("{} sent out \n{}", GBattleManager->GetCurrentBattleName().c_str(), BattleMon->GetDisplayName().c_str());
 	}
 	mDialogBox->SetText(BattleText);
 	mDialogBox->Print();

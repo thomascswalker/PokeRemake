@@ -5,11 +5,11 @@
 
 bool PPokedexManager::LoadDefs()
 {
-	const auto	FileName = Files::FindFile("Pokedex.JSON");
+	const auto	FileName = Files::FindFile("Pokedex.json");
 	std::string Buffer;
 	if (!Files::ReadFile(FileName, Buffer))
 	{
-		LogError("Failed to read 'Pokedex.JSON'");
+		LogError("Failed to read 'Pokedex.json'");
 		return false;
 	}
 	JSON Data = JSON::parse(Buffer);

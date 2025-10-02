@@ -42,14 +42,38 @@ namespace Files
 		return FileName.substr(0, FileName.find_last_of('/'));
 	}
 
-	inline std::string FindFile(const std::string& FileName)
+	inline std::string FindFile(const std::string& FileName, bool Recurse = true)
 	{
-		for (const auto& Path : gResourcePaths)
+		auto ResourcesPath = GetRootPath() / "Resources";
+
+		if (!Recurse)
 		{
-			auto FullPath = GetRootPath() / std::filesystem::path(Path) / FileName;
-			if (std::filesystem::exists(FullPath))
+			for (auto File : std::filesystem::directory_iterator(ResourcesPath))
 			{
-				return FullPath.string();
+				if (!File.is_regular_file())
+				{
+					continue;
+				}
+				std::string LowerPath = String::ToLower(File.path().filename().string());
+				if (LowerPath == String::ToLower(FileName))
+				{
+					return File.path().string();
+				}
+			}
+		}
+		else
+		{
+			for (auto File : std::filesystem::recursive_directory_iterator(ResourcesPath))
+			{
+				if (!File.is_regular_file())
+				{
+					continue;
+				}
+				std::string LowerPath = String::ToLower(File.path().filename().string());
+				if (LowerPath == String::ToLower(FileName))
+				{
+					return File.path().string();
+				}
 			}
 		}
 		return "";

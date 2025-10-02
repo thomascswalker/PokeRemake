@@ -22,18 +22,24 @@ PTexture::PTexture()
 
 PTexture::~PTexture() {}
 
+/**
+ * @brief Load the specified texture file into memory.
+ * @param FileName The absolute filepath to the texture.
+ *
+ * @return A pointer to the texture object, or null if the file was not found or is unreadable.
+ */
 PTexture* PTextureManager::Load(const std::string& FileName)
 {
-	const auto AbsFileName = Files::FindFile(FileName);
-	if (AbsFileName.empty())
-	{
-		LogError("File not found: {}", FileName.c_str());
-		return nullptr;
-	}
+	// const auto AbsFileName = Files::FindFile(FileName);
+	// if (AbsFileName.empty())
+	// {
+	// 	LogError("File not found: {}", FileName.c_str());
+	// 	return nullptr;
+	// }
 
 	int	  Width, Height, Channels;
 	int	  DesiredChannelCount = 4;
-	void* Data = stbi_load(AbsFileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
+	void* Data = stbi_load(FileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
 
 	if (!Data)
 	{
@@ -41,7 +47,7 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 		return nullptr;
 	}
 
-	PTexture* NewTexture = Create(AbsFileName, Width, Height, DesiredChannelCount, Data);
+	PTexture* NewTexture = Create(FileName, Width, Height, DesiredChannelCount, Data);
 	if (!NewTexture)
 	{
 		return nullptr;
@@ -93,20 +99,18 @@ void PTextureManager::UnloadSDL()
 
 PTexture* PTextureManager::Get(const std::string& Name)
 {
-	for (auto Key : GetTextures() | std::views::keys)
+	for (auto [Key, Value] : GetTextures())
 	{
 		if (Key == Name)
 		{
 			return sTextures.at(Name).get();
 		}
-	}
-	for (auto& Value : GetTextures() | std::views::values)
-	{
 		if (Value->GetName() == Name)
 		{
 			return Value.get();
 		}
 	}
+
 	LogWarning("Texture {} not found.", Name.c_str());
 	return nullptr;
 }
