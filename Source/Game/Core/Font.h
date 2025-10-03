@@ -1,0 +1,22 @@
+#pragma once
+#include <bitset>
+
+#include "Engine/Texture.h"
+
+namespace PokeFont
+{
+	constexpr int GlyphByteSize = 8;
+	constexpr int GlyphBitSize = GlyphByteSize * GlyphByteSize;
+	constexpr int GlyphCount = 128;
+	constexpr int TotalByteSize = GlyphByteSize * GlyphCount;
+	constexpr int TotalBitSize = TotalByteSize * 8;
+
+	using TGlyph = std::bitset<GlyphByteSize>;
+
+	void  LoadFontData();
+	FRect GetCharRect(char C);
+	bool  DrawChar(char C, const FVector2& Position);
+	bool  DrawText(const std::string& Text, const FVector2& Position);
+} // namespace PokeFont
+
+extern PTexture* GFontTexture;

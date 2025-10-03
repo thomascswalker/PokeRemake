@@ -25,6 +25,10 @@ set(SOURCES
         Battle/BattleManager.cpp
         Core/GameConstants.h
         Battle/BattleHUD.cpp
+        Interface/BattleActionBox.h
+        Interface/BattleActionBox.cpp
+        Interface/DialogBox.cpp
+        Core/Font.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

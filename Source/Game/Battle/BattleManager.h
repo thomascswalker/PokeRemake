@@ -5,6 +5,24 @@
 #include "../Core/PokeStorage.h"
 #include "Engine/Object.h"
 
+enum class EBattleState
+{
+	Starting,
+	SelectAction = 100,
+	SelectMove,
+	PlayerAttacking = 200,
+	OpponentAttacking,
+	Ending = 1000,
+};
+
+enum class EBattleAction
+{
+	Fight,
+	Pokemon,
+	Item,
+	Run,
+};
+
 struct STrainer
 {
 	int32_t			Id;
@@ -20,11 +38,20 @@ struct SBattleContext
 	// The opposing party
 	PPokemonParty BattleParty;
 
-	// Pointer to the player's current Pokemon
+	// Pointer to the player's current Pokémon
 	SPokemon* PlayerMon = nullptr;
 
-	// Pointer to the opponent's current Pokemon
+	// Pointer to the opponent's current Pokémon
 	SPokemon* BattleMon = nullptr;
+
+	// Current battle state
+	EBattleState State = EBattleState::Starting;
+
+	// Current action selected
+	EBattleAction Action = EBattleAction::Fight;
+
+	// Current move index selected
+	uint8_t MoveIndex = 0;
 
 	static JSON Schema()
 	{
@@ -36,12 +63,20 @@ struct SBattleContext
 	}
 };
 
+DECLARE_MULTICAST_DELEGATE(DBattleStateChanged, EBattleState);
+DECLARE_MULTICAST_DELEGATE(DBattleActionChanged, EBattleAction);
+DECLARE_MULTICAST_DELEGATE(DBattleMoveIndexChanged, uint8_t);
+
 class PBattleManager : public PObject
 {
 	std::map<int32_t, STrainer> mTrainers;
 	SBattleContext				mContext;
 
 public:
+	DBattleStateChanged		BattleStateChanged;
+	DBattleActionChanged	BattleActionChanged;
+	DBattleMoveIndexChanged BattleMoveIndexChanged;
+
 	bool PreStart() override;
 
 	/* Any battle */
@@ -87,6 +122,29 @@ public:
 
 	void SwapNextBattleMon();
 	void SwapPrevBattleMon();
+
+	EBattleState GetState() const { return mContext.State; }
+
+	void SetState(EBattleState State)
+	{
+		mContext.State = State;
+		BattleStateChanged.Broadcast(State);
+	}
+
+	EBattleAction GetAction() const { return mContext.Action; }
+
+	void SetAction(EBattleAction Action)
+	{
+		mContext.Action = Action;
+		BattleActionChanged.Broadcast(Action);
+	}
+
+	uint8_t GetMoveIndex() const { return mContext.MoveIndex; }
+	void	SetMoveIndex(uint8_t Index)
+	{
+		mContext.MoveIndex = Index;
+		BattleMoveIndexChanged.Broadcast(Index);
+	}
 };
 
 extern PBattleManager* GBattleManager;

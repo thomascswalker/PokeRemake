@@ -54,5 +54,5 @@ public:
 
 	SGameState* GetState() { return &mState; }
 
-	virtual bool HandleGameEvent(SGameEvent& GameEvent) = 0;
+	virtual bool HandleGameEvent(const SGameEvent& GameEvent) = 0;
 };

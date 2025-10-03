@@ -14,6 +14,7 @@ enum class EGameEventType
 	// Battle
 	BattleStart = 200,
 	BattleEnd,
+	BattleChangeSelection,
 };
 
 static const char* GameEventTypeToString(EGameEventType Type)
@@ -36,7 +37,7 @@ public:
 	PObject*	   Instigator;
 	EGameEventType Type;
 
-	template <typename T = void>
+	template <typename T = uint8_t>
 	SGameEvent(PObject* InInstigator, EGameEventType InType, T* InData = nullptr)
 	{
 		Instigator = InInstigator;
@@ -61,7 +62,7 @@ public:
 	}
 
 	template <typename T>
-	T* GetData()
+	T* GetData() const
 	{
 		return static_cast<T*>(mData);
 	}

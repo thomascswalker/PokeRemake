@@ -4,10 +4,11 @@
 
 #include "BattleHUD.h"
 
+#include "Core/Font.h"
+
 PBattleHUD::PBattleHUD()
 {
 	mDialogBox = ConstructWidget<PDialogBox>();
-	PWidget::AddChild(mDialogBox);
 
 	std::string BattleText = "Default text.";
 	if (auto BattleMon = GBattleManager->GetBattleMon())
@@ -16,6 +17,8 @@ PBattleHUD::PBattleHUD()
 	}
 	mDialogBox->SetText(BattleText);
 	mDialogBox->Print();
+
+	mActionBox = ConstructWidget<PBattleActionBox>();
 }
 
 PBattleHUD::~PBattleHUD()
@@ -24,6 +27,10 @@ PBattleHUD::~PBattleHUD()
 	mDialogBox->Unparent();
 	GWorld->DestroyWidget(mDialogBox);
 	mDialogBox = nullptr;
+
+	mActionBox->Unparent();
+	GWorld->DestroyWidget(mActionBox);
+	mActionBox = nullptr;
 }
 
 void PBattleHUD::Draw(const PRenderer* Renderer) const
@@ -42,8 +49,8 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		Renderer->DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y }, NAME_FONT_SIZE);
-		Renderer->DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y }, NAME_FONT_SIZE);
+		PokeFont::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
+		PokeFont::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y });
 	}
 
 	// Draw the Pokémon being battled
@@ -56,7 +63,31 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		Renderer->DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y }, NAME_FONT_SIZE);
-		Renderer->DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y }, NAME_FONT_SIZE);
+		PokeFont::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
+		PokeFont::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
 	}
+}
+
+void PBattleHUD::ShowActionBox()
+{
+	mActionBox->SetVisible(true);
+	PWidget::AddChild(mActionBox);
+}
+
+void PBattleHUD::HideActionBox()
+{
+	mActionBox->SetVisible(false);
+	PWidget::RemoveChild(mActionBox);
+}
+
+void PBattleHUD::ShowDialogBox()
+{
+	mDialogBox->SetVisible(true);
+	PWidget::AddChild(mDialogBox);
+}
+
+void PBattleHUD::HideDialogBox()
+{
+	mDialogBox->SetVisible(false);
+	PWidget::RemoveChild(mDialogBox);
 }

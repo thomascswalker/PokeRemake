@@ -34,6 +34,10 @@ bool PBattleMode::Load()
 	// mBattleManager.StartWildBattle(ID_MAGMAR, 50);
 	mBattleManager.SetPlayerMon(GPlayerParty->Get(0));
 
+	// Start with Select Action state
+	GBattleManager->SetState(EBattleState::SelectAction);
+
+	// Start the main battle HUD
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 	mHUD->StartBattleHUD();
 
@@ -53,9 +57,7 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 			{
 				mHUD->EndBattleHUD();
 
-				SMapContext Context;
-				SGameEvent	GameEvent = { this, EGameEventType::BattleEnd, &Context };
-				if (!HandleGameEvent(GameEvent))
+				if (!HandleGameEvent({ this, EGameEventType::BattleEnd }))
 				{
 					Event->Invalidate();
 				}
@@ -63,25 +65,24 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 				break;
 			}
 		case SDLK_RIGHT:
-			{
-				GBattleManager->SwapNextBattleMon();
-				mHUD->EndBattleHUD();
-				mHUD->StartBattleHUD();
-				break;
-			}
 		case SDLK_LEFT:
+		case SDLK_DOWN:
+		case SDLK_UP:
+			switch (GBattleManager->GetState())
 			{
-				GBattleManager->SwapPrevBattleMon();
-				mHUD->EndBattleHUD();
-				mHUD->StartBattleHUD();
-				break;
+				case EBattleState::SelectAction:
+					HandleChangeActionSelection(Event->KeyDown - SDLK_RIGHT);
+					break;
+				default:
+					break;
 			}
+			break;
 		default:
 			break;
 	}
 }
 
-bool PBattleMode::HandleGameEvent(SGameEvent& GameEvent)
+bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 {
 	switch (GameEvent.Type)
 	{
@@ -97,6 +98,47 @@ bool PBattleMode::HandleGameEvent(SGameEvent& GameEvent)
 			break;
 	}
 	return false;
+}
+
+void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
+{
+	// 0 RIGHT
+	// 1 LEFT
+	// 2 DOWN
+	// 3 UP
+
+	uint8_t NewDirection = static_cast<uint8_t>(GBattleManager->GetAction());
+
+	/*
+	 * ------------------------
+	 * |    0     |     1     |
+	 * -----------|-----------|
+	 * |    2     |     3     |
+	 * ------------------------
+	 */
+	switch (Direction)
+	{
+		case 0: // RIGHT
+			NewDirection += 1;
+			NewDirection %= 2;
+			break;
+		case 1: // LEFT
+			NewDirection -= 1;
+			NewDirection = std::abs(NewDirection % 2);
+			break;
+		case 2: // DOWN
+			NewDirection += 2;
+			NewDirection %= 4;
+			break;
+		case 3: // UP
+			NewDirection -= 2;
+			NewDirection = std::abs(NewDirection % 4);
+			break;
+		default:
+			break;
+	}
+
+	GBattleManager->SetAction(static_cast<EBattleAction>(NewDirection));
 }
 
 std::string PBattleMode::GetName()

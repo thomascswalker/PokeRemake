@@ -453,7 +453,16 @@ float PRenderer::DrawText(const std::string& Text, const FVector2& Position, flo
 		DrawTextInternal(Text, AlignedPosition + FVector2{ 1, 1 }, FontSize, Gap);
 		SetDrawColor(Color);
 	}
-	return DrawTextInternal(Text, AlignedPosition, FontSize, Gap);
+
+	bool Result = DrawTextInternal(Text, AlignedPosition, FontSize, Gap);
+
+	auto Color = GetDrawColor();
+	SetDrawColor(PColor::Red);
+	DrawFillRect({
+		Position, { 5, 5 }
+	   });
+	SetDrawColor(Color);
+	return Result;
 }
 
 void PRenderer::DrawPointAt(const FVector2& Position, float Thickness) const

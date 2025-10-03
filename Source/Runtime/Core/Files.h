@@ -9,6 +9,7 @@
 #include "nativefiledialog-extended/src/include/nfd.h"
 
 #include "Logging.h"
+#include "String.h"
 
 inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Shaders",

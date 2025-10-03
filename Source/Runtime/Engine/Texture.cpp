@@ -56,6 +56,16 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	return NewTexture;
 }
 
+PTexture* PTextureManager::LoadMemory(const std::string& Name, void* Data, int32_t Width, int32_t Height, int32_t Channels)
+{
+	PTexture* NewTexture = Create(Name, Width, Height, Channels, Data);
+	if (!NewTexture)
+	{
+		return nullptr;
+	}
+	return NewTexture;
+}
+
 void PTextureManager::LoadAllTextures()
 {
 	const auto Textures = Files::GetFilesInDirectory("Resources/Textures", true);

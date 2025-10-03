@@ -37,6 +37,8 @@ void PGameHUD::StartBattleHUD()
 	SetInputContext(IC_Battle);
 
 	mBattleHUD = ConstructWidget<PBattleHUD>();
+	mBattleHUD->ShowActionBox();
+
 	PWidget::AddChild(mBattleHUD);
 }
 
