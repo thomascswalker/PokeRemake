@@ -80,6 +80,7 @@ std::map<char, int> GCharIndexes = {
 	{	  '9', 95 },
 	{ CHAR_PK, 65 }, // PK
 	{ CHAR_MN, 66 }, // MN
+	{	  '>', 77 }, // Right Arrow
 };
 
 void PokeFont::LoadFontData()
@@ -95,9 +96,9 @@ void PokeFont::LoadFontData()
 FRect PokeFont::GetCharRect(uint8_t C)
 {
 	int	  Index = GCharIndexes[C];
-	float Col = Index % FONT_COL_COUNT;
-	float Row = Index / FONT_COL_COUNT;
-	return { Col * 8, Row * 8, 8, 8 };
+	float X = Index % FONT_COL_COUNT;
+	float Y = Index / FONT_COL_COUNT;
+	return { X * 8, Y * 8, 8, 8 };
 }
 
 bool PokeFont::DrawChar(uint8_t C, const FVector2& Position)

@@ -71,7 +71,7 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 			switch (GBattleManager->GetState())
 			{
 				case EBattleState::SelectAction:
-					HandleChangeActionSelection(Event->KeyDown - SDLK_RIGHT);
+					HandleChangeActionSelection(Event->KeyUp - SDLK_RIGHT);
 					break;
 				default:
 					break;
@@ -107,7 +107,10 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 	// 2 DOWN
 	// 3 UP
 
-	uint8_t NewDirection = static_cast<uint8_t>(GBattleManager->GetAction());
+	uint8_t CurrentPosition = static_cast<uint8_t>(GBattleManager->GetAction());
+
+	bool X = (bool)(CurrentPosition % 2);
+	bool Y = (bool)(CurrentPosition / 2);
 
 	/*
 	 * ------------------------
@@ -119,26 +122,23 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 	switch (Direction)
 	{
 		case 0: // RIGHT
-			NewDirection += 1;
-			NewDirection %= 2;
-			break;
 		case 1: // LEFT
-			NewDirection -= 1;
-			NewDirection = std::abs(NewDirection % 2);
+			X = !X;
 			break;
 		case 2: // DOWN
-			NewDirection += 2;
-			NewDirection %= 4;
-			break;
 		case 3: // UP
-			NewDirection -= 2;
-			NewDirection = std::abs(NewDirection % 4);
+			Y = !Y;
 			break;
 		default:
 			break;
 	}
 
-	GBattleManager->SetAction(static_cast<EBattleAction>(NewDirection));
+	uint8_t NewX = (uint8_t)X;
+	uint8_t NewY = (uint8_t)Y;
+
+	uint8_t NewPosition = (NewY * 2) + NewX;
+
+	GBattleManager->SetAction(static_cast<EBattleAction>(NewPosition));
 }
 
 std::string PBattleMode::GetName()
