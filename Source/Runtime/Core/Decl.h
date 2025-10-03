@@ -4,6 +4,12 @@
 
 #include "CFwd.h"
 
+namespace std
+{
+	// Unsigned string type
+	using ustring = basic_string<unsigned char>;
+} // namespace std
+
 /* Types */
 
 struct PColor;

@@ -18,7 +18,7 @@
 #define BATTLE_MODE "BattleMode"
 
 #define BATTLE_ACTION_FIGHT "FIGHT"
-#define BATTLE_ACTION_PARTY "{}" // PKMN
+#define BATTLE_ACTION_PARTY "PKMN"
 #define BATTLE_ACTION_ITEM	"ITEM"
 #define BATTLE_ACTION_RUN	"RUN"
 
@@ -27,6 +27,9 @@
 #define COORD(P) (SCREEN_TILE * P)
 
 /* TEXT */
+
+#define CHAR_PK 128
+#define CHAR_MN 129
 
 constexpr int FONT_ROW_COUNT = 8;
 constexpr int FONT_COL_COUNT = 16;

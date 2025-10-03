@@ -1,4 +1,5 @@
 #pragma once
+
 #include <bitset>
 
 #include "Engine/Texture.h"
@@ -14,8 +15,8 @@ namespace PokeFont
 	using TGlyph = std::bitset<GlyphByteSize>;
 
 	void  LoadFontData();
-	FRect GetCharRect(char C);
-	bool  DrawChar(char C, const FVector2& Position);
+	FRect GetCharRect(uint8_t C);
+	bool  DrawChar(uint8_t C, const FVector2& Position);
 	bool  DrawText(const std::string& Text, const FVector2& Position);
 } // namespace PokeFont
 

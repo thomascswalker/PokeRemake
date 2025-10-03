@@ -1,12 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <ctype.h>
 #include <format>
-#include <functional>
 #include <string>
 #include <vector>
 
-namespace String
+namespace Strings
 {
 	template <typename T>
 	std::string Join(const std::vector<T>& Container, const std::string& Delimiter)
@@ -62,7 +62,7 @@ namespace String
 	template <typename T>
 	std::string ToString(const std::vector<T>& Container)
 	{
-		return std::format("[{}]", String::Join(Container, ",").c_str());
+		return std::format("[{}]", Strings::Join(Container, ",").c_str());
 	}
 
 	inline std::string ToLower(const std::string& Text)
@@ -84,4 +84,4 @@ namespace String
 		}
 		return Result;
 	}
-} // namespace String
+} // namespace Strings
