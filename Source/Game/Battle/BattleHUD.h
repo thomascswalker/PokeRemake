@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Interface/BattleActionBox.h"
 #include "../Interface/DialogBox.h"
 #include "Interface/Widget.h"
 
@@ -17,11 +18,18 @@
 
 class PBattleHUD : public PWidget
 {
-	PDialogBox* mDialogBox = nullptr;
+	PDialogBox*		  mDialogBox = nullptr;
+	PBattleActionBox* mActionBox = nullptr;
 
 public:
 	PBattleHUD();
 	~PBattleHUD() override;
 
 	void Draw(const PRenderer* Renderer) const override;
+
+	void ShowActionBox();
+	void HideActionBox();
+
+	void ShowDialogBox();
+	void HideDialogBox();
 };

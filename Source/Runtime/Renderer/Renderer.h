@@ -75,7 +75,7 @@ public:
 
 	void   SetRenderDrawBlendMode(SDL_BlendMode BlendMode) const;
 	PColor GetDrawColor() const;
-	void   SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) const;
+	void   SetDrawColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255) const;
 	void   SetDrawColor(const PColor& Color) const;
 	void   SetDrawAlpha(uint8_t Alpha) const;
 

@@ -9,6 +9,7 @@
 #include "nativefiledialog-extended/src/include/nfd.h"
 
 #include "Logging.h"
+#include "String.h"
 
 inline std::vector<std::string> gResourcePaths = {
 	"Resources\\Shaders",
@@ -54,8 +55,8 @@ namespace Files
 				{
 					continue;
 				}
-				std::string LowerPath = String::ToLower(File.path().filename().string());
-				if (LowerPath == String::ToLower(FileName))
+				std::string LowerPath = Strings::ToLower(File.path().filename().string());
+				if (LowerPath == Strings::ToLower(FileName))
 				{
 					return File.path().string();
 				}
@@ -69,8 +70,8 @@ namespace Files
 				{
 					continue;
 				}
-				std::string LowerPath = String::ToLower(File.path().filename().string());
-				if (LowerPath == String::ToLower(FileName))
+				std::string LowerPath = Strings::ToLower(File.path().filename().string());
+				if (LowerPath == Strings::ToLower(FileName))
 				{
 					return File.path().string();
 				}

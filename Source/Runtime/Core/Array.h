@@ -143,7 +143,7 @@ public:
 
 	std::string ToString() const
 	{
-		auto Result = String::Join(mData, ",");
+		auto Result = Strings::Join(mData, ",");
 		return std::format("[{}]", Result.c_str());
 	}
 

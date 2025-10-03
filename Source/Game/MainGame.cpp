@@ -2,6 +2,7 @@
 
 #include "Application/Application.h"
 #include "Battle/BattleMode.h"
+#include "Core/Font.h"
 #include "Engine/Actors/Interactable.h"
 #include "Modes/MapMode.h"
 
@@ -46,6 +47,8 @@ bool PMainGame::Start()
 
 	GPlayerParty = &mPlayerParty;
 	GPlayerStorage = &mPlayerStorage;
+
+	PokeFont::LoadFontData();
 
 	return true;
 }

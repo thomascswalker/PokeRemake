@@ -34,6 +34,10 @@ bool PBattleMode::Load()
 	// mBattleManager.StartWildBattle(ID_MAGMAR, 50);
 	mBattleManager.SetPlayerMon(GPlayerParty->Get(0));
 
+	// Start with Select Action state
+	GBattleManager->SetState(EBattleState::SelectAction);
+
+	// Start the main battle HUD
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 	mHUD->StartBattleHUD();
 
@@ -53,9 +57,7 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 			{
 				mHUD->EndBattleHUD();
 
-				SMapContext Context;
-				SGameEvent	GameEvent = { this, EGameEventType::BattleEnd, &Context };
-				if (!HandleGameEvent(GameEvent))
+				if (!HandleGameEvent({ this, EGameEventType::BattleEnd }))
 				{
 					Event->Invalidate();
 				}
@@ -63,25 +65,24 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 				break;
 			}
 		case SDLK_RIGHT:
-			{
-				GBattleManager->SwapNextBattleMon();
-				mHUD->EndBattleHUD();
-				mHUD->StartBattleHUD();
-				break;
-			}
 		case SDLK_LEFT:
+		case SDLK_DOWN:
+		case SDLK_UP:
+			switch (GBattleManager->GetState())
 			{
-				GBattleManager->SwapPrevBattleMon();
-				mHUD->EndBattleHUD();
-				mHUD->StartBattleHUD();
-				break;
+				case EBattleState::SelectAction:
+					HandleChangeActionSelection(Event->KeyUp - SDLK_RIGHT);
+					break;
+				default:
+					break;
 			}
+			break;
 		default:
 			break;
 	}
 }
 
-bool PBattleMode::HandleGameEvent(SGameEvent& GameEvent)
+bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 {
 	switch (GameEvent.Type)
 	{
@@ -97,6 +98,47 @@ bool PBattleMode::HandleGameEvent(SGameEvent& GameEvent)
 			break;
 	}
 	return false;
+}
+
+void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
+{
+	// 0 RIGHT
+	// 1 LEFT
+	// 2 DOWN
+	// 3 UP
+
+	uint8_t CurrentPosition = static_cast<uint8_t>(GBattleManager->GetAction());
+
+	bool X = (bool)(CurrentPosition % 2);
+	bool Y = (bool)(CurrentPosition / 2);
+
+	/*
+	 * ------------------------
+	 * |    0     |     1     |
+	 * -----------|-----------|
+	 * |    2     |     3     |
+	 * ------------------------
+	 */
+	switch (Direction)
+	{
+		case 0: // RIGHT
+		case 1: // LEFT
+			X = !X;
+			break;
+		case 2: // DOWN
+		case 3: // UP
+			Y = !Y;
+			break;
+		default:
+			break;
+	}
+
+	uint8_t NewX = (uint8_t)X;
+	uint8_t NewY = (uint8_t)Y;
+
+	uint8_t NewPosition = (NewY * 2) + NewX;
+
+	GBattleManager->SetAction(static_cast<EBattleAction>(NewPosition));
 }
 
 std::string PBattleMode::GetName()

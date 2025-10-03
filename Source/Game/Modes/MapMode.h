@@ -52,5 +52,5 @@ public:
 
 	void OnKeyUp(SInputEvent* Event) override;
 
-	bool HandleGameEvent(SGameEvent& GameEvent) override;
+	bool HandleGameEvent(const SGameEvent& GameEvent) override;
 };

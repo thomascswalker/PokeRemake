@@ -11,42 +11,12 @@ class PDialogBox : public PBox
 	PTexture*	 mTexture = nullptr;
 
 public:
-	PDialogBox()
-	{
-		mTexture = PTextureManager::Get("DialogBox");
-	}
+	PDialogBox();
 
-	void Draw(const PRenderer* Renderer) const override
-	{
-		Renderer->SetDrawColor(255, 255, 255, 255);
-		FRect Geometry = { 0, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT };
+	void Draw(const PRenderer* Renderer) const override;
+	void Tick(float DeltaTime) override;
 
-		Renderer->DrawFillRect(Geometry);
-		Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);
-
-		Renderer->SetDrawColor(0, 0, 0, 255);
-		auto TextPosition = FVector2(DIALOG_LINE_X, DIALOG_LINE1_Y);
-		Renderer->DrawText(mPrinter.GetDisplayText(), TextPosition, DIALOG_FONT_SIZE, false, DIALOG_FONT_GAP);
-	}
-
-	void Tick(float DeltaTime) override
-	{
-		PWidget::Tick(DeltaTime);
-		mPrinter.Tick(DeltaTime);
-	}
-
-	void SetText(const std::string& Text)
-	{
-		mPrinter.SetText(Text);
-	}
-
-	void Print()
-	{
-		mPrinter.Play();
-	}
-
-	void EndPrint()
-	{
-		mPrinter.Stop();
-	}
+	void SetText(const std::string& Text);
+	void Print();
+	void EndPrint();
 };

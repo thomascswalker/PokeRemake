@@ -60,7 +60,7 @@ public:
 		auto FormattedText = Text;
 		for (auto& [K, V] : gTextVars)
 		{
-			FormattedText = String::Replace(FormattedText, K, V);
+			FormattedText = Strings::Replace(FormattedText, K, V);
 		}
 		mText = FormattedText;
 	}

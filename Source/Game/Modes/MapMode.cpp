@@ -142,7 +142,7 @@ void PMapMode::OnKeyUp(SInputEvent* Event)
 	}
 }
 
-bool PMapMode::HandleGameEvent(SGameEvent& GameEvent)
+bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)
 {
 	JSON* GameState = nullptr;
 

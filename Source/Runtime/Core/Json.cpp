@@ -14,7 +14,7 @@
  */
 void ExpandArrow(JSON* Out, const std::string& Key, const JSON& Value)
 {
-	TArray Keys = String::Split(Key, ARROW);
+	TArray Keys = Strings::Split(Key, ARROW);
 	for (auto K : Keys)
 	{
 		if (Out->is_object())
