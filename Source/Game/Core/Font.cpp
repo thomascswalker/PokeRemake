@@ -78,6 +78,8 @@ std::map<char, int> GCharIndexes = {
 	{  '7', 93 },
 	{  '8', 94 },
 	{  '9', 95 },
+	{  '{', 65 }, // PK
+	{  '}', 66 }, // MN
 };
 
 void PokeFont::LoadFontData()
