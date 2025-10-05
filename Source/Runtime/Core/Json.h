@@ -10,9 +10,7 @@
 
 using JSON = nlohmann::json;
 
-void ExpandArrow(JSON* Out, const std::string& Key, const JSON& Value);
-
-void ExpandAnchor(JSON* Out, const std::string& Ref, const JSON& Override);
+void ExpandAnchor(JSON* Out, const std::string& Ref);
 
 void Expand(JSON* Out);
 

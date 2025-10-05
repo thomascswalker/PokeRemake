@@ -2,7 +2,7 @@
   {
     "Id": 1,
     "Name": "Gary",
-    "Mons": [
+    "Storage": [
       {
         "Id": 7,
         "Level": 5

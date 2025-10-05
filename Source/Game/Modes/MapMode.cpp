@@ -5,6 +5,7 @@
 #include "Battle/BattleMode.h"
 #include "Core/GameConstants.h"
 #include "Engine/Actors/Interactable.h"
+#include "Engine/Actors/SceneryActor.h"
 #include "Interface/Button.h"
 
 #include "MainGame.h"
@@ -120,38 +121,14 @@ void PMapMode::OnFadeOutComplete()
 	}
 }
 
-void PMapMode::OnKeyUp(SInputEvent* Event)
-{
-	switch (Event->KeyUp)
-	{
-		case SDLK_Q:
-			{
-				SBattleContext Context;
-				Context.Trainer = GBattleManager->GetTrainer(BATTLE_ID_GARY_OAK_LAB);
-
-				SGameEvent GameEvent = { this, EGameEventType::BattleStart, &Context };
-				if (!HandleGameEvent(GameEvent))
-				{
-					Event->Invalidate();
-				}
-
-				break;
-			}
-		default:
-			break;
-	}
-}
-
 bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)
 {
-	JSON* GameState = nullptr;
-
 	switch (GameEvent.Type)
 	{
 		case EGameEventType::Dialog:
 			if (!mHUD->IsDialogBoxVisible())
 			{
-				mHUD->StartDialogBox(GameEvent.GetData<SInteractContext>()->Message);
+				mHUD->StartDialogBox(GameEvent.GetData<SDialogContext>()->Message);
 			}
 			else
 			{

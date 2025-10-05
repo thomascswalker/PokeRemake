@@ -5,6 +5,20 @@
 PBattleManager* GBattleManager = nullptr;
 SPokemon		GWildMon;
 
+JSON STrainerContext::Serialize() const
+{
+	JSON Result;
+	Result["Id"] = Id;
+	return Result;
+}
+
+void STrainerContext::Deserialize(const JSON& Json)
+{
+	Id = Json["Id"];
+	Name = Json["Name"];
+	Storage.Deserialize(Json["Storage"]);
+}
+
 bool PBattleManager::PreStart()
 {
 	std::string BattlesFileName = Files::FindFile(BATTLES_JSON);
@@ -25,7 +39,7 @@ bool PBattleManager::PreStart()
 	for (auto& Battle : Data)
 	{
 		int32_t Id = Battle["Id"];
-		mTrainers[Id] = { .Id = Battle["Id"], .Name = Battle["Name"] };
+		mTrainers[Id] = { Battle["Id"], Battle["Name"] };
 		for (auto Mon : Battle["Mons"])
 		{
 			mTrainers[Id].Storage.Construct(Mon["Id"], Mon["Level"]);
@@ -60,7 +74,7 @@ void PBattleManager::StartWildBattle(int32_t Id, int32_t Level)
 	mContext.BattleMon = mContext.BattleParty.Get(0);
 }
 
-STrainer* PBattleManager::GetTrainer(int32_t Id)
+STrainerContext* PBattleManager::GetTrainer(int32_t Id)
 {
 	return &mTrainers[Id];
 }

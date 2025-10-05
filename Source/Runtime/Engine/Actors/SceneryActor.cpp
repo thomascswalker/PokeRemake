@@ -1,6 +1,8 @@
 #include "SceneryActor.h"
 
 #include "Engine/Components/InteractionComponent.h"
+#include "Engine/Game.h"
+#include "Engine/GameEvent.h"
 #include "Engine/World.h"
 
 PSceneryActor::PSceneryActor()
@@ -14,8 +16,6 @@ PSceneryActor::PSceneryActor()
 		mSpriteComponent->SetSize(16.0f);
 		mSpriteComponent->SetIndexSize(8.0f);
 	}
-
-	mInteractionComponent = ConstructComponent<PInteractionComponent>(this);
 }
 
 PSpriteComponent* PSceneryActor::GetSpriteComponent()
@@ -23,9 +23,9 @@ PSpriteComponent* PSceneryActor::GetSpriteComponent()
 	return mSpriteComponent;
 }
 
-PInteractionComponent* PSceneryActor::GetInteractionComponent()
+std::string PSceneryActor::GetDisplayName() const
 {
-	return mInteractionComponent;
+	return std::format("{}_{}", mInternalName.c_str(), mType.c_str());
 }
 
 FRect PSceneryActor::GetLocalBounds() const
@@ -38,10 +38,8 @@ JSON PSceneryActor::Serialize() const
 	JSON Result;
 	Result["Position"] = { mPosition.X, mPosition.Y };
 	Result["Depth"] = mPosition.Z;
-	Result[mType] = JSON::object();
-
-	auto InteractData = mInteractionComponent->GetInteractData();
-	Result[mType]["Components::1::Message"] = InteractData->Message;
+	Result["Type"] = mType;
+	Result["Context"] = mContext.Serialize();
 	END_SAVE_PROPERTIES;
 }
 
@@ -50,5 +48,12 @@ void PSceneryActor::Deserialize(const JSON& Data)
 	BEGIN_LOAD_PROPERTIES(PActor);
 	LOAD_MEMBER_PROPERTY(Type, std::string);
 	mSpriteComponent = GetComponent<PSpriteComponent>();
-	mInteractionComponent = GetComponent<PInteractionComponent>();
+
+	mContext.Deserialize(Data["Context"]);
+}
+
+void PSceneryActor::HandleInteraction()
+{
+	SGameEvent Event(this, EGameEventType::Dialog, &mContext);
+	GGameMode->HandleGameEvent(Event);
 }

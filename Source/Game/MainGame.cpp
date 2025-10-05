@@ -4,6 +4,7 @@
 #include "Battle/BattleMode.h"
 #include "Core/Font.h"
 #include "Engine/Actors/Interactable.h"
+#include "Engine/Dialog.h"
 #include "Modes/MapMode.h"
 
 bool PMainGame::PreStart()
@@ -82,7 +83,7 @@ bool PMainGame::HandleGameEvent(SGameEvent& Event)
 
 bool PMainGame::StartDialogBox(SGameEvent* Event)
 {
-	SInteractContext* Context = Event->GetData<SInteractContext>();
+	SDialogContext* Context = Event->GetData<SDialogContext>();
 	if (!Context)
 	{
 		return false;

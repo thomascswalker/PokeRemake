@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Engine/Serialization.h"
 #include "Engine/Texture.h"
 
 #include "Pokedex.h"
 
-class SPokemon
+class SPokemon : public ISerializable
 {
 	SPokemonDef mDef;
 
@@ -35,5 +36,27 @@ public:
 	PTexture* GetBackTexture() const
 	{
 		return mDef.Back;
+	}
+
+	JSON Serialize() const override
+	{
+		JSON Result;
+
+		Result["Id"] = mDef.Id;
+		Result["Level"] = mLevel;
+		Result["Experience"] = mExperience;
+
+		return Result;
+	}
+
+	void Deserialize(const JSON& Json) override
+	{
+		auto Id = Json["Def"].get<int32_t>();
+		mDef = *PPokedexManager::Instance()->GetById(Id);
+		mLevel = Json["Level"];
+		if (Json.contains("Experience"))
+		{
+			mExperience = Json["Experience"];
+		}
 	}
 };

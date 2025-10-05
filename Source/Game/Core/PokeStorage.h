@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Pokedex.h"
+#include "Engine/Serialization.h"
+
 #include "Pokemon.h"
 
-class PPokemonStorage
+class PPokemonStorage : public ISerializable
 {
 	std::vector<SPokemon> mPokemon;
 
@@ -12,6 +13,10 @@ public:
 	bool				   Add(const SPokemon& Pokemon);
 	SPokemon*			   Get(int32_t Index);
 	std::vector<SPokemon>& GetAll() { return mPokemon; }
+	void				   Clear() { mPokemon.clear(); }
+
+	JSON Serialize() const override;
+	void Deserialize(const JSON& Json) override;
 };
 
 extern PPokemonStorage* GPlayerStorage;

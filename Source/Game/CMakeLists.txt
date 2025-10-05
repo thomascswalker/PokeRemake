@@ -29,6 +29,7 @@ set(SOURCES
         Interface/BattleActionBox.cpp
         Interface/DialogBox.cpp
         Core/Font.cpp
+        Actors/Trainer.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

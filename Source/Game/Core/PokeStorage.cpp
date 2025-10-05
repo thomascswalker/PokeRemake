@@ -20,3 +20,24 @@ SPokemon* PPokemonStorage::Get(int32_t Index)
 {
 	return &mPokemon[Index];
 }
+
+JSON PPokemonStorage::Serialize() const
+{
+	JSON Result = JSON::array();
+
+	for (const auto& Pokemon : mPokemon)
+	{
+		Result.push_back(Pokemon.Serialize());
+	}
+
+	return Result;
+}
+
+void PPokemonStorage::Deserialize(const JSON& Json)
+{
+	for (const auto& Pokemon : Json)
+	{
+		SPokemon* Mon = &mPokemon.emplace_back();
+		Mon->Deserialize(Pokemon);
+	}
+}

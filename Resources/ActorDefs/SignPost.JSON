@@ -3,6 +3,7 @@
   "Name": "Sign Post",
   "Type": "$SignPost",
   "Depth": 200.0,
+  "Context": {},
   "Components": [
     {
       "Class": "PSpriteComponent",
@@ -20,11 +21,6 @@
         ],
         "Texture": "Tileset1"
       }
-    },
-    {
-      "Class": "PInteractionComponent",
-      "Name": "Sign Post",
-      "Message": "This is a signpost."
     }
   ]
 }

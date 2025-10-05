@@ -23,17 +23,22 @@ enum class EBattleAction
 	Run,
 };
 
-struct STrainer
+struct STrainerContext : ISerializable
 {
-	int32_t			Id;
-	std::string		Name;
-	PPokemonStorage Storage;
+	int32_t			Id = 0;
+	std::string		Name = "";
+	PPokemonStorage Storage = {};
+
+	STrainerContext() = default;
+	STrainerContext(int32_t InId, const std::string& InName) : Id(InId), Name(InName) { Storage.Clear(); }
+	JSON Serialize() const override;
+	void Deserialize(const JSON& Json) override;
 };
 
 struct SBattleContext
 {
 	// Pointer to the trainer definition
-	STrainer* Trainer = nullptr;
+	STrainerContext* Trainer = nullptr;
 
 	// The opposing party
 	PPokemonParty BattleParty;
@@ -69,8 +74,8 @@ DECLARE_MULTICAST_DELEGATE(DBattleMoveIndexChanged, uint8_t);
 
 class PBattleManager : public PObject
 {
-	std::map<int32_t, STrainer> mTrainers;
-	SBattleContext				mContext;
+	std::map<int32_t, STrainerContext> mTrainers;
+	SBattleContext					   mContext;
 
 public:
 	DBattleStateChanged		BattleStateChanged;
@@ -89,8 +94,8 @@ public:
 
 	/* Trainers */
 
-	STrainer* GetTrainer(int32_t Id);
-	int32_t	  GetCurrentTrainerId() const { return mContext.Trainer->Id; }
+	STrainerContext* GetTrainer(int32_t Id);
+	int32_t			 GetCurrentTrainerId() const { return mContext.Trainer->Id; }
 
 	PPokemonStorage* GetCurrentTrainerStorage(int32_t Id);
 	std::string		 GetCurrentTrainerName() const;
