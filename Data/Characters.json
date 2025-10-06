@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "Gary_OakLab",
+    "CharacterId": 1,
+    "BattleId": 1,
+    "Texture": "Gary",
+    "Type": "Trainer",
+    "Dialog": "Let's battle!"
+  }
+]

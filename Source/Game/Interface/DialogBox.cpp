@@ -5,7 +5,7 @@
 
 PDialogBox::PDialogBox()
 {
-	mTexture = PTextureManager::Get(TEX_DIALOG);
+	mTexture = GTextureManager->Get(TEX_DIALOG);
 }
 
 void PDialogBox::Draw(const PRenderer* Renderer) const

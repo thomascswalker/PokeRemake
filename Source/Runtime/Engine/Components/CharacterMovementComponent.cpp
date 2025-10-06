@@ -167,7 +167,6 @@ void PCharacterMovementComponent::SetCurrentMap(PGameMap* NewMap)
 
 void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGameMap* GameMap)
 {
-	LogDebug("Moving character to: {}", Position.ToString().c_str());
 	if (!GameMap)
 	{
 		GameMap = GetMapManager()->GetMapAtPosition(mTargetPosition);

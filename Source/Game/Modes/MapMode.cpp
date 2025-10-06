@@ -42,6 +42,7 @@ bool PMapMode::Load()
 	auto Map = mMapManager->LoadMap(mState.Get<std::string>(PLAYER_MAP), false);
 
 	auto Player = ConstructActor<PPlayerCharacter>();
+	Player->GetSpriteComponent()->GetSprite()->SetTexture(GTextureManager->Get(TEX_ASH));
 	GWorld->SetPlayerCharacter(Player);
 	Player->GetMovementComponent()->SnapToPosition(
 		FVector2(mState.GetRaw(PLAYER_POSITION)),

@@ -11,6 +11,7 @@ class PEngine : public PObject
 	std::shared_ptr<PGame> mGame = nullptr;
 	PGameInstance		   mGameInstance;
 	PSerializer			   mSerializer;
+	PTextureManager		   mTextureManager;
 
 public:
 	/**
@@ -29,8 +30,9 @@ public:
 		LogDebug("Starting engine.");
 		mIsRunning = true;
 
-		// Construct game instance
+		// Associate global managers
 		GGameInstance = &mGameInstance;
+		GTextureManager = &mTextureManager;
 
 		// Construct the game
 		mGame = std::make_shared<TGameType>();

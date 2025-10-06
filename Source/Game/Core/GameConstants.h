@@ -27,6 +27,9 @@
 #define TEX_DIALOG "DialogBox"
 #define TEX_FONT   "Font"
 
+#define TEX_ASH	 "Ash"
+#define TEX_GARY "Gary"
+
 // Positions
 
 #define COORD(P) (SCREEN_TILE * P)

@@ -91,7 +91,7 @@ std::map<char, int> GCharIndexes = {
 void PokeFont::LoadFontData()
 {
 	std::string FileName = "Font.png";
-	GFontTexture = PTextureManager::Get("Font");
+	GFontTexture = GTextureManager->Get("Font");
 	if (!GFontTexture)
 	{
 		LogError("Failed to load font texture");

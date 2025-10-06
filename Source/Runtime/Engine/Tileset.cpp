@@ -99,7 +99,7 @@ bool TilesetManager::LoadTileset(const std::string& Name)
 		LogError("No tileset with name {}", Name.c_str());
 		return false;
 	}
-	auto Tex = PTextureManager::Get(Name);
+	auto Tex = GTextureManager->Get(Name);
 	for (auto& Tile : Tileset->Tiles)
 	{
 		Tile.Tileset = Tileset;

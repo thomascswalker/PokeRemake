@@ -1,5 +1,6 @@
 #include "Trainer.h"
 
+#include "Core/GameConstants.h"
 #include "Engine/Dialog.h"
 #include "Engine/Game.h"
 #include "Engine/GameEvent.h"
@@ -16,6 +17,7 @@ void PTrainer::Deserialize(const JSON& Data)
 {
 	PCharacter::Deserialize(Data);
 	mContext = *GBattleManager->GetTrainer(Data["Id"]);
+	mSpriteComponent->GetSprite()->SetTexture(GTextureManager->Get(TEX_GARY));
 }
 
 void PTrainer::HandleInteraction()

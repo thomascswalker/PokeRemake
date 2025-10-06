@@ -14,7 +14,6 @@ PPlayerCharacter::PPlayerCharacter()
 {
 	mPosition.Z = Drawing::Z_Player;
 	mCameraComponent = GWorld->ConstructComponent<PCameraComponent>(this);
-	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)

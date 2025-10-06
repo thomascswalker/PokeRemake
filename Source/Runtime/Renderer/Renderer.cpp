@@ -71,7 +71,7 @@ bool PRenderer::Initialize()
 
 void PRenderer::Uninitialize() const
 {
-	PTextureManager::UnloadSDL();
+	GTextureManager->UnloadSDL();
 }
 
 void PRenderer::OnResize(const FVector2& Size)
