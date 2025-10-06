@@ -245,7 +245,7 @@ public:
 		PObject::Deserialize(Data);
 
 		auto Texture = Data["Texture"].get<std::string>();
-		mTexture = PTextureManager::Get(Texture);
+		mTexture = GTextureManager->Get(Texture);
 		LOAD_MEMBER_PROPERTY(Size, float);
 		LOAD_MEMBER_PROPERTY(IndexSize, float);
 		LOAD_MEMBER_PROPERTY(Width, int32_t);

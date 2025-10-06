@@ -4,10 +4,10 @@
 
 void PSprite::Play()
 {
-	GWorld->GetTimerManager()->SetTimer(mTimerHandle, mCurrentAnim, &PAnimation::Next, mAnimationSpeed, true);
+	GTimerManager->SetTimer(mTimerHandle, mCurrentAnim, &PAnimation::Next, mAnimationSpeed, true);
 }
 
 void PSprite::Stop()
 {
-	GWorld->GetTimerManager()->ClearTimer(mTimerHandle);
+	GTimerManager->ClearTimer(mTimerHandle);
 }

@@ -12,7 +12,7 @@
 #include "Renderer/Renderer.h"
 #include "stb/stb_image.h"
 
-TextureMap PTextureManager::sTextures = {};
+PTextureManager* GTextureManager = nullptr;
 
 uint32_t gNextTextureID = 0;
 
@@ -22,21 +22,19 @@ PTexture::PTexture()
 
 PTexture::~PTexture() {}
 
+PTextureManager::PTextureManager()
+{
+	mTextures = {};
+}
+
 /**
- * @brief Load the specified texture file into memory.
+ * @brief Load the specified texture filename into memory.
  * @param FileName The absolute filepath to the texture.
  *
  * @return A pointer to the texture object, or null if the file was not found or is unreadable.
  */
 PTexture* PTextureManager::Load(const std::string& FileName)
 {
-	// const auto AbsFileName = Files::FindFile(FileName);
-	// if (AbsFileName.empty())
-	// {
-	// 	LogError("File not found: {}", FileName.c_str());
-	// 	return nullptr;
-	// }
-
 	int	  Width, Height, Channels;
 	int	  DesiredChannelCount = 4;
 	void* Data = stbi_load(FileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
@@ -56,6 +54,15 @@ PTexture* PTextureManager::Load(const std::string& FileName)
 	return NewTexture;
 }
 
+/**
+ * @brief Constructs a new texture object from the specified `Data` blob.
+ * @param Name The texture name.
+ * @param Data The texture memory.
+ * @param Width The texture width.
+ * @param Height The texture height.
+ * @param Channels The texture channel count.
+ * @return A pointer to the texture object, or null if the texture was unable to be created.
+ */
 PTexture* PTextureManager::LoadMemory(const std::string& Name, void* Data, int32_t Width, int32_t Height, int32_t Channels)
 {
 	PTexture* NewTexture = Create(Name, Width, Height, Channels, Data);
@@ -68,7 +75,7 @@ PTexture* PTextureManager::LoadMemory(const std::string& Name, void* Data, int32
 
 void PTextureManager::LoadAllTextures()
 {
-	const auto Textures = Files::GetFilesInDirectory("Resources/Textures", true);
+	const auto Textures = Files::GetFilesInDirectory("Data/Sprites", true);
 	for (const auto& Texture : Textures)
 	{
 		Load(Texture);
@@ -113,7 +120,7 @@ PTexture* PTextureManager::Get(const std::string& Name)
 	{
 		if (Key == Name)
 		{
-			return sTextures.at(Name).get();
+			return mTextures.at(Name).get();
 		}
 		if (Value->GetName() == Name)
 		{
@@ -150,16 +157,16 @@ PTexture* PTextureManager::Create(const std::string& FileName, float Width, floa
 		return nullptr;
 	}
 	free(Data);
-	sTextures[BaseName] = std::make_shared<PTexture>(Tex);
-	return sTextures[BaseName].get();
+	mTextures[BaseName] = std::make_shared<PTexture>(Tex);
+	return mTextures[BaseName].get();
 }
 
 void PTextureManager::Destroy(const PTexture* Texture)
 {
-	auto Iter = sTextures.find(Texture->GetName());
-	if (Iter != sTextures.end())
+	auto Iter = mTextures.find(Texture->GetName());
+	if (Iter != mTextures.end())
 	{
-		sTextures.erase(Iter);
+		mTextures.erase(Iter);
 	}
 	else
 	{
@@ -167,7 +174,7 @@ void PTextureManager::Destroy(const PTexture* Texture)
 	}
 }
 
-TextureMap& PTextureManager::GetTextures()
+PTextureManager::TextureMap& PTextureManager::GetTextures()
 {
-	return sTextures;
+	return mTextures;
 }

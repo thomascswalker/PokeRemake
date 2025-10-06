@@ -1,6 +1,7 @@
 #include "Character.h"
 
 #include "Core/Constants.h"
+#include "Engine/Components/CollisionComponent.h"
 #include "Engine/Input.h"
 #include "Engine/World.h"
 
@@ -9,6 +10,8 @@
 PCharacter::PCharacter()
 {
 	mPosition.Z = Drawing::Z_NPC;
+
+	mCollisionComponent = ConstructComponent<PCollisionComponent>(this);
 
 	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
@@ -25,7 +28,6 @@ PCharacter::PCharacter()
 
 		auto Sprite = mSpriteComponent->GetSprite();
 
-		Sprite->SetTexture(PTextureManager::Get(TEXTURE_GARY));
 		Sprite->SetSize(16.0f);
 		Sprite->SetIndexSize(16.0f);
 
@@ -126,7 +128,7 @@ void PCharacter::OnMovementEnded(EOrientation Direction)
 		{
 			if (auto Coll = dynamic_cast<ICollider*>(Comp))
 			{
-				Coll->ProcessCollision();
+				Coll->ProcessCollision(mCollisionComponent);
 			}
 		}
 	}
@@ -138,7 +140,7 @@ void PCharacter::Deserialize(const JSON& Json)
 
 	auto	 JsonPosition = Json["Position"];
 	FVector2 Position = { JsonPosition[0], JsonPosition[1] };
-	mMovementComponent->SnapToPosition(Position, GetMapManager()->GetMapAtPosition(Position));
+	mMovementComponent->SnapToPosition(Position, GMapManager->GetMapAtPosition(Position));
 
 	if (Json.contains("Direction"))
 	{

@@ -43,7 +43,7 @@ public:
 	PGameMap* ConstructMap(const JSON& JsonData);
 	PGameMap* GetMap(const std::string& Name);
 	PGameMap* LoadMap(const std::string& Name, bool ForceReload);
-	PGameMap* LoadMapFile(const std::string& FileName);
+	PGameMap* LoadMapFromFile(const std::string& FileName);
 
 	bool UnloadMap(const std::string& Name);
 	void UnloadSwitchMap();
@@ -59,4 +59,4 @@ public:
 };
 
 // Defined in World.h
-static PMapManager* GetMapManager();
+extern PMapManager* GMapManager;

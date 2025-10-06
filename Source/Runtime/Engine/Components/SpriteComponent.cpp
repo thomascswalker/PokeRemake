@@ -18,11 +18,6 @@ bool PSpriteComponent::Draw(const PRenderer* Renderer) const
 	if (!Texture)
 	{
 		LogError("Texture is nullptr: {}", mInternalName.c_str());
-		LogError("Textures:");
-		for (auto Tex : PTextureManager::GetTextures() | std::views::values)
-		{
-			LogError("\t{}", Tex->GetName().c_str());
-		}
 		return false;
 	}
 

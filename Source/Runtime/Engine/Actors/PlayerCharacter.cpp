@@ -14,7 +14,6 @@ PPlayerCharacter::PPlayerCharacter()
 {
 	mPosition.Z = Drawing::Z_Player;
 	mCameraComponent = GWorld->ConstructComponent<PCameraComponent>(this);
-	mSpriteComponent->GetSprite()->SetTexture(PTextureManager::Get(TEXTURE_ASH));
 }
 
 void PPlayerCharacter::Tick(float DeltaTime)
@@ -160,7 +159,7 @@ void PPlayerCharacter::OnKeyUp(SInputEvent* Event)
 
 bool PPlayerCharacter::CanMove() const
 {
-	return GetMapManager()->GetState() == MS_Loaded;
+	return GMapManager->GetState() == MS_Loaded;
 }
 
 void PPlayerCharacter::Interact()

@@ -188,7 +188,7 @@ void PEditorGame::OnActorClicked(PActor* ClickedActor)
 		UpdateSelection(ClickedActor);
 		return;
 	}
-	auto GameMap = GetMapManager()->GetMapUnderMouse();
+	auto GameMap = GMapManager->GetMapUnderMouse();
 	if (IsInputContext(IC_Tile))
 	{
 		if (!mCurrentTilesetItem)

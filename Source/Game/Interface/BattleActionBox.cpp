@@ -6,7 +6,7 @@
 
 PBattleActionBox::PBattleActionBox()
 {
-	mTexture = PTextureManager::Get(TEX_DIALOG);
+	mTexture = GTextureManager->Get(TEX_DIALOG);
 
 	GBattleManager->BattleActionChanged.AddRaw(this, &PBattleActionBox::HandleBattleActionChange);
 }

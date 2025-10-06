@@ -7,9 +7,6 @@
 #include "Core/Rect.h"
 #include "SDL3/SDL.h"
 
-#define TEXTURE_ASH	 "Ash"
-#define TEXTURE_GARY "Gary"
-
 class PTexture
 {
 	uint32_t	mID;
@@ -86,21 +83,23 @@ public:
 	friend class PTextureManager;
 };
 
-using TextureMap = std::map<std::string, std::shared_ptr<PTexture>>;
-
 class PTextureManager
 {
-	static TextureMap sTextures;
+	using TextureMap = std::map<std::string, std::shared_ptr<PTexture>>;
+	TextureMap mTextures;
 
 public:
-	static TextureMap& GetTextures();
+	PTextureManager();
+	TextureMap& GetTextures();
 
-	static PTexture* Load(const std::string& FileName);
-	static PTexture* LoadMemory(const std::string& Name, void* Data, int32_t Width, int32_t Height, int32_t Channels);
-	static void		 LoadAllTextures();
-	static bool		 LoadSDL(PTexture* Texture);
-	static void		 UnloadSDL();
-	static PTexture* Get(const std::string& Name);
-	static PTexture* Create(const std::string& FileName, float Width, float Height, int Channels, void* Data);
-	static void		 Destroy(const PTexture* Texture);
+	PTexture* Load(const std::string& FileName);
+	PTexture* LoadMemory(const std::string& Name, void* Data, int32_t Width, int32_t Height, int32_t Channels);
+	void	  LoadAllTextures();
+	bool	  LoadSDL(PTexture* Texture);
+	void	  UnloadSDL();
+	PTexture* Get(const std::string& Name);
+	PTexture* Create(const std::string& FileName, float Width, float Height, int Channels, void* Data);
+	void	  Destroy(const PTexture* Texture);
 };
+
+extern PTextureManager* GTextureManager;

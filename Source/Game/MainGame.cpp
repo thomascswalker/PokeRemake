@@ -112,3 +112,16 @@ bool PMainGame::EndBattle()
 	mHUD->EndBattleHUD();
 	return true;
 }
+
+void PMainGame::OnKeyUp(SInputEvent* Event)
+{
+	switch (Event->KeyUp)
+	{
+		case SDLK_F1:
+			GSettings->DebugDraw = !GSettings->DebugDraw;
+			LogDebug("Debug mode: {}", GSettings->DebugDraw ? "ON" : "OFF");
+			break;
+		default:
+			break;
+	}
+}

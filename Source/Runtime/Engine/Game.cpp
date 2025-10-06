@@ -20,9 +20,8 @@ PGame::PGame()
 
 bool PGame::PreStart()
 {
-	PTextureManager::LoadAllTextures();
+	GTextureManager->LoadAllTextures();
 	TilesetManager::LoadAllTilesets();
-	StyleManager::LoadAllStylesheets();
 
 	return true;
 }

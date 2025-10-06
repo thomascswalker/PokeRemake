@@ -9,7 +9,7 @@ bool PCharacterMovementComponent::Start()
 	// Set target position to current position to prevent automatic movement to [0,0]
 	// on game startup
 	mTargetPosition = mOwner->GetWorldPosition2D();
-	mCurrentMap = GetMapManager()->GetMapAtPosition(mTargetPosition);
+	mCurrentMap = GMapManager->GetMapAtPosition(mTargetPosition);
 	if (!mCurrentMap)
 	{
 		LogError("No valid maps in the world.");
@@ -110,7 +110,7 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	// set the current map to the map at the new position.
 	if (!mCurrentMap->GetWorldBounds().Contains(NewPosition))
 	{
-		PGameMap* NewMap = GetMapManager()->GetMapAtPosition(NewPosition);
+		PGameMap* NewMap = GMapManager->GetMapAtPosition(NewPosition);
 
 		// If no map is found at the new position, return false.
 		if (!NewMap)
@@ -152,7 +152,7 @@ STile* PCharacterMovementComponent::GetCurrentTile() const
 
 STile* PCharacterMovementComponent::GetTargetTile() const
 {
-	auto GameMap = GetMapManager()->GetMapAtPosition(mTargetPosition);
+	auto GameMap = GMapManager->GetMapAtPosition(mTargetPosition);
 	if (!GameMap)
 	{
 		return {};
@@ -165,12 +165,11 @@ void PCharacterMovementComponent::SetCurrentMap(PGameMap* NewMap)
 	mCurrentMap = NewMap;
 }
 
-void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGameMap* GameMap)
+void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGameMap* GameMap, bool Emit)
 {
-	LogDebug("Moving character to: {}", Position.ToString().c_str());
 	if (!GameMap)
 	{
-		GameMap = GetMapManager()->GetMapAtPosition(mTargetPosition);
+		GameMap = GMapManager->GetMapAtPosition(mTargetPosition);
 		if (!GameMap)
 		{
 			LogWarning("No map at target position.");
@@ -179,7 +178,11 @@ void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGame
 	mCurrentMap = GameMap;
 	mOwner->SetPosition2D(Position);
 	mTargetPosition = Position;
-	MovementEnded.Broadcast(mMovementDirection);
+
+	if (Emit)
+	{
+		MovementEnded.Broadcast(mMovementDirection);
+	}
 }
 
 void PCharacterMovementComponent::SnapToTile(const IVector2& Position)

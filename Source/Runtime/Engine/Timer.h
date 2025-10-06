@@ -5,11 +5,11 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <ranges>
 
 #include "Core/Delegate.h"
 #include "Core/Logging.h"
-#include "Core/Map.h"
 
 struct STimer;
 struct STimerHandle;
@@ -255,4 +255,4 @@ public:
 };
 
 // Defined in World.h
-static PTimerManager* GetTimerManager();
+extern PTimerManager* GTimerManager;

@@ -1,0 +1,42 @@
+{
+  "title": "Map Definition",
+  "description": "Definitional schema for all maps.",
+  "type": "object",
+  "properties": {
+    "Layout": {
+      "type": "string"
+    },
+    "Actors": {
+      "type": "object",
+      "properties": {
+        "Class": {
+          "type": "string"
+        },
+        "&": {
+          "type": "string"
+        },
+        "Children": {
+          "type": "array",
+          "items": {
+            "$ref": "#"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "Class"
+          ]
+        },
+        {
+          "required": [
+            "&"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "Layout"
+  ]
+}

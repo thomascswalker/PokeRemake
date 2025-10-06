@@ -1,7 +1,8 @@
 #include "CollisionComponent.h"
+
 #include "Engine/World.h"
 
-void PCollisionComponent::ProcessCollision()
+void PCollisionComponent::ProcessCollision(PCollisionComponent* Other)
 {
 	auto W = GWorld;
 	if (!W)
@@ -24,6 +25,10 @@ void PCollisionComponent::ProcessCollision()
 	{
 		// Ignore the owner
 		if (Actor == mOwner)
+		{
+			continue;
+		}
+		if (Actor == Other->GetOwner() && !Other->GetCollideable())
 		{
 			continue;
 		}

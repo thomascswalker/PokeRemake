@@ -1,0 +1,40 @@
+{
+  "title": "Character Definitions",
+  "description": "Definitional schema for all characters.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "Name": {
+        "type": "string"
+      },
+      "CharacterId": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "BattleId": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "Texture": {
+        "type": "string"
+      },
+      "Type": {
+        "enum": [
+          "NPC",
+          "Trainer",
+          "GymLeader"
+        ]
+      },
+      "Dialog": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "Name",
+      "CharacterId",
+      "Texture",
+      "Type"
+    ]
+  }
+}

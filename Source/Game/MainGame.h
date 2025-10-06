@@ -28,4 +28,6 @@ public:
 
 	bool StartBattle(SGameEvent* Event);
 	bool EndBattle();
+
+	void OnKeyUp(SInputEvent* Event) override;
 };

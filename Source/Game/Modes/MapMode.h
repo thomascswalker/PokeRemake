@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../FadeTransition.h"
+#include "../Interface/GameHUD.h"
 #include "../Interface/TransitionOverlay.h"
 #include "Core/PokeParty.h"
 #include "Engine/GameMode.h"

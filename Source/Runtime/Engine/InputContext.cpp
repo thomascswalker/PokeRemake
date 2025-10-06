@@ -33,7 +33,7 @@ static TMap<EInputContext, SInputContext> gInputContextMap = {
 		SDLK_A,
 		SDLK_D,
 		SDLK_E,
-		SDLK_Q },
+		SDLK_Q, SDLK_F1 },
 	  {} }												 },
 	{ IC_Dialog,
 	  { IC_Dialog,

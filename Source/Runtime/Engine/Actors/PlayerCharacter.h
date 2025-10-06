@@ -31,4 +31,5 @@ public:
 	{
 		return mCameraComponent;
 	}
+	PSpriteComponent* GetSpriteComponent() const { return mSpriteComponent; }
 };

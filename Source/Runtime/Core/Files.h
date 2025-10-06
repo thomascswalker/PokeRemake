@@ -11,16 +11,6 @@
 #include "Logging.h"
 #include "String.h"
 
-inline std::vector<std::string> gResourcePaths = {
-	"Resources\\Shaders",
-	"Resources\\Textures",
-	"Resources\\Fonts",
-	"Resources\\Maps",
-	"Resources\\ActorDefs",
-	"Resources\\Styles",
-	"Resources\\Pokedex"
-};
-
 namespace Files
 {
 	inline std::filesystem::path GetRootPath()
@@ -45,7 +35,7 @@ namespace Files
 
 	inline std::string FindFile(const std::string& FileName, bool Recurse = true)
 	{
-		auto ResourcesPath = GetRootPath() / "Resources";
+		auto ResourcesPath = GetRootPath() / "Data";
 
 		if (!Recurse)
 		{

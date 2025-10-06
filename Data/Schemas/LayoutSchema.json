@@ -1,0 +1,28 @@
+{
+  "title": "Layout Definition",
+  "description": "Definitional schema for all map layouts.",
+  "type": "object",
+  "properties": {
+    "SizeX": {
+      "type": "integer"
+    },
+    "SizeY": {
+      "type": "integer"
+    },
+    "Tileset": {
+      "type": "string"
+    },
+    "Tiles": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "SizeX",
+    "SizeY",
+    "Tiles",
+    "Tileset"
+  ]
+}

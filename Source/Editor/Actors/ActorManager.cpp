@@ -6,7 +6,7 @@ static JSON ActorDefs{};
 
 void ActorManager::LoadActorDefs()
 {
-    auto DefFiles = Files::GetFilesInDirectory("Resources/ActorDefs");
+    auto DefFiles = Files::GetFilesInDirectory("Data/Actor");
     for (const auto& FileName : DefFiles)
     {
         std::string Buffer;

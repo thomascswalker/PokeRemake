@@ -218,9 +218,9 @@ struct SPokemonDef : ISerializable
 
 		std::string FmtName = Json.contains("AlternateName") ? Json["AlternateName"].get<std::string>() : Name;
 		std::string FrontFileName = std::format("{}Front", FmtName.c_str());
-		Front = PTextureManager::Get(FrontFileName);
+		Front = GTextureManager->Get(FrontFileName);
 		std::string BackFileName = std::format("{}Back", FmtName.c_str());
-		Back = PTextureManager::Get(BackFileName);
+		Back = GTextureManager->Get(BackFileName);
 	}
 
 	std::string ToString() const

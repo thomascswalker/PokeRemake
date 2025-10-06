@@ -141,16 +141,6 @@ public:
 	PActor*				 GetActorAtPosition(const FVector2& Position) const;
 	std::vector<PActor*> GetActorsAtPosition(const FVector2& Position) const;
 
-	PTimerManager* GetTimerManager()
-	{
-		return &mTimerManager;
-	}
-
-	PMapManager* GetMapManager()
-	{
-		return &mMapManager;
-	}
-
 	bool ProcessEvents(SInputEvent* Event) override;
 
 #if _EDITOR
@@ -217,8 +207,3 @@ T* ConstructWidget(const JSON& Json)
 	Widget->Deserialize(Json);
 	return Widget;
 }
-
-// Declared in Timer.h
-PTimerManager* GetTimerManager() { return GWorld->GetTimerManager(); }
-// Declared in MapManager.h
-PMapManager* GetMapManager() { return GWorld->GetMapManager(); }

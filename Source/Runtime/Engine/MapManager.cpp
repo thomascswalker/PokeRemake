@@ -1,10 +1,13 @@
 #include "MapManager.h"
 
 #include "Actors/PlayerCharacter.h"
+#include "Components/CollisionComponent.h"
 #include "Core/Files.h"
 
 #include "Serialization.h"
 #include "World.h"
+
+PMapManager* GMapManager = nullptr;
 
 PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 {
@@ -90,7 +93,7 @@ PGameMap* PMapManager::LoadMap(const std::string& Name, bool ForceReload)
 	return NewMap;
 }
 
-PGameMap* PMapManager::LoadMapFile(const std::string& FileName)
+PGameMap* PMapManager::LoadMapFromFile(const std::string& FileName)
 {
 	SetState(MS_Loading);
 	JSON JsonData;
@@ -144,7 +147,7 @@ bool PMapManager::UnloadMap(const std::string& Name)
 void PMapManager::UnloadSwitchMap()
 {
 	// Clear the timer which triggered this deferred map unloading
-	GetTimerManager()->ClearTimer(mUnloadHandle);
+	GTimerManager->ClearTimer(mUnloadHandle);
 
 	// Actually unload the map
 	UnloadMap(mSwitchMap.OldMap);
@@ -160,6 +163,7 @@ void PMapManager::UnloadSwitchMap()
 	{
 		Player->GetMovementComponent()->SetMovementDirection(mSwitchMap.ExitDirection);
 		Player->GetMovementComponent()->SnapToPosition(mSwitchMap.NewPosition, GameMap);
+		Player->GetComponent<PCollisionComponent>()->SetCollideable(true);
 	}
 	else
 	{
@@ -180,8 +184,11 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 
 	SetState(MS_Unloading);
 
+	// For the duration of switching the map, make the player uncollideable.
+	GWorld->GetPlayerCharacter()->GetComponent<PCollisionComponent>()->SetCollideable(false);
+
 	// Defer unloading the map for 1 second to allow for the transition animation to play.
-	GetTimerManager()->Delay(mUnloadHandle, Delay, this, &PMapManager::UnloadSwitchMap);
+	GTimerManager->Delay(mUnloadHandle, Delay, this, &PMapManager::UnloadSwitchMap);
 
 	return true;
 }
