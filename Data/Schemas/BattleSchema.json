@@ -1,6 +1,6 @@
 {
-  "title": "Pokemon Definition",
-  "description": "Definitional schema for Pokemon.",
+  "title": "Battle Definitions",
+  "description": "Definitional schema for all battles.",
   "type": "array",
   "items": {
     "type": "object",
