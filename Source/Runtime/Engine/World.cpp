@@ -76,6 +76,9 @@ void PWorld::DestroyAllActors()
 PWorld::PWorld()
 {
 	mRootWidget = std::make_shared<PWidget>();
+
+	GTimerManager = &mTimerManager;
+	GMapManager = &mMapManager;
 }
 
 std::vector<PActor*> PWorld::GetActors() const

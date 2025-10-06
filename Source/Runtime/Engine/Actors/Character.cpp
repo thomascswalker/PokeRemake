@@ -137,7 +137,7 @@ void PCharacter::Deserialize(const JSON& Json)
 
 	auto	 JsonPosition = Json["Position"];
 	FVector2 Position = { JsonPosition[0], JsonPosition[1] };
-	mMovementComponent->SnapToPosition(Position, GetMapManager()->GetMapAtPosition(Position));
+	mMovementComponent->SnapToPosition(Position, GMapManager->GetMapAtPosition(Position));
 
 	if (Json.contains("Direction"))
 	{

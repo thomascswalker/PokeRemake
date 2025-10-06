@@ -19,7 +19,7 @@ PMapMode::PMapMode()
 {
 	// Convenience vars
 	mWorld = GWorld;
-	mMapManager = GetMapManager();
+	mMapManager = GMapManager;
 
 	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 
@@ -109,6 +109,7 @@ void PMapMode::OnFadeInComplete()
 	{
 		TransitionOverlay->Unparent();
 		TransitionOverlay->FadedIn.RemoveAll();
+		TransitionOverlay->FadedOut.RemoveAll();
 		mWorld->DestroyWidget(TransitionOverlay);
 		TransitionOverlay = nullptr;
 	}
