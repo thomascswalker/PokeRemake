@@ -30,13 +30,6 @@ PTexture::~PTexture() {}
  */
 PTexture* PTextureManager::Load(const std::string& FileName)
 {
-	// const auto AbsFileName = Files::FindFile(FileName);
-	// if (AbsFileName.empty())
-	// {
-	// 	LogError("File not found: {}", FileName.c_str());
-	// 	return nullptr;
-	// }
-
 	int	  Width, Height, Channels;
 	int	  DesiredChannelCount = 4;
 	void* Data = stbi_load(FileName.c_str(), &Width, &Height, &Channels, DesiredChannelCount);
@@ -68,7 +61,7 @@ PTexture* PTextureManager::LoadMemory(const std::string& Name, void* Data, int32
 
 void PTextureManager::LoadAllTextures()
 {
-	const auto Textures = Files::GetFilesInDirectory("Resources/Textures", true);
+	const auto Textures = Files::GetFilesInDirectory("Data/Sprites", true);
 	for (const auto& Texture : Textures)
 	{
 		Load(Texture);

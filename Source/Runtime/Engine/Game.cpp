@@ -22,7 +22,6 @@ bool PGame::PreStart()
 {
 	PTextureManager::LoadAllTextures();
 	TilesetManager::LoadAllTilesets();
-	StyleManager::LoadAllStylesheets();
 
 	return true;
 }
