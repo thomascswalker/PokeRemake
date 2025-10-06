@@ -1,4 +1,6 @@
 {
+  "title": "Character Definitions",
+  "description": "Definitional schema for all characters.",
   "type": "array",
   "items": {
     "type": "object",
