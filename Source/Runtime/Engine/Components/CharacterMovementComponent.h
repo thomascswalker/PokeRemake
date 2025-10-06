@@ -79,7 +79,7 @@ public:
 	STile* GetTargetTile() const;
 	void   SetCurrentMap(PGameMap* NewMap);
 
-	void SnapToPosition(const FVector2& Position, PGameMap* GameMap = nullptr);
+	void SnapToPosition(const FVector2& Position, PGameMap* GameMap = nullptr, bool Emit = true);
 	void SnapToTile(const IVector2& Position);
 
 	EOrientation GetMovementDirection()

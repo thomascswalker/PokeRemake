@@ -165,7 +165,7 @@ void PCharacterMovementComponent::SetCurrentMap(PGameMap* NewMap)
 	mCurrentMap = NewMap;
 }
 
-void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGameMap* GameMap)
+void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGameMap* GameMap, bool Emit)
 {
 	if (!GameMap)
 	{
@@ -178,7 +178,11 @@ void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGame
 	mCurrentMap = GameMap;
 	mOwner->SetPosition2D(Position);
 	mTargetPosition = Position;
-	MovementEnded.Broadcast(mMovementDirection);
+
+	if (Emit)
+	{
+		MovementEnded.Broadcast(mMovementDirection);
+	}
 }
 
 void PCharacterMovementComponent::SnapToTile(const IVector2& Position)

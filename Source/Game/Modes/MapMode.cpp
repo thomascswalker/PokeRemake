@@ -44,9 +44,9 @@ bool PMapMode::Load()
 	auto Player = ConstructActor<PPlayerCharacter>();
 	Player->GetSpriteComponent()->GetSprite()->SetTexture(GTextureManager->Get(TEX_ASH));
 	GWorld->SetPlayerCharacter(Player);
-	Player->GetMovementComponent()->SnapToPosition(
-		FVector2(mState.GetRaw(PLAYER_POSITION)),
-		Map);
+
+	auto NewPosition = FVector2(mState.GetRaw(PLAYER_POSITION));
+	Player->GetMovementComponent()->SnapToPosition(NewPosition, Map, false);
 
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 

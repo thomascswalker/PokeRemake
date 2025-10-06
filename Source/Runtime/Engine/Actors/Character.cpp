@@ -1,6 +1,7 @@
 #include "Character.h"
 
 #include "Core/Constants.h"
+#include "Engine/Components/CollisionComponent.h"
 #include "Engine/Input.h"
 #include "Engine/World.h"
 
@@ -9,6 +10,8 @@
 PCharacter::PCharacter()
 {
 	mPosition.Z = Drawing::Z_NPC;
+
+	mCollisionComponent = ConstructComponent<PCollisionComponent>(this);
 
 	mMovementComponent = ConstructComponent<PCharacterMovementComponent>(this);
 	if (mMovementComponent)
@@ -125,7 +128,7 @@ void PCharacter::OnMovementEnded(EOrientation Direction)
 		{
 			if (auto Coll = dynamic_cast<ICollider*>(Comp))
 			{
-				Coll->ProcessCollision();
+				Coll->ProcessCollision(mCollisionComponent);
 			}
 		}
 	}

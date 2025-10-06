@@ -1,6 +1,7 @@
 #include "MapManager.h"
 
 #include "Actors/PlayerCharacter.h"
+#include "Components/CollisionComponent.h"
 #include "Core/Files.h"
 
 #include "Serialization.h"
@@ -162,6 +163,7 @@ void PMapManager::UnloadSwitchMap()
 	{
 		Player->GetMovementComponent()->SetMovementDirection(mSwitchMap.ExitDirection);
 		Player->GetMovementComponent()->SnapToPosition(mSwitchMap.NewPosition, GameMap);
+		Player->GetComponent<PCollisionComponent>()->SetCollideable(true);
 	}
 	else
 	{
@@ -181,6 +183,9 @@ bool PMapManager::SwitchMap(const std::string& OldMap, const std::string& NewMap
 	};
 
 	SetState(MS_Unloading);
+
+	// For the duration of switching the map, make the player uncollideable.
+	GWorld->GetPlayerCharacter()->GetComponent<PCollisionComponent>()->SetCollideable(false);
 
 	// Defer unloading the map for 1 second to allow for the transition animation to play.
 	GTimerManager->Delay(mUnloadHandle, Delay, this, &PMapManager::UnloadSwitchMap);

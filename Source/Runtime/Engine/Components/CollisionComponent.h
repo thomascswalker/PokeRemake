@@ -7,5 +7,5 @@
 class PCollisionComponent : public PComponent, public ICollider
 {
 public:
-	void ProcessCollision() override;
+	void ProcessCollision(PCollisionComponent* Other) override;
 };

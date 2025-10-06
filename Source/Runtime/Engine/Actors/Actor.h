@@ -155,6 +155,8 @@ public:
 
 	IDrawable* GetDrawableComponent() const;
 
+	PCollisionComponent* GetCollisionComponent() const { return mCollisionComponent; }
+
 	virtual FRect GetLocalBounds() const
 	{
 		return FRect();
