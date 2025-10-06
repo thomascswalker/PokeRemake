@@ -9,6 +9,7 @@ JSON STrainerContext::Serialize() const
 {
 	JSON Result;
 	Result["Id"] = Id;
+	Result["Dialog"] = Dialog;
 	return Result;
 }
 
@@ -16,6 +17,7 @@ void STrainerContext::Deserialize(const JSON& Json)
 {
 	Id = Json["Id"];
 	Name = Json["Name"];
+	Dialog = Json["Dialog"];
 	Storage.Deserialize(Json["Storage"]);
 }
 
@@ -39,7 +41,7 @@ bool PBattleManager::PreStart()
 	for (auto& Battle : Data)
 	{
 		int32_t Id = Battle["Id"];
-		mTrainers[Id] = { Battle["Id"], Battle["Name"] };
+		mTrainers[Id] = { Battle["Id"], Battle["Name"], Battle["Dialog"] };
 		for (auto Mon : Battle["Mons"])
 		{
 			mTrainers[Id].Storage.Construct(Mon["Id"], Mon["Level"]);

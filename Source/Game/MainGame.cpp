@@ -90,12 +90,7 @@ bool PMainGame::HandleGameEvent(SGameEvent& Event)
 
 bool PMainGame::StartDialogBox(SGameEvent* Event)
 {
-	SDialogContext* Context = Event->GetData<SDialogContext>();
-	if (!Context)
-	{
-		return false;
-	}
-	mHUD->StartDialogBox(Context->Message);
+	mHUD->StartDialogBox(Event->GetData<SDialogContext>());
 	return true;
 }
 
@@ -107,11 +102,6 @@ bool PMainGame::EndDialogBox()
 
 bool PMainGame::StartBattle(SGameEvent* Event)
 {
-	SBattleContext* Context = Event->GetData<SBattleContext>();
-	if (!Context)
-	{
-		return false;
-	}
 	mHUD->EndDialogBox();
 	mHUD->StartBattleHUD();
 	return true;

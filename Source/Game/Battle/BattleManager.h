@@ -27,10 +27,16 @@ struct STrainerContext : ISerializable
 {
 	int32_t			Id = 0;
 	std::string		Name = "";
+	std::string		Dialog = "";
 	PPokemonStorage Storage = {};
 
 	STrainerContext() = default;
-	STrainerContext(int32_t InId, const std::string& InName) : Id(InId), Name(InName) { Storage.Clear(); }
+	STrainerContext(int32_t InId, const std::string& InName, const std::string& InDialog)
+		: Id(InId), Name(InName), Dialog(InDialog)
+	{
+		Storage.Clear();
+	}
+
 	JSON Serialize() const override;
 	void Deserialize(const JSON& Json) override;
 };

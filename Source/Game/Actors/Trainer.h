@@ -17,4 +17,5 @@ public:
 	void Deserialize(const JSON& Data) override;
 
 	void HandleInteraction() override;
+	void HandleDialogComplete();
 };

@@ -103,10 +103,8 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	const auto NewPosition = Velocity + mOwner->GetWorldPosition2D();
 
 	// Convert velocity to a movement direction
-	mMovementDirection = VectorToDirection(Velocity);
-
 	// Allow changing direction even if the character doesn't move
-	MovementDirectionChanged.Broadcast(mMovementDirection);
+	SetMovementDirection(VectorToDirection(Velocity));
 
 	// If the new position is not within the same map as the current map we're in,
 	// set the current map to the map at the new position.

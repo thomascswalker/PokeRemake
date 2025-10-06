@@ -8,6 +8,7 @@ class PBattleActionBox : public PWidget
 
 public:
 	PBattleActionBox();
+	~PBattleActionBox() override;
 
 	void Draw(const PRenderer* Renderer) const override;
 	void HandleBattleActionChange(EBattleAction Action);

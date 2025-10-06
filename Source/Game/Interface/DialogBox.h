@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Core/GameConstants.h"
 #include "Engine/TextPrinter.h"
 #include "Engine/World.h"
 #include "Interface/Box.h"

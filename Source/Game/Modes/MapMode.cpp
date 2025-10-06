@@ -128,7 +128,7 @@ bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)
 		case EGameEventType::Dialog:
 			if (!mHUD->IsDialogBoxVisible())
 			{
-				mHUD->StartDialogBox(GameEvent.GetData<SDialogContext>()->Message);
+				mHUD->StartDialogBox(GameEvent.GetData<SDialogContext>());
 			}
 			else
 			{
@@ -137,7 +137,7 @@ bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)
 			break;
 		case EGameEventType::BattleStart:
 			// Update the battle state with the incoming battle ID to be loaded
-			GEngine->GetGameState(BATTLE_MODE)->Set(STATE_BATTLE_ID, GameEvent.GetData<SBattleContext>()->Trainer->Id);
+			GEngine->GetGameState(BATTLE_MODE)->Set(STATE_BATTLE_ID, GameEvent.GetData<SBattleContext>().Trainer->Id);
 
 			// First load the new game mode
 			if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE))

@@ -1,5 +1,6 @@
 #include "Trainer.h"
 
+#include "Engine/Dialog.h"
 #include "Engine/Game.h"
 #include "Engine/GameEvent.h"
 #include "Engine/World.h"
@@ -18,6 +19,22 @@ void PTrainer::Deserialize(const JSON& Data)
 }
 
 void PTrainer::HandleInteraction()
+{
+	// Face the player
+	PPlayerCharacter* Player = GWorld->GetPlayerCharacter();
+	FVector2		  Dir = Player->GetPosition2D() - GetPosition2D();
+	auto			  Direction = VectorToDirection(Dir);
+	mMovementComponent->SetMovementDirection(Direction);
+
+	// Start dialog. Once dialog is complete, execute HandleDialogComplete.
+	SDialogContext Context;
+	Context.Message = mContext.Dialog;
+	Context.DialogCompleted.AddRaw(this, &PTrainer::HandleDialogComplete);
+	SGameEvent Event(this, EGameEventType::Dialog, &Context);
+	GGameMode->HandleGameEvent(Event);
+}
+
+void PTrainer::HandleDialogComplete()
 {
 	SBattleContext Context;
 	Context.Trainer = &mContext;

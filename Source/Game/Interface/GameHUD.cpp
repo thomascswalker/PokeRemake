@@ -5,12 +5,13 @@ PGameHUD::PGameHUD()
 	SetLayoutMode(LM_Vertical);
 }
 
-void PGameHUD::StartDialogBox(const std::string& Text)
+void PGameHUD::StartDialogBox(const SDialogContext& Context)
 {
 	SetInputContext(IC_Dialog);
+	mDialogContext = Context;
 	mDialogBox = ConstructWidget<PDialogBox>();
 	PWidget::AddChild(mDialogBox);
-	mDialogBox->SetText(Text);
+	mDialogBox->SetText(Context.Message);
 	mDialogBox->Print();
 }
 
@@ -25,6 +26,8 @@ void PGameHUD::EndDialogBox()
 	mDialogBox->Unparent();
 	GWorld->DestroyWidget(mDialogBox);
 	mDialogBox = nullptr;
+
+	mDialogContext.DialogCompleted.Broadcast();
 }
 
 bool PGameHUD::IsDialogBoxVisible()

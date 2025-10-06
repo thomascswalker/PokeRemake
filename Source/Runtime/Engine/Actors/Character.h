@@ -25,9 +25,8 @@ protected:
 	PCharacterMovementComponent* mMovementComponent = nullptr;
 	PSpriteComponent*			 mSpriteComponent = nullptr;
 
-	FVector2	 mTargetPosition;
-	EOrientation mMovementDirection = OR_South;
-	bool		 bInputAllowed = false;
+	FVector2 mTargetPosition;
+	bool	 bInputAllowed = false;
 
 	bool  mAnimationCycle = false;
 	float mDistanceTraveled = 0.0f;

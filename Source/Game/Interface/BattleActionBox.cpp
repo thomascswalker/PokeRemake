@@ -6,9 +6,14 @@
 
 PBattleActionBox::PBattleActionBox()
 {
-	mTexture = PTextureManager::Get("DialogBox");
+	mTexture = PTextureManager::Get(TEX_DIALOG);
 
 	GBattleManager->BattleActionChanged.AddRaw(this, &PBattleActionBox::HandleBattleActionChange);
+}
+
+PBattleActionBox::~PBattleActionBox()
+{
+	GBattleManager->BattleActionChanged.RemoveObject(this);
 }
 
 void PBattleActionBox::Draw(const PRenderer* Renderer) const
@@ -30,16 +35,16 @@ void PBattleActionBox::Draw(const PRenderer* Renderer) const
 	switch (GBattleManager->GetAction())
 	{
 		case EBattleAction::Fight:
-			PokeFont::DrawText(SELECTION, { BATTLE_ACTION_FIGHT_X - COORD(1), BATTLE_ACTION_FIGHT_Y });
+			PokeFont::DrawChar(RIGHT_ARROW, { BATTLE_ACTION_FIGHT_X - COORD(1), BATTLE_ACTION_FIGHT_Y });
 			break;
 		case EBattleAction::Pokemon:
-			PokeFont::DrawText(SELECTION, { BATTLE_ACTION_PARTY_X - COORD(1), BATTLE_ACTION_PARTY_Y });
+			PokeFont::DrawChar(RIGHT_ARROW, { BATTLE_ACTION_PARTY_X - COORD(1), BATTLE_ACTION_PARTY_Y });
 			break;
 		case EBattleAction::Item:
-			PokeFont::DrawText(SELECTION, { BATTLE_ACTION_ITEM_X - COORD(1), BATTLE_ACTION_ITEM_Y });
+			PokeFont::DrawChar(RIGHT_ARROW, { BATTLE_ACTION_ITEM_X - COORD(1), BATTLE_ACTION_ITEM_Y });
 			break;
 		case EBattleAction::Run:
-			PokeFont::DrawText(SELECTION, { BATTLE_ACTION_RUN_X - COORD(1), BATTLE_ACTION_RUN_Y });
+			PokeFont::DrawChar(RIGHT_ARROW, { BATTLE_ACTION_RUN_X - COORD(1), BATTLE_ACTION_RUN_Y });
 			break;
 	}
 }

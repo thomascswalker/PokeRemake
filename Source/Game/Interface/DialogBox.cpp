@@ -1,10 +1,11 @@
 #include "DialogBox.h"
 
 #include "Core/Font.h"
+#include "Core/GameConstants.h"
 
 PDialogBox::PDialogBox()
 {
-	mTexture = PTextureManager::Get("DialogBox");
+	mTexture = PTextureManager::Get(TEX_DIALOG);
 }
 
 void PDialogBox::Draw(const PRenderer* Renderer) const
