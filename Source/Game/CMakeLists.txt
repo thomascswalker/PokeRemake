@@ -30,6 +30,7 @@ set(SOURCES
         Interface/DialogBox.cpp
         Core/Font.cpp
         Actors/Trainer.cpp
+        Core/GameSerializer.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

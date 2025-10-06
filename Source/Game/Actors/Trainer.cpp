@@ -13,6 +13,7 @@ JSON PTrainer::Serialize() const
 
 void PTrainer::Deserialize(const JSON& Data)
 {
+	PCharacter::Deserialize(Data);
 	mContext = *GBattleManager->GetTrainer(Data["Id"]);
 }
 

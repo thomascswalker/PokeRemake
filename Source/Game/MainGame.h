@@ -13,7 +13,7 @@ class PMainGame : public PGame
 	PPokemonStorage mPlayerStorage;
 
 public:
-	PMainGame() : mPlayerParty() {}
+	PMainGame();
 	~PMainGame() override {}
 
 	bool PreStart() override;

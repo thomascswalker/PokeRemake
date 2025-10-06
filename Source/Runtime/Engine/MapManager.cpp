@@ -14,7 +14,7 @@ PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 		LogWarning("Map {} already exists.", MapName.c_str());
 		return mActiveMaps[MapName];
 	}
-	// Create the map
+	// Create the map first
 	const auto GameMap = SpawnActor<PGameMap>(JsonData);
 	if (!GameMap)
 	{
@@ -22,6 +22,15 @@ PGameMap* PMapManager::ConstructMap(const JSON& JsonData)
 		return nullptr;
 	}
 	mActiveMaps[MapName] = GameMap;
+
+	// Deserialize after it's been added to the map list
+	for (auto Child : JsonData["Children"])
+	{
+		if (auto ChildActor = GSerializer->DeserializeActor(Child))
+		{
+			GameMap->AddChild(ChildActor);
+		}
+	}
 	return GameMap;
 }
 

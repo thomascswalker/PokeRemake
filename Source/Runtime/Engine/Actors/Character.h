@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Engine/Components/CharacterMovementComponent.h"
+#include "Engine/Components/SpriteComponent.h"
 
 #include "Actor.h"
-
-#include "Engine/Components/SpriteComponent.h"
 
 enum ESpriteIndex
 {
@@ -24,13 +23,13 @@ class PCharacter : public PActor
 {
 protected:
 	PCharacterMovementComponent* mMovementComponent = nullptr;
-	PSpriteComponent* mSpriteComponent              = nullptr;
+	PSpriteComponent*			 mSpriteComponent = nullptr;
 
-	FVector2 mTargetPosition;
+	FVector2	 mTargetPosition;
 	EOrientation mMovementDirection = OR_South;
-	bool bInputAllowed              = false;
+	bool		 bInputAllowed = false;
 
-	bool mAnimationCycle    = false;
+	bool  mAnimationCycle = false;
 	float mDistanceTraveled = 0.0f;
 
 public:
@@ -52,4 +51,6 @@ public:
 	{
 		return mSpriteComponent;
 	}
+
+	void Deserialize(const JSON& Json) override;
 };

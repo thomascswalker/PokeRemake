@@ -3,9 +3,16 @@
 #include "Application/Application.h"
 #include "Battle/BattleMode.h"
 #include "Core/Font.h"
+#include "Core/GameSerializer.h"
 #include "Engine/Actors/Interactable.h"
 #include "Engine/Dialog.h"
 #include "Modes/MapMode.h"
+
+PMainGame::PMainGame()
+{
+	mSerializer = std::make_shared<PGameSerializer>();
+	GSerializer = mSerializer.get();
+}
 
 bool PMainGame::PreStart()
 {

@@ -2,11 +2,9 @@
 
 #include "nlohmann/json.hpp"
 
-#include "Array.h"
+#include "Common.h"
 
-#define ANCHOR "&"	// Reference to ActorDef
-#define HASH   "#"	// Reference to TextDef
-#define ARROW  "->" // Pointer to child actor
+#define ANCHOR "&" // Reference to ActorDef
 
 using JSON = nlohmann::json;
 
@@ -15,6 +13,8 @@ void ExpandAnchor(JSON* Out, const std::string& Ref);
 void Expand(JSON* Out);
 
 void OnPropertyMissing(const JSON& Json, const char* Property);
+
+EOrientation ParseDirection(const std::string& Ref);
 
 #define CHECK_PROPERTY(Json, Property)      \
 	if (!Json.contains(#Property))          \

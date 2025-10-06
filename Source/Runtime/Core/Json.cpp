@@ -49,3 +49,24 @@ void OnPropertyMissing(const JSON& Json, const char* Property)
 	}
 	LogWarning("Property {} is missing: [{}]", Property, KeysString.c_str());
 }
+
+EOrientation ParseDirection(const std::string& Ref)
+{
+	if (Ref == "NORTH")
+	{
+		return OR_North;
+	}
+	if (Ref == "SOUTH")
+	{
+		return OR_South;
+	}
+	if (Ref == "EAST")
+	{
+		return OR_East;
+	}
+	if (Ref == "WEST")
+	{
+		return OR_West;
+	}
+	return OR_Same;
+}

@@ -46,5 +46,4 @@ void PBattleActionBox::Draw(const PRenderer* Renderer) const
 
 void PBattleActionBox::HandleBattleActionChange(EBattleAction Action)
 {
-	LogInfo("Action: {}", (uint8_t)Action);
 }

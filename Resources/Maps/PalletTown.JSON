@@ -2,7 +2,12 @@
   "Children": [
     {
       "Class": "PTrainer",
-      "Id": 1
+      "Id": 1,
+      "Position": [
+        600.0,
+        800.0
+      ],
+      "Direction": "EAST"
     },
     {
       "Class": "PPortal",

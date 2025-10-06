@@ -15,9 +15,12 @@ class PGame : public PObject, public IInputHandler
 {
 protected:
 	/* Actors/Objects */
-	std::shared_ptr<PWorld>	   mWorld;
-	std::shared_ptr<SSettings> mSettings;
-	PCameraView*			   mActiveCameraView = nullptr;
+
+	// Construct serializer
+	std::shared_ptr<PSerializer> mSerializer;
+	std::shared_ptr<PWorld>		 mWorld;
+	std::shared_ptr<SSettings>	 mSettings;
+	PCameraView*				 mActiveCameraView = nullptr;
 
 	/* Game State */
 

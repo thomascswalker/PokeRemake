@@ -10,9 +10,14 @@ public:
 	virtual void Deserialize(const JSON& Json) = 0;
 };
 
-namespace Serialization
+class PSerializer
 {
-	JSON		Serialize(const PObject* Object);
-	PActor*		DeserializeActor(const JSON& Data);
-	PComponent* DeserializeComponent(const JSON& Data, PActor* Owner);
-}; // namespace Serialization
+public:
+	PSerializer() = default;
+	virtual ~PSerializer() = default;
+
+	virtual PActor*		DeserializeActor(const JSON& Data);
+	virtual PComponent* DeserializeComponent(const JSON& Data, PActor* Owner);
+};
+
+extern PSerializer* GSerializer;

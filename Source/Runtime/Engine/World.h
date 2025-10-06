@@ -114,7 +114,7 @@ public:
 #if _EDITOR
 		Component->InitializeParameters();
 #endif
-		Component->Start();
+		// Component->Start();
 		return Component;
 	}
 

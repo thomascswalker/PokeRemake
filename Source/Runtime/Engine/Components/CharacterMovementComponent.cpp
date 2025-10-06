@@ -175,8 +175,7 @@ void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGame
 		GameMap = GetMapManager()->GetMapAtPosition(mTargetPosition);
 		if (!GameMap)
 		{
-			LogError("No map at target position.");
-			return;
+			LogWarning("No map at target position.");
 		}
 	}
 	mCurrentMap = GameMap;

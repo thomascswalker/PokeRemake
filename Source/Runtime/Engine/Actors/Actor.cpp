@@ -117,7 +117,7 @@ void PActor::Deserialize(const JSON& Data)
 		auto Children = Data.at("Children");
 		for (auto& Child : Children)
 		{
-			if (auto ChildActor = Serialization::DeserializeActor(Child))
+			if (auto ChildActor = GSerializer->DeserializeActor(Child))
 			{
 				AddChild(ChildActor);
 			}
@@ -129,7 +129,7 @@ void PActor::Deserialize(const JSON& Data)
 		auto Components = Data.at("Components");
 		for (auto& Component : Components)
 		{
-			Serialization::DeserializeComponent(Component, this);
+			GSerializer->DeserializeComponent(Component, this);
 		}
 	}
 }
