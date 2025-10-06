@@ -1,19 +1,25 @@
 #pragma once
 
-#include "Component.h"
 #include "Core/Common.h"
 #include "Core/Delegate.h"
 #include "Engine/Actors/GameMap.h"
+
+#include "Component.h"
 
 inline FVector2 DirectionToVector(EOrientation Direction)
 {
 	switch (Direction)
 	{
-	case OR_East: return {1, 0};
-	case OR_West: return {-1, 0};
-	case OR_South: return {0, 1};
-	case OR_North: return {0, -1};
-	default: return {0, 0};
+		case OR_East:
+			return { 1, 0 };
+		case OR_West:
+			return { -1, 0 };
+		case OR_South:
+			return { 0, 1 };
+		case OR_North:
+			return { 0, -1 };
+		default:
+			return { 0, 0 };
 	}
 }
 
@@ -45,16 +51,16 @@ DECLARE_MULTICAST_DELEGATE(DMovementDirectionChanged, EOrientation);
 
 class PCharacterMovementComponent : public PComponent
 {
-	FVector2 mTargetPosition;
+	FVector2	 mTargetPosition;
 	EOrientation mMovementDirection;
-	FVector2 mVelocity;
-	float mDistanceTraveled = 0.0f;
-	PGameMap* mCurrentMap   = nullptr;
+	FVector2	 mVelocity;
+	float		 mDistanceTraveled = 0.0f;
+	PGameMap*	 mCurrentMap = nullptr;
 
 public:
-	DDestinationReached DestinationReached;
-	DMovementStarted MovementStarted;
-	DMovementEnded MovementEnded;
+	DDestinationReached		  DestinationReached;
+	DMovementStarted		  MovementStarted;
+	DMovementEnded			  MovementEnded;
 	DMovementDirectionChanged MovementDirectionChanged;
 
 	PCharacterMovementComponent() = default;
@@ -71,7 +77,7 @@ public:
 
 	STile* GetCurrentTile() const;
 	STile* GetTargetTile() const;
-	void SetCurrentMap(PGameMap* NewMap);
+	void   SetCurrentMap(PGameMap* NewMap);
 
 	void SnapToPosition(const FVector2& Position, PGameMap* GameMap = nullptr);
 	void SnapToTile(const IVector2& Position);
@@ -88,5 +94,6 @@ public:
 			return;
 		}
 		mMovementDirection = Orientation;
+		MovementDirectionChanged.Broadcast(mMovementDirection);
 	}
 };

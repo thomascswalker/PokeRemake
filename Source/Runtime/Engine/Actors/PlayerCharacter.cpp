@@ -172,10 +172,7 @@ void PPlayerCharacter::Interact()
 	{
 		if (auto Interactable = dynamic_cast<IInteractable*>(Actor))
 		{
-			if (auto Component = Interactable->GetInteractionComponent())
-			{
-				Component->Interact(this);
-			}
+			Interactable->HandleInteraction();
 		}
 	}
 }

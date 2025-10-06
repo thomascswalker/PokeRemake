@@ -12,6 +12,10 @@ PGame::PGame()
 	// Construct the world
 	mWorld = std::make_shared<PWorld>();
 	GWorld = mWorld.get();
+
+	// Construct serializer
+	mSerializer = std::make_shared<PSerializer>();
+	GSerializer = mSerializer.get();
 }
 
 bool PGame::PreStart()

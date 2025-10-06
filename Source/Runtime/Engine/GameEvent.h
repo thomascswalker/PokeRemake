@@ -62,9 +62,9 @@ public:
 	}
 
 	template <typename T>
-	T* GetData() const
+	T GetData() const
 	{
-		return static_cast<T*>(mData);
+		return *static_cast<T*>(mData);
 	}
 
 	std::string ToString() const

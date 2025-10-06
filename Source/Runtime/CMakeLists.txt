@@ -114,6 +114,7 @@ set(SOURCES
         Engine/Settings.cpp
         Engine/GameInstance.cpp
         Engine/GameEvent.h
+        Engine/Dialog.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 

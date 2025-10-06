@@ -5,6 +5,7 @@
 #include "Core/Array.h"
 #include "Core/Json.h"
 #include "Core/Singleton.h"
+#include "Engine/Serialization.h"
 #include "Engine/Texture.h"
 
 #define ID_BULBASAUR  1
@@ -162,7 +163,7 @@
 struct SPokemonDef;
 class PPokedexManager;
 
-struct SPokemonDef
+struct SPokemonDef : ISerializable
 {
 	int32_t					 Id = 0;
 	std::string				 Name;
@@ -181,6 +182,28 @@ struct SPokemonDef
 	SPokemonDef() = default;
 	SPokemonDef(const JSON& Json)
 	{
+		Deserialize(Json);
+	}
+
+	JSON Serialize() const override
+	{
+		JSON Json;
+		Json["Id"] = Id;
+		Json["Name"] = Name;
+		Json["Type"] = JSON::array();
+
+		Json["Stats"] = JSON::object();
+		Json["Stats"]["HP"] = MaxHp;
+		Json["Stats"]["Attack"] = Attack;
+		Json["Stats"]["Defense"] = Defense;
+		Json["Stats"]["Sp. Attack"] = SpAttack;
+		Json["Stats"]["Sp. Defense"] = SpDefense;
+		Json["Stats"]["Speed"] = Speed;
+		return Json;
+	}
+
+	void Deserialize(const JSON& Json) override
+	{
 		Id = Json["Id"];
 		Name = Json["Name"];
 		Types = Json["Type"].get<std::vector<std::string>>();
@@ -198,23 +221,6 @@ struct SPokemonDef
 		Front = PTextureManager::Get(FrontFileName);
 		std::string BackFileName = std::format("{}Back", FmtName.c_str());
 		Back = PTextureManager::Get(BackFileName);
-	}
-
-	JSON Serialize() const
-	{
-		JSON Json;
-		Json["Id"] = Id;
-		Json["Name"] = Name;
-		Json["Type"] = JSON::array();
-
-		Json["Stats"] = JSON::object();
-		Json["Stats"]["HP"] = MaxHp;
-		Json["Stats"]["Attack"] = Attack;
-		Json["Stats"]["Defense"] = Defense;
-		Json["Stats"]["Sp. Attack"] = SpAttack;
-		Json["Stats"]["Sp. Defense"] = SpDefense;
-		Json["Stats"]["Speed"] = Speed;
-		return Json;
 	}
 
 	std::string ToString() const

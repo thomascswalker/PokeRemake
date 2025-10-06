@@ -7,17 +7,9 @@
 
 #include "World.h"
 
-JSON Serialization::Serialize(const PObject* Object)
-{
-	if (!Object->IsSerializable())
-	{
-		return {}; // Skip non-serializable objects
-	}
+PSerializer* GSerializer = nullptr;
 
-	return Object->Serialize();
-}
-
-PActor* Serialization::DeserializeActor(const JSON& Data)
+PActor* PSerializer::DeserializeActor(const JSON& Data)
 {
 	if (Data.is_null())
 	{
@@ -33,11 +25,10 @@ PActor* Serialization::DeserializeActor(const JSON& Data)
 		Portal,
 		SceneryActor);
 
-	LogWarning("Deserialization of Actor {} not supported.", ClassName.c_str());
 	return nullptr;
 }
 
-PComponent* Serialization::DeserializeComponent(const JSON& Data, PActor* Owner)
+PComponent* PSerializer::DeserializeComponent(const JSON& Data, PActor* Owner)
 {
 	if (Data.is_null())
 	{

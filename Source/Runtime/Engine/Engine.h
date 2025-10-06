@@ -10,6 +10,7 @@ class PEngine : public PObject
 
 	std::shared_ptr<PGame> mGame = nullptr;
 	PGameInstance		   mGameInstance;
+	PSerializer			   mSerializer;
 
 public:
 	/**

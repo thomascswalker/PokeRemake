@@ -2,8 +2,10 @@
 
 #include "Core/CoreFwd.h"
 
+#include "Serialization.h"
+
 // Non-drawable and position-independent Object
-class PObject
+class PObject : public ISerializable
 {
 protected:
 	std::string mInternalName;
@@ -12,7 +14,7 @@ protected:
 
 public:
 	PObject() = default;
-	virtual ~PObject() = default;
+	~PObject() override = default;
 
 	// Called before the game begins
 	virtual bool PreStart()
@@ -48,7 +50,7 @@ public:
 		return mInternalName;
 	}
 
-	virtual JSON Serialize() const
+	JSON Serialize() const override
 	{
 		JSON Result;
 		Result["Class"] = GetClassName();
@@ -56,7 +58,7 @@ public:
 		return Result;
 	}
 
-	virtual void Deserialize(const JSON& Data)
+	void Deserialize(const JSON& Data) override
 	{
 		if (Data.contains("InternalName"))
 		{

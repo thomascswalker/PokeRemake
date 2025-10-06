@@ -103,10 +103,8 @@ bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 	const auto NewPosition = Velocity + mOwner->GetWorldPosition2D();
 
 	// Convert velocity to a movement direction
-	mMovementDirection = VectorToDirection(Velocity);
-
 	// Allow changing direction even if the character doesn't move
-	MovementDirectionChanged.Broadcast(mMovementDirection);
+	SetMovementDirection(VectorToDirection(Velocity));
 
 	// If the new position is not within the same map as the current map we're in,
 	// set the current map to the map at the new position.
@@ -175,8 +173,7 @@ void PCharacterMovementComponent::SnapToPosition(const FVector2& Position, PGame
 		GameMap = GetMapManager()->GetMapAtPosition(mTargetPosition);
 		if (!GameMap)
 		{
-			LogError("No map at target position.");
-			return;
+			LogWarning("No map at target position.");
 		}
 	}
 	mCurrentMap = GameMap;

@@ -14,8 +14,6 @@
 
 // Strings
 
-#define SELECTION ">"
-
 #define MAP_MODE	"MapMode"
 #define BATTLE_MODE "BattleMode"
 
@@ -24,14 +22,22 @@
 #define BATTLE_ACTION_ITEM	"ITEM"
 #define BATTLE_ACTION_RUN	"RUN"
 
+// Textures
+
+#define TEX_DIALOG "DialogBox"
+#define TEX_FONT   "Font"
+
 // Positions
 
 #define COORD(P) (SCREEN_TILE * P)
 
-/* TEXT */
+/* Text */
 
-#define CHAR_PK 128
-#define CHAR_MN 129
+#define CHAR_PK				 128
+#define CHAR_MN				 129
+#define RIGHT_ARROW			 130
+#define RIGHT_ARROW_SELECTED 131
+#define DOWN_ARROW			 132
 
 constexpr int FONT_ROW_COUNT = 8;
 constexpr int FONT_COL_COUNT = 16;
@@ -39,7 +45,7 @@ constexpr int GLYPH_COUNT = FONT_ROW_COUNT * FONT_COL_COUNT;
 constexpr int GLYPH_WIDTH = COORD(1);
 constexpr int GLYPH_HEIGHT = COORD(1);
 
-/* DIALOG */
+/* Dialog */
 
 constexpr float DIALOG_Y = COORD(12);
 constexpr float DIALOG_HEIGHT = COORD(6);
@@ -50,7 +56,7 @@ constexpr float DIALOG_LINE_X = COORD(1);
 constexpr float DIALOG_LINE1_Y = COORD(14);
 constexpr float DIALOG_LINE2_Y = COORD(16);
 
-/* BATTLES */
+/* Battles */
 
 constexpr float BATTLE_MON_SIZE = COORD(12);
 

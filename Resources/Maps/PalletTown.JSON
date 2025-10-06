@@ -1,6 +1,15 @@
 {
   "Children": [
     {
+      "Class": "PTrainer",
+      "Id": 1,
+      "Position": [
+        600.0,
+        800.0
+      ],
+      "Direction": "EAST"
+    },
+    {
       "Class": "PPortal",
       "Components": [
         {
@@ -61,8 +70,9 @@
       ]
     },
     {
-      "&SignPost": {
-        "Components->1->Message": "${PLAYER}'s house"
+      "&": "SignPost",
+      "Context": {
+        "Message": "${PLAYER}'s house"
       },
       "Position": [
         300.0,
@@ -70,8 +80,9 @@
       ]
     },
     {
-      "&SignPost": {
-        "Components->1->Message": "${RIVAL}'s house"
+      "&": "SignPost",
+      "Context": {
+        "Message": "${RIVAL}'s house"
       },
       "Position": [
         1100.0,
@@ -79,8 +90,9 @@
       ]
     },
     {
-      "&SignPost": {
-        "Components->1->Message": "Pallet Town"
+      "&": "SignPost",
+      "Context": {
+        "Message": "Pallet Town"
       },
       "Position": [
         700.0,
@@ -88,8 +100,9 @@
       ]
     },
     {
-      "&SignPost": {
-        "Components->1->Message": "Oak Pokemon\nResearch Lab"
+      "&": "SignPost",
+      "Context": {
+        "Message": "Oak Pokemon\nResearch Lab"
       },
       "Position": [
         1300.0,

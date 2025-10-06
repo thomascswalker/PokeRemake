@@ -2,7 +2,8 @@
   {
     "Id": 1,
     "Name": "Gary",
-    "Mons": [
+    "Dialog": "Let's battle!",
+    "Storage": [
       {
         "Id": 7,
         "Level": 5

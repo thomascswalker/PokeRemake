@@ -46,6 +46,14 @@ bool PBattleMode::Load()
 
 bool PBattleMode::Unload()
 {
+	// Unbind all states related to battle mode
+	GBattleManager->BattleActionChanged.RemoveAll();
+	GBattleManager->BattleStateChanged.RemoveAll();
+	GBattleManager->BattleMoveIndexChanged.RemoveAll();
+
+	// Destroy the battle HUD
+	mHUD->EndBattleHUD();
+
 	return true;
 }
 
@@ -55,7 +63,6 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 	{
 		case SDLK_Q:
 			{
-				mHUD->EndBattleHUD();
 
 				if (!HandleGameEvent({ this, EGameEventType::BattleEnd }))
 				{
@@ -64,6 +71,48 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 
 				break;
 			}
+			// If the user presses E when on the Run action
+		case SDLK_E:
+			if (GBattleManager->GetState() == EBattleState::SelectAction && GBattleManager->GetAction() == EBattleAction::Run)
+			{
+				HandleGameEvent({ this, EGameEventType::BattleEnd });
+			}
+			break;
+			// WASD to navigate action selection
+		case SDLK_W:
+		case SDLK_A:
+		case SDLK_S:
+		case SDLK_D:
+			switch (GBattleManager->GetState())
+			{
+				case EBattleState::SelectAction:
+					switch (Event->KeyUp)
+					{
+						// 0 RIGHT
+						// 1 LEFT
+						// 2 DOWN
+						// 3 UP
+						case SDLK_W:
+							HandleChangeActionSelection(3);
+							break;
+						case SDLK_A:
+							HandleChangeActionSelection(1);
+							break;
+						case SDLK_S:
+							HandleChangeActionSelection(2);
+							break;
+						case SDLK_D:
+							HandleChangeActionSelection(0);
+							break;
+						default:
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+			// Arrows to navigate action selection
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
 		case SDLK_DOWN:
@@ -88,11 +137,11 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 	{
 		case EGameEventType::BattleEnd:
 			{
+				// Unload this game mode and load Map mode
 				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(MAP_MODE))
 				{
 					return false;
 				}
-				break;
 			}
 		default:
 			break;
@@ -109,8 +158,8 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 
 	uint8_t CurrentPosition = static_cast<uint8_t>(GBattleManager->GetAction());
 
-	bool X = (bool)(CurrentPosition % 2);
-	bool Y = (bool)(CurrentPosition / 2);
+	bool X = static_cast<bool>(CurrentPosition % 2);
+	bool Y = static_cast<bool>(CurrentPosition / 2);
 
 	/*
 	 * ------------------------
@@ -133,8 +182,8 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 			break;
 	}
 
-	uint8_t NewX = (uint8_t)X;
-	uint8_t NewY = (uint8_t)Y;
+	uint8_t NewX = X;
+	uint8_t NewY = Y;
 
 	uint8_t NewPosition = (NewY * 2) + NewX;
 

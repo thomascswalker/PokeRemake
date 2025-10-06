@@ -3,33 +3,7 @@
 #include "Files.h"
 #include "String.h"
 
-/**
- * @brief Expands the value of a key which contains the arrow `->` operator.
- * This will recursively iterate through the key which contains the arrows and
- * drill down the JSON object finding the corresponding keys until the last one
- * is reached. At this point, the value of that final key is set.
- * @param Out The root JSON object which has an anchor.
- * @param Key The key containing arrows.
- * @param Value The final value to be set on the last property of the key.
- */
-void ExpandArrow(JSON* Out, const std::string& Key, const JSON& Value)
-{
-	TArray Keys = Strings::Split(Key, ARROW);
-	for (auto K : Keys)
-	{
-		if (Out->is_object())
-		{
-			Out = &Out->at(K);
-		}
-		else if (Out->is_array())
-		{
-			Out = &Out->operator[](std::stoi(K));
-		}
-	}
-	*Out = Value;
-}
-
-void ExpandAnchor(JSON* Out, const std::string& Ref, const JSON& Override)
+void ExpandAnchor(JSON* Out, const std::string& Ref)
 {
 	std::string Buffer;
 	auto		FileName = Files::FindFile(Ref + ".JSON");
@@ -42,11 +16,6 @@ void ExpandAnchor(JSON* Out, const std::string& Ref, const JSON& Override)
 
 	JSON RefJson = JSON::parse(Buffer);
 	Out->merge_patch(RefJson);
-
-	for (const auto& [K, V] : Override.items())
-	{
-		ExpandArrow(Out, K, V);
-	}
 }
 
 void Expand(JSON* Out)
@@ -55,7 +24,7 @@ void Expand(JSON* Out)
 	{
 		for (auto& [K, V] : Out->items())
 		{
-			K.starts_with(ANCHOR) ? ExpandAnchor(Out, K.substr(1), V) : Expand(&V);
+			K == ANCHOR ? ExpandAnchor(Out, V) : Expand(&V);
 		}
 	}
 	else if (Out->is_array())
@@ -79,4 +48,25 @@ void OnPropertyMissing(const JSON& Json, const char* Property)
 		KeysString += Item + ", ";
 	}
 	LogWarning("Property {} is missing: [{}]", Property, KeysString.c_str());
+}
+
+EOrientation ParseDirection(const std::string& Ref)
+{
+	if (Ref == "NORTH")
+	{
+		return OR_North;
+	}
+	if (Ref == "SOUTH")
+	{
+		return OR_South;
+	}
+	if (Ref == "EAST")
+	{
+		return OR_East;
+	}
+	if (Ref == "WEST")
+	{
+		return OR_West;
+	}
+	return OR_Same;
 }

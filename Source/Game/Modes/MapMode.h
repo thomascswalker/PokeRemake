@@ -50,7 +50,5 @@ public:
 	void OnFadeInComplete();
 	void OnFadeOutComplete();
 
-	void OnKeyUp(SInputEvent* Event) override;
-
 	bool HandleGameEvent(const SGameEvent& GameEvent) override;
 };

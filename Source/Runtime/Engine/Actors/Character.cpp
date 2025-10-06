@@ -131,3 +131,18 @@ void PCharacter::OnMovementEnded(EOrientation Direction)
 		}
 	}
 }
+
+void PCharacter::Deserialize(const JSON& Json)
+{
+	PActor::Deserialize(Json);
+
+	auto	 JsonPosition = Json["Position"];
+	FVector2 Position = { JsonPosition[0], JsonPosition[1] };
+	mMovementComponent->SnapToPosition(Position, GetMapManager()->GetMapAtPosition(Position));
+
+	if (Json.contains("Direction"))
+	{
+		auto NewDirection = ParseDirection(Json["Direction"]);
+		mMovementComponent->SetMovementDirection(NewDirection);
+	}
+}

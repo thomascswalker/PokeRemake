@@ -3,35 +3,34 @@
 #include "Engine/Actors/Actor.h"
 #include "Engine/Actors/Interactable.h"
 #include "Engine/Components/SpriteComponent.h"
+#include "Engine/Dialog.h"
 
 namespace SceneryTypes
 {
 #define DECLARE_TYPE(X) inline const char* X = PREPEND($, X)
-    DECLARE_TYPE(SignPost);
-    DECLARE_TYPE(Tree);
+	DECLARE_TYPE(SignPost);
+	DECLARE_TYPE(Tree);
 #undef DECLARE_TYPE
-}
+} // namespace SceneryTypes
 
 class PSceneryActor : public PActor, public IInteractable
 {
-    std::string mType;
-    PSpriteComponent* mSpriteComponent;
-    PInteractionComponent* mInteractionComponent;
+	std::string		  mType;
+	PSpriteComponent* mSpriteComponent;
+	SDialogContext	  mContext;
 
 public:
-    PSceneryActor();
-    ~PSceneryActor() override = default;
+	PSceneryActor();
+	~PSceneryActor() override = default;
 
-    PSpriteComponent* GetSpriteComponent();
-    PInteractionComponent* GetInteractionComponent() override;
+	PSpriteComponent* GetSpriteComponent();
 
-    std::string GetDisplayName() const override
-    {
-        return std::format("{}_{}", mInternalName.c_str(), mType.c_str());
-    }
+	std::string GetDisplayName() const override;
 
-    FRect GetLocalBounds() const override;
+	FRect GetLocalBounds() const override;
 
-    JSON Serialize() const override;
-    void Deserialize(const JSON& Data) override;
+	JSON Serialize() const override;
+	void Deserialize(const JSON& Data) override;
+
+	void HandleInteraction() override;
 };

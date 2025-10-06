@@ -3,8 +3,16 @@
 #include "Application/Application.h"
 #include "Battle/BattleMode.h"
 #include "Core/Font.h"
+#include "Core/GameSerializer.h"
 #include "Engine/Actors/Interactable.h"
+#include "Engine/Dialog.h"
 #include "Modes/MapMode.h"
+
+PMainGame::PMainGame()
+{
+	mSerializer = std::make_shared<PGameSerializer>();
+	GSerializer = mSerializer.get();
+}
 
 bool PMainGame::PreStart()
 {
@@ -82,12 +90,7 @@ bool PMainGame::HandleGameEvent(SGameEvent& Event)
 
 bool PMainGame::StartDialogBox(SGameEvent* Event)
 {
-	SInteractContext* Context = Event->GetData<SInteractContext>();
-	if (!Context)
-	{
-		return false;
-	}
-	mHUD->StartDialogBox(Context->Message);
+	mHUD->StartDialogBox(Event->GetData<SDialogContext>());
 	return true;
 }
 
@@ -99,11 +102,6 @@ bool PMainGame::EndDialogBox()
 
 bool PMainGame::StartBattle(SGameEvent* Event)
 {
-	SBattleContext* Context = Event->GetData<SBattleContext>();
-	if (!Context)
-	{
-		return false;
-	}
 	mHUD->EndDialogBox();
 	mHUD->StartBattleHUD();
 	return true;

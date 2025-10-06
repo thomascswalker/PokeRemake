@@ -28,15 +28,15 @@ FRect STile::GetSourceRect() const
 	return {
 		TilesetX * Tileset->ItemSize, // X
 		TilesetY * Tileset->ItemSize, // Y
-		Tileset->ItemSize,            // Width
-		Tileset->ItemSize,            // Height
+		Tileset->ItemSize,			  // Width
+		Tileset->ItemSize,			  // Height
 	};
 }
 
 FRect STile::GetDestRect() const
 {
 	return {
-		GetPosition(), {TILE_SIZE, TILE_SIZE}
+		GetPosition(), { TILE_SIZE, TILE_SIZE }
 	};
 }
 
@@ -82,7 +82,7 @@ bool PGameMap::DebugDraw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(0, 0, 0, 255);
 		}
-		Renderer->DrawLineAt({X * TILE_SIZE, 0}, {X * TILE_SIZE, Max.Y});
+		Renderer->DrawLineAt({ X * TILE_SIZE, 0 }, { X * TILE_SIZE, Max.Y });
 	}
 	for (int Y = 0; Y < mSizeY; Y++)
 	{
@@ -96,7 +96,7 @@ bool PGameMap::DebugDraw(const PRenderer* Renderer) const
 		{
 			Renderer->SetDrawColor(0, 0, 0, 255);
 		}
-		Renderer->DrawLineAt({0, Y * TILE_SIZE}, {Max.X, Y * TILE_SIZE});
+		Renderer->DrawLineAt({ 0, Y * TILE_SIZE }, { Max.X, Y * TILE_SIZE });
 	}
 
 	return true;
@@ -104,12 +104,12 @@ bool PGameMap::DebugDraw(const PRenderer* Renderer) const
 
 FRect PGameMap::GetLocalBounds() const
 {
-	return {0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
+	return { 0, 0, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 FRect PGameMap::GetWorldBounds() const
 {
-	return {mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE};
+	return { mPosition.X, mPosition.Y, mSizeX * TILE_SIZE, mSizeY * TILE_SIZE };
 }
 
 TArray<STile*> PGameMap::GetTiles()
@@ -155,7 +155,7 @@ STile* PGameMap::GetTileAt(int X, int Y) const
 	{
 		return nullptr;
 	}
-	auto Index        = Y * mSizeX + X;
+	auto		 Index = Y * mSizeX + X;
 	const STile* Tile = &mTiles[Index];
 
 	return const_cast<STile*>(Tile);
@@ -173,7 +173,7 @@ JSON PGameMap::Serialize() const
 	{
 		JSON TileResult;
 		TileResult["Tileset"] = Tile.Tileset->Name;
-		TileResult["Index"]   = Tile.Index;
+		TileResult["Index"] = Tile.Index;
 		TileArray.push_back(TileResult);
 	}
 	Result["Tiles"] = TileArray;
@@ -182,7 +182,20 @@ JSON PGameMap::Serialize() const
 
 void PGameMap::Deserialize(const JSON& Data)
 {
-	PActor::Deserialize(Data);
+	PObject::Deserialize(Data);
+
+	if (Data.contains("Position"))
+	{
+		auto Position = Data.at("Position");
+		mPosition.X = Position[0].get<float>();
+		mPosition.Y = Position[1].get<float>();
+	}
+
+	if (Data.contains("Depth"))
+	{
+		mPosition.Z = Data.at("Depth").get<float>();
+	}
+
 	mBlocking = false;
 
 	LOAD_MEMBER_PROPERTY(MapName, std::string);
@@ -192,13 +205,13 @@ void PGameMap::Deserialize(const JSON& Data)
 	auto TileData = Data.at("Tiles");
 	for (int32_t I = 0; I < TileData.size(); I++)
 	{
-		auto Tile    = TileData[I];
-		auto X       = I % mSizeX;
-		auto Y       = I / mSizeX;
-		auto Index   = Tile.at("Index").get<int>();
+		auto Tile = TileData[I];
+		auto X = I % mSizeX;
+		auto Y = I / mSizeX;
+		auto Index = Tile.at("Index").get<int>();
 		auto Tileset = Tile.contains("Tileset")
-			               ? TilesetManager::GetTileset(Tile.at("Tileset"))
-			               : TilesetManager::GetDefaultTileset();
-		mTiles.Add({Tileset, this, Index, X, Y});
+						   ? TilesetManager::GetTileset(Tile.at("Tileset"))
+						   : TilesetManager::GetDefaultTileset();
+		mTiles.Add({ Tileset, this, Index, X, Y });
 	}
 }

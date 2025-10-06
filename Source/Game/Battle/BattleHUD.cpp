@@ -5,6 +5,7 @@
 #include "BattleHUD.h"
 
 #include "Core/Font.h"
+#include "Core/GameConstants.h"
 
 PBattleHUD::PBattleHUD()
 {

@@ -1,37 +1,38 @@
 #pragma once
+#include "Engine/Actors/Interactable.h"
+
 #include "Component.h"
 
-#include "Engine/Actors/Interactable.h"
+DECLARE_MULTICAST_DELEGATE(DInteracted);
 
 class PInteractionComponent : public PComponent
 {
-    SInteractContext mData;
-    bool mInitialized = false;
+	void* mData = nullptr;
 
 public:
-    PInteractionComponent()           = default;
-    ~PInteractionComponent() override = default;
+	DInteracted Interacted;
 
-    PInteractionComponent(const PInteractionComponent& Other)
-    {
-        mData = Other.mData;
-    }
+	PInteractionComponent() = default;
+	~PInteractionComponent() override
+	{
+		if (mData)
+		{
+			free(mData);
+		}
+	};
 
-    PInteractionComponent& operator=(const PInteractionComponent& Other)
-    {
-        mData = Other.mData;
-        return *this;
-    }
+	template <typename T>
+	T* GetData() const
+	{
+		return static_cast<T*>(mData);
+	}
 
-    SInteractContext* GetInteractData()
-    {
-        return &mData;
-    }
+	template <typename T>
+	void SetData(T* InData)
+	{
+		mData = std::malloc(sizeof(InData));
+		memcpy(mData, InData, sizeof(InData));
+	}
 
-    void Interact(PPlayerCharacter* Player);
-    void Deserialize(const JSON& Data) override;
-
-#if _EDITOR
-	void InitializeParameters() override;
-#endif
+	void Interact(PPlayerCharacter* Player);
 };
