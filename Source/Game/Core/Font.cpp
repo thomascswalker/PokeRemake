@@ -70,9 +70,9 @@ std::map<char, int> GCharIndexes = {
 	{				 '\'', 64 },
 	{			  CHAR_PK, 65 }, // PK
 	{			  CHAR_MN, 66 }, // MN
-	{				  '?', 71 },
-	{				  '!', 72 },
-	{				  '.', 73 },
+	{				  '?', 70 },
+	{				  '!', 71 },
+	{				  '.', 72 },
 	{ RIGHT_ARROW_SELECTED, 76 }, // Right Arrow Selected
 	{		  RIGHT_ARROW, 77 }, // Right Arrow Selection
 	{		   DOWN_ARROW, 78 }, // Down Arrow

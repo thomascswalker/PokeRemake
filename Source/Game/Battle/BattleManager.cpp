@@ -42,7 +42,7 @@ bool PBattleManager::PreStart()
 	{
 		int32_t Id = Battle["Id"];
 		mTrainers[Id] = { Battle["Id"], Battle["Name"], Battle["Dialog"] };
-		for (auto Mon : Battle["Mons"])
+		for (auto Mon : Battle["Storage"])
 		{
 			mTrainers[Id].Storage.Construct(Mon["Id"], Mon["Level"]);
 		}
