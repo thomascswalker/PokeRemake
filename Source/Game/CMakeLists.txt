@@ -15,7 +15,6 @@ set(SOURCES
         Core/PokeStorage.cpp
         Core/Pokedex.cpp
         Core/Pokemon.h
-        FadeTransition.h
         Battle/BattleHUD.h
         Interface/GameHUD.cpp
         Interface/TransitionOverlay.h
@@ -31,7 +30,6 @@ set(SOURCES
         Core/Font.cpp
         Actors/Trainer.cpp
         Core/GameSerializer.h
-        Actors/NPC.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
