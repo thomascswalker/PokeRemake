@@ -97,9 +97,12 @@ constexpr float BATTLE_MOVE_MENU_Y = DIALOG_BOX_Y;
 constexpr float BATTLE_MOVE_MENU_W = DIALOG_BOX_W - BATTLE_ACTION_MENU_X;
 constexpr float BATTLE_MOVE_MENU_H = DIALOG_BOX_H;
 
+constexpr float BATTLE_MOVE_MENU_TEXT_X = COORD(6);
+constexpr float BATTLE_MOVE_MENU_TEXT_Y = COORD(13);
+
 constexpr float BATTLE_PP_MENU_X = 0;
 constexpr float BATTLE_PP_MENU_Y = DIALOG_BOX_Y - 5;
 constexpr float BATTLE_PP_MENU_W = 10;
 constexpr float BATTLE_PP_MENU_H = 5;
 
-constexpr int32_t MAX_BATTLE_MOVES = 4;
+constexpr uint8_t MAX_BATTLE_MOVES = 4;

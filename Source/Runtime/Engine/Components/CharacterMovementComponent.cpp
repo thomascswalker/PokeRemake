@@ -175,7 +175,7 @@ STile* PCharacterMovementComponent::GetTargetTile() const
 	{
 		return {};
 	}
-	return mCurrentMap->GetTileAtPosition(mTargetPosition);
+	return GameMap->GetTileAtPosition(mTargetPosition);
 }
 
 void PCharacterMovementComponent::SetCurrentMap(PGameMap* NewMap)
