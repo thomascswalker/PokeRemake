@@ -28,7 +28,8 @@ struct SMapContext
 
 class PMapMode : public PGameMode
 {
-	PGameHUD* mHUD = nullptr;
+	PGameHUD*		  mHUD = nullptr;
+	PPlayerCharacter* mPlayerCharacter = nullptr;
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;
@@ -48,5 +49,14 @@ public:
 	void OnFadeInComplete();
 	void OnFadeOutComplete();
 
+	void OnKeyDown(SInputEvent* Event) override;
+	void OnKeyUp(SInputEvent* Event) override;
+
+	bool HandlePressA() override;
+	bool HandleReleaseA() override;
+	bool HandlePressB() override;
+	bool HandleReleaseB() override;
+	bool HandlePressDPad(EDPad Direction) override;
+	bool HandleReleaseDPad(EDPad Direction) override;
 	bool HandleGameEvent(const SGameEvent& GameEvent) override;
 };

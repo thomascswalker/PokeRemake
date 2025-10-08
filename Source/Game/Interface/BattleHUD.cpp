@@ -24,6 +24,7 @@ PBattleHUD::PBattleHUD()
 	mDialogBox->Print();
 
 	mActionBox = ConstructWidget<PBattleActionMenu>();
+	mMoveBox = ConstructWidget<PBattleMoveMenu>();
 }
 
 PBattleHUD::~PBattleHUD()
@@ -36,6 +37,10 @@ PBattleHUD::~PBattleHUD()
 	mActionBox->Unparent();
 	GWorld->DestroyWidget(mActionBox);
 	mActionBox = nullptr;
+
+	mMoveBox->Unparent();
+	GWorld->DestroyWidget(mMoveBox);
+	mMoveBox = nullptr;
 }
 
 void PBattleHUD::Draw(const PRenderer* Renderer) const
@@ -81,6 +86,7 @@ void PBattleHUD::ShowActionBox()
 
 void PBattleHUD::HideActionBox()
 {
+
 	mActionBox->SetVisible(false);
 	PWidget::RemoveChild(mActionBox);
 }
@@ -95,4 +101,16 @@ void PBattleHUD::HideDialogBox()
 {
 	mDialogBox->SetVisible(false);
 	PWidget::RemoveChild(mDialogBox);
+}
+
+void PBattleHUD::ShowMoveBox()
+{
+	mMoveBox->SetVisible(true);
+	PWidget::AddChild(mMoveBox);
+}
+
+void PBattleHUD::HideMoveBox()
+{
+	mMoveBox->SetVisible(false);
+	PWidget::RemoveChild(mMoveBox);
 }

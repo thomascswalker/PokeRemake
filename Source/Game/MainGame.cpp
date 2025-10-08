@@ -61,58 +61,6 @@ bool PMainGame::Start()
 	return true;
 }
 
-bool PMainGame::HandleGameEvent(SGameEvent& Event)
-{
-	switch (Event.Type)
-	{
-		case EGameEventType::Dialog:
-			{
-				if (!mHUD->IsDialogBoxVisible())
-				{
-					return StartDialogBox(&Event);
-				}
-
-				return EndDialogBox();
-			}
-		case EGameEventType::BattleStart:
-			{
-				return StartBattle(&Event);
-			}
-		case EGameEventType::BattleEnd:
-			{
-				return EndBattle();
-			}
-		default:
-			break;
-	}
-	return true;
-}
-
-bool PMainGame::StartDialogBox(SGameEvent* Event)
-{
-	mHUD->StartDialogBox(Event->GetData<SDialogContext>());
-	return true;
-}
-
-bool PMainGame::EndDialogBox()
-{
-	mHUD->EndDialogBox();
-	return true;
-}
-
-bool PMainGame::StartBattle(SGameEvent* Event)
-{
-	mHUD->EndDialogBox();
-	mHUD->StartBattleHUD();
-	return true;
-}
-
-bool PMainGame::EndBattle()
-{
-	mHUD->EndBattleHUD();
-	return true;
-}
-
 void PMainGame::OnKeyUp(SInputEvent* Event)
 {
 	switch (Event->KeyUp)

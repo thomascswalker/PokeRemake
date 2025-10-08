@@ -53,3 +53,5 @@ void PGameHUD::EndBattleHUD()
 	GWorld->DestroyWidget(mBattleHUD);
 	mBattleHUD = nullptr;
 }
+
+PBattleHUD* PGameHUD::GetBattleHUD() const { return mBattleHUD; }

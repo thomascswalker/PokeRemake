@@ -68,6 +68,7 @@ public:
 	bool Start() override;
 	void Tick(float DeltaTime) override;
 	bool IsMoving() const;
+	bool Move(uint8_t Direction);
 	bool Move(const FVector2& Velocity);
 
 	FVector2 GetTargetPosition() const

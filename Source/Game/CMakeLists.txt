@@ -30,6 +30,8 @@ set(SOURCES
         Actors/Trainer.cpp
         Core/GameSerializer.h
         Interface/Frame.cpp
+        Interface/BattleMoveMenu.cpp
+        Interface/BattleMoveMenu.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

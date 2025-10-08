@@ -3,6 +3,7 @@
 #include "Interface/Widget.h"
 
 #include "BattleActionMenu.h"
+#include "BattleMoveMenu.h"
 #include "DialogBox.h"
 
 #define NAME_FONT_SIZE 24
@@ -19,6 +20,7 @@ class PBattleHUD : public PWidget
 {
 	PDialogBox*		   mDialogBox = nullptr;
 	PBattleActionMenu* mActionBox = nullptr;
+	PBattleMoveMenu*   mMoveBox = nullptr;
 
 public:
 	PBattleHUD();
@@ -31,4 +33,7 @@ public:
 
 	void ShowDialogBox();
 	void HideDialogBox();
+
+	void ShowMoveBox();
+	void HideMoveBox();
 };

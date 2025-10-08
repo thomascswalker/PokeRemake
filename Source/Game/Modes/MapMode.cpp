@@ -36,12 +36,12 @@ bool PMapMode::Load()
 	// Load the map from JSON
 	auto Map = GMapManager->LoadMap(mState.Get<std::string>(PLAYER_MAP), false);
 
-	auto Player = ConstructActor<PPlayerCharacter>();
-	Player->GetSpriteComponent()->GetSprite()->SetTexture(GTextureManager->Get(TEX_ASH));
-	GWorld->SetPlayerCharacter(Player);
+	mPlayerCharacter = ConstructActor<PPlayerCharacter>();
+	mPlayerCharacter->GetSpriteComponent()->GetSprite()->SetTexture(GTextureManager->Get(TEX_ASH));
+	GWorld->SetPlayerCharacter(mPlayerCharacter);
 
 	auto NewPosition = FVector2(mState.GetRaw(PLAYER_POSITION));
-	Player->GetMovementComponent()->SnapToPosition(NewPosition, Map, false);
+	mPlayerCharacter->GetMovementComponent()->SnapToPosition(NewPosition, Map, false);
 
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 
@@ -51,11 +51,10 @@ bool PMapMode::Load()
 
 bool PMapMode::Unload()
 {
-	auto Player = GWorld->GetPlayerCharacter();
-
 	// Current position
-	auto PlayerPosition = Player->GetPosition2D();
+	auto PlayerPosition = mPlayerCharacter->GetPosition2D();
 	mState.Set(PLAYER_POSITION, PlayerPosition.ToJson());
+	mPlayerCharacter = nullptr;
 
 	// Current map
 	auto Map = GMapManager->GetMapAtPosition(PlayerPosition);
@@ -116,6 +115,112 @@ void PMapMode::OnFadeOutComplete()
 	{
 		TransitionOverlay->Fade(FM_In);
 	}
+}
+
+void PMapMode::OnKeyDown(SInputEvent* Event)
+{
+	switch (Event->KeyDown)
+	{
+		case SDLK_Q:
+			if (HandlePressB())
+			{
+				Event->Consume();
+			}
+			break;
+		case SDLK_E:
+			if (HandlePressA())
+			{
+				Event->Consume();
+			}
+			break;
+		case SDLK_W:
+		case SDLK_A:
+		case SDLK_S:
+		case SDLK_D:
+		case SDLK_RIGHT:
+		case SDLK_LEFT:
+		case SDLK_DOWN:
+		case SDLK_UP:
+			if (HandlePressDPad(RemapKeyToDPad(Event->KeyDown)))
+			{
+				Event->Consume();
+			}
+			break;
+		default:
+			break;
+	}
+}
+void PMapMode::OnKeyUp(SInputEvent* Event)
+{
+	switch (Event->KeyUp)
+	{
+		case SDLK_Q:
+			if (HandleReleaseB())
+			{
+				Event->Consume();
+			}
+			break;
+		case SDLK_E:
+			if (HandleReleaseA())
+			{
+				Event->Consume();
+			}
+			break;
+		case SDLK_W:
+		case SDLK_A:
+		case SDLK_S:
+		case SDLK_D:
+		case SDLK_RIGHT:
+		case SDLK_LEFT:
+		case SDLK_DOWN:
+		case SDLK_UP:
+			if (HandleReleaseDPad(RemapKeyToDPad(Event->KeyUp)))
+			{
+				Event->Consume();
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+bool PMapMode::HandlePressA()
+{
+	return PGameMode::HandlePressA();
+}
+
+bool PMapMode::HandleReleaseA()
+{
+	if (IsInputContext(IC_Default))
+	{
+		mPlayerCharacter->Interact();
+		return true;
+	}
+	if (IsInputContext(IC_Dialog))
+	{
+		return HandleGameEvent(SGameEvent(this, EGameEventType::Dialog));
+	}
+	return false;
+}
+
+bool PMapMode::HandlePressB()
+{
+	return PGameMode::HandlePressB();
+}
+
+bool PMapMode::HandleReleaseB()
+{
+	return PGameMode::HandleReleaseB();
+}
+
+bool PMapMode::HandlePressDPad(EDPad Direction)
+{
+	return mPlayerCharacter->TryMove(Direction);
+}
+
+bool PMapMode::HandleReleaseDPad(EDPad Direction)
+{
+	return mPlayerCharacter->TryStop(Direction);
 }
 
 bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)

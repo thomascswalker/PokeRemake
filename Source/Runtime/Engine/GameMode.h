@@ -54,5 +54,14 @@ public:
 
 	SGameState* GetState() { return &mState; }
 
+	virtual bool HandlePressA() { return false; }
+	virtual bool HandleReleaseA() { return false; }
+	virtual bool HandlePressB() { return false; }
+	virtual bool HandleReleaseB() { return false; }
+	virtual bool HandlePressDPad(EDPad Direction) { return false; }
+	virtual bool HandleReleaseDPad(EDPad Direction) { return false; }
+	virtual bool HandlePressStart() { return false; }
+	virtual bool HandlePressSelect() { return false; }
+
 	virtual bool HandleGameEvent(const SGameEvent& GameEvent) = 0;
 };

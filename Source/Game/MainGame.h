@@ -7,8 +7,8 @@
 
 class PMainGame : public PGame
 {
-	PGameHUD* mHUD = nullptr;
-
+	// Properties stored/accessible across game modes
+	PGameHUD*		mHUD = nullptr;
 	PPokemonParty	mPlayerParty;
 	PPokemonStorage mPlayerStorage;
 
@@ -18,16 +18,7 @@ public:
 
 	bool PreStart() override;
 	bool Start() override;
+	void OnKeyUp(SInputEvent* Event) override;
 
 	PGameHUD* GetHUD() { return mHUD; }
-
-	bool HandleGameEvent(SGameEvent& Event) override;
-
-	bool StartDialogBox(SGameEvent* Event);
-	bool EndDialogBox();
-
-	bool StartBattle(SGameEvent* Event);
-	bool EndBattle();
-
-	void OnKeyUp(SInputEvent* Event) override;
 };

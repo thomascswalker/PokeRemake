@@ -9,6 +9,39 @@
 DECLARE_MULTICAST_DELEGATE(DHoverBegin);
 DECLARE_MULTICAST_DELEGATE(DHoverEnd);
 
+enum EDPad : uint8_t
+{
+	DPAD_UP = 0,	// W
+	DPAD_LEFT = 1,	// A
+	DPAD_DOWN = 2,	// S
+	DPAD_RIGHT = 3, // D
+	DPAD_INVALID = 255,
+};
+
+inline EDPad RemapKeyToDPad(int32_t Key)
+{
+	// Remap WASD/Arrows to DPAD enum
+	switch (Key)
+	{
+		case SDLK_W:
+		case SDLK_UP:
+			return DPAD_UP;
+		case SDLK_A:
+		case SDLK_LEFT:
+			return DPAD_LEFT;
+		case SDLK_S:
+		case SDLK_DOWN:
+			return DPAD_DOWN;
+		case SDLK_D:
+		case SDLK_RIGHT:
+			return DPAD_RIGHT;
+		default:
+			LogError("Invalid DPAD key: {}", Key);
+			break;
+	}
+	return DPAD_INVALID;
+}
+
 inline TMap<char, char> gSpecialCharMap = {
 	{ '1', '!' },
 	{ '2', '@' },

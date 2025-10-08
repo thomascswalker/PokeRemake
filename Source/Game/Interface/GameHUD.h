@@ -28,6 +28,7 @@ public:
 	void EndDialogBox();
 	bool IsDialogBoxVisible();
 
-	void StartBattleHUD();
-	void EndBattleHUD();
+	void		StartBattleHUD();
+	void		EndBattleHUD();
+	PBattleHUD* GetBattleHUD() const;
 };

@@ -67,99 +67,73 @@ bool PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 	return true;
 }
 
-void PPlayerCharacter::OnKeyDown(SInputEvent* Event)
-{
-	switch (Event->KeyDown)
-	{
-		case SDLK_RIGHT: // Right
-		case SDLK_D:
-			{
-				mInputState[0] = true;
-				Event->Consume();
-				break;
-			}
-		case SDLK_LEFT: // Left
-		case SDLK_A:
-			{
-				mInputState[1] = true;
-				Event->Consume();
-				break;
-			}
-		case SDLK_DOWN: // Down
-		case SDLK_S:
-			{
-				mInputState[2] = true;
-				Event->Consume();
-				break;
-			}
-		case SDLK_UP: // Up
-		case SDLK_W:
-			{
-				mInputState[3] = true;
-				Event->Consume();
-				break;
-			}
-		default:
-			break;
-	}
-
-	if (mInputState.any())
-	{
-		mInputAllowed = false;
-	}
-}
-
-void PPlayerCharacter::OnKeyUp(SInputEvent* Event)
-{
-	switch (Event->KeyUp)
-	{
-		case SDLK_RIGHT: // Right
-		case SDLK_D:
-			{
-				mInputState[0] = false;
-				Event->Consume();
-				break;
-			}
-		case SDLK_LEFT: // Left
-		case SDLK_A:
-			{
-				mInputState[1] = false;
-				Event->Consume();
-				break;
-			}
-		case SDLK_DOWN: // Down
-		case SDLK_S:
-			{
-				mInputState[2] = false;
-				Event->Consume();
-				break;
-			}
-		case SDLK_UP: // Up
-		case SDLK_W:
-			{
-				mInputState[3] = false;
-				Event->Consume();
-				break;
-			}
-		case SDLK_E:
-			{
-				Interact();
-				Event->Consume();
-				break;
-			}
-		default:
-			break;
-	}
-
-	if (mInputState.any())
-	{
-		mInputAllowed = true;
-	}
-}
-
 bool PPlayerCharacter::CanMove() const
 {
 	return GMapManager->GetState() == MS_Loaded;
+}
+
+bool PPlayerCharacter::TryMove(EDPad Direction)
+{
+	switch (Direction)
+	{
+		case DPAD_RIGHT:
+			{
+				mInputState[0] = true;
+				break;
+			}
+		case DPAD_LEFT:
+			{
+				mInputState[1] = true;
+				break;
+			}
+		case DPAD_DOWN:
+			{
+				mInputState[2] = true;
+				break;
+			}
+		case DPAD_UP:
+			{
+				mInputState[3] = true;
+				break;
+			}
+		default:
+			break;
+	}
+
+	mInputAllowed = !mInputState.any();
+	return mInputAllowed;
+}
+
+bool PPlayerCharacter::TryStop(EDPad Direction)
+{
+	switch (Direction)
+	{
+		case DPAD_RIGHT:
+			{
+				mInputState[0] = false;
+				break;
+			}
+		case DPAD_LEFT:
+			{
+				mInputState[1] = false;
+				break;
+			}
+		case DPAD_DOWN:
+			{
+				mInputState[2] = false;
+				break;
+			}
+		case DPAD_UP:
+			{
+				mInputState[3] = false;
+				break;
+			}
+		default:
+			break;
+	}
+
+	mInputAllowed = mInputState.any();
+	return mInputAllowed;
 }
 
 void PPlayerCharacter::Interact()

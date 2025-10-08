@@ -24,5 +24,9 @@ public:
 	void OnKeyUp(SInputEvent* Event) override;
 
 	bool HandleGameEvent(const SGameEvent& GameEvent) override;
+
+	bool HandlePressA() override;
+	bool HandlePressB() override;
+	bool HandlePressDPad(EDPad Direction) override;
 	void HandleChangeActionSelection(uint8_t Direction);
 };
