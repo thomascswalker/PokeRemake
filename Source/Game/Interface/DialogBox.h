@@ -4,7 +4,9 @@
 #include "Engine/World.h"
 #include "Interface/Box.h"
 
-class PDialogBox : public PBox
+#include "Frame.h"
+
+class PDialogBox : public PFrame
 {
 	PTextPrinter mPrinter;
 	PTexture*	 mTexture = nullptr;

@@ -3,18 +3,16 @@
 #include "Core/Font.h"
 #include "Core/GameConstants.h"
 
+#include "Frame.h"
+
 PDialogBox::PDialogBox()
+	: PFrame(FRect(DIALOG_X, DIALOG_Y, DIALOG_W, DIALOG_H))
 {
-	mTexture = GTextureManager->Get(TEX_DIALOG);
 }
 
 void PDialogBox::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	FRect Geometry = { 0, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT };
-
-	Renderer->DrawFillRect(Geometry);
-	Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);
+	PFrame::Draw(Renderer);
 
 	Renderer->SetDrawColor(0, 0, 0, 255);
 	auto TextPosition = FVector2(DIALOG_LINE_X, DIALOG_LINE1_Y);

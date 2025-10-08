@@ -23,13 +23,13 @@ constexpr float SPEED_SCALE = 5.0f;
 
 // Screen
 
-constexpr float GBA_TILE = 8;
-constexpr float GBA_X = 20;
-constexpr float GBA_Y = 18;
-constexpr float GBA_WIDTH = GBA_TILE * GBA_X;
-constexpr float GBA_HEIGHT = GBA_TILE * GBA_Y;
-constexpr float WINDOW_WIDTH = GBA_WIDTH * WINDOW_SCALE;
-constexpr float WINDOW_HEIGHT = GBA_HEIGHT * WINDOW_SCALE;
+constexpr float GBA_W = 20;
+constexpr float GBA_H = 18;
+constexpr float GBA_PXL_TILE = 8;
+constexpr float GBA_PXL_WIDTH = GBA_PXL_TILE * GBA_W;
+constexpr float GBA_PXL_HEIGHT = GBA_PXL_TILE * GBA_H;
+constexpr float WINDOW_PXL_WIDTH = GBA_PXL_WIDTH * WINDOW_SCALE;
+constexpr float WINDOW_PXL_HEIGHT = GBA_PXL_HEIGHT * WINDOW_SCALE;
 #endif
 
 constexpr auto WINDOW_TITLE = "PokeRemake";
@@ -55,5 +55,5 @@ constexpr float FONT_ATLAS_BAKE_SCALE = 64.0f; // Font size in pixels
 
 constexpr float TRANSITION_DURATION = 1.0f / SPEED_SCALE;
 
-constexpr float SCREEN_TILE = GBA_TILE * WINDOW_SCALE;
+constexpr float SCREEN_TILE = GBA_PXL_TILE * WINDOW_SCALE;
 constexpr float FONT_RENDER_SCALE = SCREEN_TILE; // Scale for rendering text

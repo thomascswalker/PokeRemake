@@ -17,12 +17,7 @@ static JSON GDefaultMapData = {
 
 PMapMode::PMapMode()
 {
-	// Convenience vars
-	mWorld = GWorld;
-	mMapManager = GMapManager;
-
-	mMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
-
+	GMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 	mState.Data = GDefaultMapData;
 }
 
@@ -39,7 +34,7 @@ bool PMapMode::PreStart()
 bool PMapMode::Load()
 {
 	// Load the map from JSON
-	auto Map = mMapManager->LoadMap(mState.Get<std::string>(PLAYER_MAP), false);
+	auto Map = GMapManager->LoadMap(mState.Get<std::string>(PLAYER_MAP), false);
 
 	auto Player = ConstructActor<PPlayerCharacter>();
 	Player->GetSpriteComponent()->GetSprite()->SetTexture(GTextureManager->Get(TEX_ASH));
@@ -56,14 +51,14 @@ bool PMapMode::Load()
 
 bool PMapMode::Unload()
 {
-	auto Player = mWorld->GetPlayerCharacter();
+	auto Player = GWorld->GetPlayerCharacter();
 
 	// Current position
 	auto PlayerPosition = Player->GetPosition2D();
 	mState.Set(PLAYER_POSITION, PlayerPosition.ToJson());
 
 	// Current map
-	auto Map = mMapManager->GetMapAtPosition(PlayerPosition);
+	auto Map = GMapManager->GetMapAtPosition(PlayerPosition);
 	if (!Map)
 	{
 		LogError("No map at position: {}", PlayerPosition.ToString().c_str());
@@ -72,13 +67,13 @@ bool PMapMode::Unload()
 	mState.Set(PLAYER_MAP, Map->GetMapName());
 
 	// Destroy all actors
-	mWorld->DestroyAllActors();
+	GWorld->DestroyAllActors();
 
 	// Clear all maps from the world
-	mMapManager->ClearMaps();
+	GMapManager->ClearMaps();
 
 	// Unset the player character
-	mWorld->SetPlayerCharacter(nullptr);
+	GWorld->SetPlayerCharacter(nullptr);
 
 	return true;
 }
@@ -92,7 +87,7 @@ void PMapMode::OnGameMapStateChanged(EMapState State)
 		case MS_Loaded:
 			break;
 		case MS_Unloading:
-			TransitionOverlay = mWorld->ConstructWidget<PTransitionOverlay>();
+			TransitionOverlay = GWorld->ConstructWidget<PTransitionOverlay>();
 			GWorld->GetRootWidget()->AddChild(TransitionOverlay);
 			TransitionOverlay->Fade(FM_Out);
 			TransitionOverlay->FadedOut.AddRaw(this, &PMapMode::OnFadeOutComplete);
@@ -110,7 +105,7 @@ void PMapMode::OnFadeInComplete()
 		TransitionOverlay->Unparent();
 		TransitionOverlay->FadedIn.RemoveAll();
 		TransitionOverlay->FadedOut.RemoveAll();
-		mWorld->DestroyWidget(TransitionOverlay);
+		GWorld->DestroyWidget(TransitionOverlay);
 		TransitionOverlay = nullptr;
 	}
 }

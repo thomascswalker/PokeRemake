@@ -2,7 +2,9 @@
 #include "../Battle/BattleManager.h"
 #include "Interface/Widget.h"
 
-class PBattleActionBox : public PWidget
+#include "Frame.h"
+
+class PBattleActionBox : public PFrame
 {
 	PTexture* mTexture = nullptr;
 

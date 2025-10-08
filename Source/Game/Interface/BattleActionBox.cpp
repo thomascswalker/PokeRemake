@@ -4,10 +4,11 @@
 #include "Core/Font.h"
 #include "Core/GameConstants.h"
 
-PBattleActionBox::PBattleActionBox()
-{
-	mTexture = GTextureManager->Get(TEX_DIALOG);
+#define BAB_X 8
 
+PBattleActionBox::PBattleActionBox()
+	: PFrame(FRect(BAB_X, DIALOG_Y, DIALOG_W - BAB_X, DIALOG_H))
+{
 	GBattleManager->BattleActionChanged.AddRaw(this, &PBattleActionBox::HandleBattleActionChange);
 }
 
@@ -18,11 +19,7 @@ PBattleActionBox::~PBattleActionBox()
 
 void PBattleActionBox::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	FRect Geometry = { 0, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT };
-
-	Renderer->DrawFillRect(Geometry);
-	Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);
+	PFrame::Draw(Renderer);
 
 	Renderer->SetDrawColor(0, 0, 0, 255);
 

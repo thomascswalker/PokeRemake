@@ -28,9 +28,7 @@ struct SMapContext
 
 class PMapMode : public PGameMode
 {
-	PWorld*		 mWorld = nullptr;
-	PMapManager* mMapManager = nullptr;
-	PGameHUD*	 mHUD = nullptr;
+	PGameHUD* mHUD = nullptr;
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;

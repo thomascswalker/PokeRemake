@@ -27,7 +27,7 @@ public:
 	{
 		const auto Alpha = static_cast<int32_t>(255.0f * mOpacity);
 		Renderer->SetDrawColor(0, 0, 0, Alpha);
-		Renderer->DrawFillRect({ 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT });
+		Renderer->DrawFillRect({ 0, 0, WINDOW_PXL_WIDTH, WINDOW_PXL_HEIGHT });
 	}
 
 	void Tick(float DeltaTime) override

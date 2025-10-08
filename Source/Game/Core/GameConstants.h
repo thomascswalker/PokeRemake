@@ -50,9 +50,10 @@ constexpr int GLYPH_HEIGHT = COORD(1);
 
 /* Dialog */
 
-constexpr float DIALOG_Y = COORD(12);
-constexpr float DIALOG_HEIGHT = COORD(6);
-constexpr float DIALOG_WIDTH = COORD(GBA_X);
+constexpr float DIALOG_X = 0;
+constexpr float DIALOG_Y = 12;
+constexpr float DIALOG_H = 6;
+constexpr float DIALOG_W = GBA_W;
 constexpr float DIALOG_FONT_SIZE = COORD(1.5); // Kind of arbitrary, looks good
 constexpr float DIALOG_FONT_GAP = COORD(2);
 constexpr float DIALOG_LINE_X = COORD(1);

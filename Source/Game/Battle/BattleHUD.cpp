@@ -38,7 +38,7 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 {
 	// White background
 	Renderer->SetDrawColor(255, 255, 255, 255);
-	Renderer->DrawFillRect({ 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT });
+	Renderer->DrawFillRect({ 0, 0, WINDOW_PXL_WIDTH, WINDOW_PXL_HEIGHT });
 
 	// Draw the player Pokémon
 	if (auto Mon = GBattleManager->GetPlayerMon())
