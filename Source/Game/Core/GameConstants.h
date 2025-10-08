@@ -50,10 +50,10 @@ constexpr int GLYPH_HEIGHT = COORD(1);
 
 /* Dialog */
 
-constexpr float DIALOG_X = 0;
-constexpr float DIALOG_Y = 12;
-constexpr float DIALOG_H = 6;
-constexpr float DIALOG_W = GBA_W;
+constexpr float DIALOG_BOX_X = 0;
+constexpr float DIALOG_BOX_Y = 12;
+constexpr float DIALOG_BOX_H = 6;
+constexpr float DIALOG_BOX_W = GBA_W;
 constexpr float DIALOG_FONT_SIZE = COORD(1.5); // Kind of arbitrary, looks good
 constexpr float DIALOG_FONT_GAP = COORD(2);
 constexpr float DIALOG_LINE_X = COORD(1);
@@ -64,10 +64,10 @@ constexpr float DIALOG_LINE2_Y = COORD(16);
 
 constexpr float BATTLE_MON_SIZE = COORD(12);
 
-constexpr float PLAYER_ORIGIN_X = COORD(11);
+constexpr float PLAYER_ORIGIN_X = COORD(10);
 constexpr float PLAYER_ORIGIN_Y = COORD(8);
 constexpr float PLAYER_MON_X = COORD(-2);
-constexpr float PLAYER_MON_Y = COORD(2);
+constexpr float PLAYER_MON_Y = COORD(3);
 constexpr float PLAYER_LEVEL_X = PLAYER_ORIGIN_X + COORD(5);
 constexpr float PLAYER_LEVEL_Y = PLAYER_ORIGIN_Y + COORD(1);
 
@@ -77,6 +77,11 @@ constexpr float BATTLE_MON_X = COORD(10);
 constexpr float BATTLE_MON_Y = COORD(-1);
 constexpr float BATTLE_LEVEL_X = BATTLE_ORIGIN_X + COORD(5);
 constexpr float BATTLE_LEVEL_Y = BATTLE_ORIGIN_Y + COORD(1);
+
+constexpr float BATTLE_ACTION_MENU_X = 8;
+constexpr float BATTLE_ACTION_MENU_Y = DIALOG_BOX_Y;
+constexpr float BATTLE_ACTION_MENU_W = DIALOG_BOX_W - BATTLE_ACTION_MENU_X;
+constexpr float BATTLE_ACTION_MENU_H = DIALOG_BOX_H;
 
 constexpr float BATTLE_ACTION_FIGHT_X = COORD(10);
 constexpr float BATTLE_ACTION_FIGHT_Y = DIALOG_LINE1_Y;

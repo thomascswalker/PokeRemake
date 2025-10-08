@@ -56,15 +56,15 @@ void PFrame::Initialize(uint32_t SizeX, uint32_t SizeY)
 	}
 }
 
-PFrame::PFrame(const FRect& InSize)
+PFrame::PFrame(const FRect& Geometry)
 {
-	mFixedPosition.X = COORD(InSize.X);
-	mFixedPosition.Y = COORD(InSize.Y);
-	mFixedSize.X = COORD(InSize.W);
-	mFixedSize.Y = COORD(InSize.H);
+	mFixedPosition.X = COORD(Geometry.X);
+	mFixedPosition.Y = COORD(Geometry.Y);
+	mFixedSize.X = COORD(Geometry.W);
+	mFixedSize.Y = COORD(Geometry.H);
 
 	// Negate 1 from width/height because the first index is one of the corners
-	Initialize(InSize.W - 1, InSize.H - 1);
+	Initialize(Geometry.W - 1, Geometry.H - 1);
 }
 
 void PFrame::Draw(const PRenderer* Renderer) const

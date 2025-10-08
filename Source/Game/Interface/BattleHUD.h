@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../Interface/BattleActionBox.h"
-#include "../Interface/DialogBox.h"
 #include "Interface/Widget.h"
 
-#include "BattleManager.h"
+#include "BattleActionMenu.h"
+#include "DialogBox.h"
 
 #define NAME_FONT_SIZE 24
 
@@ -18,8 +17,8 @@
 
 class PBattleHUD : public PWidget
 {
-	PDialogBox*		  mDialogBox = nullptr;
-	PBattleActionBox* mActionBox = nullptr;
+	PDialogBox*		   mDialogBox = nullptr;
+	PBattleActionMenu* mActionBox = nullptr;
 
 public:
 	PBattleHUD();

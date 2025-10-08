@@ -4,13 +4,13 @@
 
 #include "Frame.h"
 
-class PBattleActionBox : public PFrame
+class PBattleActionMenu : public PFrame
 {
 	PTexture* mTexture = nullptr;
 
 public:
-	PBattleActionBox();
-	~PBattleActionBox() override;
+	PBattleActionMenu();
+	~PBattleActionMenu() override;
 
 	void Draw(const PRenderer* Renderer) const override;
 	void HandleBattleActionChange(EBattleAction Action);

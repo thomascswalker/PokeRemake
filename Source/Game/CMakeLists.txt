@@ -15,7 +15,7 @@ set(SOURCES
         Core/PokeStorage.cpp
         Core/Pokedex.cpp
         Core/Pokemon.h
-        Battle/BattleHUD.h
+        Interface/BattleHUD.h
         Interface/GameHUD.cpp
         Interface/TransitionOverlay.h
         MainGame.cpp
@@ -23,14 +23,12 @@ set(SOURCES
         Modes/MapMode.cpp
         Battle/BattleManager.cpp
         Core/GameConstants.h
-        Battle/BattleHUD.cpp
-        Interface/BattleActionBox.h
-        Interface/BattleActionBox.cpp
+        Interface/BattleHUD.cpp
+        Interface/BattleActionMenu.cpp
         Interface/DialogBox.cpp
         Core/Font.cpp
         Actors/Trainer.cpp
         Core/GameSerializer.h
-        Interface/Frame.h
         Interface/Frame.cpp
 )
 add_library(${PROJECT_NAME} ${SOURCES})

@@ -16,10 +16,14 @@ PBattleHUD::PBattleHUD()
 	{
 		BattleText = std::format("{} sent out \n{}", GBattleManager->GetCurrentTrainerName().c_str(), BattleMon->GetDisplayName().c_str());
 	}
+
+	// Background dialog box
+	PWidget::AddChild(ConstructWidget<PDialogBox>());
+
 	mDialogBox->SetText(BattleText);
 	mDialogBox->Print();
 
-	mActionBox = ConstructWidget<PBattleActionBox>();
+	mActionBox = ConstructWidget<PBattleActionMenu>();
 }
 
 PBattleHUD::~PBattleHUD()
