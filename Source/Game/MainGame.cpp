@@ -4,8 +4,6 @@
 #include "Battle/BattleMode.h"
 #include "Core/GameSerializer.h"
 #include "Core/TextRenderer.h"
-#include "Engine/Actors/Interactable.h"
-#include "Engine/Dialog.h"
 #include "Modes/MapMode.h"
 
 PMainGame::PMainGame()
@@ -37,7 +35,7 @@ bool PMainGame::PreStart()
 	BattleMode->PreStart();
 
 	// Initialize Player Party
-	auto Mon = mPlayerStorage.Construct(MON_CHARMANDER, 5);
+	auto Mon = mPlayerStorage.Construct(MON_MEWTWO, 5);
 	mPlayerParty.Add(Mon);
 
 	LogInfo("Game PreStart successful.");

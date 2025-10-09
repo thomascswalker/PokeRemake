@@ -46,10 +46,10 @@ struct SMoveDef : ISerializable
 		Id = Json["Id"];
 		Name = Json["Name"];
 		Type = Json["Type"];
-		Power = Json.at("Power").is_number() ? Json["Power"].get<uint32_t>() : 0;
-		Accuracy = Json.at("Accuracy").is_number() ? Json["Accuracy"].get<uint32_t>() : 0;
-		PP = Json.at("PP").is_number() ? Json["PP"].get<uint32_t>() : 0;
-		Category = Json.at("Category").is_number() ? Json["Category"].get<uint32_t>() : 0;
+		Power = !Json.at("Power").is_null() ? Json["Power"].get<uint32_t>() : 0;
+		Accuracy = !Json.at("Accuracy").is_null() ? Json["Accuracy"].get<uint32_t>() : 0;
+		PP = !Json.at("PP").is_null() ? Json["PP"].get<uint32_t>() : 0;
+		Category = Json["Category"];
 	}
 };
 
@@ -58,6 +58,10 @@ struct SPokemonDef : ISerializable
 	int32_t					 Id = 0;
 	std::string				 Name;
 	std::vector<std::string> Types;
+	std::vector<uint32_t>	 DefaultMoves;
+	std::vector<uint32_t>	 LearnedMoves;
+	std::vector<uint32_t>	 TMMoves;
+	std::vector<uint32_t>	 HMMoves;
 
 	uint32_t MaxHp = 0;
 	uint32_t Attack = 0;
@@ -89,6 +93,7 @@ struct SPokemonDef : ISerializable
 		Json["Stats"]["Sp. Attack"] = SpAttack;
 		Json["Stats"]["Sp. Defense"] = SpDefense;
 		Json["Stats"]["Speed"] = Speed;
+
 		return Json;
 	}
 
@@ -105,6 +110,9 @@ struct SPokemonDef : ISerializable
 		SpAttack = Stats["Sp. Attack"].get<uint32_t>();
 		SpDefense = Stats["Sp. Defense"].get<uint32_t>();
 		Speed = Stats["Speed"].get<uint32_t>();
+
+		const auto Moves = Json["Moves"];
+		DefaultMoves = Moves["Defaults"].get<std::vector<uint32_t>>();
 
 		std::string FmtName = Json.contains("AlternateName") ? Json["AlternateName"].get<std::string>() : Name;
 		std::string FrontFileName = std::format("{}Front", FmtName.c_str());

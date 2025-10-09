@@ -26,10 +26,9 @@ void PBattleMoveMenu::Draw(const PRenderer* Renderer) const
 
 	for (uint32_t Index = 0; Index < MAX_BATTLE_MOVES; Index++)
 	{
-		uint32_t MoveId = GMoves[Index];
-		auto	 MoveDef = MoveId != NO_MOVE ? PPokedexManager::Instance()->GetMoveById(MoveId) : nullptr;
-		auto	 MoveText = MoveDef != nullptr ? MoveDef->Name : "-";
-		float	 MoveY = BATTLE_MOVE_MENU_TEXT_Y + COORD(Index);
+		auto  Move = GBattleManager->GetPlayerMon()->GetMove(Index);
+		auto  MoveText = Move != nullptr ? Move->GetDef()->Name : "-";
+		float MoveY = BATTLE_MOVE_MENU_TEXT_Y + COORD(Index);
 		TextRenderer::DrawText(Strings::ToUpper(MoveText), FVector2(BATTLE_MOVE_MENU_TEXT_X, MoveY));
 
 		if (GBattleManager->GetSelectedMove() == Index)

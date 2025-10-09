@@ -7,17 +7,17 @@
 
 class SPokemonMove : public ISerializable
 {
-	SMoveDef mDef;
-	uint32_t mPP = 0;
-	bool	 mDisabled = false;
+	SMoveDef* mDef = nullptr;
+	uint32_t  mPP = 0;
+	bool	  mDisabled = false;
 
 public:
-	SPokemonMove(const SMoveDef* Def)
-		: mDef(*Def), mPP(Def->PP)
-	{
-	}
-	SMoveDef* GetDef() { return &mDef; }
+	SPokemonMove() = default;
+	~SPokemonMove() override = default;
+	SMoveDef* GetDef() { return mDef; }
+	void	  SetDef(SMoveDef* Def) { mDef = Def; }
 	uint32_t  GetPP() { return mPP; }
+	void	  SetPP(uint32_t PP) { mPP = PP; }
 	uint32_t  DecrementPP()
 	{
 		if (mPP == 0)
@@ -28,6 +28,14 @@ public:
 	}
 	void SetDisabled(bool State) { mDisabled = State; }
 	bool GetDisabled() { return mDisabled; }
+
+	JSON Serialize() const override
+	{
+		return JSON();
+	}
+	void Deserialize(const JSON& json) override
+	{
+	}
 };
 
 class SPokemon : public ISerializable
@@ -55,21 +63,23 @@ public:
 	uint32_t GetExperience() const { return mExperience; }
 	void	 AddExperience(uint32_t Exp) { this->mExperience = Exp; }
 
-	bool AddMove(const SMoveDef* Def)
+	bool AddMove(SMoveDef* Def)
 	{
 		if (!Def)
 		{
 			LogError("Move definition is invalid.");
 			return false;
 		}
-		auto NewIndex = GetMoveCount() - 1;
-		if (NewIndex >= 3)
+		auto NewIndex = GetNextFreeIndex();
+		if (NewIndex > 3)
 		{
 			LogError("Unable to learn more than 4 moves.");
 			return false;
 		}
-		// auto NewMove = std::make_shared<SPokemonMove>(Def);
-		// mMoves[NewIndex] = NewMove;
+		auto NewMove = std::make_shared<SPokemonMove>();
+		NewMove->SetDef(Def);
+		NewMove->SetPP(Def->PP);
+		mMoves[NewIndex] = NewMove;
 		return true;
 	}
 
@@ -94,6 +104,20 @@ public:
 			}
 		}
 		return Count;
+	}
+
+	int32_t GetNextFreeIndex()
+	{
+		int32_t Index = 0;
+		for (auto& Move : mMoves)
+		{
+			if (Move.get() == nullptr)
+			{
+				return Index;
+			}
+			Index++;
+		}
+		return 4;
 	}
 
 	PTexture* GetFrontTexture() const
