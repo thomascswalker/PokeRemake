@@ -28,5 +28,7 @@ public:
 	bool HandlePressA() override;
 	bool HandlePressB() override;
 	bool HandlePressDPad(EDPad Direction) override;
+
 	void HandleChangeActionSelection(uint8_t Direction);
+	void HandleChangeMoveSelection(EDPad Direction);
 };

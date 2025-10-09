@@ -2,8 +2,8 @@
 
 #include "Application/Application.h"
 #include "Battle/BattleMode.h"
-#include "Core/Font.h"
 #include "Core/GameSerializer.h"
+#include "Core/TextRenderer.h"
 #include "Engine/Actors/Interactable.h"
 #include "Engine/Dialog.h"
 #include "Modes/MapMode.h"
@@ -56,7 +56,7 @@ bool PMainGame::Start()
 	GPlayerParty = &mPlayerParty;
 	GPlayerStorage = &mPlayerStorage;
 
-	PokeFont::LoadFontData();
+	TextRenderer::LoadFontData();
 
 	return true;
 }

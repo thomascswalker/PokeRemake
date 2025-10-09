@@ -163,6 +163,46 @@
 struct SPokemonDef;
 class PPokedexManager;
 
+struct SMoveDef : ISerializable
+{
+	int32_t		Id;
+	std::string Name;
+	std::string Type;
+	uint32_t	Power;
+	std::string Category;
+	uint32_t	Accuracy;
+	uint32_t	PP;
+
+	SMoveDef(const JSON& Json)
+	{
+		SMoveDef::Deserialize(Json);
+	}
+
+	JSON Serialize() const override
+	{
+		JSON Result;
+		Result["Id"] = Id;
+		Result["Name"] = Name;
+		Result["Type"] = Type;
+		Result["Power"] = Power;
+		Result["Accuracy"] = Accuracy;
+		Result["PP"] = PP;
+		Result["Category"] = Category;
+		return Result;
+	}
+
+	void Deserialize(const JSON& Json) override
+	{
+		Id = Json["Id"];
+		Name = Json["Name"];
+		Type = Json["Type"];
+		Power = Json["Power"];
+		Accuracy = Json["Accuracy"];
+		PP = Json["PP"];
+		Category = Json["Category"];
+	}
+};
+
 struct SPokemonDef : ISerializable
 {
 	int32_t					 Id = 0;
@@ -182,7 +222,7 @@ struct SPokemonDef : ISerializable
 	SPokemonDef() = default;
 	SPokemonDef(const JSON& Json)
 	{
-		Deserialize(Json);
+		SPokemonDef::Deserialize(Json);
 	}
 
 	JSON Serialize() const override
@@ -232,15 +272,20 @@ struct SPokemonDef : ISerializable
 
 class PPokedexManager : public ISingleton<PPokedexManager>
 {
-	TArray<SPokemonDef> Defs;
+	TArray<SPokemonDef> Mons;
+	TArray<SMoveDef>	Moves;
 
-	bool LoadDefs();
+	bool LoadPokemonDefs();
+	bool LoadMoveDefs();
 	bool LoadSprites();
 
 public:
 	bool Init();
 
-	SPokemonDef* Get(int32_t Index);
-	SPokemonDef* GetById(int32_t Id);
-	SPokemonDef* GetByName(const std::string& Name);
+	SPokemonDef* GetMonByIndex(int32_t Index);
+	SPokemonDef* GetMonById(int32_t Id);
+	SPokemonDef* GetMonByName(const std::string& Name);
+
+	SMoveDef* GetMoveByIndex(int32_t Index);
+	SMoveDef* GetMoveById(int32_t Id);
 };

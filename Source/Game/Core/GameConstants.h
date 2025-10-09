@@ -36,11 +36,11 @@
 
 /* Text */
 
-#define CHAR_PK				 128
-#define CHAR_MN				 129
-#define RIGHT_ARROW			 130
-#define RIGHT_ARROW_SELECTED 131
-#define DOWN_ARROW			 132
+#define CHAR_PK					  128
+#define CHAR_MN					  129
+#define CHAR_RIGHT_ARROW		  130
+#define CHAR_RIGHT_ARROW_SELECTED 131
+#define CHAR_DOWN_ARROW			  132
 
 constexpr int FONT_ROW_COUNT = 8;
 constexpr int FONT_COL_COUNT = 16;
@@ -99,9 +99,10 @@ constexpr float BATTLE_MOVE_MENU_H = DIALOG_BOX_H;
 
 constexpr float BATTLE_MOVE_MENU_TEXT_X = COORD(6);
 constexpr float BATTLE_MOVE_MENU_TEXT_Y = COORD(13);
+constexpr float BATTLE_MOVE_SELECTION_X = COORD(5);
 
 constexpr float BATTLE_PP_MENU_X = 0;
-constexpr float BATTLE_PP_MENU_Y = DIALOG_BOX_Y - 5;
+constexpr float BATTLE_PP_MENU_Y = 8;
 constexpr float BATTLE_PP_MENU_W = 10;
 constexpr float BATTLE_PP_MENU_H = 5;
 

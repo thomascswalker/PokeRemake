@@ -71,7 +71,7 @@ void PBattleManager::StartWildBattle(int32_t Id, int32_t Level)
 {
 	mContext.BattleParty.SetType(PT_Wild);
 	mContext.BattleParty.Clear();
-	GWildMon = SPokemon(*PPokedexManager::Instance()->GetById(Id), Level, 0);
+	GWildMon = SPokemon(*PPokedexManager::Instance()->GetMonById(Id), Level, 0);
 	mContext.BattleParty.Add(&GWildMon);
 	mContext.BattleMon = mContext.BattleParty.Get(0);
 }

@@ -7,7 +7,23 @@
 
 struct SGameState
 {
+private:
+	JSON Schema;
+
+public:
 	JSON Data;
+
+	SGameState(const JSON& InSchema = JSON())
+		: Schema(InSchema)
+	{
+	}
+
+	SGameState(const SGameState& Other)
+		: Schema(Other.Schema), Data(Other.Data)
+	{
+	}
+
+	const JSON& GetSchema() const { return Schema; }
 
 	JSON GetRaw(const std::string& Key)
 	{

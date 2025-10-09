@@ -11,27 +11,28 @@ include_directories(
 )
 
 set(SOURCES
+        Actors/Trainer.cpp
+        Battle/BattleManager.cpp
+        Battle/BattleMode.cpp
+        Core/GameConstants.h
+        Core/GameSerializer.h
         Core/PokeParty.cpp
         Core/PokeStorage.cpp
         Core/Pokedex.cpp
         Core/Pokemon.h
+        Core/TextRenderer.cpp
+        Interface/BattleActionMenu.cpp
+        Interface/BattleHUD.cpp
         Interface/BattleHUD.h
+        Interface/BattleMoveMenu.cpp
+        Interface/DialogBox.cpp
+        Interface/Frame.cpp
         Interface/GameHUD.cpp
         Interface/TransitionOverlay.h
         MainGame.cpp
-        Battle/BattleMode.cpp
         Modes/MapMode.cpp
-        Battle/BattleManager.cpp
-        Core/GameConstants.h
-        Interface/BattleHUD.cpp
-        Interface/BattleActionMenu.cpp
-        Interface/DialogBox.cpp
-        Core/Font.cpp
-        Actors/Trainer.cpp
-        Core/GameSerializer.h
-        Interface/Frame.cpp
-        Interface/BattleMoveMenu.cpp
-        Interface/BattleMoveMenu.h
+        Interface/BattlePPMenu.cpp
+        Interface/BattlePPMenu.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

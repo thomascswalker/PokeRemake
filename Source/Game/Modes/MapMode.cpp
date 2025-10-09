@@ -4,7 +4,6 @@
 #include "Battle/BattleManager.h"
 #include "Battle/BattleMode.h"
 #include "Core/GameConstants.h"
-#include "Engine/Actors/Interactable.h"
 #include "Engine/Actors/SceneryActor.h"
 #include "Interface/Button.h"
 
@@ -17,8 +16,10 @@ static JSON GDefaultMapData = {
 
 PMapMode::PMapMode()
 {
-	GMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
+	mState = SGameState(SMapContext::Schema());
 	mState.Data = GDefaultMapData;
+
+	GMapManager->GameMapStateChanged.AddRaw(this, &PMapMode::OnGameMapStateChanged);
 }
 
 std::string PMapMode::GetName()
@@ -84,8 +85,16 @@ void PMapMode::OnGameMapStateChanged(EMapState State)
 		case MS_Loading:
 			break;
 		case MS_Loaded:
+			if (mPlayerCharacter)
+			{
+				mPlayerCharacter->SetCanMove(true);
+			}
 			break;
 		case MS_Unloading:
+			if (mPlayerCharacter)
+			{
+				mPlayerCharacter->SetCanMove(false);
+			}
 			TransitionOverlay = GWorld->ConstructWidget<PTransitionOverlay>();
 			GWorld->GetRootWidget()->AddChild(TransitionOverlay);
 			TransitionOverlay->Fade(FM_Out);

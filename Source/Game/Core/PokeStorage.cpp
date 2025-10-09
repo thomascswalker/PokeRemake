@@ -5,7 +5,7 @@ PPokemonStorage* GPlayerStorage = nullptr;
 SPokemon* PPokemonStorage::Construct(uint32_t Id, uint32_t Level, uint32_t Experience)
 {
 	auto Dex = PPokedexManager::Instance();
-	auto Def = Dex->GetById(Id);
+	auto Def = Dex->GetMonById(Id);
 	mPokemon.push_back({ *Def, Level, Experience });
 	return &mPokemon.back();
 }

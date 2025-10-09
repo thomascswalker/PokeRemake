@@ -14,7 +14,7 @@ def convert_data(data: dict) -> dict:
     return out_data
 
 def convert_all_data() -> None:
-    with codecs.open("pokemon.json", "r", encoding="utf-8") as f:
+    with codecs.open("../generate_mon_defs/pokemon.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
     out_data = []

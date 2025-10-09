@@ -4,8 +4,8 @@
 
 #include "BattleHUD.h"
 
-#include "Core/Font.h"
 #include "Core/GameConstants.h"
+#include "Core/TextRenderer.h"
 
 PBattleHUD::PBattleHUD()
 {
@@ -59,8 +59,8 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		PokeFont::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
-		PokeFont::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y });
+		TextRenderer::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y });
 	}
 
 	// Draw the Pokémon being battled
@@ -73,8 +73,8 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
-		PokeFont::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
-		PokeFont::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
+		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
 	}
 }
 

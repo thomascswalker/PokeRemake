@@ -1,7 +1,7 @@
 #include "DialogBox.h"
 
-#include "Core/Font.h"
 #include "Core/GameConstants.h"
+#include "Core/TextRenderer.h"
 
 #include "Frame.h"
 
@@ -18,7 +18,7 @@ void PDialogBox::Draw(const PRenderer* Renderer) const
 	// Draw text from the printer
 	Renderer->SetDrawColor(0, 0, 0, 255);
 	auto TextPosition = FVector2(DIALOG_LINE_X, DIALOG_LINE1_Y);
-	PokeFont::DrawText(mPrinter.GetDisplayText(), TextPosition);
+	TextRenderer::DrawText(mPrinter.GetDisplayText(), TextPosition);
 }
 
 void PDialogBox::Tick(float DeltaTime)

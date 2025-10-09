@@ -5,6 +5,19 @@
 
 #include "Pokedex.h"
 
+class SPokemonMove : public ISerializable
+{
+	SMoveDef mDef;
+	uint32_t mPP = 0;
+	bool	 mDisabled = false;
+
+public:
+	SPokemonMove(const SMoveDef* Def)
+		: mDef(*Def), mPP(Def->PP)
+	{
+	}
+};
+
 class SPokemon : public ISerializable
 {
 	SPokemonDef mDef;
@@ -12,6 +25,8 @@ class SPokemon : public ISerializable
 	uint32_t mHp;
 	uint32_t mLevel;
 	uint32_t mExperience;
+
+	std::array<SPokemonMove, 4> mMoves;
 
 public:
 	SPokemon() : mHp{ 0 }, mLevel{ 0 }, mExperience(0) {}
@@ -45,6 +60,18 @@ public:
 		Result["Id"] = mDef.Id;
 		Result["Level"] = mLevel;
 		Result["Experience"] = mExperience;
+		Result["Moves"] = JSON::array();
+		for (auto Move : mMoves)
+		{
+			if (!Move)
+			{
+				Result["Moves"].push_back(-1);
+			}
+			else
+			{
+				Result["Moves"].push_back(Move->Id);
+			}
+		}
 
 		return Result;
 	}
@@ -52,11 +79,18 @@ public:
 	void Deserialize(const JSON& Json) override
 	{
 		auto Id = Json["Def"].get<int32_t>();
-		mDef = *PPokedexManager::Instance()->GetById(Id);
+		mDef = *PPokedexManager::Instance()->GetMonById(Id);
 		mLevel = Json["Level"];
 		if (Json.contains("Experience"))
 		{
 			mExperience = Json["Experience"];
+		}
+		if (Json.contains("Moves"))
+		{
+			for (auto [IterIndex, MoveId] : std::views::enumerate(Json["Moves"]))
+			{
+				mMoves[IterIndex] = PPokedexManager::Instance()->GetMoveById(MoveId);
+			}
 		}
 	}
 };

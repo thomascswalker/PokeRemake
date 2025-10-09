@@ -4,7 +4,7 @@
 
 #include "Engine/Texture.h"
 
-namespace PokeFont
+namespace TextRenderer
 {
 	constexpr int GlyphByteSize = 8;
 	constexpr int GlyphBitSize = GlyphByteSize * GlyphByteSize;
@@ -18,6 +18,6 @@ namespace PokeFont
 	FRect GetCharRect(uint8_t C);
 	bool  DrawChar(uint8_t C, const FVector2& Position);
 	bool  DrawText(const std::string& Text, const FVector2& Position);
-} // namespace PokeFont
+} // namespace TextRenderer
 
 extern PTexture* GFontTexture;

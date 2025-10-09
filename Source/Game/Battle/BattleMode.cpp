@@ -9,7 +9,7 @@
 
 PBattleMode::PBattleMode()
 {
-	mState.Data = SBattleContext::Schema();
+	mState = SGameState(SBattleContext::Schema());
 	GBattleManager = &mBattleManager;
 }
 
@@ -31,7 +31,6 @@ bool PBattleMode::Load()
 
 	auto Id = mState.Get<int32_t>(STATE_BATTLE_ID);
 	mBattleManager.StartTrainerBattle(Id);
-	// mBattleManager.StartWildBattle(ID_MAGMAR, 50);
 	mBattleManager.SetPlayerMon(GPlayerParty->Get(0));
 
 	// Start with Select Action state
@@ -86,7 +85,7 @@ bool PBattleMode::HandlePressA()
 {
 	if (GBattleManager->GetState() == EBattleState::SelectAction)
 	{
-		switch (GBattleManager->GetAction())
+		switch (GBattleManager->GetSelectedAction())
 		{
 			case EBattleAction::Fight:
 				HandleGameEvent({ this, EGameEventType::BattleEnterMove });
@@ -109,9 +108,13 @@ bool PBattleMode::HandlePressB()
 {
 	switch (GBattleManager->GetState())
 	{
+		// If on the action menu, and the user presses B
+		// exit the battle.
 		case EBattleState::SelectAction:
 			HandleGameEvent({ this, EGameEventType::BattleEnd });
 			break;
+		// If on the move menu, and the user presses B,
+		// switch to Action mode.
 		case EBattleState::SelectMove:
 			HandleGameEvent({ this, EGameEventType::BattleExitMove });
 			break;
@@ -131,9 +134,13 @@ bool PBattleMode::HandlePressDPad(EDPad Direction)
 		case DPAD_UP:
 			switch (GBattleManager->GetState())
 			{
+				// If on the action menu, handle the new selection.
 				case EBattleState::SelectAction:
 					HandleChangeActionSelection(Direction);
 					break;
+				// If on the move menu, handle the new selection.
+				case EBattleState::SelectMove:
+					HandleChangeMoveSelection(Direction);
 				default:
 					break;
 			}
@@ -151,6 +158,7 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 		case EGameEventType::BattleEnd:
 			{
 				// Unload this game mode and load Map mode
+				GBattleManager->SetSelectedAction(EBattleAction::Fight);
 				if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(MAP_MODE))
 				{
 					return false;
@@ -160,6 +168,8 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 			// Action menu, selected FIGHT
 		case EGameEventType::BattleEnterMove:
 			{
+				// Default to the first move
+				GBattleManager->SetSelectedMove(0);
 				GBattleManager->SetState(EBattleState::SelectMove);
 				mHUD->GetBattleHUD()->HideActionBox();
 				mHUD->GetBattleHUD()->ShowMoveBox();
@@ -181,7 +191,7 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 
 void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 {
-	uint8_t CurrentPosition = static_cast<uint8_t>(GBattleManager->GetAction());
+	uint8_t CurrentPosition = static_cast<uint8_t>(GBattleManager->GetSelectedAction());
 
 	bool X = static_cast<bool>(CurrentPosition % 2);
 	bool Y = static_cast<bool>(CurrentPosition / 2);
@@ -212,7 +222,32 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 
 	uint8_t NewPosition = (NewY * 2) + NewX;
 
-	GBattleManager->SetAction(static_cast<EBattleAction>(NewPosition));
+	GBattleManager->SetSelectedAction(static_cast<EBattleAction>(NewPosition));
+}
+
+void PBattleMode::HandleChangeMoveSelection(EDPad Direction)
+{
+	if (Direction == DPAD_RIGHT || Direction == DPAD_LEFT)
+	{
+		return;
+	}
+	uint8_t Index = GBattleManager->GetSelectedMove();
+	switch (Direction)
+	{
+		case DPAD_UP:
+			Index == 0
+				? Index = 3
+				: Index--;
+			break;
+		case DPAD_DOWN:
+			Index == 3
+				? Index = 0
+				: Index++;
+			break;
+		default:
+			break;
+	}
+	GBattleManager->SetSelectedMove(Index);
 }
 
 std::string PBattleMode::GetName()

@@ -25,21 +25,21 @@ void PPlayerCharacter::Tick(float DeltaTime)
 
 	if (!mMovementComponent->IsMoving() && mInputState.any())
 	{
-		if (mInputState[0])
-		{
-			mMovementComponent->Move({ BLOCK_SIZE, 0 });
-		}
-		else if (mInputState[1])
+		if (mInputState[DPAD_LEFT])
 		{
 			mMovementComponent->Move({ -BLOCK_SIZE, 0 });
 		}
-		else if (mInputState[2])
+		else if (mInputState[DPAD_RIGHT])
 		{
-			mMovementComponent->Move({ 0, BLOCK_SIZE });
+			mMovementComponent->Move({ BLOCK_SIZE, 0 });
 		}
-		else if (mInputState[3])
+		else if (mInputState[DPAD_UP])
 		{
 			mMovementComponent->Move({ 0, -BLOCK_SIZE });
+		}
+		else if (mInputState[DPAD_DOWN])
+		{
+			mMovementComponent->Move({ 0, BLOCK_SIZE });
 		}
 	}
 }
@@ -69,38 +69,43 @@ bool PPlayerCharacter::DebugDraw(const PRenderer* Renderer) const
 
 bool PPlayerCharacter::CanMove() const
 {
-	return GMapManager->GetState() == MS_Loaded;
+	return mInputAllowed;
+}
+
+void PPlayerCharacter::SetCanMove(bool State)
+{
+	mInputAllowed = State;
 }
 
 bool PPlayerCharacter::TryMove(EDPad Direction)
 {
 	switch (Direction)
 	{
-		case DPAD_RIGHT:
+		case DPAD_UP:
 			{
-				mInputState[0] = true;
+				mInputState[DPAD_UP] = true;
 				break;
 			}
 		case DPAD_LEFT:
 			{
-				mInputState[1] = true;
+				mInputState[DPAD_LEFT] = true;
 				break;
 			}
 		case DPAD_DOWN:
 			{
-				mInputState[2] = true;
+				mInputState[DPAD_DOWN] = true;
 				break;
 			}
-		case DPAD_UP:
+		case DPAD_RIGHT:
 			{
-				mInputState[3] = true;
+				mInputState[DPAD_RIGHT] = true;
 				break;
 			}
 		default:
-			break;
+			return false;
 	}
 
-	mInputAllowed = !mInputState.any();
+	mInputAllowed = mInputState.any();
 	return mInputAllowed;
 }
 
@@ -108,31 +113,31 @@ bool PPlayerCharacter::TryStop(EDPad Direction)
 {
 	switch (Direction)
 	{
-		case DPAD_RIGHT:
+		case DPAD_UP:
 			{
-				mInputState[0] = false;
+				mInputState[DPAD_UP] = false;
 				break;
 			}
 		case DPAD_LEFT:
 			{
-				mInputState[1] = false;
+				mInputState[DPAD_LEFT] = false;
 				break;
 			}
 		case DPAD_DOWN:
 			{
-				mInputState[2] = false;
+				mInputState[DPAD_DOWN] = false;
 				break;
 			}
-		case DPAD_UP:
+		case DPAD_RIGHT:
 			{
-				mInputState[3] = false;
+				mInputState[DPAD_RIGHT] = false;
 				break;
 			}
 		default:
-			break;
+			return false;
 	}
 
-	mInputAllowed = mInputState.any();
+	mInputAllowed = !mInputState.any();
 	return mInputAllowed;
 }
 
