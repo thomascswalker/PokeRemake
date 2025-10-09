@@ -33,6 +33,7 @@ set(SOURCES
         Modes/MapMode.cpp
         Interface/BattlePPMenu.cpp
         Interface/BattlePPMenu.h
+        Core/Ids.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

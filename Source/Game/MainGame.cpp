@@ -37,7 +37,7 @@ bool PMainGame::PreStart()
 	BattleMode->PreStart();
 
 	// Initialize Player Party
-	auto Mon = mPlayerStorage.Construct(ID_CHARMANDER, 5);
+	auto Mon = mPlayerStorage.Construct(MON_CHARMANDER, 5);
 	mPlayerParty.Add(Mon);
 
 	LogInfo("Game PreStart successful.");

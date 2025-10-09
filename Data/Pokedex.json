@@ -13,6 +13,46 @@
       "Sp. Attack": 65,
       "Sp. Defense": 65,
       "Speed": 45
+    },
+    "Moves": {
+      "Default": [
+        "&Tackle",
+        null,
+        null,
+        null
+      ],
+      "Level": {
+        "7": "&LeechSeed",
+        "13": "&VineWhip",
+        "22": "&Poisonpowder",
+        "30": "&RazorLeaf",
+        "38": "&Growth",
+        "46": "&SleepPowder",
+        "54": "&Solarbeam"
+      },
+      "TM": [
+        "&SwordsDance",
+        "&Toxic",
+        "&BodySlam",
+        "&TakeDown",
+        "&DoubleEdge",
+        "&Rage",
+        "&MegaDrain",
+        "&Solarbeam",
+        "&Mimic",
+        "&DoubleTeam",
+        "&Reflect",
+        "&Bide",
+        "&Rest",
+        "&Substitute"
+      ],
+      "HM": [
+        "&Cut"
+      ]
+    },
+    "Evolution": {
+      "Level": 16,
+      "Species": 2
     }
   },
   {
@@ -29,6 +69,10 @@
       "Sp. Attack": 80,
       "Sp. Defense": 80,
       "Speed": 60
+    },
+    "Evolution": {
+      "Level": 32,
+      "Species": 3
     }
   },
   {
@@ -530,7 +574,7 @@
     "Id": 35,
     "Name": "Clefairy",
     "Type": [
-      "Fairy"
+      "Normal"
     ],
     "Stats": {
       "HP": 70,
@@ -545,7 +589,7 @@
     "Id": 36,
     "Name": "Clefable",
     "Type": [
-      "Fairy"
+      "Normal"
     ],
     "Stats": {
       "HP": 95,
@@ -591,7 +635,7 @@
     "Name": "Jigglypuff",
     "Type": [
       "Normal",
-      "Fairy"
+      "Normal"
     ],
     "Stats": {
       "HP": 115,
@@ -607,7 +651,7 @@
     "Name": "Wigglytuff",
     "Type": [
       "Normal",
-      "Fairy"
+      "Normal"
     ],
     "Stats": {
       "HP": 140,
@@ -1243,7 +1287,7 @@
     "Name": "Magnemite",
     "Type": [
       "Electric",
-      "Steel"
+      "Electric"
     ],
     "Stats": {
       "HP": 25,
@@ -1259,7 +1303,7 @@
     "Name": "Magneton",
     "Type": [
       "Electric",
-      "Steel"
+      "Electric"
     ],
     "Stats": {
       "HP": 50,
@@ -1876,7 +1920,7 @@
     "AlternateName": "Mrmime",
     "Type": [
       "Psychic",
-      "Fairy"
+      "Normal"
     ],
     "Stats": {
       "HP": 40,

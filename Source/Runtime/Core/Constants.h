@@ -19,7 +19,7 @@ constexpr float WINDOW_HEIGHT = 720;
 // Global modifiers
 
 constexpr float WINDOW_SCALE = 2.5f;
-constexpr float SPEED_SCALE = 1.0f;
+constexpr float SPEED_SCALE = 5.0f;
 
 // Screen
 

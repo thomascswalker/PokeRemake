@@ -25,8 +25,8 @@ void PBattleActionMenu::Draw(const PRenderer* Renderer) const
 
 	// Draw each action option text
 	TextRenderer::DrawText(BATTLE_ACTION_FIGHT, { BATTLE_ACTION_FIGHT_X, BATTLE_ACTION_FIGHT_Y });
-	TextRenderer::DrawChar(CHAR_PK, { BATTLE_ACTION_PARTY_X, BATTLE_ACTION_PARTY_Y });
-	TextRenderer::DrawChar(CHAR_MN, { BATTLE_ACTION_PARTY_X + COORD(1), BATTLE_ACTION_PARTY_Y });
+	TextRenderer::DrawText(CHAR_PK, { BATTLE_ACTION_PARTY_X, BATTLE_ACTION_PARTY_Y });
+	TextRenderer::DrawText(CHAR_MN, { BATTLE_ACTION_PARTY_X + COORD(1), BATTLE_ACTION_PARTY_Y });
 	TextRenderer::DrawText(BATTLE_ACTION_ITEM, { BATTLE_ACTION_ITEM_X, BATTLE_ACTION_ITEM_Y });
 	TextRenderer::DrawText(BATTLE_ACTION_RUN, { BATTLE_ACTION_RUN_X, BATTLE_ACTION_RUN_Y });
 
@@ -34,16 +34,16 @@ void PBattleActionMenu::Draw(const PRenderer* Renderer) const
 	switch (GBattleManager->GetSelectedAction())
 	{
 		case EBattleAction::Fight:
-			TextRenderer::DrawChar(CHAR_RIGHT_ARROW, { BATTLE_ACTION_FIGHT_X - COORD(1), BATTLE_ACTION_FIGHT_Y });
+			TextRenderer::DrawText(CHAR_RIGHT_ARROW, { BATTLE_ACTION_FIGHT_X - COORD(1), BATTLE_ACTION_FIGHT_Y });
 			break;
 		case EBattleAction::Pokemon:
-			TextRenderer::DrawChar(CHAR_RIGHT_ARROW, { BATTLE_ACTION_PARTY_X - COORD(1), BATTLE_ACTION_PARTY_Y });
+			TextRenderer::DrawText(CHAR_RIGHT_ARROW, { BATTLE_ACTION_PARTY_X - COORD(1), BATTLE_ACTION_PARTY_Y });
 			break;
 		case EBattleAction::Item:
-			TextRenderer::DrawChar(CHAR_RIGHT_ARROW, { BATTLE_ACTION_ITEM_X - COORD(1), BATTLE_ACTION_ITEM_Y });
+			TextRenderer::DrawText(CHAR_RIGHT_ARROW, { BATTLE_ACTION_ITEM_X - COORD(1), BATTLE_ACTION_ITEM_Y });
 			break;
 		case EBattleAction::Run:
-			TextRenderer::DrawChar(CHAR_RIGHT_ARROW, { BATTLE_ACTION_RUN_X - COORD(1), BATTLE_ACTION_RUN_Y });
+			TextRenderer::DrawText(CHAR_RIGHT_ARROW, { BATTLE_ACTION_RUN_X - COORD(1), BATTLE_ACTION_RUN_Y });
 			break;
 	}
 }

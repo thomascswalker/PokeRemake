@@ -102,7 +102,7 @@
     "Id": 12,
     "Accuracy": 30,
     "Name": "Guillotine",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 5,
     "Category": "Physical"
@@ -118,9 +118,9 @@
   },
   {
     "Id": 14,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Swords Dance",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -156,7 +156,7 @@
     "Id": 18,
     "Accuracy": 100,
     "Name": "Whirlwind",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -246,7 +246,7 @@
     "Id": 28,
     "Accuracy": 100,
     "Name": "Sand Attack",
-    "Power": 0,
+    "Power": null,
     "Type": "Ground",
     "PP": 15,
     "Category": "Status"
@@ -282,7 +282,7 @@
     "Id": 32,
     "Accuracy": 30,
     "Name": "Horn Drill",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 5,
     "Category": "Physical"
@@ -345,7 +345,7 @@
     "Id": 39,
     "Accuracy": 100,
     "Name": "Tail Whip",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
@@ -381,7 +381,7 @@
     "Id": 43,
     "Accuracy": 100,
     "Name": "Leer",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
@@ -399,16 +399,16 @@
     "Id": 45,
     "Accuracy": 100,
     "Name": "Growl",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 46,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Roar",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -417,7 +417,7 @@
     "Id": 47,
     "Accuracy": 55,
     "Name": "Sing",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 15,
     "Category": "Status"
@@ -426,7 +426,7 @@
     "Id": 48,
     "Accuracy": 55,
     "Name": "Supersonic",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -435,7 +435,7 @@
     "Id": 49,
     "Accuracy": 90,
     "Name": "Sonic Boom",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Special"
@@ -444,7 +444,7 @@
     "Id": 50,
     "Accuracy": 100,
     "Name": "Disable",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -478,9 +478,9 @@
   },
   {
     "Id": 54,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Mist",
-    "Power": 0,
+    "Power": null,
     "Type": "Ice",
     "PP": 30,
     "Category": "Status"
@@ -597,7 +597,7 @@
     "Id": 67,
     "Accuracy": 100,
     "Name": "Low Kick",
-    "Power": 0,
+    "Power": null,
     "Type": "Fighting",
     "PP": 20,
     "Category": "Physical"
@@ -606,7 +606,7 @@
     "Id": 68,
     "Accuracy": 100,
     "Name": "Counter",
-    "Power": 0,
+    "Power": null,
     "Type": "Fighting",
     "PP": 20,
     "Category": "Physical"
@@ -615,7 +615,7 @@
     "Id": 69,
     "Accuracy": 100,
     "Name": "Seismic Toss",
-    "Power": 0,
+    "Power": null,
     "Type": "Fighting",
     "PP": 20,
     "Category": "Physical"
@@ -651,16 +651,16 @@
     "Id": 73,
     "Accuracy": 90,
     "Name": "Leech Seed",
-    "Power": 0,
+    "Power": null,
     "Type": "Grass",
     "PP": 10,
     "Category": "Status"
   },
   {
     "Id": 74,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Growth",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 40,
     "Category": "Status"
@@ -687,7 +687,7 @@
     "Id": 77,
     "Accuracy": 75,
     "Name": "Poison Powder",
-    "Power": 0,
+    "Power": null,
     "Type": "Poison",
     "PP": 35,
     "Category": "Status"
@@ -696,7 +696,7 @@
     "Id": 78,
     "Accuracy": 75,
     "Name": "Stun Spore",
-    "Power": 0,
+    "Power": null,
     "Type": "Grass",
     "PP": 30,
     "Category": "Status"
@@ -705,7 +705,7 @@
     "Id": 79,
     "Accuracy": 75,
     "Name": "Sleep Powder",
-    "Power": 0,
+    "Power": null,
     "Type": "Grass",
     "PP": 15,
     "Category": "Status"
@@ -723,7 +723,7 @@
     "Id": 81,
     "Accuracy": 95,
     "Name": "String Shot",
-    "Power": 0,
+    "Power": null,
     "Type": "Bug",
     "PP": 40,
     "Category": "Status"
@@ -732,7 +732,7 @@
     "Id": 82,
     "Accuracy": 100,
     "Name": "Dragon Rage",
-    "Power": 0,
+    "Power": null,
     "Type": "Dragon",
     "PP": 10,
     "Category": "Special"
@@ -768,7 +768,7 @@
     "Id": 86,
     "Accuracy": 100,
     "Name": "Thunder Wave",
-    "Power": 0,
+    "Power": null,
     "Type": "Electric",
     "PP": 20,
     "Category": "Status"
@@ -804,7 +804,7 @@
     "Id": 90,
     "Accuracy": 30,
     "Name": "Fissure",
-    "Power": 0,
+    "Power": null,
     "Type": "Ground",
     "PP": 5,
     "Category": "Physical"
@@ -822,7 +822,7 @@
     "Id": 92,
     "Accuracy": 90,
     "Name": "Toxic",
-    "Power": 0,
+    "Power": null,
     "Type": "Poison",
     "PP": 10,
     "Category": "Status"
@@ -849,25 +849,25 @@
     "Id": 95,
     "Accuracy": 60,
     "Name": "Hypnosis",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 20,
     "Category": "Status"
   },
   {
     "Id": 96,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Meditate",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 97,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Agility",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 30,
     "Category": "Status"
@@ -892,9 +892,9 @@
   },
   {
     "Id": 100,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Teleport",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 20,
     "Category": "Status"
@@ -903,16 +903,16 @@
     "Id": 101,
     "Accuracy": 100,
     "Name": "Night Shade",
-    "Power": 0,
+    "Power": null,
     "Type": "Ghost",
     "PP": 15,
     "Category": "Special"
   },
   {
     "Id": 102,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Mimic",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
@@ -921,43 +921,43 @@
     "Id": 103,
     "Accuracy": 85,
     "Name": "Screech",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 104,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Double Team",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 15,
     "Category": "Status"
   },
   {
     "Id": 105,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Recover",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
   },
   {
     "Id": 106,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Harden",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 107,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Minimize",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
@@ -966,7 +966,7 @@
     "Id": 108,
     "Accuracy": 100,
     "Name": "Smokescreen",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -975,97 +975,97 @@
     "Id": 109,
     "Accuracy": 100,
     "Name": "Confuse Ray",
-    "Power": 0,
+    "Power": null,
     "Type": "Ghost",
     "PP": 10,
     "Category": "Status"
   },
   {
     "Id": 110,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Withdraw",
-    "Power": 0,
+    "Power": null,
     "Type": "Water",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 111,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Defense Curl",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 112,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Barrier",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 113,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Light Screen",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 114,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Haze",
-    "Power": 0,
+    "Power": null,
     "Type": "Ice",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 115,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Reflect",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 20,
     "Category": "Status"
   },
   {
     "Id": 116,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Focus Energy",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 117,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Bide",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Physical"
   },
   {
     "Id": 118,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Metronome",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
   },
   {
     "Id": 119,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Mirror Move",
-    "Power": 0,
+    "Power": null,
     "Type": "Flying",
     "PP": 20,
     "Category": "Status"
@@ -1153,7 +1153,7 @@
   },
   {
     "Id": 129,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Swift",
     "Power": 60,
     "Type": "Normal",
@@ -1189,9 +1189,9 @@
   },
   {
     "Id": 133,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Amnesia",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 20,
     "Category": "Status"
@@ -1200,16 +1200,16 @@
     "Id": 134,
     "Accuracy": 80,
     "Name": "Kinesis",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 15,
     "Category": "Status"
   },
   {
     "Id": 135,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Soft-Boiled",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
@@ -1227,7 +1227,7 @@
     "Id": 137,
     "Accuracy": 100,
     "Name": "Glare",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
@@ -1245,7 +1245,7 @@
     "Id": 139,
     "Accuracy": 90,
     "Name": "Poison Gas",
-    "Power": 0,
+    "Power": null,
     "Type": "Poison",
     "PP": 40,
     "Category": "Status"
@@ -1272,7 +1272,7 @@
     "Id": 142,
     "Accuracy": 75,
     "Name": "Lovely Kiss",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
@@ -1288,9 +1288,9 @@
   },
   {
     "Id": 144,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Transform",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
@@ -1317,7 +1317,7 @@
     "Id": 147,
     "Accuracy": 100,
     "Name": "Spore",
-    "Power": 0,
+    "Power": null,
     "Type": "Grass",
     "PP": 15,
     "Category": "Status"
@@ -1326,7 +1326,7 @@
     "Id": 148,
     "Accuracy": 100,
     "Name": "Flash",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 20,
     "Category": "Status"
@@ -1335,25 +1335,25 @@
     "Id": 149,
     "Accuracy": 100,
     "Name": "Psywave",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 15,
     "Category": "Special"
   },
   {
     "Id": 150,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Splash",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 40,
     "Category": "Status"
   },
   {
     "Id": 151,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Acid Armor",
-    "Power": 0,
+    "Power": null,
     "Type": "Poison",
     "PP": 20,
     "Category": "Status"
@@ -1396,9 +1396,9 @@
   },
   {
     "Id": 156,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Rest",
-    "Power": 0,
+    "Power": null,
     "Type": "Psychic",
     "PP": 10,
     "Category": "Status"
@@ -1423,18 +1423,18 @@
   },
   {
     "Id": 159,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Sharpen",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
   },
   {
     "Id": 160,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Conversion",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 30,
     "Category": "Status"
@@ -1452,7 +1452,7 @@
     "Id": 162,
     "Accuracy": 90,
     "Name": "Super Fang",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Physical"
@@ -1468,20 +1468,20 @@
   },
   {
     "Id": 164,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Substitute",
-    "Power": 0,
+    "Power": null,
     "Type": "Normal",
     "PP": 10,
     "Category": "Status"
   },
   {
     "Id": 165,
-    "Accuracy": 0,
+    "Accuracy": null,
     "Name": "Struggle",
     "Power": 50,
     "Type": "Normal",
-    "PP": 0,
+    "PP": null,
     "Category": "Physical"
   }
 ]

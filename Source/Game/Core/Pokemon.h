@@ -16,6 +16,18 @@ public:
 		: mDef(*Def), mPP(Def->PP)
 	{
 	}
+	SMoveDef* GetDef() { return &mDef; }
+	uint32_t  GetPP() { return mPP; }
+	uint32_t  DecrementPP()
+	{
+		if (mPP == 0)
+		{
+			return 0;
+		}
+		return mPP--;
+	}
+	void SetDisabled(bool State) { mDisabled = State; }
+	bool GetDisabled() { return mDisabled; }
 };
 
 class SPokemon : public ISerializable
@@ -26,7 +38,7 @@ class SPokemon : public ISerializable
 	uint32_t mLevel;
 	uint32_t mExperience;
 
-	std::array<SPokemonMove, 4> mMoves;
+	std::array<std::shared_ptr<SPokemonMove>, 4> mMoves;
 
 public:
 	SPokemon() : mHp{ 0 }, mLevel{ 0 }, mExperience(0) {}
@@ -42,6 +54,47 @@ public:
 
 	uint32_t GetExperience() const { return mExperience; }
 	void	 AddExperience(uint32_t Exp) { this->mExperience = Exp; }
+
+	bool AddMove(const SMoveDef* Def)
+	{
+		if (!Def)
+		{
+			LogError("Move definition is invalid.");
+			return false;
+		}
+		auto NewIndex = GetMoveCount() - 1;
+		if (NewIndex >= 3)
+		{
+			LogError("Unable to learn more than 4 moves.");
+			return false;
+		}
+		// auto NewMove = std::make_shared<SPokemonMove>(Def);
+		// mMoves[NewIndex] = NewMove;
+		return true;
+	}
+
+	SPokemonMove* GetMove(int32_t Index)
+	{
+		if (Index < 0 || Index >= 4)
+		{
+			LogError("Move index {} out of bounds.", Index);
+			return nullptr;
+		}
+		return mMoves[Index].get();
+	}
+
+	int32_t GetMoveCount()
+	{
+		int32_t Count = 0;
+		for (auto& Move : mMoves)
+		{
+			if (Move)
+			{
+				Count++;
+			}
+		}
+		return Count;
+	}
 
 	PTexture* GetFrontTexture() const
 	{
@@ -63,14 +116,11 @@ public:
 		Result["Moves"] = JSON::array();
 		for (auto Move : mMoves)
 		{
-			if (!Move)
+			if (Move.get() == nullptr)
 			{
-				Result["Moves"].push_back(-1);
+				continue;
 			}
-			else
-			{
-				Result["Moves"].push_back(Move->Id);
-			}
+			Result["Moves"].push_back(Move->Serialize());
 		}
 
 		return Result;
@@ -87,9 +137,9 @@ public:
 		}
 		if (Json.contains("Moves"))
 		{
-			for (auto [IterIndex, MoveId] : std::views::enumerate(Json["Moves"]))
+			for (auto [IterIndex, MoveData] : std::views::enumerate(Json["Moves"]))
 			{
-				mMoves[IterIndex] = PPokedexManager::Instance()->GetMoveById(MoveId);
+				mMoves[IterIndex]->Deserialize(MoveData);
 			}
 		}
 	}

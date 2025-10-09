@@ -7,7 +7,12 @@
 
 #include "BattlePPMenu.h"
 
-inline std::array<std::string, MAX_BATTLE_MOVES> GMoves = { "TACKLE", "GROWL", "", "" };
+inline std::array<uint32_t, MAX_BATTLE_MOVES> GMoves = {
+	MOVE_TACKLE,
+	MOVE_GROWL,
+	MOVE_FLAMETHROWER,
+	MOVE_HYPER_BEAM,
+};
 
 PBattleMoveMenu::PBattleMoveMenu()
 	: PFrame(FRect(BATTLE_MOVE_MENU_X, BATTLE_MOVE_MENU_Y, BATTLE_MOVE_MENU_W, BATTLE_MOVE_MENU_H))
@@ -21,13 +26,15 @@ void PBattleMoveMenu::Draw(const PRenderer* Renderer) const
 
 	for (uint32_t Index = 0; Index < MAX_BATTLE_MOVES; Index++)
 	{
-		std::string Text = GMoves[Index].empty() ? "-" : GMoves[Index];
-		float		MoveY = BATTLE_MOVE_MENU_TEXT_Y + COORD(Index);
-		TextRenderer::DrawText(Text, FVector2(BATTLE_MOVE_MENU_TEXT_X, MoveY));
+		uint32_t MoveId = GMoves[Index];
+		auto	 MoveDef = MoveId != NO_MOVE ? PPokedexManager::Instance()->GetMoveById(MoveId) : nullptr;
+		auto	 MoveText = MoveDef != nullptr ? MoveDef->Name : "-";
+		float	 MoveY = BATTLE_MOVE_MENU_TEXT_Y + COORD(Index);
+		TextRenderer::DrawText(Strings::ToUpper(MoveText), FVector2(BATTLE_MOVE_MENU_TEXT_X, MoveY));
 
 		if (GBattleManager->GetSelectedMove() == Index)
 		{
-			TextRenderer::DrawChar(CHAR_RIGHT_ARROW, FVector2(BATTLE_MOVE_SELECTION_X, MoveY));
+			TextRenderer::DrawText(CHAR_RIGHT_ARROW, FVector2(BATTLE_MOVE_SELECTION_X, MoveY));
 		}
 	}
 }

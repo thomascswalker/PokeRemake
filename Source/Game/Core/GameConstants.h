@@ -17,10 +17,10 @@
 #define MAP_MODE	"MapMode"
 #define BATTLE_MODE "BattleMode"
 
-#define BATTLE_ACTION_FIGHT "FIGHT"
-#define BATTLE_ACTION_PARTY "PKMN"
-#define BATTLE_ACTION_ITEM	"ITEM"
-#define BATTLE_ACTION_RUN	"RUN"
+#define BATTLE_ACTION_FIGHT u"FIGHT"
+#define BATTLE_ACTION_PARTY u"PKMN"
+#define BATTLE_ACTION_ITEM	u"ITEM"
+#define BATTLE_ACTION_RUN	u"RUN"
 
 // Textures
 
@@ -36,11 +36,11 @@
 
 /* Text */
 
-#define CHAR_PK					  128
-#define CHAR_MN					  129
-#define CHAR_RIGHT_ARROW		  130
-#define CHAR_RIGHT_ARROW_SELECTED 131
-#define CHAR_DOWN_ARROW			  132
+constexpr auto CHAR_PK = u"Ƥ";					 // Ƥ, PK
+constexpr auto CHAR_MN = u"Ɯ";					 // Ɯ, MN
+constexpr auto CHAR_RIGHT_ARROW = u"▷";			 // ▷
+constexpr auto CHAR_RIGHT_ARROW_SELECTED = u"▶"; // ▶
+constexpr auto CHAR_DOWN_ARROW = u"▼";			 // ▼
 
 constexpr int FONT_ROW_COUNT = 8;
 constexpr int FONT_COL_COUNT = 16;
