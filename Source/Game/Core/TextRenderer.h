@@ -18,9 +18,9 @@ namespace TextRenderer
 
 	void  LoadFontData();
 	FRect GetCharRect(char16_t C);
-	bool  DrawChar(char16_t C, const FVector2& Position);
-	bool  DrawText(const std::string& Text, const FVector2& Position);
-	bool  DrawText(const std::u16string& Text, const FVector2& Position);
+	void  DrawChar(char16_t C, const FVector2& Position, float Scale = 1.0f);
+	void  DrawText(const std::string& Text, const FVector2& Position, float Scale = 1.0f);
+	void  DrawText(const std::u16string& Text, const FVector2& Position, float Scale = 1.0f);
 } // namespace TextRenderer
 
 extern PTexture* GFontTexture;

@@ -58,7 +58,7 @@ public:
 	uint32_t	GetLevel() const { return mLevel; }
 	void		SetLevel(uint32_t Level) { this->mLevel = Level; }
 	void		LevelUp() { this->mLevel++; }
-	std::string GetDisplayLevel() const { return std::format("L{}", this->mLevel); }
+	std::string GetDisplayLevel() const { return std::format("{}", this->mLevel); }
 
 	uint32_t GetExperience() const { return mExperience; }
 	void	 AddExperience(uint32_t Exp) { this->mExperience = Exp; }

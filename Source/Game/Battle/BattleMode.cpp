@@ -169,7 +169,7 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 		case EGameEventType::BattleEnterMove:
 			{
 				// Default to the first move
-				GBattleManager->SetSelectedMove(0);
+				GBattleManager->SetSelectedMoveIndex(0);
 				GBattleManager->SetState(EBattleState::SelectMove);
 				mHUD->GetBattleHUD()->HideActionBox();
 				mHUD->GetBattleHUD()->ShowMoveBox();
@@ -231,7 +231,7 @@ void PBattleMode::HandleChangeMoveSelection(EDPad Direction)
 	{
 		return;
 	}
-	uint8_t Index = GBattleManager->GetSelectedMove();
+	uint8_t Index = GBattleManager->GetSelectedMoveIndex();
 	switch (Direction)
 	{
 		case DPAD_UP:
@@ -247,7 +247,7 @@ void PBattleMode::HandleChangeMoveSelection(EDPad Direction)
 		default:
 			break;
 	}
-	GBattleManager->SetSelectedMove(Index);
+	GBattleManager->SetSelectedMoveIndex(Index);
 }
 
 std::string PBattleMode::GetName()

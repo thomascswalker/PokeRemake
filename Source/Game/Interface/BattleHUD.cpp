@@ -7,6 +7,30 @@
 #include "Core/GameConstants.h"
 #include "Core/TextRenderer.h"
 
+constexpr auto	   CHAR_LEVEL = u":Ł"; // Ł
+constexpr float	   LEVEL_SCALE = 0.5f;
+constexpr float	   BATTLE_MON_SIZE = COORD(12);
+static const FRect PLAYER_MON_RECT = {
+	COORD(-1),
+	COORD(3),
+	BATTLE_MON_SIZE,
+	BATTLE_MON_SIZE,
+};
+static const FRect BATTLE_MON_RECT = {
+	COORD(10),
+	COORD(-3),
+	BATTLE_MON_SIZE,
+	BATTLE_MON_SIZE,
+};
+
+constexpr float PLAYER_ORIGIN_X = COORD(10);
+constexpr float PLAYER_ORIGIN_Y = COORD(7);
+constexpr float BATTLE_ORIGIN_X = COORD(1);
+constexpr float BATTLE_ORIGIN_Y = COORD(0);
+
+constexpr float LEVEL_X = COORD(3);
+constexpr float LEVEL_Y = COORD(1);
+
 PBattleHUD::PBattleHUD()
 {
 	mDialogBox = ConstructWidget<PDialogBox>();
@@ -53,28 +77,28 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 	if (auto Mon = GBattleManager->GetPlayerMon())
 	{
 		// Draw sprite
-		auto  Sprite = Mon->GetBackTexture();
-		FRect Rect(PLAYER_MON_X, PLAYER_MON_Y, BATTLE_MON_SIZE, BATTLE_MON_SIZE);
-		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
+		auto Sprite = Mon->GetBackTexture();
+		Renderer->DrawTexture(Sprite, Sprite->GetRect(), PLAYER_MON_RECT);
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
 		TextRenderer::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
-		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y });
+		TextRenderer::DrawText(CHAR_LEVEL, { PLAYER_ORIGIN_X + LEVEL_X - COORD(LEVEL_SCALE), PLAYER_ORIGIN_Y + LEVEL_Y + COORD(LEVEL_SCALE / 2) }, LEVEL_SCALE);
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_ORIGIN_X + LEVEL_X + COORD(1), PLAYER_ORIGIN_Y + LEVEL_Y });
 	}
 
 	// Draw the Pokémon being battled
 	if (auto Mon = GBattleManager->GetBattleMon())
 	{
 		// Draw sprite
-		auto  Sprite = Mon->GetFrontTexture();
-		FRect Rect(BATTLE_MON_X, BATTLE_MON_Y, BATTLE_MON_SIZE, BATTLE_MON_SIZE);
-		Renderer->DrawTexture(Sprite, Sprite->GetRect(), Rect);
+		auto Sprite = Mon->GetFrontTexture();
+		Renderer->DrawTexture(Sprite, Sprite->GetRect(), BATTLE_MON_RECT);
 
 		// Draw name/level
 		Renderer->SetDrawColor(0, 0, 0, 255);
 		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
-		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
+		TextRenderer::DrawText(CHAR_LEVEL, { BATTLE_ORIGIN_X + LEVEL_X - COORD(1 / LEVEL_SCALE), BATTLE_ORIGIN_Y + LEVEL_Y + COORD(LEVEL_SCALE / 2) }, LEVEL_SCALE);
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_ORIGIN_X + LEVEL_X, BATTLE_ORIGIN_Y + LEVEL_Y });
 	}
 }
 

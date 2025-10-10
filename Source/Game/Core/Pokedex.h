@@ -8,8 +8,6 @@
 #include "Engine/Serialization.h"
 #include "Engine/Texture.h"
 
-#include "Ids.h"
-
 struct SPokemonDef;
 class PPokedexManager;
 
@@ -44,8 +42,8 @@ struct SMoveDef : ISerializable
 	void Deserialize(const JSON& Json) override
 	{
 		Id = Json["Id"];
-		Name = Json["Name"];
-		Type = Json["Type"];
+		Name = Strings::ToUpper(Json["Name"]);
+		Type = Strings::ToUpper(Json["Type"]);
 		Power = !Json.at("Power").is_null() ? Json["Power"].get<uint32_t>() : 0;
 		Accuracy = !Json.at("Accuracy").is_null() ? Json["Accuracy"].get<uint32_t>() : 0;
 		PP = !Json.at("PP").is_null() ? Json["PP"].get<uint32_t>() : 0;
@@ -100,7 +98,7 @@ struct SPokemonDef : ISerializable
 	void Deserialize(const JSON& Json) override
 	{
 		Id = Json["Id"];
-		Name = Json["Name"];
+		Name = Strings::ToUpper(Json["Name"]);
 		Types = Json["Type"].get<std::vector<std::string>>();
 
 		const auto Stats = Json["Stats"];
@@ -114,7 +112,7 @@ struct SPokemonDef : ISerializable
 		const auto Moves = Json["Moves"];
 		DefaultMoves = Moves["Defaults"].get<std::vector<uint32_t>>();
 
-		std::string FmtName = Json.contains("AlternateName") ? Json["AlternateName"].get<std::string>() : Name;
+		std::string FmtName = Json.contains("AlternateName") ? Json["AlternateName"] : Json["Name"];
 		std::string FrontFileName = std::format("{}Front", FmtName.c_str());
 		Front = GTextureManager->Get(FrontFileName);
 		std::string BackFileName = std::format("{}Back", FmtName.c_str());

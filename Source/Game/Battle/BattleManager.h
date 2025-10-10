@@ -151,8 +151,9 @@ public:
 		BattleActionChanged.Broadcast(Action);
 	}
 
-	uint8_t GetSelectedMove() const { return mContext.MoveIndex; }
-	void	SetSelectedMove(uint8_t Index)
+	SPokemonMove* GetSelectedMove() const { return mContext.PlayerMon->GetMove(mContext.MoveIndex); }
+	uint8_t		  GetSelectedMoveIndex() const { return mContext.MoveIndex; }
+	void		  SetSelectedMoveIndex(uint8_t Index)
 	{
 		mContext.MoveIndex = Index;
 		BattleMoveIndexChanged.Broadcast(Index);

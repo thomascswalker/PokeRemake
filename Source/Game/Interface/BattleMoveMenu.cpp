@@ -7,12 +7,14 @@
 
 #include "BattlePPMenu.h"
 
-inline std::array<uint32_t, MAX_BATTLE_MOVES> GMoves = {
-	MOVE_TACKLE,
-	MOVE_GROWL,
-	MOVE_FLAMETHROWER,
-	MOVE_HYPER_BEAM,
-};
+constexpr float BATTLE_MOVE_MENU_X = 4;
+constexpr float BATTLE_MOVE_MENU_Y = DIALOG_BOX_Y;
+constexpr float BATTLE_MOVE_MENU_W = DIALOG_BOX_W - BATTLE_MOVE_MENU_X;
+constexpr float BATTLE_MOVE_MENU_H = DIALOG_BOX_H;
+
+constexpr float BATTLE_MOVE_MENU_TEXT_X = COORD(6);
+constexpr float BATTLE_MOVE_MENU_TEXT_Y = COORD(13);
+constexpr float BATTLE_MOVE_SELECTION_X = COORD(5);
 
 PBattleMoveMenu::PBattleMoveMenu()
 	: PFrame(FRect(BATTLE_MOVE_MENU_X, BATTLE_MOVE_MENU_Y, BATTLE_MOVE_MENU_W, BATTLE_MOVE_MENU_H))
@@ -29,9 +31,9 @@ void PBattleMoveMenu::Draw(const PRenderer* Renderer) const
 		auto  Move = GBattleManager->GetPlayerMon()->GetMove(Index);
 		auto  MoveText = Move != nullptr ? Move->GetDef()->Name : "-";
 		float MoveY = BATTLE_MOVE_MENU_TEXT_Y + COORD(Index);
-		TextRenderer::DrawText(Strings::ToUpper(MoveText), FVector2(BATTLE_MOVE_MENU_TEXT_X, MoveY));
+		TextRenderer::DrawText(MoveText, FVector2(BATTLE_MOVE_MENU_TEXT_X, MoveY));
 
-		if (GBattleManager->GetSelectedMove() == Index)
+		if (GBattleManager->GetSelectedMoveIndex() == Index)
 		{
 			TextRenderer::DrawText(CHAR_RIGHT_ARROW, FVector2(BATTLE_MOVE_SELECTION_X, MoveY));
 		}
