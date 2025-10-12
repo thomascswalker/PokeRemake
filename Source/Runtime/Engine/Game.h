@@ -89,11 +89,6 @@ public:
 
 	virtual void OnGameModeLoaded(PGameMode* GameMode);
 	virtual void OnGameModeUnloaded(PGameMode* GameMode);
-
-	virtual bool HandleGameEvent(SGameEvent& Event)
-	{
-		return true;
-	}
 };
 
 extern PGameMode* GGameMode;

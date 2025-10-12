@@ -2,7 +2,6 @@
 
 #include "../Interface/GameHUD.h"
 #include "../Interface/TransitionOverlay.h"
-#include "Core/PokeParty.h"
 #include "Engine/GameMode.h"
 #include "Engine/MapManager.h"
 
@@ -28,9 +27,8 @@ struct SMapContext
 
 class PMapMode : public PGameMode
 {
-	PWorld*		 mWorld = nullptr;
-	PMapManager* mMapManager = nullptr;
-	PGameHUD*	 mHUD = nullptr;
+	PGameHUD*		  mHUD = nullptr;
+	PPlayerCharacter* mPlayerCharacter = nullptr;
 
 	STimerHandle		mTimerHandle;
 	PTransitionOverlay* TransitionOverlay = nullptr;
@@ -50,5 +48,14 @@ public:
 	void OnFadeInComplete();
 	void OnFadeOutComplete();
 
+	void OnKeyDown(SInputEvent* Event) override;
+	void OnKeyUp(SInputEvent* Event) override;
+
+	bool HandlePressA() override;
+	bool HandleReleaseA() override;
+	bool HandlePressB() override;
+	bool HandleReleaseB() override;
+	bool HandlePressDPad(EDPad Direction) override;
+	bool HandleReleaseDPad(EDPad Direction) override;
 	bool HandleGameEvent(const SGameEvent& GameEvent) override;
 };

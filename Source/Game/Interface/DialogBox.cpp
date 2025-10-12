@@ -1,24 +1,24 @@
 #include "DialogBox.h"
 
-#include "Core/Font.h"
 #include "Core/GameConstants.h"
+#include "Core/TextRenderer.h"
+
+#include "Frame.h"
 
 PDialogBox::PDialogBox()
+	: PFrame(FRect(DIALOG_BOX_X, DIALOG_BOX_Y, DIALOG_BOX_W, DIALOG_BOX_H))
 {
-	mTexture = GTextureManager->Get(TEX_DIALOG);
 }
 
 void PDialogBox::Draw(const PRenderer* Renderer) const
 {
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	FRect Geometry = { 0, DIALOG_Y, DIALOG_WIDTH, DIALOG_HEIGHT };
+	// Draw the frame
+	PFrame::Draw(Renderer);
 
-	Renderer->DrawFillRect(Geometry);
-	Renderer->DrawTexture(mTexture, mTexture->GetRect(), Geometry);
-
+	// Draw text from the printer
 	Renderer->SetDrawColor(0, 0, 0, 255);
 	auto TextPosition = FVector2(DIALOG_LINE_X, DIALOG_LINE1_Y);
-	PokeFont::DrawText(mPrinter.GetDisplayText(), TextPosition);
+	TextRenderer::DrawText(mPrinter.GetDisplayText(), TextPosition);
 }
 
 void PDialogBox::Tick(float DeltaTime)

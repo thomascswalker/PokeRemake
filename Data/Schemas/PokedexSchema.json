@@ -65,6 +65,59 @@
           "Sp. Defense",
           "Speed"
         ]
+      },
+      "Moves": {
+        "type": "object",
+        "properties": {
+          "Default": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "Level": {
+            "type": "object"
+          },
+          "TM": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "HM": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "Level"
+        ]
+      },
+      "Evolution": {
+        "type": "object",
+        "properties": {
+          "Level": {
+            "type": "integer"
+          },
+          "Species": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        },
+        "required": [
+          "Level",
+          "Species"
+        ]
       }
     },
     "required": [

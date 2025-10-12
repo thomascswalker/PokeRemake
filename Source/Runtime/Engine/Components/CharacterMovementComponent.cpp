@@ -97,6 +97,24 @@ bool PCharacterMovementComponent::IsMoving() const
 	return mOwner->GetWorldPosition2D() != mTargetPosition;
 }
 
+bool PCharacterMovementComponent::Move(uint8_t Direction)
+{
+	switch (Direction)
+	{
+		case DPAD_UP:
+			return Move(FVector2(0, BLOCK_SIZE));
+		case DPAD_DOWN:
+			return Move(FVector2(0, -BLOCK_SIZE));
+		case DPAD_RIGHT:
+			return Move(FVector2(BLOCK_SIZE, 0));
+		case DPAD_LEFT:
+			return Move(FVector2(-BLOCK_SIZE, 0));
+		default:
+			LogError("Invalid movement direction: {}", Direction);
+			return false;
+	}
+}
+
 bool PCharacterMovementComponent::Move(const FVector2& Velocity)
 {
 	// Compute the target position
@@ -157,7 +175,7 @@ STile* PCharacterMovementComponent::GetTargetTile() const
 	{
 		return {};
 	}
-	return mCurrentMap->GetTileAtPosition(mTargetPosition);
+	return GameMap->GetTileAtPosition(mTargetPosition);
 }
 
 void PCharacterMovementComponent::SetCurrentMap(PGameMap* NewMap)

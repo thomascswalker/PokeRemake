@@ -5,16 +5,8 @@
     "Dialog": "Let's battle!",
     "Storage": [
       {
-        "Id": 7,
-        "Level": 5
-      },
-      {
-        "Id": 8,
-        "Level": 16
-      },
-      {
-        "Id": 9,
-        "Level": 36
+        "Id": 106,
+        "Level": 55
       }
     ]
   }

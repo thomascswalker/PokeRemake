@@ -70,7 +70,7 @@ bool PApplication::Initialize(SDL_WindowFlags WindowFlags, const std::string& GP
 
 	// Create the SDL Context wrapper
 	LogDebug("Creating new SDL Window with flags: {:x}", WindowFlags);
-	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_WIDTH, WINDOW_HEIGHT,
+	if (!SDL_CreateWindowAndRenderer(WindowTitle, WINDOW_PXL_WIDTH, WINDOW_PXL_HEIGHT,
 									 WindowFlags, &GRenderer->Context.Window, &GRenderer->Context.Renderer))
 	{
 		LogDebug("Couldn't create {}: {}", WINDOW_TITLE, SDL_GetError());

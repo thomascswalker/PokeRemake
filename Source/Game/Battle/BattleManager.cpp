@@ -71,7 +71,7 @@ void PBattleManager::StartWildBattle(int32_t Id, int32_t Level)
 {
 	mContext.BattleParty.SetType(PT_Wild);
 	mContext.BattleParty.Clear();
-	GWildMon = SPokemon(*PPokedexManager::Instance()->GetById(Id), Level, 0);
+	GWildMon = SPokemon(*PPokedexManager::Instance()->GetMonById(Id), Level, 0);
 	mContext.BattleParty.Add(&GWildMon);
 	mContext.BattleMon = mContext.BattleParty.Get(0);
 }
@@ -107,7 +107,7 @@ void PBattleManager::SwapNextBattleMon()
 		return;
 	}
 
-	// If there's only one Pokemon in the party, we can't swap
+	// If there's only one Pokémon in the party, we can't swap
 	auto Count = mContext.BattleParty.GetCount();
 	if (Count == 1)
 	{

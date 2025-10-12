@@ -17,10 +17,10 @@
 #define MAP_MODE	"MapMode"
 #define BATTLE_MODE "BattleMode"
 
-#define BATTLE_ACTION_FIGHT "FIGHT"
-#define BATTLE_ACTION_PARTY "PKMN"
-#define BATTLE_ACTION_ITEM	"ITEM"
-#define BATTLE_ACTION_RUN	"RUN"
+#define BATTLE_ACTION_FIGHT u"FIGHT"
+#define BATTLE_ACTION_PARTY u"PKMN"
+#define BATTLE_ACTION_ITEM	u"ITEM"
+#define BATTLE_ACTION_RUN	u"RUN"
 
 // Textures
 
@@ -36,11 +36,12 @@
 
 /* Text */
 
-#define CHAR_PK				 128
-#define CHAR_MN				 129
-#define RIGHT_ARROW			 130
-#define RIGHT_ARROW_SELECTED 131
-#define DOWN_ARROW			 132
+constexpr auto CHAR_PK = u"Ƥ";					 // Ƥ, PK
+constexpr auto CHAR_MN = u"Ɯ";					 // Ɯ, MN
+constexpr auto CHAR_RIGHT_ARROW = u"▷";			 // ▷, 0x25B7
+constexpr auto CHAR_RIGHT_ARROW_SELECTED = u"▶"; // ▶, 0x25B6
+constexpr auto CHAR_DOWN_ARROW = u"▼";			 // ▼, 0x25BC
+constexpr auto CHAR_SPECIAL_L = u"Ł";			 // Ł, 0x0141
 
 constexpr int FONT_ROW_COUNT = 8;
 constexpr int FONT_COL_COUNT = 16;
@@ -50,9 +51,10 @@ constexpr int GLYPH_HEIGHT = COORD(1);
 
 /* Dialog */
 
-constexpr float DIALOG_Y = COORD(12);
-constexpr float DIALOG_HEIGHT = COORD(6);
-constexpr float DIALOG_WIDTH = COORD(GBA_X);
+constexpr float DIALOG_BOX_X = 0;
+constexpr float DIALOG_BOX_Y = 12;
+constexpr float DIALOG_BOX_H = 6;
+constexpr float DIALOG_BOX_W = GBA_W;
 constexpr float DIALOG_FONT_SIZE = COORD(1.5); // Kind of arbitrary, looks good
 constexpr float DIALOG_FONT_GAP = COORD(2);
 constexpr float DIALOG_LINE_X = COORD(1);
@@ -61,29 +63,4 @@ constexpr float DIALOG_LINE2_Y = COORD(16);
 
 /* Battles */
 
-constexpr float BATTLE_MON_SIZE = COORD(12);
-
-constexpr float PLAYER_ORIGIN_X = COORD(11);
-constexpr float PLAYER_ORIGIN_Y = COORD(8);
-constexpr float PLAYER_MON_X = COORD(-2);
-constexpr float PLAYER_MON_Y = COORD(2);
-constexpr float PLAYER_LEVEL_X = PLAYER_ORIGIN_X + COORD(5);
-constexpr float PLAYER_LEVEL_Y = PLAYER_ORIGIN_Y + COORD(1);
-
-constexpr float BATTLE_ORIGIN_X = COORD(1);
-constexpr float BATTLE_ORIGIN_Y = COORD(0);
-constexpr float BATTLE_MON_X = COORD(10);
-constexpr float BATTLE_MON_Y = COORD(-1);
-constexpr float BATTLE_LEVEL_X = BATTLE_ORIGIN_X + COORD(5);
-constexpr float BATTLE_LEVEL_Y = BATTLE_ORIGIN_Y + COORD(1);
-
-constexpr float BATTLE_ACTION_FIGHT_X = COORD(10);
-constexpr float BATTLE_ACTION_FIGHT_Y = DIALOG_LINE1_Y;
-constexpr float BATTLE_ACTION_PARTY_X = COORD(16);
-constexpr float BATTLE_ACTION_PARTY_Y = DIALOG_LINE1_Y;
-constexpr float BATTLE_ACTION_ITEM_X = BATTLE_ACTION_FIGHT_X;
-constexpr float BATTLE_ACTION_ITEM_Y = DIALOG_LINE2_Y;
-constexpr float BATTLE_ACTION_RUN_X = BATTLE_ACTION_PARTY_X;
-constexpr float BATTLE_ACTION_RUN_Y = DIALOG_LINE2_Y;
-
-constexpr int32_t MAX_BATTLE_MOVES = 4;
+constexpr uint8_t MAX_BATTLE_MOVES = 4;

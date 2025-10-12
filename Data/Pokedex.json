@@ -2,10 +2,7 @@
   {
     "Id": 1,
     "Name": "Bulbasaur",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 45,
       "Attack": 49,
@@ -13,15 +10,52 @@
       "Sp. Attack": 65,
       "Sp. Defense": 65,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 2,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 45],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 73
+        },
+        {
+          "Level": 13,
+          "Id": 22
+        },
+        {
+          "Level": 20,
+          "Id": 77
+        },
+        {
+          "Level": 27,
+          "Id": 75
+        },
+        {
+          "Level": 34,
+          "Id": 74
+        },
+        {
+          "Level": 41,
+          "Id": 79
+        },
+        {
+          "Level": 48,
+          "Id": 76
+        }
+      ],
+      "TMs": [14, 15, 34, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 2,
     "Name": "Ivysaur",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 60,
       "Attack": 62,
@@ -29,15 +63,52 @@
       "Sp. Attack": 80,
       "Sp. Defense": 80,
       "Speed": 60
+    },
+    "Evolution": {
+      "Id": 3,
+      "Level": 32,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 45, 73],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 73
+        },
+        {
+          "Level": 13,
+          "Id": 22
+        },
+        {
+          "Level": 22,
+          "Id": 77
+        },
+        {
+          "Level": 30,
+          "Id": 75
+        },
+        {
+          "Level": 38,
+          "Id": 74
+        },
+        {
+          "Level": 46,
+          "Id": 79
+        },
+        {
+          "Level": 54,
+          "Id": 76
+        }
+      ],
+      "TMs": [14, 15, 34, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 3,
     "Name": "Venusaur",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 80,
       "Attack": 82,
@@ -45,14 +116,50 @@
       "Sp. Attack": 100,
       "Sp. Defense": 100,
       "Speed": 80
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [22, 33, 45, 73],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 73
+        },
+        {
+          "Level": 13,
+          "Id": 22
+        },
+        {
+          "Level": 22,
+          "Id": 77
+        },
+        {
+          "Level": 30,
+          "Id": 75
+        },
+        {
+          "Level": 43,
+          "Id": 74
+        },
+        {
+          "Level": 55,
+          "Id": 79
+        },
+        {
+          "Level": 65,
+          "Id": 76
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 4,
     "Name": "Charmander",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 39,
       "Attack": 52,
@@ -60,14 +167,51 @@
       "Sp. Attack": 60,
       "Sp. Defense": 50,
       "Speed": 65
+    },
+    "Evolution": {
+      "Id": 5,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10, 45],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 52
+        },
+        {
+          "Level": 15,
+          "Id": 43
+        },
+        {
+          "Level": 22,
+          "Id": 99
+        },
+        {
+          "Level": 30,
+          "Id": 163
+        },
+        {
+          "Level": 38,
+          "Id": 53
+        },
+        {
+          "Level": 46,
+          "Id": 83
+        }
+      ],
+      "TMs": [
+        5, 14, 15, 25, 34, 36, 38, 66, 68, 69, 70, 82, 91, 92, 99, 102, 104,
+        115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 5,
     "Name": "Charmeleon",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 58,
       "Attack": 64,
@@ -75,15 +219,51 @@
       "Sp. Attack": 80,
       "Sp. Defense": 65,
       "Speed": 80
+    },
+    "Evolution": {
+      "Id": 6,
+      "Level": 36,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10, 45, 52],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 52
+        },
+        {
+          "Level": 15,
+          "Id": 43
+        },
+        {
+          "Level": 24,
+          "Id": 99
+        },
+        {
+          "Level": 33,
+          "Id": 163
+        },
+        {
+          "Level": 42,
+          "Id": 53
+        },
+        {
+          "Level": 56,
+          "Id": 83
+        }
+      ],
+      "TMs": [
+        5, 14, 15, 25, 34, 36, 38, 66, 68, 69, 70, 82, 91, 92, 99, 102, 104,
+        115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 6,
     "Name": "Charizard",
-    "Type": [
-      "Fire",
-      "Flying"
-    ],
+    "Type": ["Fire", "Flying"],
     "Stats": {
       "HP": 78,
       "Attack": 84,
@@ -91,14 +271,47 @@
       "Sp. Attack": 109,
       "Sp. Defense": 85,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 43, 45, 52],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 52
+        },
+        {
+          "Level": 15,
+          "Id": 43
+        },
+        {
+          "Level": 24,
+          "Id": 99
+        },
+        {
+          "Level": 36,
+          "Id": 163
+        },
+        {
+          "Level": 46,
+          "Id": 53
+        },
+        {
+          "Level": 55,
+          "Id": 83
+        }
+      ],
+      "TMs": [
+        5, 14, 15, 25, 34, 36, 38, 63, 66, 68, 69, 70, 82, 89, 90, 91, 92, 99,
+        102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 7,
     "Name": "Squirtle",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 44,
       "Attack": 48,
@@ -106,14 +319,51 @@
       "Sp. Attack": 50,
       "Sp. Defense": 64,
       "Speed": 43
+    },
+    "Evolution": {
+      "Id": 8,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 39],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 145
+        },
+        {
+          "Level": 15,
+          "Id": 55
+        },
+        {
+          "Level": 22,
+          "Id": 44
+        },
+        {
+          "Level": 28,
+          "Id": 110
+        },
+        {
+          "Level": 35,
+          "Id": 130
+        },
+        {
+          "Level": 42,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 66, 68, 69, 70, 91, 92, 99, 102,
+        104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 8,
     "Name": "Wartortle",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 59,
       "Attack": 63,
@@ -121,14 +371,51 @@
       "Sp. Attack": 65,
       "Sp. Defense": 80,
       "Speed": 58
+    },
+    "Evolution": {
+      "Id": 9,
+      "Level": 36,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 39, 145],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 145
+        },
+        {
+          "Level": 15,
+          "Id": 55
+        },
+        {
+          "Level": 24,
+          "Id": 44
+        },
+        {
+          "Level": 31,
+          "Id": 110
+        },
+        {
+          "Level": 39,
+          "Id": 130
+        },
+        {
+          "Level": 47,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 66, 68, 69, 70, 91, 92, 99, 102,
+        104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 9,
     "Name": "Blastoise",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 79,
       "Attack": 83,
@@ -136,14 +423,47 @@
       "Sp. Attack": 85,
       "Sp. Defense": 105,
       "Speed": 78
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 39, 55, 145],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 145
+        },
+        {
+          "Level": 15,
+          "Id": 55
+        },
+        {
+          "Level": 24,
+          "Id": 44
+        },
+        {
+          "Level": 31,
+          "Id": 110
+        },
+        {
+          "Level": 42,
+          "Id": 130
+        },
+        {
+          "Level": 52,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 89, 90, 91,
+        92, 99, 102, 104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 10,
     "Name": "Caterpie",
-    "Type": [
-      "Bug"
-    ],
+    "Type": ["Bug"],
     "Stats": {
       "HP": 45,
       "Attack": 30,
@@ -151,14 +471,23 @@
       "Sp. Attack": 20,
       "Sp. Defense": 20,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 11,
+      "Level": 7,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 81],
+      "Levels": [],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 11,
     "Name": "Metapod",
-    "Type": [
-      "Bug"
-    ],
+    "Type": ["Bug"],
     "Stats": {
       "HP": 50,
       "Attack": 20,
@@ -166,15 +495,23 @@
       "Sp. Attack": 25,
       "Sp. Defense": 25,
       "Speed": 30
+    },
+    "Evolution": {
+      "Id": 12,
+      "Level": 10,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [106],
+      "Levels": [],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 12,
     "Name": "Butterfree",
-    "Type": [
-      "Bug",
-      "Flying"
-    ],
+    "Type": ["Bug", "Flying"],
     "Stats": {
       "HP": 60,
       "Attack": 45,
@@ -182,15 +519,51 @@
       "Sp. Attack": 90,
       "Sp. Defense": 80,
       "Speed": 70
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [93],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 93
+        },
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 16,
+          "Id": 78
+        },
+        {
+          "Level": 17,
+          "Id": 79
+        },
+        {
+          "Level": 21,
+          "Id": 48
+        },
+        {
+          "Level": 26,
+          "Id": 18
+        },
+        {
+          "Level": 32,
+          "Id": 60
+        }
+      ],
+      "TMs": [
+        13, 18, 36, 38, 63, 72, 76, 92, 94, 99, 100, 102, 104, 115, 117, 129,
+        149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 13,
     "Name": "Weedle",
-    "Type": [
-      "Bug",
-      "Poison"
-    ],
+    "Type": ["Bug", "Poison"],
     "Stats": {
       "HP": 40,
       "Attack": 35,
@@ -198,15 +571,23 @@
       "Sp. Attack": 20,
       "Sp. Defense": 20,
       "Speed": 50
+    },
+    "Evolution": {
+      "Id": 14,
+      "Level": 7,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [40, 81],
+      "Levels": [],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 14,
     "Name": "Kakuna",
-    "Type": [
-      "Bug",
-      "Poison"
-    ],
+    "Type": ["Bug", "Poison"],
     "Stats": {
       "HP": 45,
       "Attack": 25,
@@ -214,15 +595,23 @@
       "Sp. Attack": 25,
       "Sp. Defense": 25,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 15,
+      "Level": 10,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [106],
+      "Levels": [],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 15,
     "Name": "Beedrill",
-    "Type": [
-      "Bug",
-      "Poison"
-    ],
+    "Type": ["Bug", "Poison"],
     "Stats": {
       "HP": 65,
       "Attack": 90,
@@ -230,15 +619,46 @@
       "Sp. Attack": 45,
       "Sp. Defense": 80,
       "Speed": 75
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [31],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 31
+        },
+        {
+          "Level": 16,
+          "Id": 116
+        },
+        {
+          "Level": 20,
+          "Id": 41
+        },
+        {
+          "Level": 25,
+          "Id": 99
+        },
+        {
+          "Level": 30,
+          "Id": 42
+        },
+        {
+          "Level": 35,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        14, 15, 36, 38, 63, 72, 92, 99, 102, 104, 115, 117, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 16,
     "Name": "Pidgey",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 40,
       "Attack": 45,
@@ -246,15 +666,50 @@
       "Sp. Attack": 35,
       "Sp. Defense": 35,
       "Speed": 56
+    },
+    "Evolution": {
+      "Id": 17,
+      "Level": 18,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [16],
+      "Levels": [
+        {
+          "Level": 5,
+          "Id": 28
+        },
+        {
+          "Level": 12,
+          "Id": 98
+        },
+        {
+          "Level": 19,
+          "Id": 18
+        },
+        {
+          "Level": 28,
+          "Id": 17
+        },
+        {
+          "Level": 36,
+          "Id": 97
+        },
+        {
+          "Level": 44,
+          "Id": 119
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 92, 99, 102, 104, 115, 117, 129, 143, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 17,
     "Name": "Pidgeotto",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 63,
       "Attack": 60,
@@ -262,15 +717,50 @@
       "Sp. Attack": 50,
       "Sp. Defense": 50,
       "Speed": 71
+    },
+    "Evolution": {
+      "Id": 18,
+      "Level": 36,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [16, 28],
+      "Levels": [
+        {
+          "Level": 5,
+          "Id": 28
+        },
+        {
+          "Level": 12,
+          "Id": 98
+        },
+        {
+          "Level": 21,
+          "Id": 18
+        },
+        {
+          "Level": 31,
+          "Id": 17
+        },
+        {
+          "Level": 40,
+          "Id": 97
+        },
+        {
+          "Level": 49,
+          "Id": 119
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 92, 99, 102, 104, 115, 117, 129, 143, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 18,
     "Name": "Pidgeot",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 83,
       "Attack": 80,
@@ -278,14 +768,46 @@
       "Sp. Attack": 70,
       "Sp. Defense": 70,
       "Speed": 101
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [16, 28, 98],
+      "Levels": [
+        {
+          "Level": 5,
+          "Id": 28
+        },
+        {
+          "Level": 12,
+          "Id": 98
+        },
+        {
+          "Level": 21,
+          "Id": 18
+        },
+        {
+          "Level": 31,
+          "Id": 17
+        },
+        {
+          "Level": 44,
+          "Id": 97
+        },
+        {
+          "Level": 54,
+          "Id": 119
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 63, 92, 99, 102, 104, 115, 117, 129, 143, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 19,
     "Name": "Rattata",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 30,
       "Attack": 56,
@@ -293,14 +815,43 @@
       "Sp. Attack": 25,
       "Sp. Defense": 35,
       "Speed": 72
+    },
+    "Evolution": {
+      "Id": 20,
+      "Level": 20,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 39],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 98
+        },
+        {
+          "Level": 14,
+          "Id": 158
+        },
+        {
+          "Level": 23,
+          "Id": 116
+        },
+        {
+          "Level": 34,
+          "Id": 162
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 59, 61, 85, 87, 91, 92, 99, 102, 104, 117, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 20,
     "Name": "Raticate",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 55,
       "Attack": 81,
@@ -308,15 +859,39 @@
       "Sp. Attack": 50,
       "Sp. Defense": 70,
       "Speed": 97
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 39, 98],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 98
+        },
+        {
+          "Level": 14,
+          "Id": 158
+        },
+        {
+          "Level": 27,
+          "Id": 116
+        },
+        {
+          "Level": 41,
+          "Id": 162
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 58, 59, 61, 63, 85, 87, 91, 92, 99, 102, 104, 117, 129,
+        130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 21,
     "Name": "Spearow",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 40,
       "Attack": 60,
@@ -324,15 +899,44 @@
       "Sp. Attack": 31,
       "Sp. Defense": 31,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 22,
+      "Level": 20,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [45, 64],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 43
+        },
+        {
+          "Level": 15,
+          "Id": 31
+        },
+        {
+          "Level": 22,
+          "Id": 119
+        },
+        {
+          "Level": 29,
+          "Id": 65
+        },
+        {
+          "Level": 36,
+          "Id": 97
+        }
+      ],
+      "TMs": [13, 18, 19, 36, 38, 92, 99, 102, 104, 117, 129, 143, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 22,
     "Name": "Fearow",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 65,
       "Attack": 90,
@@ -340,14 +944,42 @@
       "Sp. Attack": 61,
       "Sp. Defense": 61,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [43, 45, 64],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 43
+        },
+        {
+          "Level": 15,
+          "Id": 31
+        },
+        {
+          "Level": 25,
+          "Id": 119
+        },
+        {
+          "Level": 34,
+          "Id": 65
+        },
+        {
+          "Level": 43,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 63, 92, 99, 102, 104, 117, 129, 143, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 23,
     "Name": "Ekans",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 35,
       "Attack": 60,
@@ -355,14 +987,47 @@
       "Sp. Attack": 40,
       "Sp. Defense": 54,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 24,
+      "Level": 22,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [35, 43],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 40
+        },
+        {
+          "Level": 17,
+          "Id": 44
+        },
+        {
+          "Level": 24,
+          "Id": 137
+        },
+        {
+          "Level": 31,
+          "Id": 103
+        },
+        {
+          "Level": 38,
+          "Id": 51
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 70, 72, 89, 90, 91, 92, 99, 102, 104, 117, 130, 156, 157,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 24,
     "Name": "Arbok",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 60,
       "Attack": 95,
@@ -370,14 +1035,43 @@
       "Sp. Attack": 65,
       "Sp. Defense": 79,
       "Speed": 80
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [35, 40, 43],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 40
+        },
+        {
+          "Level": 17,
+          "Id": 44
+        },
+        {
+          "Level": 27,
+          "Id": 137
+        },
+        {
+          "Level": 36,
+          "Id": 103
+        },
+        {
+          "Level": 47,
+          "Id": 51
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 63, 70, 72, 89, 90, 91, 92, 99, 102, 104, 117, 130, 156,
+        157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 25,
     "Name": "Pikachu",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 35,
       "Attack": 55,
@@ -385,14 +1079,47 @@
       "Sp. Attack": 50,
       "Sp. Defense": 50,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 26,
+      "Level": 0,
+      "Item": "Thunder Stone"
+    },
+    "Moves": {
+      "Defaults": [45, 84],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 86
+        },
+        {
+          "Level": 16,
+          "Id": 98
+        },
+        {
+          "Level": 26,
+          "Id": 129
+        },
+        {
+          "Level": 33,
+          "Id": 97
+        },
+        {
+          "Level": 43,
+          "Id": 87
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 66, 69, 85, 86, 87, 92, 99, 102, 104, 115, 117,
+        129, 130, 148, 156, 164, 57
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 26,
     "Name": "Raichu",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 60,
       "Attack": 90,
@@ -400,14 +1127,22 @@
       "Sp. Attack": 90,
       "Sp. Defense": 80,
       "Speed": 110
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [45, 84, 86],
+      "Levels": [],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 63, 66, 69, 85, 86, 87, 92, 99, 102, 104, 115,
+        117, 129, 130, 148, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 27,
     "Name": "Sandshrew",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 50,
       "Attack": 75,
@@ -415,14 +1150,47 @@
       "Sp. Attack": 20,
       "Sp. Defense": 30,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 28,
+      "Level": 22,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 28
+        },
+        {
+          "Level": 17,
+          "Id": 163
+        },
+        {
+          "Level": 24,
+          "Id": 40
+        },
+        {
+          "Level": 31,
+          "Id": 129
+        },
+        {
+          "Level": 38,
+          "Id": 154
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 66, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117, 129,
+        130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 28,
     "Name": "Sandslash",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 75,
       "Attack": 100,
@@ -430,15 +1198,43 @@
       "Sp. Attack": 45,
       "Sp. Defense": 55,
       "Speed": 65
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 28],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 28
+        },
+        {
+          "Level": 17,
+          "Id": 163
+        },
+        {
+          "Level": 27,
+          "Id": 40
+        },
+        {
+          "Level": 36,
+          "Id": 129
+        },
+        {
+          "Level": 47,
+          "Id": 154
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 66, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117,
+        129, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 29,
     "Name": "Nidoran\u2640",
-    "AlternateName": "Nidoranf",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 55,
       "Attack": 47,
@@ -446,14 +1242,50 @@
       "Sp. Attack": 40,
       "Sp. Defense": 40,
       "Speed": 41
+    },
+    "Evolution": {
+      "Id": 30,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 45],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 10
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 21,
+          "Id": 39
+        },
+        {
+          "Level": 29,
+          "Id": 44
+        },
+        {
+          "Level": 36,
+          "Id": 154
+        },
+        {
+          "Level": 43,
+          "Id": 24
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 59, 85, 87, 92, 99, 102, 104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 30,
     "Name": "Nidorina",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 70,
       "Attack": 62,
@@ -461,15 +1293,51 @@
       "Sp. Attack": 55,
       "Sp. Defense": 55,
       "Speed": 56
+    },
+    "Evolution": {
+      "Id": 31,
+      "Level": 0,
+      "Item": "Moon Stone"
+    },
+    "Moves": {
+      "Defaults": [10, 33, 45],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 10
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 23,
+          "Id": 39
+        },
+        {
+          "Level": 32,
+          "Id": 44
+        },
+        {
+          "Level": 41,
+          "Id": 154
+        },
+        {
+          "Level": 50,
+          "Id": 24
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 55, 58, 59, 61, 85, 87, 92, 99, 102, 104, 115, 117, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 31,
     "Name": "Nidoqueen",
-    "Type": [
-      "Poison",
-      "Ground"
-    ],
+    "Type": ["Poison", "Ground"],
     "Stats": {
       "HP": 90,
       "Attack": 92,
@@ -477,15 +1345,35 @@
       "Sp. Attack": 75,
       "Sp. Defense": 85,
       "Speed": 76
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 33, 34, 39],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 10
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 23,
+          "Id": 34
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 85,
+        87, 89, 90, 92, 99, 102, 104, 115, 117, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 32,
     "Name": "Nidoran\u2642",
-    "AlternateName": "Nidoranm",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 46,
       "Attack": 57,
@@ -493,14 +1381,50 @@
       "Sp. Attack": 40,
       "Sp. Defense": 40,
       "Speed": 50
+    },
+    "Evolution": {
+      "Id": 33,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 43],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 30
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 21,
+          "Id": 116
+        },
+        {
+          "Level": 29,
+          "Id": 31
+        },
+        {
+          "Level": 36,
+          "Id": 32
+        },
+        {
+          "Level": 43,
+          "Id": 24
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 59, 85, 87, 92, 99, 102, 104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 33,
     "Name": "Nidorino",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 61,
       "Attack": 72,
@@ -508,15 +1432,51 @@
       "Sp. Attack": 55,
       "Sp. Defense": 55,
       "Speed": 65
+    },
+    "Evolution": {
+      "Id": 34,
+      "Level": 0,
+      "Item": "Moon Stone"
+    },
+    "Moves": {
+      "Defaults": [30, 33, 43],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 30
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 23,
+          "Id": 116
+        },
+        {
+          "Level": 32,
+          "Id": 31
+        },
+        {
+          "Level": 41,
+          "Id": 32
+        },
+        {
+          "Level": 50,
+          "Id": 24
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 55, 58, 59, 61, 85, 87, 92, 99, 102, 104, 115, 117, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 34,
     "Name": "Nidoking",
-    "Type": [
-      "Poison",
-      "Ground"
-    ],
+    "Type": ["Poison", "Ground"],
     "Stats": {
       "HP": 81,
       "Attack": 102,
@@ -524,14 +1484,35 @@
       "Sp. Attack": 85,
       "Sp. Defense": 75,
       "Speed": 85
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [30, 33, 37, 40],
+      "Levels": [
+        {
+          "Level": 8,
+          "Id": 30
+        },
+        {
+          "Level": 14,
+          "Id": 40
+        },
+        {
+          "Level": 23,
+          "Id": 37
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 85,
+        87, 89, 90, 92, 99, 102, 104, 115, 117, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 35,
     "Name": "Clefairy",
-    "Type": [
-      "Fairy"
-    ],
+    "Type": ["Fairy"],
     "Stats": {
       "HP": 70,
       "Attack": 45,
@@ -539,14 +1520,51 @@
       "Sp. Attack": 60,
       "Sp. Defense": 65,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 36,
+      "Level": 0,
+      "Item": "Moon Stone"
+    },
+    "Moves": {
+      "Defaults": [1, 45],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 47
+        },
+        {
+          "Level": 18,
+          "Id": 3
+        },
+        {
+          "Level": 24,
+          "Id": 107
+        },
+        {
+          "Level": 31,
+          "Id": 118
+        },
+        {
+          "Level": 39,
+          "Id": 111
+        },
+        {
+          "Level": 48,
+          "Id": 113
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 66, 68, 69, 70, 76, 85, 86, 87, 92,
+        94, 99, 100, 102, 104, 115, 117, 118, 126, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 36,
     "Name": "Clefable",
-    "Type": [
-      "Fairy"
-    ],
+    "Type": ["Fairy"],
     "Stats": {
       "HP": 95,
       "Attack": 70,
@@ -554,14 +1572,23 @@
       "Sp. Attack": 95,
       "Sp. Defense": 90,
       "Speed": 60
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [3, 47, 107, 118],
+      "Levels": [],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 70, 76, 85, 86, 87,
+        92, 94, 99, 100, 102, 104, 115, 117, 118, 126, 130, 148, 149, 156, 161,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 37,
     "Name": "Vulpix",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 38,
       "Attack": 41,
@@ -569,14 +1596,46 @@
       "Sp. Attack": 50,
       "Sp. Defense": 65,
       "Speed": 65
+    },
+    "Evolution": {
+      "Id": 38,
+      "Level": 0,
+      "Item": "Fire Stone"
+    },
+    "Moves": {
+      "Defaults": [39, 52],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 98
+        },
+        {
+          "Level": 21,
+          "Id": 46
+        },
+        {
+          "Level": 28,
+          "Id": 109
+        },
+        {
+          "Level": 35,
+          "Id": 53
+        },
+        {
+          "Level": 42,
+          "Id": 83
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 91, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 38,
     "Name": "Ninetales",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 73,
       "Attack": 76,
@@ -584,15 +1643,21 @@
       "Sp. Attack": 81,
       "Sp. Defense": 100,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [39, 46, 52, 98],
+      "Levels": [],
+      "TMs": [
+        34, 36, 38, 63, 91, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 39,
     "Name": "Jigglypuff",
-    "Type": [
-      "Normal",
-      "Fairy"
-    ],
+    "Type": ["Normal", "Fairy"],
     "Stats": {
       "HP": 115,
       "Attack": 45,
@@ -600,15 +1665,55 @@
       "Sp. Attack": 45,
       "Sp. Defense": 25,
       "Speed": 20
+    },
+    "Evolution": {
+      "Id": 40,
+      "Level": 0,
+      "Item": "Moon Stone"
+    },
+    "Moves": {
+      "Defaults": [47],
+      "Levels": [
+        {
+          "Level": 9,
+          "Id": 1
+        },
+        {
+          "Level": 14,
+          "Id": 50
+        },
+        {
+          "Level": 19,
+          "Id": 111
+        },
+        {
+          "Level": 24,
+          "Id": 3
+        },
+        {
+          "Level": 29,
+          "Id": 156
+        },
+        {
+          "Level": 34,
+          "Id": 34
+        },
+        {
+          "Level": 39,
+          "Id": 38
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 66, 68, 69, 70, 76, 85, 86, 87, 92,
+        94, 99, 100, 102, 104, 115, 117, 126, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 40,
     "Name": "Wigglytuff",
-    "Type": [
-      "Normal",
-      "Fairy"
-    ],
+    "Type": ["Normal", "Fairy"],
     "Stats": {
       "HP": 140,
       "Attack": 70,
@@ -616,15 +1721,22 @@
       "Sp. Attack": 85,
       "Sp. Defense": 50,
       "Speed": 45
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [3, 47, 50, 111],
+      "Levels": [],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 70, 76, 85, 86, 87,
+        92, 94, 99, 100, 102, 104, 115, 117, 126, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 41,
     "Name": "Zubat",
-    "Type": [
-      "Poison",
-      "Flying"
-    ],
+    "Type": ["Poison", "Flying"],
     "Stats": {
       "HP": 40,
       "Attack": 45,
@@ -632,15 +1744,44 @@
       "Sp. Attack": 30,
       "Sp. Defense": 40,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 42,
+      "Level": 22,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [141],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 48
+        },
+        {
+          "Level": 15,
+          "Id": 44
+        },
+        {
+          "Level": 21,
+          "Id": 109
+        },
+        {
+          "Level": 28,
+          "Id": 17
+        },
+        {
+          "Level": 36,
+          "Id": 114
+        }
+      ],
+      "TMs": [13, 18, 36, 38, 72, 92, 99, 102, 104, 117, 129, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 42,
     "Name": "Golbat",
-    "Type": [
-      "Poison",
-      "Flying"
-    ],
+    "Type": ["Poison", "Flying"],
     "Stats": {
       "HP": 75,
       "Attack": 80,
@@ -648,15 +1789,44 @@
       "Sp. Attack": 65,
       "Sp. Defense": 75,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 169,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [44, 103, 141],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 48
+        },
+        {
+          "Level": 15,
+          "Id": 44
+        },
+        {
+          "Level": 21,
+          "Id": 109
+        },
+        {
+          "Level": 32,
+          "Id": 17
+        },
+        {
+          "Level": 43,
+          "Id": 114
+        }
+      ],
+      "TMs": [13, 18, 36, 38, 63, 72, 92, 99, 102, 104, 117, 129, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 43,
     "Name": "Oddish",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 45,
       "Attack": 50,
@@ -664,15 +1834,48 @@
       "Sp. Attack": 75,
       "Sp. Defense": 65,
       "Speed": 30
+    },
+    "Evolution": {
+      "Id": 44,
+      "Level": 21,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [71],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 17,
+          "Id": 78
+        },
+        {
+          "Level": 19,
+          "Id": 79
+        },
+        {
+          "Level": 24,
+          "Id": 51
+        },
+        {
+          "Level": 33,
+          "Id": 80
+        },
+        {
+          "Level": 46,
+          "Id": 76
+        }
+      ],
+      "TMs": [14, 15, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 44,
     "Name": "Gloom",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 60,
       "Attack": 65,
@@ -680,15 +1883,48 @@
       "Sp. Attack": 85,
       "Sp. Defense": 75,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 45,
+      "Level": 0,
+      "Item": "Leaf Stone"
+    },
+    "Moves": {
+      "Defaults": [71, 77, 78],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 17,
+          "Id": 78
+        },
+        {
+          "Level": 19,
+          "Id": 79
+        },
+        {
+          "Level": 28,
+          "Id": 51
+        },
+        {
+          "Level": 38,
+          "Id": 80
+        },
+        {
+          "Level": 52,
+          "Id": 76
+        }
+      ],
+      "TMs": [14, 15, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 45,
     "Name": "Vileplume",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 75,
       "Attack": 80,
@@ -696,15 +1932,34 @@
       "Sp. Attack": 110,
       "Sp. Defense": 90,
       "Speed": 50
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [51, 78, 79, 80],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 17,
+          "Id": 78
+        },
+        {
+          "Level": 19,
+          "Id": 79
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 46,
     "Name": "Paras",
-    "Type": [
-      "Bug",
-      "Grass"
-    ],
+    "Type": ["Bug", "Grass"],
     "Stats": {
       "HP": 35,
       "Attack": 70,
@@ -712,15 +1967,47 @@
       "Sp. Attack": 45,
       "Sp. Defense": 55,
       "Speed": 25
+    },
+    "Evolution": {
+      "Id": 47,
+      "Level": 24,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 78
+        },
+        {
+          "Level": 20,
+          "Id": 141
+        },
+        {
+          "Level": 27,
+          "Id": 147
+        },
+        {
+          "Level": 34,
+          "Id": 163
+        },
+        {
+          "Level": 41,
+          "Id": 74
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 72, 76, 91, 92, 99, 102, 104, 115, 117, 130, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 47,
     "Name": "Parasect",
-    "Type": [
-      "Bug",
-      "Grass"
-    ],
+    "Type": ["Bug", "Grass"],
     "Stats": {
       "HP": 60,
       "Attack": 95,
@@ -728,15 +2015,43 @@
       "Sp. Attack": 60,
       "Sp. Defense": 80,
       "Speed": 30
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 78, 141],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 78
+        },
+        {
+          "Level": 20,
+          "Id": 141
+        },
+        {
+          "Level": 30,
+          "Id": 147
+        },
+        {
+          "Level": 39,
+          "Id": 163
+        },
+        {
+          "Level": 48,
+          "Id": 74
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 72, 76, 91, 92, 99, 102, 104, 115, 117, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 48,
     "Name": "Venonat",
-    "Type": [
-      "Bug",
-      "Poison"
-    ],
+    "Type": ["Bug", "Poison"],
     "Stats": {
       "HP": 60,
       "Attack": 55,
@@ -744,15 +2059,48 @@
       "Sp. Attack": 40,
       "Sp. Defense": 55,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 49,
+      "Level": 31,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 50],
+      "Levels": [
+        {
+          "Level": 24,
+          "Id": 77
+        },
+        {
+          "Level": 27,
+          "Id": 141
+        },
+        {
+          "Level": 30,
+          "Id": 78
+        },
+        {
+          "Level": 35,
+          "Id": 60
+        },
+        {
+          "Level": 38,
+          "Id": 79
+        },
+        {
+          "Level": 43,
+          "Id": 94
+        }
+      ],
+      "TMs": [36, 38, 72, 76, 92, 94, 99, 102, 104, 115, 117, 149, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 49,
     "Name": "Venomoth",
-    "Type": [
-      "Bug",
-      "Poison"
-    ],
+    "Type": ["Bug", "Poison"],
     "Stats": {
       "HP": 70,
       "Attack": 65,
@@ -760,14 +2108,47 @@
       "Sp. Attack": 90,
       "Sp. Defense": 75,
       "Speed": 90
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 50, 77, 141],
+      "Levels": [
+        {
+          "Level": 24,
+          "Id": 77
+        },
+        {
+          "Level": 27,
+          "Id": 141
+        },
+        {
+          "Level": 30,
+          "Id": 78
+        },
+        {
+          "Level": 38,
+          "Id": 60
+        },
+        {
+          "Level": 43,
+          "Id": 79
+        },
+        {
+          "Level": 50,
+          "Id": 94
+        }
+      ],
+      "TMs": [
+        13, 18, 36, 38, 63, 72, 76, 92, 94, 99, 100, 102, 104, 115, 117, 129,
+        149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 50,
     "Name": "Diglett",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 10,
       "Attack": 55,
@@ -775,14 +2156,44 @@
       "Sp. Attack": 35,
       "Sp. Defense": 45,
       "Speed": 95
+    },
+    "Evolution": {
+      "Id": 51,
+      "Level": 26,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 45
+        },
+        {
+          "Level": 19,
+          "Id": 91
+        },
+        {
+          "Level": 24,
+          "Id": 28
+        },
+        {
+          "Level": 31,
+          "Id": 163
+        },
+        {
+          "Level": 40,
+          "Id": 89
+        }
+      ],
+      "TMs": [34, 36, 38, 89, 90, 91, 92, 99, 102, 104, 117, 156, 157, 164],
+      "HMs": []
     }
   },
   {
     "Id": 51,
     "Name": "Dugtrio",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 35,
       "Attack": 100,
@@ -790,14 +2201,40 @@
       "Sp. Attack": 50,
       "Sp. Defense": 70,
       "Speed": 120
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 45, 91],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 45
+        },
+        {
+          "Level": 19,
+          "Id": 91
+        },
+        {
+          "Level": 24,
+          "Id": 28
+        },
+        {
+          "Level": 35,
+          "Id": 163
+        },
+        {
+          "Level": 47,
+          "Id": 89
+        }
+      ],
+      "TMs": [34, 36, 38, 63, 89, 90, 91, 92, 99, 102, 104, 117, 156, 157, 164],
+      "HMs": []
     }
   },
   {
     "Id": 52,
     "Name": "Meowth",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 40,
       "Attack": 45,
@@ -805,14 +2242,46 @@
       "Sp. Attack": 40,
       "Sp. Defense": 40,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 53,
+      "Level": 28,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10, 45],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 44
+        },
+        {
+          "Level": 17,
+          "Id": 6
+        },
+        {
+          "Level": 24,
+          "Id": 103
+        },
+        {
+          "Level": 33,
+          "Id": 154
+        },
+        {
+          "Level": 44,
+          "Id": 163
+        }
+      ],
+      "TMs": [
+        6, 34, 36, 38, 55, 61, 85, 87, 92, 99, 102, 104, 117, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 53,
     "Name": "Persian",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 65,
       "Attack": 70,
@@ -820,14 +2289,43 @@
       "Sp. Attack": 65,
       "Sp. Defense": 65,
       "Speed": 115
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 44, 45, 103],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 44
+        },
+        {
+          "Level": 17,
+          "Id": 6
+        },
+        {
+          "Level": 24,
+          "Id": 103
+        },
+        {
+          "Level": 37,
+          "Id": 154
+        },
+        {
+          "Level": 51,
+          "Id": 163
+        }
+      ],
+      "TMs": [
+        6, 34, 36, 38, 55, 61, 63, 85, 87, 92, 99, 102, 104, 117, 129, 130, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 54,
     "Name": "Psyduck",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 50,
       "Attack": 52,
@@ -835,14 +2333,47 @@
       "Sp. Attack": 65,
       "Sp. Defense": 50,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 55,
+      "Level": 33,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10],
+      "Levels": [
+        {
+          "Level": 28,
+          "Id": 39
+        },
+        {
+          "Level": 31,
+          "Id": 50
+        },
+        {
+          "Level": 36,
+          "Id": 93
+        },
+        {
+          "Level": 43,
+          "Id": 154
+        },
+        {
+          "Level": 52,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 55, 57, 58, 59, 61, 66, 68, 69, 70, 91, 92, 99,
+        102, 104, 117, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 55,
     "Name": "Golduck",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 80,
       "Attack": 82,
@@ -850,14 +2381,43 @@
       "Sp. Attack": 95,
       "Sp. Defense": 80,
       "Speed": 85
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 39, 50],
+      "Levels": [
+        {
+          "Level": 28,
+          "Id": 39
+        },
+        {
+          "Level": 31,
+          "Id": 50
+        },
+        {
+          "Level": 39,
+          "Id": 93
+        },
+        {
+          "Level": 48,
+          "Id": 154
+        },
+        {
+          "Level": 59,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 91, 92,
+        99, 102, 104, 117, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 56,
     "Name": "Mankey",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 40,
       "Attack": 80,
@@ -865,14 +2425,47 @@
       "Sp. Attack": 35,
       "Sp. Defense": 45,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 57,
+      "Level": 28,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10, 43],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 2
+        },
+        {
+          "Level": 21,
+          "Id": 154
+        },
+        {
+          "Level": 27,
+          "Id": 116
+        },
+        {
+          "Level": 33,
+          "Id": 69
+        },
+        {
+          "Level": 39,
+          "Id": 37
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 66, 68, 69, 70, 85, 87, 91, 92, 99, 102, 104, 117,
+        118, 129, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 57,
     "Name": "Primeape",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 65,
       "Attack": 105,
@@ -880,14 +2473,43 @@
       "Sp. Attack": 60,
       "Sp. Defense": 70,
       "Speed": 95
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [2, 10, 43, 154],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 2
+        },
+        {
+          "Level": 21,
+          "Id": 154
+        },
+        {
+          "Level": 27,
+          "Id": 116
+        },
+        {
+          "Level": 37,
+          "Id": 69
+        },
+        {
+          "Level": 46,
+          "Id": 37
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 63, 66, 68, 69, 70, 85, 87, 91, 92, 99, 102, 104,
+        117, 118, 129, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 58,
     "Name": "Growlithe",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 55,
       "Attack": 70,
@@ -895,14 +2517,46 @@
       "Sp. Attack": 70,
       "Sp. Defense": 50,
       "Speed": 60
+    },
+    "Evolution": {
+      "Id": 59,
+      "Level": 0,
+      "Item": "Fire Stone"
+    },
+    "Moves": {
+      "Defaults": [44, 46],
+      "Levels": [
+        {
+          "Level": 18,
+          "Id": 52
+        },
+        {
+          "Level": 23,
+          "Id": 43
+        },
+        {
+          "Level": 30,
+          "Id": 36
+        },
+        {
+          "Level": 39,
+          "Id": 97
+        },
+        {
+          "Level": 50,
+          "Id": 53
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 82, 91, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 59,
     "Name": "Arcanine",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 90,
       "Attack": 110,
@@ -910,14 +2564,22 @@
       "Sp. Attack": 100,
       "Sp. Defense": 80,
       "Speed": 95
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [36, 43, 46, 52],
+      "Levels": [],
+      "TMs": [
+        34, 36, 38, 63, 82, 91, 92, 99, 100, 102, 104, 115, 117, 126, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 60,
     "Name": "Poliwag",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 40,
       "Attack": 50,
@@ -925,14 +2587,51 @@
       "Sp. Attack": 40,
       "Sp. Defense": 40,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 61,
+      "Level": 25,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [145],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 95
+        },
+        {
+          "Level": 19,
+          "Id": 55
+        },
+        {
+          "Level": 25,
+          "Id": 3
+        },
+        {
+          "Level": 31,
+          "Id": 34
+        },
+        {
+          "Level": 38,
+          "Id": 133
+        },
+        {
+          "Level": 45,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 92, 94, 99, 102, 104, 117, 130, 149,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 61,
     "Name": "Poliwhirl",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 65,
       "Attack": 65,
@@ -940,15 +2639,51 @@
       "Sp. Attack": 50,
       "Sp. Defense": 50,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 62,
+      "Level": 0,
+      "Item": "Water Stone"
+    },
+    "Moves": {
+      "Defaults": [55, 95, 145],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 95
+        },
+        {
+          "Level": 19,
+          "Id": 55
+        },
+        {
+          "Level": 26,
+          "Id": 3
+        },
+        {
+          "Level": 33,
+          "Id": 34
+        },
+        {
+          "Level": 41,
+          "Id": 133
+        },
+        {
+          "Level": 49,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 66, 68, 69, 70, 89, 90, 92, 94,
+        99, 102, 104, 117, 118, 130, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 62,
     "Name": "Poliwrath",
-    "Type": [
-      "Water",
-      "Fighting"
-    ],
+    "Type": ["Water", "Fighting"],
     "Stats": {
       "HP": 90,
       "Attack": 95,
@@ -956,14 +2691,31 @@
       "Sp. Attack": 70,
       "Sp. Defense": 90,
       "Speed": 70
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [3, 34, 55, 95],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 95
+        },
+        {
+          "Level": 19,
+          "Id": 55
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 89, 90, 92,
+        94, 99, 102, 104, 117, 118, 130, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 63,
     "Name": "Abra",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 25,
       "Attack": 20,
@@ -971,14 +2723,26 @@
       "Sp. Attack": 105,
       "Sp. Defense": 55,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 64,
+      "Level": 16,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [100],
+      "Levels": [],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 86, 92, 94, 99, 100, 102, 104, 115, 117,
+        118, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 64,
     "Name": "Kadabra",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 40,
       "Attack": 35,
@@ -986,14 +2750,51 @@
       "Sp. Attack": 120,
       "Sp. Defense": 70,
       "Speed": 105
+    },
+    "Evolution": {
+      "Id": 65,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [50, 93, 100],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 93
+        },
+        {
+          "Level": 20,
+          "Id": 50
+        },
+        {
+          "Level": 27,
+          "Id": 60
+        },
+        {
+          "Level": 31,
+          "Id": 105
+        },
+        {
+          "Level": 38,
+          "Id": 94
+        },
+        {
+          "Level": 42,
+          "Id": 115
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 86, 91, 92, 94, 99, 100, 102, 104, 115,
+        117, 118, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 65,
     "Name": "Alakazam",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 55,
       "Attack": 50,
@@ -1001,14 +2802,47 @@
       "Sp. Attack": 135,
       "Sp. Defense": 95,
       "Speed": 120
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [50, 93, 100],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 93
+        },
+        {
+          "Level": 20,
+          "Id": 50
+        },
+        {
+          "Level": 27,
+          "Id": 60
+        },
+        {
+          "Level": 31,
+          "Id": 105
+        },
+        {
+          "Level": 38,
+          "Id": 94
+        },
+        {
+          "Level": 42,
+          "Id": 115
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 86, 91, 92, 94, 99, 100, 102, 104,
+        115, 117, 118, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 66,
     "Name": "Machop",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 70,
       "Attack": 80,
@@ -1016,14 +2850,47 @@
       "Sp. Attack": 35,
       "Sp. Defense": 35,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 67,
+      "Level": 28,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [2],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 67
+        },
+        {
+          "Level": 25,
+          "Id": 43
+        },
+        {
+          "Level": 32,
+          "Id": 116
+        },
+        {
+          "Level": 39,
+          "Id": 69
+        },
+        {
+          "Level": 46,
+          "Id": 66
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117,
+        118, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 67,
     "Name": "Machoke",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 80,
       "Attack": 100,
@@ -1031,14 +2898,47 @@
       "Sp. Attack": 50,
       "Sp. Defense": 60,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 68,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [2, 43, 67],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 67
+        },
+        {
+          "Level": 25,
+          "Id": 43
+        },
+        {
+          "Level": 36,
+          "Id": 116
+        },
+        {
+          "Level": 44,
+          "Id": 69
+        },
+        {
+          "Level": 52,
+          "Id": 66
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117,
+        118, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 68,
     "Name": "Machamp",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 90,
       "Attack": 130,
@@ -1046,15 +2946,43 @@
       "Sp. Attack": 65,
       "Sp. Defense": 85,
       "Speed": 55
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [2, 43, 67],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 67
+        },
+        {
+          "Level": 25,
+          "Id": 43
+        },
+        {
+          "Level": 36,
+          "Id": 116
+        },
+        {
+          "Level": 44,
+          "Id": 69
+        },
+        {
+          "Level": 52,
+          "Id": 66
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104,
+        117, 118, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 69,
     "Name": "Bellsprout",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 50,
       "Attack": 75,
@@ -1062,15 +2990,52 @@
       "Sp. Attack": 70,
       "Sp. Defense": 30,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 70,
+      "Level": 21,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [22, 74],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 35
+        },
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 18,
+          "Id": 79
+        },
+        {
+          "Level": 21,
+          "Id": 78
+        },
+        {
+          "Level": 26,
+          "Id": 51
+        },
+        {
+          "Level": 33,
+          "Id": 75
+        },
+        {
+          "Level": 42,
+          "Id": 21
+        }
+      ],
+      "TMs": [14, 15, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 70,
     "Name": "Weepinbell",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 65,
       "Attack": 90,
@@ -1078,15 +3043,52 @@
       "Sp. Attack": 85,
       "Sp. Defense": 45,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 71,
+      "Level": 0,
+      "Item": "Leaf Stone"
+    },
+    "Moves": {
+      "Defaults": [22, 35, 74],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 35
+        },
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 18,
+          "Id": 79
+        },
+        {
+          "Level": 23,
+          "Id": 78
+        },
+        {
+          "Level": 29,
+          "Id": 51
+        },
+        {
+          "Level": 38,
+          "Id": 75
+        },
+        {
+          "Level": 49,
+          "Id": 21
+        }
+      ],
+      "TMs": [14, 15, 36, 38, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 71,
     "Name": "Victreebel",
-    "Type": [
-      "Grass",
-      "Poison"
-    ],
+    "Type": ["Grass", "Poison"],
     "Stats": {
       "HP": 80,
       "Attack": 105,
@@ -1094,15 +3096,34 @@
       "Sp. Attack": 100,
       "Sp. Defense": 70,
       "Speed": 70
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [51, 75, 78, 79],
+      "Levels": [
+        {
+          "Level": 13,
+          "Id": 35
+        },
+        {
+          "Level": 15,
+          "Id": 77
+        },
+        {
+          "Level": 18,
+          "Id": 79
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 72, 76, 92, 99, 102, 104, 115, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 72,
     "Name": "Tentacool",
-    "Type": [
-      "Water",
-      "Poison"
-    ],
+    "Type": ["Water", "Poison"],
     "Stats": {
       "HP": 40,
       "Attack": 40,
@@ -1110,15 +3131,59 @@
       "Sp. Attack": 50,
       "Sp. Defense": 100,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 73,
+      "Level": 30,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [51],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 48
+        },
+        {
+          "Level": 13,
+          "Id": 35
+        },
+        {
+          "Level": 18,
+          "Id": 40
+        },
+        {
+          "Level": 22,
+          "Id": 55
+        },
+        {
+          "Level": 27,
+          "Id": 132
+        },
+        {
+          "Level": 33,
+          "Id": 112
+        },
+        {
+          "Level": 40,
+          "Id": 103
+        },
+        {
+          "Level": 48,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        14, 15, 36, 38, 55, 57, 58, 59, 61, 72, 92, 99, 102, 104, 115, 117, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 73,
     "Name": "Tentacruel",
-    "Type": [
-      "Water",
-      "Poison"
-    ],
+    "Type": ["Water", "Poison"],
     "Stats": {
       "HP": 80,
       "Attack": 70,
@@ -1126,15 +3191,55 @@
       "Sp. Attack": 80,
       "Sp. Defense": 120,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [35, 48, 51],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 48
+        },
+        {
+          "Level": 13,
+          "Id": 35
+        },
+        {
+          "Level": 18,
+          "Id": 40
+        },
+        {
+          "Level": 22,
+          "Id": 55
+        },
+        {
+          "Level": 27,
+          "Id": 132
+        },
+        {
+          "Level": 35,
+          "Id": 112
+        },
+        {
+          "Level": 43,
+          "Id": 103
+        },
+        {
+          "Level": 50,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        14, 15, 36, 38, 55, 57, 58, 59, 61, 63, 72, 92, 99, 102, 104, 115, 117,
+        130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 74,
     "Name": "Geodude",
-    "Type": [
-      "Rock",
-      "Ground"
-    ],
+    "Type": ["Rock", "Ground"],
     "Stats": {
       "HP": 40,
       "Attack": 80,
@@ -1142,15 +3247,51 @@
       "Sp. Attack": 30,
       "Sp. Defense": 30,
       "Speed": 20
+    },
+    "Evolution": {
+      "Id": 75,
+      "Level": 25,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33],
+      "Levels": [
+        {
+          "Level": 11,
+          "Id": 111
+        },
+        {
+          "Level": 16,
+          "Id": 88
+        },
+        {
+          "Level": 21,
+          "Id": 120
+        },
+        {
+          "Level": 26,
+          "Id": 106
+        },
+        {
+          "Level": 31,
+          "Id": 89
+        },
+        {
+          "Level": 36,
+          "Id": 153
+        }
+      ],
+      "TMs": [
+        5, 34, 36, 38, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117, 118,
+        120, 126, 153, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 75,
     "Name": "Graveler",
-    "Type": [
-      "Rock",
-      "Ground"
-    ],
+    "Type": ["Rock", "Ground"],
     "Stats": {
       "HP": 55,
       "Attack": 95,
@@ -1158,15 +3299,51 @@
       "Sp. Attack": 45,
       "Sp. Defense": 45,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 76,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 111],
+      "Levels": [
+        {
+          "Level": 11,
+          "Id": 111
+        },
+        {
+          "Level": 16,
+          "Id": 88
+        },
+        {
+          "Level": 21,
+          "Id": 120
+        },
+        {
+          "Level": 29,
+          "Id": 106
+        },
+        {
+          "Level": 36,
+          "Id": 89
+        },
+        {
+          "Level": 43,
+          "Id": 153
+        }
+      ],
+      "TMs": [
+        5, 34, 36, 38, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104, 117, 118,
+        120, 126, 153, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 76,
     "Name": "Golem",
-    "Type": [
-      "Rock",
-      "Ground"
-    ],
+    "Type": ["Rock", "Ground"],
     "Stats": {
       "HP": 80,
       "Attack": 120,
@@ -1174,14 +3351,47 @@
       "Sp. Attack": 55,
       "Sp. Defense": 65,
       "Speed": 45
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 111],
+      "Levels": [
+        {
+          "Level": 11,
+          "Id": 111
+        },
+        {
+          "Level": 16,
+          "Id": 88
+        },
+        {
+          "Level": 21,
+          "Id": 120
+        },
+        {
+          "Level": 29,
+          "Id": 106
+        },
+        {
+          "Level": 36,
+          "Id": 89
+        },
+        {
+          "Level": 43,
+          "Id": 153
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 70, 89, 90, 91, 92, 99, 102, 104,
+        117, 118, 120, 126, 153, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 77,
     "Name": "Ponyta",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 50,
       "Attack": 85,
@@ -1189,14 +3399,50 @@
       "Sp. Attack": 65,
       "Sp. Defense": 65,
       "Speed": 90
+    },
+    "Evolution": {
+      "Id": 78,
+      "Level": 40,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [52],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 39
+        },
+        {
+          "Level": 32,
+          "Id": 23
+        },
+        {
+          "Level": 35,
+          "Id": 45
+        },
+        {
+          "Level": 39,
+          "Id": 83
+        },
+        {
+          "Level": 43,
+          "Id": 36
+        },
+        {
+          "Level": 48,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 78,
     "Name": "Rapidash",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 65,
       "Attack": 100,
@@ -1204,15 +3450,46 @@
       "Sp. Attack": 80,
       "Sp. Defense": 80,
       "Speed": 105
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [23, 39, 45, 52],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 39
+        },
+        {
+          "Level": 32,
+          "Id": 23
+        },
+        {
+          "Level": 35,
+          "Id": 45
+        },
+        {
+          "Level": 39,
+          "Id": 83
+        },
+        {
+          "Level": 47,
+          "Id": 36
+        },
+        {
+          "Level": 55,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 63, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 79,
     "Name": "Slowpoke",
-    "Type": [
-      "Water",
-      "Psychic"
-    ],
+    "Type": ["Water", "Psychic"],
     "Stats": {
       "HP": 90,
       "Attack": 65,
@@ -1220,15 +3497,51 @@
       "Sp. Attack": 40,
       "Sp. Defense": 40,
       "Speed": 15
+    },
+    "Evolution": {
+      "Id": 80,
+      "Level": 37,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [93],
+      "Levels": [
+        {
+          "Level": 18,
+          "Id": 50
+        },
+        {
+          "Level": 22,
+          "Id": 29
+        },
+        {
+          "Level": 27,
+          "Id": 45
+        },
+        {
+          "Level": 33,
+          "Id": 55
+        },
+        {
+          "Level": 40,
+          "Id": 133
+        },
+        {
+          "Level": 48,
+          "Id": 94
+        }
+      ],
+      "TMs": [
+        6, 34, 36, 38, 55, 57, 58, 59, 61, 70, 86, 89, 90, 91, 92, 94, 99, 100,
+        102, 104, 115, 117, 126, 129, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 80,
     "Name": "Slowbro",
-    "Type": [
-      "Water",
-      "Psychic"
-    ],
+    "Type": ["Water", "Psychic"],
     "Stats": {
       "HP": 95,
       "Attack": 75,
@@ -1236,15 +3549,52 @@
       "Sp. Attack": 100,
       "Sp. Defense": 80,
       "Speed": 30
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [29, 50, 93],
+      "Levels": [
+        {
+          "Level": 18,
+          "Id": 50
+        },
+        {
+          "Level": 22,
+          "Id": 29
+        },
+        {
+          "Level": 27,
+          "Id": 45
+        },
+        {
+          "Level": 33,
+          "Id": 55
+        },
+        {
+          "Level": 37,
+          "Id": 110
+        },
+        {
+          "Level": 44,
+          "Id": 133
+        },
+        {
+          "Level": 55,
+          "Id": 94
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 86, 89,
+        90, 91, 92, 94, 99, 100, 102, 104, 115, 117, 126, 129, 130, 148, 149,
+        156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 81,
     "Name": "Magnemite",
-    "Type": [
-      "Electric",
-      "Steel"
-    ],
+    "Type": ["Electric", "Steel"],
     "Stats": {
       "HP": 25,
       "Attack": 35,
@@ -1252,15 +3602,50 @@
       "Sp. Attack": 95,
       "Sp. Defense": 55,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 82,
+      "Level": 30,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33],
+      "Levels": [
+        {
+          "Level": 21,
+          "Id": 49
+        },
+        {
+          "Level": 25,
+          "Id": 84
+        },
+        {
+          "Level": 29,
+          "Id": 48
+        },
+        {
+          "Level": 35,
+          "Id": 86
+        },
+        {
+          "Level": 41,
+          "Id": 129
+        },
+        {
+          "Level": 47,
+          "Id": 103
+        }
+      ],
+      "TMs": [
+        36, 38, 85, 86, 87, 92, 99, 100, 102, 104, 115, 117, 129, 148, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 82,
     "Name": "Magneton",
-    "Type": [
-      "Electric",
-      "Steel"
-    ],
+    "Type": ["Electric", "Steel"],
     "Stats": {
       "HP": 50,
       "Attack": 60,
@@ -1268,16 +3653,51 @@
       "Sp. Attack": 120,
       "Sp. Defense": 70,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 462,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 49, 84],
+      "Levels": [
+        {
+          "Level": 21,
+          "Id": 49
+        },
+        {
+          "Level": 25,
+          "Id": 84
+        },
+        {
+          "Level": 29,
+          "Id": 48
+        },
+        {
+          "Level": 38,
+          "Id": 86
+        },
+        {
+          "Level": 46,
+          "Id": 129
+        },
+        {
+          "Level": 54,
+          "Id": 103
+        }
+      ],
+      "TMs": [
+        36, 38, 63, 85, 86, 87, 92, 99, 100, 102, 104, 115, 117, 129, 148, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 83,
     "Name": "Farfetch'd",
-    "AlternateName": "Farfetchd",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 52,
       "Attack": 90,
@@ -1285,15 +3705,43 @@
       "Sp. Attack": 58,
       "Sp. Defense": 62,
       "Speed": 60
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [28, 64],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 43
+        },
+        {
+          "Level": 15,
+          "Id": 31
+        },
+        {
+          "Level": 23,
+          "Id": 14
+        },
+        {
+          "Level": 31,
+          "Id": 97
+        },
+        {
+          "Level": 39,
+          "Id": 163
+        }
+      ],
+      "TMs": [
+        13, 14, 15, 18, 19, 34, 36, 38, 92, 99, 102, 104, 115, 117, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 84,
     "Name": "Doduo",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 35,
       "Attack": 85,
@@ -1301,15 +3749,50 @@
       "Sp. Attack": 35,
       "Sp. Defense": 35,
       "Speed": 75
+    },
+    "Evolution": {
+      "Id": 85,
+      "Level": 31,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [64],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 45
+        },
+        {
+          "Level": 24,
+          "Id": 31
+        },
+        {
+          "Level": 30,
+          "Id": 65
+        },
+        {
+          "Level": 36,
+          "Id": 99
+        },
+        {
+          "Level": 40,
+          "Id": 161
+        },
+        {
+          "Level": 44,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        18, 19, 34, 36, 38, 92, 99, 102, 104, 115, 117, 130, 143, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 85,
     "Name": "Dodrio",
-    "Type": [
-      "Normal",
-      "Flying"
-    ],
+    "Type": ["Normal", "Flying"],
     "Stats": {
       "HP": 60,
       "Attack": 110,
@@ -1317,14 +3800,47 @@
       "Sp. Attack": 60,
       "Sp. Defense": 60,
       "Speed": 110
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [31, 45, 64],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 45
+        },
+        {
+          "Level": 24,
+          "Id": 31
+        },
+        {
+          "Level": 30,
+          "Id": 65
+        },
+        {
+          "Level": 39,
+          "Id": 99
+        },
+        {
+          "Level": 45,
+          "Id": 161
+        },
+        {
+          "Level": 51,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        18, 19, 34, 36, 38, 63, 92, 99, 102, 104, 115, 117, 130, 143, 156, 161,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 86,
     "Name": "Seel",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 65,
       "Attack": 45,
@@ -1332,15 +3848,47 @@
       "Sp. Attack": 45,
       "Sp. Defense": 70,
       "Speed": 45
+    },
+    "Evolution": {
+      "Id": 87,
+      "Level": 34,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [29],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 45
+        },
+        {
+          "Level": 35,
+          "Id": 62
+        },
+        {
+          "Level": 40,
+          "Id": 156
+        },
+        {
+          "Level": 45,
+          "Id": 36
+        },
+        {
+          "Level": 50,
+          "Id": 58
+        }
+      ],
+      "TMs": [
+        6, 32, 34, 36, 38, 55, 57, 58, 59, 61, 70, 92, 99, 102, 104, 117, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 87,
     "Name": "Dewgong",
-    "Type": [
-      "Water",
-      "Ice"
-    ],
+    "Type": ["Water", "Ice"],
     "Stats": {
       "HP": 90,
       "Attack": 70,
@@ -1348,14 +3896,43 @@
       "Sp. Attack": 70,
       "Sp. Defense": 95,
       "Speed": 70
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [29, 45, 62],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 45
+        },
+        {
+          "Level": 35,
+          "Id": 62
+        },
+        {
+          "Level": 44,
+          "Id": 156
+        },
+        {
+          "Level": 50,
+          "Id": 36
+        },
+        {
+          "Level": 56,
+          "Id": 58
+        }
+      ],
+      "TMs": [
+        6, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 70, 92, 99, 102, 104, 117,
+        130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 88,
     "Name": "Grimer",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 80,
       "Attack": 80,
@@ -1363,14 +3940,48 @@
       "Sp. Attack": 40,
       "Sp. Defense": 50,
       "Speed": 25
+    },
+    "Evolution": {
+      "Id": 89,
+      "Level": 38,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [1, 50],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 139
+        },
+        {
+          "Level": 33,
+          "Id": 107
+        },
+        {
+          "Level": 37,
+          "Id": 124
+        },
+        {
+          "Level": 42,
+          "Id": 106
+        },
+        {
+          "Level": 48,
+          "Id": 103
+        },
+        {
+          "Level": 55,
+          "Id": 151
+        }
+      ],
+      "TMs": [34, 72, 85, 87, 92, 99, 102, 104, 117, 120, 126, 153, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 89,
     "Name": "Muk",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 105,
       "Attack": 105,
@@ -1378,14 +3989,46 @@
       "Sp. Attack": 65,
       "Sp. Defense": 100,
       "Speed": 50
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [1, 50, 139],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 139
+        },
+        {
+          "Level": 33,
+          "Id": 107
+        },
+        {
+          "Level": 37,
+          "Id": 124
+        },
+        {
+          "Level": 45,
+          "Id": 106
+        },
+        {
+          "Level": 53,
+          "Id": 103
+        },
+        {
+          "Level": 60,
+          "Id": 151
+        }
+      ],
+      "TMs": [
+        34, 63, 72, 85, 87, 92, 99, 102, 104, 117, 120, 126, 153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 90,
     "Name": "Shellder",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 30,
       "Attack": 65,
@@ -1393,15 +4036,47 @@
       "Sp. Attack": 45,
       "Sp. Defense": 25,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 91,
+      "Level": 0,
+      "Item": "Water Stone"
+    },
+    "Moves": {
+      "Defaults": [33, 110],
+      "Levels": [
+        {
+          "Level": 18,
+          "Id": 48
+        },
+        {
+          "Level": 23,
+          "Id": 128
+        },
+        {
+          "Level": 30,
+          "Id": 62
+        },
+        {
+          "Level": 39,
+          "Id": 43
+        },
+        {
+          "Level": 50,
+          "Id": 58
+        }
+      ],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 92, 99, 100, 102, 104, 115, 117, 120, 129,
+        153, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 91,
     "Name": "Cloyster",
-    "Type": [
-      "Water",
-      "Ice"
-    ],
+    "Type": ["Water", "Ice"],
     "Stats": {
       "HP": 50,
       "Attack": 95,
@@ -1409,15 +4084,27 @@
       "Sp. Attack": 85,
       "Sp. Defense": 45,
       "Speed": 70
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [48, 62, 110, 128],
+      "Levels": [
+        {
+          "Level": 50,
+          "Id": 131
+        }
+      ],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 63, 92, 99, 100, 102, 104, 115, 117, 120,
+        129, 153, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 92,
     "Name": "Gastly",
-    "Type": [
-      "Ghost",
-      "Poison"
-    ],
+    "Type": ["Ghost", "Poison"],
     "Stats": {
       "HP": 30,
       "Attack": 35,
@@ -1425,15 +4112,34 @@
       "Sp. Attack": 100,
       "Sp. Defense": 35,
       "Speed": 80
+    },
+    "Evolution": {
+      "Id": 93,
+      "Level": 25,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [101, 109, 122],
+      "Levels": [
+        {
+          "Level": 27,
+          "Id": 95
+        },
+        {
+          "Level": 35,
+          "Id": 138
+        }
+      ],
+      "TMs": [
+        72, 85, 87, 92, 94, 99, 102, 104, 117, 120, 138, 149, 153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 93,
     "Name": "Haunter",
-    "Type": [
-      "Ghost",
-      "Poison"
-    ],
+    "Type": ["Ghost", "Poison"],
     "Stats": {
       "HP": 45,
       "Attack": 50,
@@ -1441,15 +4147,34 @@
       "Sp. Attack": 115,
       "Sp. Defense": 55,
       "Speed": 95
+    },
+    "Evolution": {
+      "Id": 94,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [101, 109, 122],
+      "Levels": [
+        {
+          "Level": 29,
+          "Id": 95
+        },
+        {
+          "Level": 38,
+          "Id": 138
+        }
+      ],
+      "TMs": [
+        72, 85, 87, 92, 94, 99, 102, 104, 117, 120, 138, 149, 153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 94,
     "Name": "Gengar",
-    "Type": [
-      "Ghost",
-      "Poison"
-    ],
+    "Type": ["Ghost", "Poison"],
     "Stats": {
       "HP": 60,
       "Attack": 65,
@@ -1457,15 +4182,31 @@
       "Sp. Attack": 130,
       "Sp. Defense": 75,
       "Speed": 110
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [101, 109, 122],
+      "Levels": [
+        {
+          "Level": 29,
+          "Id": 95
+        },
+        {
+          "Level": 38,
+          "Id": 138
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 70, 72, 85, 87, 92, 94, 99, 102, 104,
+        117, 118, 120, 130, 138, 149, 153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 95,
     "Name": "Onix",
-    "Type": [
-      "Rock",
-      "Ground"
-    ],
+    "Type": ["Rock", "Ground"],
     "Stats": {
       "HP": 35,
       "Attack": 45,
@@ -1473,14 +4214,47 @@
       "Sp. Attack": 30,
       "Sp. Defense": 45,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 208,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 103],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 20
+        },
+        {
+          "Level": 19,
+          "Id": 88
+        },
+        {
+          "Level": 25,
+          "Id": 99
+        },
+        {
+          "Level": 33,
+          "Id": 21
+        },
+        {
+          "Level": 43,
+          "Id": 106
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 70, 89, 90, 91, 92, 99, 102, 104, 117, 120, 130, 153, 156,
+        157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 96,
     "Name": "Drowzee",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 60,
       "Attack": 48,
@@ -1488,14 +4262,51 @@
       "Sp. Attack": 43,
       "Sp. Defense": 90,
       "Speed": 42
+    },
+    "Evolution": {
+      "Id": 97,
+      "Level": 26,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [1, 95],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 50
+        },
+        {
+          "Level": 17,
+          "Id": 93
+        },
+        {
+          "Level": 24,
+          "Id": 29
+        },
+        {
+          "Level": 29,
+          "Id": 139
+        },
+        {
+          "Level": 32,
+          "Id": 94
+        },
+        {
+          "Level": 37,
+          "Id": 96
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 86, 92, 94, 99, 100, 102, 104, 115, 117,
+        118, 130, 138, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 97,
     "Name": "Hypno",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 85,
       "Attack": 73,
@@ -1503,14 +4314,47 @@
       "Sp. Attack": 73,
       "Sp. Defense": 115,
       "Speed": 67
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [1, 50, 93, 95],
+      "Levels": [
+        {
+          "Level": 12,
+          "Id": 50
+        },
+        {
+          "Level": 17,
+          "Id": 93
+        },
+        {
+          "Level": 24,
+          "Id": 29
+        },
+        {
+          "Level": 33,
+          "Id": 139
+        },
+        {
+          "Level": 37,
+          "Id": 94
+        },
+        {
+          "Level": 43,
+          "Id": 96
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 86, 92, 94, 99, 100, 102, 104, 115,
+        117, 118, 130, 138, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 98,
     "Name": "Krabby",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 30,
       "Attack": 105,
@@ -1518,14 +4362,47 @@
       "Sp. Attack": 25,
       "Sp. Defense": 25,
       "Speed": 50
+    },
+    "Evolution": {
+      "Id": 99,
+      "Level": 28,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [43, 145],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 11
+        },
+        {
+          "Level": 25,
+          "Id": 12
+        },
+        {
+          "Level": 30,
+          "Id": 23
+        },
+        {
+          "Level": 35,
+          "Id": 152
+        },
+        {
+          "Level": 40,
+          "Id": 106
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 55, 57, 58, 59, 61, 70, 92, 99, 102, 104, 117, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 99,
     "Name": "Kingler",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 55,
       "Attack": 130,
@@ -1533,14 +4410,43 @@
       "Sp. Attack": 50,
       "Sp. Defense": 50,
       "Speed": 75
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [11, 43, 145],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 11
+        },
+        {
+          "Level": 25,
+          "Id": 12
+        },
+        {
+          "Level": 34,
+          "Id": 23
+        },
+        {
+          "Level": 42,
+          "Id": 152
+        },
+        {
+          "Level": 49,
+          "Id": 106
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 55, 57, 58, 59, 61, 63, 70, 92, 99, 102, 104, 117,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 100,
     "Name": "Voltorb",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 40,
       "Attack": 30,
@@ -1548,14 +4454,47 @@
       "Sp. Attack": 55,
       "Sp. Defense": 55,
       "Speed": 100
+    },
+    "Evolution": {
+      "Id": 101,
+      "Level": 30,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 103],
+      "Levels": [
+        {
+          "Level": 17,
+          "Id": 49
+        },
+        {
+          "Level": 22,
+          "Id": 120
+        },
+        {
+          "Level": 29,
+          "Id": 113
+        },
+        {
+          "Level": 36,
+          "Id": 129
+        },
+        {
+          "Level": 43,
+          "Id": 153
+        }
+      ],
+      "TMs": [
+        36, 85, 86, 87, 92, 99, 100, 102, 104, 115, 117, 120, 129, 148, 153,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 101,
     "Name": "Electrode",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 60,
       "Attack": 50,
@@ -1563,15 +4502,43 @@
       "Sp. Attack": 80,
       "Sp. Defense": 80,
       "Speed": 150
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 49, 103],
+      "Levels": [
+        {
+          "Level": 17,
+          "Id": 49
+        },
+        {
+          "Level": 22,
+          "Id": 120
+        },
+        {
+          "Level": 29,
+          "Id": 113
+        },
+        {
+          "Level": 40,
+          "Id": 129
+        },
+        {
+          "Level": 50,
+          "Id": 153
+        }
+      ],
+      "TMs": [
+        36, 63, 85, 86, 87, 92, 99, 100, 102, 104, 115, 117, 120, 129, 130, 148,
+        153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 102,
     "Name": "Exeggcute",
-    "Type": [
-      "Grass",
-      "Psychic"
-    ],
+    "Type": ["Grass", "Psychic"],
     "Stats": {
       "HP": 60,
       "Attack": 40,
@@ -1579,15 +4546,51 @@
       "Sp. Attack": 60,
       "Sp. Defense": 45,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 103,
+      "Level": 0,
+      "Item": "Leaf Stone"
+    },
+    "Moves": {
+      "Defaults": [95, 140],
+      "Levels": [
+        {
+          "Level": 25,
+          "Id": 115
+        },
+        {
+          "Level": 28,
+          "Id": 73
+        },
+        {
+          "Level": 32,
+          "Id": 78
+        },
+        {
+          "Level": 37,
+          "Id": 77
+        },
+        {
+          "Level": 42,
+          "Id": 76
+        },
+        {
+          "Level": 48,
+          "Id": 79
+        }
+      ],
+      "TMs": [
+        36, 38, 92, 94, 99, 100, 102, 104, 115, 117, 120, 121, 149, 153, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 103,
     "Name": "Exeggutor",
-    "Type": [
-      "Grass",
-      "Psychic"
-    ],
+    "Type": ["Grass", "Psychic"],
     "Stats": {
       "HP": 95,
       "Attack": 95,
@@ -1595,14 +4598,27 @@
       "Sp. Attack": 125,
       "Sp. Defense": 75,
       "Speed": 55
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [95, 140],
+      "Levels": [
+        {
+          "Level": 28,
+          "Id": 23
+        }
+      ],
+      "TMs": [
+        36, 38, 63, 70, 72, 76, 92, 94, 99, 100, 102, 104, 115, 117, 120, 121,
+        149, 153, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 104,
     "Name": "Cubone",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 50,
       "Attack": 50,
@@ -1610,14 +4626,47 @@
       "Sp. Attack": 40,
       "Sp. Defense": 50,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 105,
+      "Level": 28,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [45, 125],
+      "Levels": [
+        {
+          "Level": 25,
+          "Id": 43
+        },
+        {
+          "Level": 31,
+          "Id": 116
+        },
+        {
+          "Level": 38,
+          "Id": 37
+        },
+        {
+          "Level": 43,
+          "Id": 155
+        },
+        {
+          "Level": 46,
+          "Id": 99
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 66, 68, 69, 70, 89, 90, 91, 92, 99,
+        102, 104, 117, 126, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 105,
     "Name": "Marowak",
-    "Type": [
-      "Ground"
-    ],
+    "Type": ["Ground"],
     "Stats": {
       "HP": 60,
       "Attack": 80,
@@ -1625,14 +4674,43 @@
       "Sp. Attack": 50,
       "Sp. Defense": 80,
       "Speed": 45
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [43, 45, 116, 125],
+      "Levels": [
+        {
+          "Level": 25,
+          "Id": 43
+        },
+        {
+          "Level": 33,
+          "Id": 116
+        },
+        {
+          "Level": 41,
+          "Id": 37
+        },
+        {
+          "Level": 48,
+          "Id": 155
+        },
+        {
+          "Level": 55,
+          "Id": 99
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 70, 89, 90, 91, 92,
+        99, 102, 104, 117, 126, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 106,
     "Name": "Hitmonlee",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 50,
       "Attack": 120,
@@ -1640,14 +4718,43 @@
       "Sp. Attack": 35,
       "Sp. Defense": 110,
       "Speed": 87
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [24, 96],
+      "Levels": [
+        {
+          "Level": 33,
+          "Id": 27
+        },
+        {
+          "Level": 38,
+          "Id": 26
+        },
+        {
+          "Level": 43,
+          "Id": 116
+        },
+        {
+          "Level": 48,
+          "Id": 136
+        },
+        {
+          "Level": 53,
+          "Id": 25
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 70, 92, 99, 102, 104, 117, 118, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 107,
     "Name": "Hitmonchan",
-    "Type": [
-      "Fighting"
-    ],
+    "Type": ["Fighting"],
     "Stats": {
       "HP": 50,
       "Attack": 105,
@@ -1655,14 +4762,43 @@
       "Sp. Attack": 35,
       "Sp. Defense": 110,
       "Speed": 76
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [4, 97],
+      "Levels": [
+        {
+          "Level": 33,
+          "Id": 7
+        },
+        {
+          "Level": 38,
+          "Id": 8
+        },
+        {
+          "Level": 43,
+          "Id": 9
+        },
+        {
+          "Level": 48,
+          "Id": 5
+        },
+        {
+          "Level": 53,
+          "Id": 68
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 66, 68, 69, 70, 92, 99, 102, 104, 117, 118, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 108,
     "Name": "Lickitung",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 90,
       "Attack": 55,
@@ -1670,14 +4806,47 @@
       "Sp. Attack": 60,
       "Sp. Defense": 75,
       "Speed": 30
+    },
+    "Evolution": {
+      "Id": 463,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [35, 48],
+      "Levels": [
+        {
+          "Level": 7,
+          "Id": 23
+        },
+        {
+          "Level": 15,
+          "Id": 50
+        },
+        {
+          "Level": 23,
+          "Id": 111
+        },
+        {
+          "Level": 31,
+          "Id": 21
+        },
+        {
+          "Level": 39,
+          "Id": 103
+        }
+      ],
+      "TMs": [
+        5, 14, 15, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 85,
+        87, 89, 90, 92, 99, 102, 104, 117, 126, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 109,
     "Name": "Koffing",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 40,
       "Attack": 65,
@@ -1685,14 +4854,44 @@
       "Sp. Attack": 60,
       "Sp. Defense": 45,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 110,
+      "Level": 35,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 123],
+      "Levels": [
+        {
+          "Level": 32,
+          "Id": 124
+        },
+        {
+          "Level": 37,
+          "Id": 108
+        },
+        {
+          "Level": 40,
+          "Id": 120
+        },
+        {
+          "Level": 45,
+          "Id": 114
+        },
+        {
+          "Level": 48,
+          "Id": 153
+        }
+      ],
+      "TMs": [85, 87, 92, 99, 102, 104, 117, 120, 126, 153, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 110,
     "Name": "Weezing",
-    "Type": [
-      "Poison"
-    ],
+    "Type": ["Poison"],
     "Stats": {
       "HP": 65,
       "Attack": 90,
@@ -1700,15 +4899,40 @@
       "Sp. Attack": 85,
       "Sp. Defense": 70,
       "Speed": 60
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 123, 124],
+      "Levels": [
+        {
+          "Level": 32,
+          "Id": 124
+        },
+        {
+          "Level": 39,
+          "Id": 108
+        },
+        {
+          "Level": 43,
+          "Id": 120
+        },
+        {
+          "Level": 49,
+          "Id": 114
+        },
+        {
+          "Level": 53,
+          "Id": 153
+        }
+      ],
+      "TMs": [63, 85, 87, 92, 99, 102, 104, 117, 120, 126, 153, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 111,
     "Name": "Rhyhorn",
-    "Type": [
-      "Ground",
-      "Rock"
-    ],
+    "Type": ["Ground", "Rock"],
     "Stats": {
       "HP": 80,
       "Attack": 85,
@@ -1716,15 +4940,51 @@
       "Sp. Attack": 30,
       "Sp. Defense": 30,
       "Speed": 25
+    },
+    "Evolution": {
+      "Id": 112,
+      "Level": 42,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [30],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 23
+        },
+        {
+          "Level": 35,
+          "Id": 39
+        },
+        {
+          "Level": 40,
+          "Id": 31
+        },
+        {
+          "Level": 45,
+          "Id": 32
+        },
+        {
+          "Level": 50,
+          "Id": 43
+        },
+        {
+          "Level": 55,
+          "Id": 36
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 70, 85, 87, 89, 90, 91, 92, 99, 102, 104, 117, 126, 130,
+        156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 112,
     "Name": "Rhydon",
-    "Type": [
-      "Ground",
-      "Rock"
-    ],
+    "Type": ["Ground", "Rock"],
     "Stats": {
       "HP": 105,
       "Attack": 130,
@@ -1732,14 +4992,51 @@
       "Sp. Attack": 45,
       "Sp. Defense": 45,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 464,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [23, 30, 31, 39],
+      "Levels": [
+        {
+          "Level": 30,
+          "Id": 23
+        },
+        {
+          "Level": 35,
+          "Id": 39
+        },
+        {
+          "Level": 40,
+          "Id": 31
+        },
+        {
+          "Level": 48,
+          "Id": 32
+        },
+        {
+          "Level": 55,
+          "Id": 43
+        },
+        {
+          "Level": 64,
+          "Id": 36
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 85,
+        87, 89, 90, 91, 92, 99, 102, 104, 117, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 113,
     "Name": "Chansey",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 250,
       "Attack": 5,
@@ -1747,14 +5044,52 @@
       "Sp. Attack": 35,
       "Sp. Defense": 105,
       "Speed": 50
+    },
+    "Evolution": {
+      "Id": 242,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [1, 3],
+      "Levels": [
+        {
+          "Level": 24,
+          "Id": 47
+        },
+        {
+          "Level": 30,
+          "Id": 45
+        },
+        {
+          "Level": 38,
+          "Id": 107
+        },
+        {
+          "Level": 44,
+          "Id": 111
+        },
+        {
+          "Level": 48,
+          "Id": 113
+        },
+        {
+          "Level": 54,
+          "Id": 38
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 70, 76, 85, 86, 87,
+        92, 94, 99, 100, 102, 104, 115, 117, 118, 121, 126, 130, 135, 148, 149,
+        156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 114,
     "Name": "Tangela",
-    "Type": [
-      "Grass"
-    ],
+    "Type": ["Grass"],
     "Stats": {
       "HP": 65,
       "Attack": 55,
@@ -1762,14 +5097,50 @@
       "Sp. Attack": 100,
       "Sp. Defense": 40,
       "Speed": 60
+    },
+    "Evolution": {
+      "Id": 465,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [20, 132],
+      "Levels": [
+        {
+          "Level": 29,
+          "Id": 71
+        },
+        {
+          "Level": 32,
+          "Id": 77
+        },
+        {
+          "Level": 36,
+          "Id": 78
+        },
+        {
+          "Level": 39,
+          "Id": 79
+        },
+        {
+          "Level": 45,
+          "Id": 21
+        },
+        {
+          "Level": 49,
+          "Id": 74
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 72, 76, 92, 99, 102, 104, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 115,
     "Name": "Kangaskhan",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 105,
       "Attack": 95,
@@ -1777,14 +5148,43 @@
       "Sp. Attack": 40,
       "Sp. Defense": 80,
       "Speed": 90
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [4, 99],
+      "Levels": [
+        {
+          "Level": 26,
+          "Id": 44
+        },
+        {
+          "Level": 31,
+          "Id": 39
+        },
+        {
+          "Level": 36,
+          "Id": 5
+        },
+        {
+          "Level": 41,
+          "Id": 43
+        },
+        {
+          "Level": 46,
+          "Id": 146
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 85, 87, 89,
+        90, 92, 99, 102, 104, 117, 126, 130, 156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 116,
     "Name": "Horsea",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 30,
       "Attack": 40,
@@ -1792,14 +5192,46 @@
       "Sp. Attack": 70,
       "Sp. Defense": 25,
       "Speed": 60
+    },
+    "Evolution": {
+      "Id": 117,
+      "Level": 32,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [145],
+      "Levels": [
+        {
+          "Level": 19,
+          "Id": 108
+        },
+        {
+          "Level": 24,
+          "Id": 43
+        },
+        {
+          "Level": 30,
+          "Id": 55
+        },
+        {
+          "Level": 37,
+          "Id": 97
+        },
+        {
+          "Level": 45,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 92, 99, 102, 104, 117, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 117,
     "Name": "Seadra",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 55,
       "Attack": 65,
@@ -1807,14 +5239,47 @@
       "Sp. Attack": 95,
       "Sp. Defense": 45,
       "Speed": 85
+    },
+    "Evolution": {
+      "Id": 230,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [108, 145],
+      "Levels": [
+        {
+          "Level": 19,
+          "Id": 108
+        },
+        {
+          "Level": 24,
+          "Id": 43
+        },
+        {
+          "Level": 30,
+          "Id": 55
+        },
+        {
+          "Level": 41,
+          "Id": 97
+        },
+        {
+          "Level": 52,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 63, 92, 99, 102, 104, 117, 129, 130, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 118,
     "Name": "Goldeen",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 45,
       "Attack": 67,
@@ -1822,14 +5287,51 @@
       "Sp. Attack": 35,
       "Sp. Defense": 50,
       "Speed": 63
+    },
+    "Evolution": {
+      "Id": 119,
+      "Level": 33,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [39, 64],
+      "Levels": [
+        {
+          "Level": 19,
+          "Id": 48
+        },
+        {
+          "Level": 24,
+          "Id": 30
+        },
+        {
+          "Level": 30,
+          "Id": 31
+        },
+        {
+          "Level": 37,
+          "Id": 127
+        },
+        {
+          "Level": 45,
+          "Id": 32
+        },
+        {
+          "Level": 54,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        32, 36, 38, 55, 57, 58, 59, 61, 92, 99, 102, 104, 117, 129, 130, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 119,
     "Name": "Seaking",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 80,
       "Attack": 92,
@@ -1837,14 +5339,47 @@
       "Sp. Attack": 65,
       "Sp. Defense": 80,
       "Speed": 68
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [39, 48, 64],
+      "Levels": [
+        {
+          "Level": 19,
+          "Id": 48
+        },
+        {
+          "Level": 24,
+          "Id": 30
+        },
+        {
+          "Level": 30,
+          "Id": 31
+        },
+        {
+          "Level": 39,
+          "Id": 127
+        },
+        {
+          "Level": 48,
+          "Id": 32
+        },
+        {
+          "Level": 54,
+          "Id": 97
+        }
+      ],
+      "TMs": [
+        32, 36, 38, 55, 57, 58, 59, 61, 63, 92, 99, 102, 104, 117, 129, 130,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 120,
     "Name": "Staryu",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 30,
       "Attack": 45,
@@ -1852,15 +5387,55 @@
       "Sp. Attack": 70,
       "Sp. Defense": 55,
       "Speed": 85
+    },
+    "Evolution": {
+      "Id": 121,
+      "Level": 0,
+      "Item": "Water Stone"
+    },
+    "Moves": {
+      "Defaults": [33],
+      "Levels": [
+        {
+          "Level": 17,
+          "Id": 55
+        },
+        {
+          "Level": 22,
+          "Id": 106
+        },
+        {
+          "Level": 27,
+          "Id": 105
+        },
+        {
+          "Level": 32,
+          "Id": 129
+        },
+        {
+          "Level": 37,
+          "Id": 107
+        },
+        {
+          "Level": 42,
+          "Id": 113
+        },
+        {
+          "Level": 47,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 85, 86, 87, 92, 94, 99, 100, 102, 104, 115,
+        117, 129, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 121,
     "Name": "Starmie",
-    "Type": [
-      "Water",
-      "Psychic"
-    ],
+    "Type": ["Water", "Psychic"],
     "Stats": {
       "HP": 60,
       "Attack": 75,
@@ -1868,16 +5443,22 @@
       "Sp. Attack": 100,
       "Sp. Defense": 85,
       "Speed": 115
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33, 55, 106],
+      "Levels": [],
+      "TMs": [
+        36, 38, 55, 57, 58, 59, 61, 63, 85, 86, 87, 92, 94, 99, 100, 102, 104,
+        115, 117, 129, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 122,
     "Name": "Mr. Mime",
-    "AlternateName": "Mrmime",
-    "Type": [
-      "Psychic",
-      "Fairy"
-    ],
+    "Type": ["Psychic", "Fairy"],
     "Stats": {
       "HP": 40,
       "Attack": 45,
@@ -1885,15 +5466,43 @@
       "Sp. Attack": 100,
       "Sp. Defense": 120,
       "Speed": 90
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [93, 112],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 93
+        },
+        {
+          "Level": 23,
+          "Id": 113
+        },
+        {
+          "Level": 31,
+          "Id": 3
+        },
+        {
+          "Level": 39,
+          "Id": 96
+        },
+        {
+          "Level": 47,
+          "Id": 164
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 76, 85, 86, 87, 92, 94, 99, 100, 102,
+        104, 115, 117, 118, 130, 148, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 123,
     "Name": "Scyther",
-    "Type": [
-      "Bug",
-      "Flying"
-    ],
+    "Type": ["Bug", "Flying"],
     "Stats": {
       "HP": 70,
       "Attack": 110,
@@ -1901,15 +5510,48 @@
       "Sp. Attack": 55,
       "Sp. Defense": 80,
       "Speed": 105
+    },
+    "Evolution": {
+      "Id": 212,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [98],
+      "Levels": [
+        {
+          "Level": 17,
+          "Id": 43
+        },
+        {
+          "Level": 20,
+          "Id": 116
+        },
+        {
+          "Level": 24,
+          "Id": 104
+        },
+        {
+          "Level": 29,
+          "Id": 163
+        },
+        {
+          "Level": 35,
+          "Id": 14
+        },
+        {
+          "Level": 42,
+          "Id": 97
+        }
+      ],
+      "TMs": [14, 15, 36, 38, 63, 92, 99, 102, 104, 117, 129, 130, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 124,
     "Name": "Jynx",
-    "Type": [
-      "Ice",
-      "Psychic"
-    ],
+    "Type": ["Ice", "Psychic"],
     "Stats": {
       "HP": 65,
       "Attack": 50,
@@ -1917,14 +5559,47 @@
       "Sp. Attack": 115,
       "Sp. Defense": 95,
       "Speed": 95
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [1, 142],
+      "Levels": [
+        {
+          "Level": 18,
+          "Id": 122
+        },
+        {
+          "Level": 23,
+          "Id": 3
+        },
+        {
+          "Level": 31,
+          "Id": 8
+        },
+        {
+          "Level": 39,
+          "Id": 34
+        },
+        {
+          "Level": 47,
+          "Id": 37
+        },
+        {
+          "Level": 58,
+          "Id": 59
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 92, 94, 99, 100, 102,
+        104, 115, 117, 118, 130, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 125,
     "Name": "Electabuzz",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 65,
       "Attack": 83,
@@ -1932,14 +5607,47 @@
       "Sp. Attack": 95,
       "Sp. Defense": 85,
       "Speed": 105
+    },
+    "Evolution": {
+      "Id": 466,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [43, 98],
+      "Levels": [
+        {
+          "Level": 34,
+          "Id": 84
+        },
+        {
+          "Level": 37,
+          "Id": 103
+        },
+        {
+          "Level": 42,
+          "Id": 9
+        },
+        {
+          "Level": 49,
+          "Id": 113
+        },
+        {
+          "Level": 54,
+          "Id": 87
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 70, 85, 86, 87, 92, 94, 99, 100, 102,
+        104, 115, 117, 118, 129, 130, 148, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 126,
     "Name": "Magmar",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 65,
       "Attack": 95,
@@ -1947,14 +5655,51 @@
       "Sp. Attack": 100,
       "Sp. Defense": 85,
       "Speed": 93
+    },
+    "Evolution": {
+      "Id": 467,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [52],
+      "Levels": [
+        {
+          "Level": 36,
+          "Id": 43
+        },
+        {
+          "Level": 39,
+          "Id": 109
+        },
+        {
+          "Level": 43,
+          "Id": 7
+        },
+        {
+          "Level": 48,
+          "Id": 108
+        },
+        {
+          "Level": 52,
+          "Id": 123
+        },
+        {
+          "Level": 55,
+          "Id": 53
+        }
+      ],
+      "TMs": [
+        5, 25, 34, 36, 38, 63, 66, 68, 69, 70, 92, 94, 99, 100, 102, 104, 117,
+        118, 126, 130, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 127,
     "Name": "Pinsir",
-    "Type": [
-      "Bug"
-    ],
+    "Type": ["Bug"],
     "Stats": {
       "HP": 65,
       "Attack": 125,
@@ -1962,14 +5707,46 @@
       "Sp. Attack": 55,
       "Sp. Defense": 70,
       "Speed": 85
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [11],
+      "Levels": [
+        {
+          "Level": 25,
+          "Id": 69
+        },
+        {
+          "Level": 30,
+          "Id": 12
+        },
+        {
+          "Level": 36,
+          "Id": 116
+        },
+        {
+          "Level": 43,
+          "Id": 106
+        },
+        {
+          "Level": 49,
+          "Id": 163
+        },
+        {
+          "Level": 54,
+          "Id": 14
+        }
+      ],
+      "TMs": [
+        14, 15, 34, 36, 38, 63, 66, 69, 70, 92, 99, 102, 104, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 128,
     "Name": "Tauros",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 75,
       "Attack": 100,
@@ -1977,14 +5754,43 @@
       "Sp. Attack": 40,
       "Sp. Defense": 70,
       "Speed": 110
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [33],
+      "Levels": [
+        {
+          "Level": 21,
+          "Id": 23
+        },
+        {
+          "Level": 28,
+          "Id": 39
+        },
+        {
+          "Level": 35,
+          "Id": 43
+        },
+        {
+          "Level": 44,
+          "Id": 99
+        },
+        {
+          "Level": 51,
+          "Id": 36
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 58, 59, 63, 70, 85, 87, 89, 90, 92, 99, 102, 104, 117,
+        126, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 129,
     "Name": "Magikarp",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 20,
       "Attack": 10,
@@ -1992,15 +5798,28 @@
       "Sp. Attack": 15,
       "Sp. Defense": 20,
       "Speed": 80
+    },
+    "Evolution": {
+      "Id": 130,
+      "Level": 20,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [150],
+      "Levels": [
+        {
+          "Level": 15,
+          "Id": 33
+        }
+      ],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 130,
     "Name": "Gyarados",
-    "Type": [
-      "Water",
-      "Flying"
-    ],
+    "Type": ["Water", "Flying"],
     "Stats": {
       "HP": 95,
       "Attack": 125,
@@ -2008,15 +5827,43 @@
       "Sp. Attack": 60,
       "Sp. Defense": 100,
       "Speed": 81
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [43, 44, 56, 82],
+      "Levels": [
+        {
+          "Level": 20,
+          "Id": 44
+        },
+        {
+          "Level": 25,
+          "Id": 82
+        },
+        {
+          "Level": 32,
+          "Id": 43
+        },
+        {
+          "Level": 41,
+          "Id": 56
+        },
+        {
+          "Level": 52,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 63, 70, 82, 85, 87, 92, 99, 102, 104,
+        115, 117, 126, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 131,
     "Name": "Lapras",
-    "Type": [
-      "Water",
-      "Ice"
-    ],
+    "Type": ["Water", "Ice"],
     "Stats": {
       "HP": 130,
       "Attack": 85,
@@ -2024,14 +5871,47 @@
       "Sp. Attack": 85,
       "Sp. Defense": 95,
       "Speed": 60
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [45, 55],
+      "Levels": [
+        {
+          "Level": 16,
+          "Id": 47
+        },
+        {
+          "Level": 20,
+          "Id": 54
+        },
+        {
+          "Level": 25,
+          "Id": 34
+        },
+        {
+          "Level": 31,
+          "Id": 109
+        },
+        {
+          "Level": 38,
+          "Id": 58
+        },
+        {
+          "Level": 46,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 70, 76, 82, 85, 87, 92, 94, 99,
+        102, 104, 115, 117, 130, 149, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 132,
     "Name": "Ditto",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 48,
       "Attack": 48,
@@ -2039,14 +5919,19 @@
       "Sp. Attack": 48,
       "Sp. Defense": 48,
       "Speed": 48
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [144],
+      "Levels": [],
+      "TMs": [],
+      "HMs": []
     }
   },
   {
     "Id": 133,
     "Name": "Eevee",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 55,
       "Attack": 55,
@@ -2054,14 +5939,40 @@
       "Sp. Attack": 45,
       "Sp. Defense": 65,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 134,
+      "Level": 0,
+      "Item": "Water Stone"
+    },
+    "Moves": {
+      "Defaults": [28, 33],
+      "Levels": [
+        {
+          "Level": 27,
+          "Id": 98
+        },
+        {
+          "Level": 31,
+          "Id": 39
+        },
+        {
+          "Level": 37,
+          "Id": 44
+        },
+        {
+          "Level": 45,
+          "Id": 36
+        }
+      ],
+      "TMs": [34, 36, 38, 92, 99, 102, 104, 115, 117, 129, 130, 156, 164],
+      "HMs": []
     }
   },
   {
     "Id": 134,
     "Name": "Vaporeon",
-    "Type": [
-      "Water"
-    ],
+    "Type": ["Water"],
     "Stats": {
       "HP": 130,
       "Attack": 65,
@@ -2069,14 +5980,55 @@
       "Sp. Attack": 110,
       "Sp. Defense": 95,
       "Speed": 65
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [28, 33, 55, 98],
+      "Levels": [
+        {
+          "Level": 27,
+          "Id": 98
+        },
+        {
+          "Level": 31,
+          "Id": 55
+        },
+        {
+          "Level": 37,
+          "Id": 39
+        },
+        {
+          "Level": 40,
+          "Id": 44
+        },
+        {
+          "Level": 42,
+          "Id": 151
+        },
+        {
+          "Level": 44,
+          "Id": 114
+        },
+        {
+          "Level": 48,
+          "Id": 54
+        },
+        {
+          "Level": 54,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 63, 92, 99, 102, 104, 115, 117, 129,
+        130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 135,
     "Name": "Jolteon",
-    "Type": [
-      "Electric"
-    ],
+    "Type": ["Electric"],
     "Stats": {
       "HP": 65,
       "Attack": 65,
@@ -2084,14 +6036,55 @@
       "Sp. Attack": 110,
       "Sp. Defense": 95,
       "Speed": 130
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [28, 33, 84, 98],
+      "Levels": [
+        {
+          "Level": 27,
+          "Id": 98
+        },
+        {
+          "Level": 31,
+          "Id": 84
+        },
+        {
+          "Level": 37,
+          "Id": 39
+        },
+        {
+          "Level": 40,
+          "Id": 86
+        },
+        {
+          "Level": 42,
+          "Id": 24
+        },
+        {
+          "Level": 44,
+          "Id": 97
+        },
+        {
+          "Level": 48,
+          "Id": 42
+        },
+        {
+          "Level": 54,
+          "Id": 87
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 63, 85, 86, 87, 92, 99, 102, 104, 115, 117, 129, 130, 148,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 136,
     "Name": "Flareon",
-    "Type": [
-      "Fire"
-    ],
+    "Type": ["Fire"],
     "Stats": {
       "HP": 65,
       "Attack": 130,
@@ -2099,14 +6092,54 @@
       "Sp. Attack": 95,
       "Sp. Defense": 110,
       "Speed": 65
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [28, 33, 52, 98],
+      "Levels": [
+        {
+          "Level": 27,
+          "Id": 98
+        },
+        {
+          "Level": 31,
+          "Id": 52
+        },
+        {
+          "Level": 37,
+          "Id": 39
+        },
+        {
+          "Level": 40,
+          "Id": 44
+        },
+        {
+          "Level": 42,
+          "Id": 43
+        },
+        {
+          "Level": 44,
+          "Id": 83
+        },
+        {
+          "Level": 48,
+          "Id": 99
+        },
+        {
+          "Level": 54,
+          "Id": 53
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 63, 92, 99, 102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 137,
     "Name": "Porygon",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 65,
       "Attack": 60,
@@ -2114,15 +6147,43 @@
       "Sp. Attack": 85,
       "Sp. Defense": 75,
       "Speed": 40
+    },
+    "Evolution": {
+      "Id": 233,
+      "Level": 0,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [33, 159, 160],
+      "Levels": [
+        {
+          "Level": 23,
+          "Id": 60
+        },
+        {
+          "Level": 28,
+          "Id": 105
+        },
+        {
+          "Level": 35,
+          "Id": 97
+        },
+        {
+          "Level": 42,
+          "Id": 161
+        }
+      ],
+      "TMs": [
+        36, 38, 58, 59, 63, 85, 86, 87, 92, 94, 99, 100, 102, 104, 115, 117,
+        129, 130, 148, 149, 156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 138,
     "Name": "Omanyte",
-    "Type": [
-      "Rock",
-      "Water"
-    ],
+    "Type": ["Rock", "Water"],
     "Stats": {
       "HP": 35,
       "Attack": 40,
@@ -2130,15 +6191,42 @@
       "Sp. Attack": 90,
       "Sp. Defense": 55,
       "Speed": 35
+    },
+    "Evolution": {
+      "Id": 139,
+      "Level": 40,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [55, 110],
+      "Levels": [
+        {
+          "Level": 34,
+          "Id": 30
+        },
+        {
+          "Level": 39,
+          "Id": 43
+        },
+        {
+          "Level": 46,
+          "Id": 131
+        },
+        {
+          "Level": 53,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 92, 99, 102, 104, 115, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 139,
     "Name": "Omastar",
-    "Type": [
-      "Rock",
-      "Water"
-    ],
+    "Type": ["Rock", "Water"],
     "Stats": {
       "HP": 70,
       "Attack": 60,
@@ -2146,15 +6234,39 @@
       "Sp. Attack": 115,
       "Sp. Defense": 70,
       "Speed": 55
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [30, 55, 110],
+      "Levels": [
+        {
+          "Level": 34,
+          "Id": 30
+        },
+        {
+          "Level": 39,
+          "Id": 43
+        },
+        {
+          "Level": 44,
+          "Id": 131
+        },
+        {
+          "Level": 49,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 69, 92, 99, 102, 104, 115,
+        117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 140,
     "Name": "Kabuto",
-    "Type": [
-      "Rock",
-      "Water"
-    ],
+    "Type": ["Rock", "Water"],
     "Stats": {
       "HP": 30,
       "Attack": 80,
@@ -2162,15 +6274,42 @@
       "Sp. Attack": 55,
       "Sp. Defense": 45,
       "Speed": 55
+    },
+    "Evolution": {
+      "Id": 141,
+      "Level": 40,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [10, 106],
+      "Levels": [
+        {
+          "Level": 34,
+          "Id": 71
+        },
+        {
+          "Level": 39,
+          "Id": 163
+        },
+        {
+          "Level": 44,
+          "Id": 43
+        },
+        {
+          "Level": 49,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 92, 99, 102, 104, 115, 117, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 141,
     "Name": "Kabutops",
-    "Type": [
-      "Rock",
-      "Water"
-    ],
+    "Type": ["Rock", "Water"],
     "Stats": {
       "HP": 60,
       "Attack": 115,
@@ -2178,15 +6317,39 @@
       "Sp. Attack": 65,
       "Sp. Defense": 70,
       "Speed": 80
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [10, 71, 106],
+      "Levels": [
+        {
+          "Level": 34,
+          "Id": 71
+        },
+        {
+          "Level": 39,
+          "Id": 163
+        },
+        {
+          "Level": 46,
+          "Id": 43
+        },
+        {
+          "Level": 53,
+          "Id": 56
+        }
+      ],
+      "TMs": [
+        13, 14, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 69, 92, 99, 102,
+        104, 115, 117, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 142,
     "Name": "Aerodactyl",
-    "Type": [
-      "Rock",
-      "Flying"
-    ],
+    "Type": ["Rock", "Flying"],
     "Stats": {
       "HP": 80,
       "Attack": 105,
@@ -2194,14 +6357,39 @@
       "Sp. Attack": 60,
       "Sp. Defense": 75,
       "Speed": 130
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [17, 97],
+      "Levels": [
+        {
+          "Level": 33,
+          "Id": 48
+        },
+        {
+          "Level": 38,
+          "Id": 44
+        },
+        {
+          "Level": 45,
+          "Id": 36
+        },
+        {
+          "Level": 54,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 63, 82, 92, 99, 102, 104, 115, 117, 126, 129, 143,
+        156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 143,
     "Name": "Snorlax",
-    "Type": [
-      "Normal"
-    ],
+    "Type": ["Normal"],
     "Stats": {
       "HP": 160,
       "Attack": 110,
@@ -2209,15 +6397,40 @@
       "Sp. Attack": 65,
       "Sp. Defense": 110,
       "Speed": 30
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [29, 133, 156],
+      "Levels": [
+        {
+          "Level": 35,
+          "Id": 34
+        },
+        {
+          "Level": 41,
+          "Id": 106
+        },
+        {
+          "Level": 48,
+          "Id": 38
+        },
+        {
+          "Level": 56,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 55, 57, 58, 59, 61, 63, 66, 68, 69, 70, 76, 85,
+        87, 89, 90, 92, 94, 99, 102, 104, 115, 117, 118, 120, 126, 130, 149,
+        156, 157, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 144,
     "Name": "Articuno",
-    "Type": [
-      "Ice",
-      "Flying"
-    ],
+    "Type": ["Ice", "Flying"],
     "Stats": {
       "HP": 90,
       "Attack": 85,
@@ -2225,15 +6438,35 @@
       "Sp. Attack": 95,
       "Sp. Defense": 125,
       "Speed": 85
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [58, 64],
+      "Levels": [
+        {
+          "Level": 51,
+          "Id": 59
+        },
+        {
+          "Level": 55,
+          "Id": 97
+        },
+        {
+          "Level": 60,
+          "Id": 54
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 55, 58, 59, 61, 63, 92, 99, 102, 104, 115, 117, 129,
+        143, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 145,
     "Name": "Zapdos",
-    "Type": [
-      "Electric",
-      "Flying"
-    ],
+    "Type": ["Electric", "Flying"],
     "Stats": {
       "HP": 90,
       "Attack": 90,
@@ -2241,15 +6474,35 @@
       "Sp. Attack": 125,
       "Sp. Defense": 90,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [65, 84],
+      "Levels": [
+        {
+          "Level": 51,
+          "Id": 87
+        },
+        {
+          "Level": 55,
+          "Id": 97
+        },
+        {
+          "Level": 60,
+          "Id": 113
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 63, 85, 86, 87, 92, 99, 102, 104, 115, 117, 129,
+        143, 148, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 146,
     "Name": "Moltres",
-    "Type": [
-      "Fire",
-      "Flying"
-    ],
+    "Type": ["Fire", "Flying"],
     "Stats": {
       "HP": 90,
       "Attack": 100,
@@ -2257,14 +6510,35 @@
       "Sp. Attack": 125,
       "Sp. Defense": 85,
       "Speed": 90
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [64, 83],
+      "Levels": [
+        {
+          "Level": 51,
+          "Id": 43
+        },
+        {
+          "Level": 55,
+          "Id": 97
+        },
+        {
+          "Level": 60,
+          "Id": 143
+        }
+      ],
+      "TMs": [
+        13, 18, 19, 36, 38, 63, 92, 99, 102, 104, 115, 117, 126, 129, 143, 156,
+        164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 147,
     "Name": "Dratini",
-    "Type": [
-      "Dragon"
-    ],
+    "Type": ["Dragon"],
     "Stats": {
       "HP": 41,
       "Attack": 64,
@@ -2272,14 +6546,47 @@
       "Sp. Attack": 50,
       "Sp. Defense": 50,
       "Speed": 50
+    },
+    "Evolution": {
+      "Id": 148,
+      "Level": 30,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [35, 43],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 86
+        },
+        {
+          "Level": 20,
+          "Id": 97
+        },
+        {
+          "Level": 30,
+          "Id": 21
+        },
+        {
+          "Level": 40,
+          "Id": 82
+        },
+        {
+          "Level": 50,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        34, 36, 38, 55, 57, 58, 59, 61, 82, 85, 86, 87, 92, 99, 102, 104, 115,
+        117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 148,
     "Name": "Dragonair",
-    "Type": [
-      "Dragon"
-    ],
+    "Type": ["Dragon"],
     "Stats": {
       "HP": 61,
       "Attack": 84,
@@ -2287,15 +6594,47 @@
       "Sp. Attack": 70,
       "Sp. Defense": 70,
       "Speed": 70
+    },
+    "Evolution": {
+      "Id": 149,
+      "Level": 55,
+      "Item": ""
+    },
+    "Moves": {
+      "Defaults": [35, 43, 86],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 86
+        },
+        {
+          "Level": 20,
+          "Id": 97
+        },
+        {
+          "Level": 35,
+          "Id": 21
+        },
+        {
+          "Level": 45,
+          "Id": 82
+        },
+        {
+          "Level": 55,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        32, 34, 36, 38, 55, 57, 58, 59, 61, 82, 85, 86, 87, 92, 99, 102, 104,
+        115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 149,
     "Name": "Dragonite",
-    "Type": [
-      "Dragon",
-      "Flying"
-    ],
+    "Type": ["Dragon", "Flying"],
     "Stats": {
       "HP": 91,
       "Attack": 134,
@@ -2303,14 +6642,43 @@
       "Sp. Attack": 100,
       "Sp. Defense": 100,
       "Speed": 80
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [35, 43, 86, 97],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 86
+        },
+        {
+          "Level": 20,
+          "Id": 97
+        },
+        {
+          "Level": 35,
+          "Id": 21
+        },
+        {
+          "Level": 45,
+          "Id": 82
+        },
+        {
+          "Level": 60,
+          "Id": 63
+        }
+      ],
+      "TMs": [
+        13, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63, 70, 82, 85, 86, 87, 92, 99,
+        102, 104, 115, 117, 126, 129, 130, 156, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 150,
     "Name": "Mewtwo",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 106,
       "Attack": 110,
@@ -2318,14 +6686,44 @@
       "Sp. Attack": 154,
       "Sp. Defense": 90,
       "Speed": 130
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [50, 93, 94, 129],
+      "Levels": [
+        {
+          "Level": 63,
+          "Id": 112
+        },
+        {
+          "Level": 66,
+          "Id": 94
+        },
+        {
+          "Level": 70,
+          "Id": 105
+        },
+        {
+          "Level": 75,
+          "Id": 54
+        },
+        {
+          "Level": 81,
+          "Id": 133
+        }
+      ],
+      "TMs": [
+        5, 6, 25, 34, 36, 38, 55, 58, 59, 61, 63, 66, 68, 69, 70, 76, 85, 86,
+        87, 92, 94, 99, 100, 102, 104, 115, 117, 118, 120, 126, 130, 148, 149,
+        156, 161, 164
+      ],
+      "HMs": []
     }
   },
   {
     "Id": 151,
     "Name": "Mew",
-    "Type": [
-      "Psychic"
-    ],
+    "Type": ["Psychic"],
     "Stats": {
       "HP": 100,
       "Attack": 100,
@@ -2333,6 +6731,35 @@
       "Sp. Attack": 100,
       "Sp. Defense": 100,
       "Speed": 100
+    },
+    "Evolution": {},
+    "Moves": {
+      "Defaults": [1],
+      "Levels": [
+        {
+          "Level": 10,
+          "Id": 144
+        },
+        {
+          "Level": 20,
+          "Id": 5
+        },
+        {
+          "Level": 30,
+          "Id": 118
+        },
+        {
+          "Level": 40,
+          "Id": 94
+        }
+      ],
+      "TMs": [
+        5, 6, 13, 14, 15, 18, 19, 25, 32, 34, 36, 38, 55, 57, 58, 59, 61, 63,
+        66, 68, 69, 70, 72, 76, 82, 85, 86, 87, 89, 90, 91, 92, 94, 99, 100,
+        102, 104, 115, 117, 118, 120, 121, 126, 129, 130, 135, 138, 143, 148,
+        149, 153, 156, 157, 161, 164
+      ],
+      "HMs": []
     }
   }
 ]

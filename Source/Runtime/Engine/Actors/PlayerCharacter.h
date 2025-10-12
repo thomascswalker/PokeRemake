@@ -16,8 +16,6 @@ public:
 	PPlayerCharacter();
 	void Tick(float DeltaTime) override;
 	bool DebugDraw(const PRenderer* Renderer) const override;
-	void OnKeyDown(SInputEvent* Event) override;
-	void OnKeyUp(SInputEvent* Event) override;
 
 	float GetDepth() const override
 	{
@@ -25,6 +23,9 @@ public:
 	}
 
 	bool CanMove() const;
+	void SetCanMove(bool State);
+	bool TryMove(EDPad Direction);
+	bool TryStop(EDPad Direction);
 	void Interact();
 
 	PCameraComponent* GetCameraComponent() const

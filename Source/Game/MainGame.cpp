@@ -2,10 +2,9 @@
 
 #include "Application/Application.h"
 #include "Battle/BattleMode.h"
-#include "Core/Font.h"
 #include "Core/GameSerializer.h"
-#include "Engine/Actors/Interactable.h"
-#include "Engine/Dialog.h"
+#include "Core/Ids.h"
+#include "Core/TextRenderer.h"
 #include "Modes/MapMode.h"
 
 PMainGame::PMainGame()
@@ -37,7 +36,7 @@ bool PMainGame::PreStart()
 	BattleMode->PreStart();
 
 	// Initialize Player Party
-	auto Mon = mPlayerStorage.Construct(ID_CHARMANDER, 5);
+	auto Mon = mPlayerStorage.Construct(MON_NIDOKING, 64);
 	mPlayerParty.Add(Mon);
 
 	LogInfo("Game PreStart successful.");
@@ -56,60 +55,8 @@ bool PMainGame::Start()
 	GPlayerParty = &mPlayerParty;
 	GPlayerStorage = &mPlayerStorage;
 
-	PokeFont::LoadFontData();
+	TextRenderer::LoadFontData();
 
-	return true;
-}
-
-bool PMainGame::HandleGameEvent(SGameEvent& Event)
-{
-	switch (Event.Type)
-	{
-		case EGameEventType::Dialog:
-			{
-				if (!mHUD->IsDialogBoxVisible())
-				{
-					return StartDialogBox(&Event);
-				}
-
-				return EndDialogBox();
-			}
-		case EGameEventType::BattleStart:
-			{
-				return StartBattle(&Event);
-			}
-		case EGameEventType::BattleEnd:
-			{
-				return EndBattle();
-			}
-		default:
-			break;
-	}
-	return true;
-}
-
-bool PMainGame::StartDialogBox(SGameEvent* Event)
-{
-	mHUD->StartDialogBox(Event->GetData<SDialogContext>());
-	return true;
-}
-
-bool PMainGame::EndDialogBox()
-{
-	mHUD->EndDialogBox();
-	return true;
-}
-
-bool PMainGame::StartBattle(SGameEvent* Event)
-{
-	mHUD->EndDialogBox();
-	mHUD->StartBattleHUD();
-	return true;
-}
-
-bool PMainGame::EndBattle()
-{
-	mHUD->EndBattleHUD();
 	return true;
 }
 

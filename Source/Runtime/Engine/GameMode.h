@@ -7,7 +7,23 @@
 
 struct SGameState
 {
+private:
+	JSON Schema;
+
+public:
 	JSON Data;
+
+	SGameState(const JSON& InSchema = JSON())
+		: Schema(InSchema)
+	{
+	}
+
+	SGameState(const SGameState& Other)
+		: Schema(Other.Schema), Data(Other.Data)
+	{
+	}
+
+	const JSON& GetSchema() const { return Schema; }
 
 	JSON GetRaw(const std::string& Key)
 	{
@@ -53,6 +69,15 @@ public:
 	void ToggleLoaded() { mLoaded = !mLoaded; }
 
 	SGameState* GetState() { return &mState; }
+
+	virtual bool HandlePressA() { return false; }
+	virtual bool HandleReleaseA() { return false; }
+	virtual bool HandlePressB() { return false; }
+	virtual bool HandleReleaseB() { return false; }
+	virtual bool HandlePressDPad(EDPad Direction) { return false; }
+	virtual bool HandleReleaseDPad(EDPad Direction) { return false; }
+	virtual bool HandlePressStart() { return false; }
+	virtual bool HandlePressSelect() { return false; }
 
 	virtual bool HandleGameEvent(const SGameEvent& GameEvent) = 0;
 };

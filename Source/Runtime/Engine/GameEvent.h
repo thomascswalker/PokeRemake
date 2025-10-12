@@ -15,6 +15,8 @@ enum class EGameEventType
 	BattleStart = 200,
 	BattleEnd,
 	BattleChangeSelection,
+	BattleEnterMove,
+	BattleExitMove,
 };
 
 static const char* GameEventTypeToString(EGameEventType Type)

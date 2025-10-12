@@ -1,0 +1,1487 @@
+[
+  {
+    "Id": 1,
+    "Accuracy": 100,
+    "Name": "Pound",
+    "Power": 40,
+    "Type": "Normal",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 2,
+    "Accuracy": 100,
+    "Name": "Karate Chop",
+    "Power": 50,
+    "Type": "Fighting",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 3,
+    "Accuracy": 85,
+    "Name": "Double Slap",
+    "Power": 15,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 4,
+    "Accuracy": 85,
+    "Name": "Comet Punch",
+    "Power": 18,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 5,
+    "Accuracy": 85,
+    "Name": "Mega Punch",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 6,
+    "Accuracy": 100,
+    "Name": "Pay Day",
+    "Power": 40,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 7,
+    "Accuracy": 100,
+    "Name": "Fire Punch",
+    "Power": 75,
+    "Type": "Fire",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 8,
+    "Accuracy": 100,
+    "Name": "Ice Punch",
+    "Power": 75,
+    "Type": "Ice",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 9,
+    "Accuracy": 100,
+    "Name": "Thunder Punch",
+    "Power": 75,
+    "Type": "Electric",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 10,
+    "Accuracy": 100,
+    "Name": "Scratch",
+    "Power": 40,
+    "Type": "Normal",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 11,
+    "Accuracy": 100,
+    "Name": "Vice Grip",
+    "Power": 55,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Physical"
+  },
+  {
+    "Id": 12,
+    "Accuracy": 30,
+    "Name": "Guillotine",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 13,
+    "Accuracy": 100,
+    "Name": "Razor Wind",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 14,
+    "Accuracy": null,
+    "Name": "Swords Dance",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 15,
+    "Accuracy": 95,
+    "Name": "Cut",
+    "Power": 50,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Physical"
+  },
+  {
+    "Id": 16,
+    "Accuracy": 100,
+    "Name": "Gust",
+    "Power": 40,
+    "Type": "Flying",
+    "PP": 35,
+    "Category": "Special"
+  },
+  {
+    "Id": 17,
+    "Accuracy": 100,
+    "Name": "Wing Attack",
+    "Power": 60,
+    "Type": "Flying",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 18,
+    "Accuracy": 100,
+    "Name": "Whirlwind",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 19,
+    "Accuracy": 95,
+    "Name": "Fly",
+    "Power": 90,
+    "Type": "Flying",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 20,
+    "Accuracy": 85,
+    "Name": "Bind",
+    "Power": 15,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 21,
+    "Accuracy": 75,
+    "Name": "Slam",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 22,
+    "Accuracy": 100,
+    "Name": "Vine Whip",
+    "Power": 45,
+    "Type": "Grass",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 23,
+    "Accuracy": 100,
+    "Name": "Stomp",
+    "Power": 65,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 24,
+    "Accuracy": 100,
+    "Name": "Double Kick",
+    "Power": 30,
+    "Type": "Fighting",
+    "PP": 30,
+    "Category": "Physical"
+  },
+  {
+    "Id": 25,
+    "Accuracy": 75,
+    "Name": "Mega Kick",
+    "Power": 120,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 26,
+    "Accuracy": 95,
+    "Name": "Jump Kick",
+    "Power": 130,
+    "Type": "Fighting",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 27,
+    "Accuracy": 85,
+    "Name": "Rolling Kick",
+    "Power": 60,
+    "Type": "Fighting",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 28,
+    "Accuracy": 100,
+    "Name": "Sand Attack",
+    "Power": null,
+    "Type": "Ground",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 29,
+    "Accuracy": 100,
+    "Name": "Headbutt",
+    "Power": 70,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 30,
+    "Accuracy": 100,
+    "Name": "Horn Attack",
+    "Power": 65,
+    "Type": "Normal",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 31,
+    "Accuracy": 85,
+    "Name": "Fury Attack",
+    "Power": 15,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 32,
+    "Accuracy": 30,
+    "Name": "Horn Drill",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 33,
+    "Accuracy": 100,
+    "Name": "Tackle",
+    "Power": 50,
+    "Type": "Normal",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 34,
+    "Accuracy": 100,
+    "Name": "Body Slam",
+    "Power": 85,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 35,
+    "Accuracy": 90,
+    "Name": "Wrap",
+    "Power": 15,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 36,
+    "Accuracy": 85,
+    "Name": "Take Down",
+    "Power": 90,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 37,
+    "Accuracy": 100,
+    "Name": "Thrash",
+    "Power": 120,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 38,
+    "Accuracy": 100,
+    "Name": "Double-Edge",
+    "Power": 120,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 39,
+    "Accuracy": 100,
+    "Name": "Tail Whip",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 40,
+    "Accuracy": 100,
+    "Name": "Poison Sting",
+    "Power": 15,
+    "Type": "Poison",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 41,
+    "Accuracy": 100,
+    "Name": "Twineedle",
+    "Power": 25,
+    "Type": "Bug",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 42,
+    "Accuracy": 95,
+    "Name": "Pin Missile",
+    "Power": 25,
+    "Type": "Bug",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 43,
+    "Accuracy": 100,
+    "Name": "Leer",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 44,
+    "Accuracy": 100,
+    "Name": "Bite",
+    "Power": 60,
+    "Type": "Dark",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 45,
+    "Accuracy": 100,
+    "Name": "Growl",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 46,
+    "Accuracy": null,
+    "Name": "Roar",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 47,
+    "Accuracy": 55,
+    "Name": "Sing",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 48,
+    "Accuracy": 55,
+    "Name": "Supersonic",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 49,
+    "Accuracy": 90,
+    "Name": "Sonic Boom",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 50,
+    "Accuracy": 100,
+    "Name": "Disable",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 51,
+    "Accuracy": 100,
+    "Name": "Acid",
+    "Power": 40,
+    "Type": "Poison",
+    "PP": 30,
+    "Category": "Special"
+  },
+  {
+    "Id": 52,
+    "Accuracy": 100,
+    "Name": "Ember",
+    "Power": 40,
+    "Type": "Fire",
+    "PP": 25,
+    "Category": "Special"
+  },
+  {
+    "Id": 53,
+    "Accuracy": 100,
+    "Name": "Flamethrower",
+    "Power": 90,
+    "Type": "Fire",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 54,
+    "Accuracy": null,
+    "Name": "Mist",
+    "Power": null,
+    "Type": "Ice",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 55,
+    "Accuracy": 100,
+    "Name": "Water Gun",
+    "Power": 40,
+    "Type": "Water",
+    "PP": 25,
+    "Category": "Special"
+  },
+  {
+    "Id": 56,
+    "Accuracy": 80,
+    "Name": "Hydro Pump",
+    "Power": 110,
+    "Type": "Water",
+    "PP": 5,
+    "Category": "Special"
+  },
+  {
+    "Id": 57,
+    "Accuracy": 100,
+    "Name": "Surf",
+    "Power": 90,
+    "Type": "Water",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 58,
+    "Accuracy": 100,
+    "Name": "Ice Beam",
+    "Power": 90,
+    "Type": "Ice",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 59,
+    "Accuracy": 70,
+    "Name": "Blizzard",
+    "Power": 110,
+    "Type": "Ice",
+    "PP": 5,
+    "Category": "Special"
+  },
+  {
+    "Id": 60,
+    "Accuracy": 100,
+    "Name": "Psybeam",
+    "Power": 65,
+    "Type": "Psychic",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 61,
+    "Accuracy": 100,
+    "Name": "Bubble Beam",
+    "Power": 65,
+    "Type": "Water",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 62,
+    "Accuracy": 100,
+    "Name": "Aurora Beam",
+    "Power": 65,
+    "Type": "Ice",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 63,
+    "Accuracy": 90,
+    "Name": "Hyper Beam",
+    "Power": 150,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Special"
+  },
+  {
+    "Id": 64,
+    "Accuracy": 100,
+    "Name": "Peck",
+    "Power": 35,
+    "Type": "Flying",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 65,
+    "Accuracy": 100,
+    "Name": "Drill Peck",
+    "Power": 80,
+    "Type": "Flying",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 66,
+    "Accuracy": 80,
+    "Name": "Submission",
+    "Power": 80,
+    "Type": "Fighting",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 67,
+    "Accuracy": 100,
+    "Name": "Low Kick",
+    "Power": null,
+    "Type": "Fighting",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 68,
+    "Accuracy": 100,
+    "Name": "Counter",
+    "Power": null,
+    "Type": "Fighting",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 69,
+    "Accuracy": 100,
+    "Name": "Seismic Toss",
+    "Power": null,
+    "Type": "Fighting",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 70,
+    "Accuracy": 100,
+    "Name": "Strength",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 71,
+    "Accuracy": 100,
+    "Name": "Absorb",
+    "Power": 20,
+    "Type": "Grass",
+    "PP": 25,
+    "Category": "Special"
+  },
+  {
+    "Id": 72,
+    "Accuracy": 100,
+    "Name": "Mega Drain",
+    "Power": 40,
+    "Type": "Grass",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 73,
+    "Accuracy": 90,
+    "Name": "Leech Seed",
+    "Power": null,
+    "Type": "Grass",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 74,
+    "Accuracy": null,
+    "Name": "Growth",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 75,
+    "Accuracy": 95,
+    "Name": "Razor Leaf",
+    "Power": 55,
+    "Type": "Grass",
+    "PP": 25,
+    "Category": "Physical"
+  },
+  {
+    "Id": 76,
+    "Accuracy": 100,
+    "Name": "Solar Beam",
+    "Power": 120,
+    "Type": "Grass",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 77,
+    "Accuracy": 75,
+    "Name": "Poison Powder",
+    "Power": null,
+    "Type": "Poison",
+    "PP": 35,
+    "Category": "Status"
+  },
+  {
+    "Id": 78,
+    "Accuracy": 75,
+    "Name": "Stun Spore",
+    "Power": null,
+    "Type": "Grass",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 79,
+    "Accuracy": 75,
+    "Name": "Sleep Powder",
+    "Power": null,
+    "Type": "Grass",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 80,
+    "Accuracy": 100,
+    "Name": "Petal Dance",
+    "Power": 120,
+    "Type": "Grass",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 81,
+    "Accuracy": 95,
+    "Name": "String Shot",
+    "Power": null,
+    "Type": "Bug",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 82,
+    "Accuracy": 100,
+    "Name": "Dragon Rage",
+    "Power": null,
+    "Type": "Dragon",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 83,
+    "Accuracy": 85,
+    "Name": "Fire Spin",
+    "Power": 35,
+    "Type": "Fire",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 84,
+    "Accuracy": 100,
+    "Name": "Thunder Shock",
+    "Power": 40,
+    "Type": "Electric",
+    "PP": 30,
+    "Category": "Special"
+  },
+  {
+    "Id": 85,
+    "Accuracy": 100,
+    "Name": "Thunderbolt",
+    "Power": 90,
+    "Type": "Electric",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 86,
+    "Accuracy": 100,
+    "Name": "Thunder Wave",
+    "Power": null,
+    "Type": "Electric",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 87,
+    "Accuracy": 70,
+    "Name": "Thunder",
+    "Power": 110,
+    "Type": "Electric",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 88,
+    "Accuracy": 90,
+    "Name": "Rock Throw",
+    "Power": 50,
+    "Type": "Rock",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 89,
+    "Accuracy": 100,
+    "Name": "Earthquake",
+    "Power": 100,
+    "Type": "Ground",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 90,
+    "Accuracy": 30,
+    "Name": "Fissure",
+    "Power": null,
+    "Type": "Ground",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 91,
+    "Accuracy": 100,
+    "Name": "Dig",
+    "Power": 80,
+    "Type": "Ground",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 92,
+    "Accuracy": 90,
+    "Name": "Toxic",
+    "Power": null,
+    "Type": "Poison",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 93,
+    "Accuracy": 100,
+    "Name": "Confusion",
+    "Power": 50,
+    "Type": "Psychic",
+    "PP": 25,
+    "Category": "Special"
+  },
+  {
+    "Id": 94,
+    "Accuracy": 100,
+    "Name": "Psychic",
+    "Power": 90,
+    "Type": "Psychic",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 95,
+    "Accuracy": 60,
+    "Name": "Hypnosis",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 96,
+    "Accuracy": null,
+    "Name": "Meditate",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 97,
+    "Accuracy": null,
+    "Name": "Agility",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 98,
+    "Accuracy": 100,
+    "Name": "Quick Attack",
+    "Power": 40,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Physical"
+  },
+  {
+    "Id": 99,
+    "Accuracy": 100,
+    "Name": "Rage",
+    "Power": 20,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 100,
+    "Accuracy": null,
+    "Name": "Teleport",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 101,
+    "Accuracy": 100,
+    "Name": "Night Shade",
+    "Power": null,
+    "Type": "Ghost",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 102,
+    "Accuracy": null,
+    "Name": "Mimic",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 103,
+    "Accuracy": 85,
+    "Name": "Screech",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 104,
+    "Accuracy": null,
+    "Name": "Double Team",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 105,
+    "Accuracy": null,
+    "Name": "Recover",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 106,
+    "Accuracy": null,
+    "Name": "Harden",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 107,
+    "Accuracy": null,
+    "Name": "Minimize",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 108,
+    "Accuracy": 100,
+    "Name": "Smokescreen",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 109,
+    "Accuracy": 100,
+    "Name": "Confuse Ray",
+    "Power": null,
+    "Type": "Ghost",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 110,
+    "Accuracy": null,
+    "Name": "Withdraw",
+    "Power": null,
+    "Type": "Water",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 111,
+    "Accuracy": null,
+    "Name": "Defense Curl",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 112,
+    "Accuracy": null,
+    "Name": "Barrier",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 113,
+    "Accuracy": null,
+    "Name": "Light Screen",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 114,
+    "Accuracy": null,
+    "Name": "Haze",
+    "Power": null,
+    "Type": "Ice",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 115,
+    "Accuracy": null,
+    "Name": "Reflect",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 116,
+    "Accuracy": null,
+    "Name": "Focus Energy",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 117,
+    "Accuracy": null,
+    "Name": "Bide",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 118,
+    "Accuracy": null,
+    "Name": "Metronome",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 119,
+    "Accuracy": null,
+    "Name": "Mirror Move",
+    "Power": null,
+    "Type": "Flying",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 120,
+    "Accuracy": 100,
+    "Name": "Self-Destruct",
+    "Power": 200,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 121,
+    "Accuracy": 75,
+    "Name": "Egg Bomb",
+    "Power": 100,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 122,
+    "Accuracy": 100,
+    "Name": "Lick",
+    "Power": 30,
+    "Type": "Ghost",
+    "PP": 30,
+    "Category": "Physical"
+  },
+  {
+    "Id": 123,
+    "Accuracy": 70,
+    "Name": "Smog",
+    "Power": 30,
+    "Type": "Poison",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 124,
+    "Accuracy": 100,
+    "Name": "Sludge",
+    "Power": 65,
+    "Type": "Poison",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 125,
+    "Accuracy": 85,
+    "Name": "Bone Club",
+    "Power": 65,
+    "Type": "Ground",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 126,
+    "Accuracy": 85,
+    "Name": "Fire Blast",
+    "Power": 110,
+    "Type": "Fire",
+    "PP": 5,
+    "Category": "Special"
+  },
+  {
+    "Id": 127,
+    "Accuracy": 100,
+    "Name": "Waterfall",
+    "Power": 80,
+    "Type": "Water",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 128,
+    "Accuracy": 85,
+    "Name": "Clamp",
+    "Power": 35,
+    "Type": "Water",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 129,
+    "Accuracy": null,
+    "Name": "Swift",
+    "Power": 60,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Special"
+  },
+  {
+    "Id": 130,
+    "Accuracy": 100,
+    "Name": "Skull Bash",
+    "Power": 130,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 131,
+    "Accuracy": 100,
+    "Name": "Spike Cannon",
+    "Power": 20,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 132,
+    "Accuracy": 100,
+    "Name": "Constrict",
+    "Power": 10,
+    "Type": "Normal",
+    "PP": 35,
+    "Category": "Physical"
+  },
+  {
+    "Id": 133,
+    "Accuracy": null,
+    "Name": "Amnesia",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 134,
+    "Accuracy": 80,
+    "Name": "Kinesis",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 135,
+    "Accuracy": null,
+    "Name": "Soft-Boiled",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 136,
+    "Accuracy": 90,
+    "Name": "High Jump Kick",
+    "Power": 130,
+    "Type": "Fighting",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 137,
+    "Accuracy": 100,
+    "Name": "Glare",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 138,
+    "Accuracy": 100,
+    "Name": "Dream Eater",
+    "Power": 100,
+    "Type": "Psychic",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 139,
+    "Accuracy": 90,
+    "Name": "Poison Gas",
+    "Power": null,
+    "Type": "Poison",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 140,
+    "Accuracy": 85,
+    "Name": "Barrage",
+    "Power": 15,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 141,
+    "Accuracy": 100,
+    "Name": "Leech Life",
+    "Power": 20,
+    "Type": "Bug",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 142,
+    "Accuracy": 75,
+    "Name": "Lovely Kiss",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 143,
+    "Accuracy": 90,
+    "Name": "Sky Attack",
+    "Power": 140,
+    "Type": "Flying",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 144,
+    "Accuracy": null,
+    "Name": "Transform",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 145,
+    "Accuracy": 100,
+    "Name": "Bubble",
+    "Power": 40,
+    "Type": "Water",
+    "PP": 30,
+    "Category": "Special"
+  },
+  {
+    "Id": 146,
+    "Accuracy": 100,
+    "Name": "Dizzy Punch",
+    "Power": 70,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 147,
+    "Accuracy": 100,
+    "Name": "Spore",
+    "Power": null,
+    "Type": "Grass",
+    "PP": 15,
+    "Category": "Status"
+  },
+  {
+    "Id": 148,
+    "Accuracy": 100,
+    "Name": "Flash",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 149,
+    "Accuracy": 100,
+    "Name": "Psywave",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 15,
+    "Category": "Special"
+  },
+  {
+    "Id": 150,
+    "Accuracy": null,
+    "Name": "Splash",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 40,
+    "Category": "Status"
+  },
+  {
+    "Id": 151,
+    "Accuracy": null,
+    "Name": "Acid Armor",
+    "Power": null,
+    "Type": "Poison",
+    "PP": 20,
+    "Category": "Status"
+  },
+  {
+    "Id": 152,
+    "Accuracy": 90,
+    "Name": "Crabhammer",
+    "Power": 100,
+    "Type": "Water",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 153,
+    "Accuracy": 100,
+    "Name": "Explosion",
+    "Power": 250,
+    "Type": "Normal",
+    "PP": 5,
+    "Category": "Physical"
+  },
+  {
+    "Id": 154,
+    "Accuracy": 80,
+    "Name": "Fury Swipes",
+    "Power": 18,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 155,
+    "Accuracy": 90,
+    "Name": "Bonemerang",
+    "Power": 50,
+    "Type": "Ground",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 156,
+    "Accuracy": null,
+    "Name": "Rest",
+    "Power": null,
+    "Type": "Psychic",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 157,
+    "Accuracy": 90,
+    "Name": "Rock Slide",
+    "Power": 75,
+    "Type": "Rock",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 158,
+    "Accuracy": 90,
+    "Name": "Hyper Fang",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 15,
+    "Category": "Physical"
+  },
+  {
+    "Id": 159,
+    "Accuracy": null,
+    "Name": "Sharpen",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 160,
+    "Accuracy": null,
+    "Name": "Conversion",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 30,
+    "Category": "Status"
+  },
+  {
+    "Id": 161,
+    "Accuracy": 100,
+    "Name": "Tri Attack",
+    "Power": 80,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Special"
+  },
+  {
+    "Id": 162,
+    "Accuracy": 90,
+    "Name": "Super Fang",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Physical"
+  },
+  {
+    "Id": 163,
+    "Accuracy": 100,
+    "Name": "Slash",
+    "Power": 70,
+    "Type": "Normal",
+    "PP": 20,
+    "Category": "Physical"
+  },
+  {
+    "Id": 164,
+    "Accuracy": null,
+    "Name": "Substitute",
+    "Power": null,
+    "Type": "Normal",
+    "PP": 10,
+    "Category": "Status"
+  },
+  {
+    "Id": 165,
+    "Accuracy": null,
+    "Name": "Struggle",
+    "Power": 50,
+    "Type": "Normal",
+    "PP": null,
+    "Category": "Physical"
+  }
+]

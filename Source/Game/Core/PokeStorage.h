@@ -10,7 +10,7 @@ class PPokemonStorage : public ISerializable
 
 public:
 	SPokemon*			   Construct(uint32_t Id, uint32_t Level = 1, uint32_t Experience = 0);
-	bool				   Add(const SPokemon& Pokemon);
+	SPokemon*			   Add(const SPokemon& Pokemon);
 	SPokemon*			   Get(int32_t Index);
 	std::vector<SPokemon>& GetAll() { return mPokemon; }
 	void				   Clear() { mPokemon.clear(); }

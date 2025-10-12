@@ -3,8 +3,9 @@
 #include "Core/Files.h"
 #include "Core/Json.h"
 
-bool PPokedexManager::LoadDefs()
+bool PPokedexManager::LoadPokemonDefs()
 {
+	LogDebug("Loading Pokemon definitions...");
 	const auto	FileName = Files::FindFile("Pokedex.json");
 	std::string Buffer;
 	if (!Files::ReadFile(FileName, Buffer))
@@ -17,7 +18,27 @@ bool PPokedexManager::LoadDefs()
 	for (const auto& Item : Data)
 	{
 		auto NewDef = SPokemonDef(Item);
-		Defs.Add(NewDef);
+		Mons.Add(NewDef);
+	}
+	return true;
+}
+
+bool PPokedexManager::LoadMoveDefs()
+{
+	LogDebug("Loading Move definitions...");
+	const auto	FileName = Files::FindFile("Moves.json");
+	std::string Buffer;
+	if (!Files::ReadFile(FileName, Buffer))
+	{
+		LogError("Failed to read 'Moves.json'");
+		return false;
+	}
+	JSON Data = JSON::parse(Buffer);
+
+	for (const auto& Item : Data)
+	{
+		auto NewDef = SMoveDef(Item);
+		Moves.Add(NewDef);
 	}
 	return true;
 }
@@ -29,9 +50,15 @@ bool PPokedexManager::LoadSprites()
 
 bool PPokedexManager::Init()
 {
-	if (!LoadDefs())
+	if (!LoadPokemonDefs())
 	{
 		LogError("Failed to load Pokemon definitions.");
+		return false;
+	}
+
+	if (!LoadMoveDefs())
+	{
+		LogError("Failed to load move definitions.");
 		return false;
 	}
 
@@ -43,16 +70,19 @@ bool PPokedexManager::Init()
 	LogInfo("Loaded Pokemon definitions.");
 	return true;
 }
-SPokemonDef* PPokedexManager::Get(int32_t Index)
+SPokemonDef* PPokedexManager::GetMonByIndex(int32_t Index)
 {
-	return &Defs[Index];
+	return &Mons[Index];
 }
 
-SPokemonDef* PPokedexManager::GetById(int32_t Id) { return &Defs[Id - 1]; }
-
-SPokemonDef* PPokedexManager::GetByName(const std::string& Name)
+SPokemonDef* PPokedexManager::GetMonById(int32_t Id)
 {
-	for (auto& Def : Defs)
+	return &Mons[Id - 1];
+}
+
+SPokemonDef* PPokedexManager::GetMonByName(const std::string& Name)
+{
+	for (auto& Def : Mons)
 	{
 		if (Def.Name == Name)
 		{
@@ -60,4 +90,14 @@ SPokemonDef* PPokedexManager::GetByName(const std::string& Name)
 		}
 	}
 	return nullptr;
+}
+
+SMoveDef* PPokedexManager::GetMoveByIndex(int32_t Index)
+{
+	return &Moves[Index];
+}
+
+SMoveDef* PPokedexManager::GetMoveById(int32_t Id)
+{
+	return &Moves[Id - 1];
 }

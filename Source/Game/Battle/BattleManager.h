@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/GameConstants.h"
 #include "../Core/Pokemon.h"
 #include "../Core/PokeParty.h"
 #include "../Core/PokeStorage.h"
@@ -142,20 +143,23 @@ public:
 		BattleStateChanged.Broadcast(State);
 	}
 
-	EBattleAction GetAction() const { return mContext.Action; }
+	EBattleAction GetSelectedAction() const { return mContext.Action; }
 
-	void SetAction(EBattleAction Action)
+	void SetSelectedAction(EBattleAction Action)
 	{
 		mContext.Action = Action;
 		BattleActionChanged.Broadcast(Action);
 	}
 
-	uint8_t GetMoveIndex() const { return mContext.MoveIndex; }
-	void	SetMoveIndex(uint8_t Index)
+	SPokemonMove* GetSelectedMove() const { return mContext.PlayerMon->GetMove(mContext.MoveIndex); }
+	uint8_t		  GetSelectedMoveIndex() const { return mContext.MoveIndex; }
+	void		  SetSelectedMoveIndex(uint8_t Index)
 	{
 		mContext.MoveIndex = Index;
 		BattleMoveIndexChanged.Broadcast(Index);
 	}
+	// TODO: Update this to reflect actual move count of the currently-selected player's Pokemon.
+	uint8_t GetMoveCount() const { return MAX_BATTLE_MOVES; }
 };
 
 extern PBattleManager* GBattleManager;
