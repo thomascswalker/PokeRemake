@@ -61,7 +61,7 @@ public:
 
 	void SetIndexSize(float Size)
 	{
-		mSprite->SetIndexSize(Size);
+		mSprite->SetIndexWidth(Size);
 	}
 
 	JSON Serialize() const override;

@@ -18,14 +18,17 @@
 
 class PBattleHUD : public PWidget
 {
-	PDialogBox*		   mDialogBox = nullptr;
-	PBattleActionMenu* mActionBox = nullptr;
-	PBattleMoveMenu*   mMoveBox = nullptr;
+	std::shared_ptr<PSprite> mInterfaceSprite = nullptr;
+	PDialogBox*				 mDialogBox = nullptr;
+	PBattleActionMenu*		 mActionBox = nullptr;
+	PBattleMoveMenu*		 mMoveBox = nullptr;
 
 public:
 	PBattleHUD();
 	~PBattleHUD() override;
 
+	void DrawPlayerFrame(const PRenderer* Renderer) const;
+	void DrawBattleFrame(const PRenderer* Renderer) const;
 	void Draw(const PRenderer* Renderer) const override;
 
 	void ShowActionBox();

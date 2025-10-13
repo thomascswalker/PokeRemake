@@ -7,38 +7,13 @@
 #include "Core/GameConstants.h"
 #include "Core/TextRenderer.h"
 
-constexpr auto	   CHAR_LEVEL = u":Ł"; // Ł
-constexpr float	   LEVEL_SCALE = 0.5f;
-constexpr float	   BATTLE_MON_SIZE = COORD(12);
-static const FRect PLAYER_MON_RECT = {
-	COORD(-1),
-	COORD(3),
-	BATTLE_MON_SIZE,
-	BATTLE_MON_SIZE,
-};
-static const FRect BATTLE_MON_RECT = {
-	COORD(10),
-	COORD(-3),
-	BATTLE_MON_SIZE,
-	BATTLE_MON_SIZE,
-};
-
-constexpr float PLAYER_HP_X = COORD(11);
-constexpr float PLAYER_HP_Y = COORD(10);
-
-constexpr float PLAYER_ORIGIN_X = COORD(10);
-constexpr float PLAYER_ORIGIN_Y = COORD(7);
-constexpr float BATTLE_ORIGIN_X = COORD(1);
-constexpr float BATTLE_ORIGIN_Y = COORD(0);
-
-constexpr float LEVEL_X = COORD(3);
-constexpr float LEVEL_Y = COORD(1);
-
-// Maximum number of characters in the display HP text. (NNN/NNN)
-constexpr int32_t MAX_HP_TEXT_LENGTH = 7;
+#include "BattleInterfaceConstants.h"
 
 PBattleHUD::PBattleHUD()
 {
+	mInterfaceSprite = std::make_shared<PSprite>();
+	mInterfaceSprite->SetTexture(GTextureManager->Get("BattleInterface"));
+
 	mDialogBox = ConstructWidget<PDialogBox>();
 
 	std::string BattleText = "Default text.";
@@ -73,12 +48,8 @@ PBattleHUD::~PBattleHUD()
 	mMoveBox = nullptr;
 }
 
-void PBattleHUD::Draw(const PRenderer* Renderer) const
+void PBattleHUD::DrawPlayerFrame(const PRenderer* Renderer) const
 {
-	// White background
-	Renderer->SetDrawColor(255, 255, 255, 255);
-	Renderer->DrawFillRect({ 0, 0, WINDOW_PXL_WIDTH, WINDOW_PXL_HEIGHT });
-
 	// Draw the player Pokémon
 	if (auto Mon = GBattleManager->GetPlayerMon())
 	{
@@ -88,7 +59,8 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		TextRenderer::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
-		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_ORIGIN_X + LEVEL_X + COORD(1), PLAYER_ORIGIN_Y + LEVEL_Y });
+		Renderer->DrawSprite(mInterfaceSprite.get(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y, COORD(1), COORD(1) }, 12);
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X + COORD(1), PLAYER_LEVEL_Y });
 
 		// Draw HP text
 		auto	HpText = Mon->GetDisplayHp();
@@ -96,7 +68,10 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 		int32_t HpXOffset = MAX_HP_TEXT_LENGTH - HpTextLength;
 		TextRenderer::DrawText(HpText, { PLAYER_ORIGIN_X + COORD(1) + COORD(HpXOffset), PLAYER_ORIGIN_Y + COORD(3) });
 	}
+}
 
+void PBattleHUD::DrawBattleFrame(const PRenderer* Renderer) const
+{
 	// Draw the Pokémon being battled
 	if (auto Mon = GBattleManager->GetBattleMon())
 	{
@@ -106,8 +81,19 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 
 		// Draw name/level
 		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
-		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_ORIGIN_X + LEVEL_X, BATTLE_ORIGIN_Y + LEVEL_Y });
+		Renderer->DrawSprite(mInterfaceSprite.get(), { BATTLE_LEVEL_X - COORD(1), BATTLE_LEVEL_Y, COORD(1), COORD(1) }, 12);
+		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
 	}
+}
+
+void PBattleHUD::Draw(const PRenderer* Renderer) const
+{
+	// White background
+	Renderer->SetDrawColor(255, 255, 255, 255);
+	Renderer->DrawFillRect({ 0, 0, WINDOW_PXL_WIDTH, WINDOW_PXL_HEIGHT });
+
+	DrawPlayerFrame(Renderer);
+	DrawBattleFrame(Renderer);
 }
 
 void PBattleHUD::ShowActionBox()

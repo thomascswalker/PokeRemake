@@ -92,6 +92,7 @@ public:
 	void  DrawChar(char Char, const FVector2& Position, float FontSize) const;
 	float DrawText(const std::string& Text, const FVector2& Position, float FontSize, bool Shadow = false, float Gap = 0) const;
 	void  DrawTexture(const PTexture* Texture, const FRect& Source, const FRect& Dest) const;
+	void  DrawSprite(const PSprite* Sprite, const FRect& Dest, int32_t Index) const;
 
 	void DrawPointAt(const FVector2& Position, float Thickness = 0.0f) const;
 	void DrawLineAt(const FVector2& Start, const FVector2& End) const;

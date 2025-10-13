@@ -532,6 +532,11 @@ void PRenderer::DrawTexture(const PTexture* Texture, const FRect& Source, const 
 	SDL_RenderTexture(Context.Renderer, Tex, &Source2, &Dest2);
 }
 
+void PRenderer::DrawSprite(const PSprite* Sprite, const FRect& Dest, int32_t Index) const
+{
+	DrawTexture(Sprite->GetTexture(), Sprite->GetRectAtIndex(Index), Dest);
+}
+
 void PRenderer::DrawTextureAt(const PTexture* Texture, const FRect& Source, const FRect& Dest) const
 {
 	if (!Texture)

@@ -75,7 +75,7 @@ class PSprite : public PObject
 	// Pixel size (width and height) of each sprite
 	float mSize = 16.0f;
 	// Pixel size of each index within the texture atlas
-	float	mIndexSize = 8.0f;
+	float	mIndexWidth = 8.0f;
 	int32_t mWidth = 1;
 
 	std::map<std::string, PAnimation> mAnimations;
@@ -137,7 +137,7 @@ public:
 	void SetTexture(PTexture* InTexture)
 	{
 		mTexture = InTexture;
-		mWidth = mTexture->GetWidth() / mIndexSize;
+		mWidth = mTexture->GetWidth() / mIndexWidth;
 	}
 
 	PTexture* GetTexture() const
@@ -152,7 +152,7 @@ public:
 			const auto Index = mCurrentAnim->GetCurrentIndex();
 			const auto X = Index % static_cast<uint32_t>(mWidth);
 			const auto Y = Index / static_cast<uint32_t>(mWidth);
-			return { X * mIndexSize, Y * mIndexSize, mSize, mSize };
+			return { X * mIndexWidth, Y * mIndexWidth, mSize, mSize };
 		}
 		return FRect();
 	}
@@ -217,14 +217,24 @@ public:
 		return mSize;
 	}
 
-	float GetIndexSize() const
+	float GetIndexWidth() const
 	{
-		return mIndexSize;
+		return mIndexWidth;
 	}
 
-	void SetIndexSize(float Size)
+	void SetIndexWidth(float Size)
 	{
-		mIndexSize = Size;
+		mIndexWidth = Size;
+	}
+
+	FVector2 GetIndexSize() const
+	{
+		return FVector2(mIndexWidth);
+	}
+
+	FRect GetRectAtIndex(int32_t Index) const
+	{
+		return FRect((Index % mWidth) * mIndexWidth, (Index / mWidth) * mIndexWidth, mIndexWidth, mIndexWidth);
 	}
 
 	JSON Serialize() const override
@@ -247,7 +257,7 @@ public:
 		auto Texture = Data["Texture"].get<std::string>();
 		mTexture = GTextureManager->Get(Texture);
 		LOAD_MEMBER_PROPERTY(Size, float);
-		LOAD_MEMBER_PROPERTY(IndexSize, float);
+		LOAD_MEMBER_PROPERTY(IndexWidth, float);
 		LOAD_MEMBER_PROPERTY(Width, int32_t);
 
 		for (auto& Anim : Data["Animations"])
