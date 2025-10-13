@@ -32,7 +32,7 @@
 
 // Positions
 
-#define COORD(P) (SCREEN_TILE * P)
+#define COORD(P) (SCREEN_TILE * (P))
 
 /* Text */
 

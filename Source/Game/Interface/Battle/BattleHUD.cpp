@@ -23,6 +23,9 @@ static const FRect BATTLE_MON_RECT = {
 	BATTLE_MON_SIZE,
 };
 
+constexpr float PLAYER_HP_X = COORD(11);
+constexpr float PLAYER_HP_Y = COORD(10);
+
 constexpr float PLAYER_ORIGIN_X = COORD(10);
 constexpr float PLAYER_ORIGIN_Y = COORD(7);
 constexpr float BATTLE_ORIGIN_X = COORD(1);
@@ -30,6 +33,9 @@ constexpr float BATTLE_ORIGIN_Y = COORD(0);
 
 constexpr float LEVEL_X = COORD(3);
 constexpr float LEVEL_Y = COORD(1);
+
+// Maximum number of characters in the display HP text. (NNN/NNN)
+constexpr int32_t MAX_HP_TEXT_LENGTH = 7;
 
 PBattleHUD::PBattleHUD()
 {
@@ -81,10 +87,14 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), PLAYER_MON_RECT);
 
 		// Draw name/level
-		Renderer->SetDrawColor(0, 0, 0, 255);
 		TextRenderer::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
-		TextRenderer::DrawText(CHAR_LEVEL, { PLAYER_ORIGIN_X + LEVEL_X - COORD(LEVEL_SCALE), PLAYER_ORIGIN_Y + LEVEL_Y + COORD(LEVEL_SCALE / 2) }, LEVEL_SCALE);
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_ORIGIN_X + LEVEL_X + COORD(1), PLAYER_ORIGIN_Y + LEVEL_Y });
+
+		// Draw HP text
+		auto	HpText = Mon->GetDisplayHp();
+		int32_t HpTextLength = HpText.size();
+		int32_t HpXOffset = MAX_HP_TEXT_LENGTH - HpTextLength;
+		TextRenderer::DrawText(HpText, { PLAYER_ORIGIN_X + COORD(1) + COORD(HpXOffset), PLAYER_ORIGIN_Y + COORD(3) });
 	}
 
 	// Draw the Pokémon being battled
@@ -95,9 +105,7 @@ void PBattleHUD::Draw(const PRenderer* Renderer) const
 		Renderer->DrawTexture(Sprite, Sprite->GetRect(), BATTLE_MON_RECT);
 
 		// Draw name/level
-		Renderer->SetDrawColor(0, 0, 0, 255);
 		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
-		TextRenderer::DrawText(CHAR_LEVEL, { BATTLE_ORIGIN_X + LEVEL_X - COORD(1 / LEVEL_SCALE), BATTLE_ORIGIN_Y + LEVEL_Y + COORD(LEVEL_SCALE / 2) }, LEVEL_SCALE);
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_ORIGIN_X + LEVEL_X, BATTLE_ORIGIN_Y + LEVEL_Y });
 	}
 }

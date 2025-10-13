@@ -1,10 +1,10 @@
 #pragma once
 
+#include "../DialogBox.h"
 #include "Interface/Widget.h"
 
 #include "BattleActionMenu.h"
 #include "BattleMoveMenu.h"
-#include "DialogBox.h"
 
 #define NAME_FONT_SIZE 24
 

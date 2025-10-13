@@ -21,19 +21,20 @@ set(SOURCES
         Core/Pokedex.cpp
         Core/Pokemon.h
         Core/TextRenderer.cpp
-        Interface/BattleActionMenu.cpp
-        Interface/BattleHUD.cpp
-        Interface/BattleHUD.h
-        Interface/BattleMoveMenu.cpp
+        Interface/Battle/BattleActionMenu.cpp
+        Interface/Battle/BattleHUD.cpp
+        Interface/Battle/BattleHUD.h
+        Interface/Battle/BattleMoveMenu.cpp
         Interface/DialogBox.cpp
         Interface/Frame.cpp
         Interface/GameHUD.cpp
         Interface/TransitionOverlay.h
         MainGame.cpp
         Modes/MapMode.cpp
-        Interface/BattlePPMenu.cpp
-        Interface/BattlePPMenu.h
+        Interface/Battle/BattlePPMenu.cpp
+        Interface/Battle/BattlePPMenu.h
         Core/Ids.h
+        Interface/Battle/BattleInterfaceConstants.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

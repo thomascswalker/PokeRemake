@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Frame.h"
+#include "../Frame.h"
 
 class PBattleMoveMenu : public PFrame
 {
