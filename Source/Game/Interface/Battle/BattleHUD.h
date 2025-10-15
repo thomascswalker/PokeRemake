@@ -27,6 +27,7 @@ public:
 	PBattleHUD();
 	~PBattleHUD() override;
 
+	void DrawTiles(const std::vector<SFrameTile>& Tiles) const;
 	void DrawPlayerFrame(const PRenderer* Renderer) const;
 	void DrawBattleFrame(const PRenderer* Renderer) const;
 	void Draw(const PRenderer* Renderer) const override;
