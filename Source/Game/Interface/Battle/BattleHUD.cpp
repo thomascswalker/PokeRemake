@@ -12,7 +12,7 @@
 PBattleHUD::PBattleHUD()
 {
 	mInterfaceSprite = std::make_shared<PSprite>();
-	mInterfaceSprite->SetTexture(GTextureManager->Get("BattleInterface"));
+	mInterfaceSprite->SetTexture(GTextureManager->Get("Interface"));
 
 	mDialogBox = ConstructWidget<PDialogBox>();
 
@@ -59,7 +59,7 @@ void PBattleHUD::DrawPlayerFrame(const PRenderer* Renderer) const
 
 		// Draw name/level
 		TextRenderer::DrawText(Mon->GetDisplayName(), { PLAYER_ORIGIN_X, PLAYER_ORIGIN_Y });
-		Renderer->DrawSprite(mInterfaceSprite.get(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y, COORD(1), COORD(1) }, 12);
+		Renderer->DrawSprite(mInterfaceSprite.get(), { PLAYER_LEVEL_X, PLAYER_LEVEL_Y, COORD(1), COORD(1) }, UI_INDEX_LEVEL);
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X + COORD(1), PLAYER_LEVEL_Y });
 
 		// Draw HP text
@@ -81,7 +81,7 @@ void PBattleHUD::DrawBattleFrame(const PRenderer* Renderer) const
 
 		// Draw name/level
 		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
-		Renderer->DrawSprite(mInterfaceSprite.get(), { BATTLE_LEVEL_X - COORD(1), BATTLE_LEVEL_Y, COORD(1), COORD(1) }, 12);
+		Renderer->DrawSprite(mInterfaceSprite.get(), { BATTLE_LEVEL_X - COORD(1), BATTLE_LEVEL_Y, COORD(1), COORD(1) }, UI_INDEX_LEVEL);
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
 	}
 }

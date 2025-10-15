@@ -2,57 +2,49 @@
 
 #include "Core/GameConstants.h"
 
-static const FVector2 GSpriteSize(8, 8);
-static const FVector2 GTopLeftIndex(0, 0);
-static const FVector2 GBottomLeftIndex(8, 0);
-static const FVector2 GTopRightIndex(16, 0);
-static const FVector2 GBottomRightIndex(24, 0);
-static const FVector2 GTopBottomIndex(32, 0);
-static const FVector2 GLeftRightIndex(32, 8);
-
-#define SOURCE(Position)	   FRect(Position, GSpriteSize)
 #define DEST(OffsetX, OffsetY) FRect(OffsetX + mFixedPosition.X, OffsetY + mFixedPosition.Y, SCREEN_TILE, SCREEN_TILE)
 
 void PFrame::Initialize(uint32_t SizeX, uint32_t SizeY)
 {
-	mTexture = GTextureManager->Get("Interface");
+	mSprite = std::make_shared<PSprite>();
+	mSprite->SetTexture(GTextureManager->Get("Interface"));
 
 	// Store all static source/dest pairs for each tile component of this frame.
 
 	// Top left
-	mFrameTiles.emplace_back(SOURCE(GTopLeftIndex), DEST(0, 0));
+	mFrameTiles.emplace_back(UI_INDEX_FRAME_1, DEST(0, 0));
 
 	// Top row
 	for (int Index = 1; Index < SizeX; Index++)
 	{
-		mFrameTiles.emplace_back(SOURCE(GTopBottomIndex), DEST(COORD(Index), 0));
+		mFrameTiles.emplace_back(UI_INDEX_FRAME_5, DEST(COORD(Index), 0));
 	}
 
 	// Top right
-	mFrameTiles.emplace_back(SOURCE(GTopRightIndex), DEST(COORD(SizeX), 0));
+	mFrameTiles.emplace_back(UI_INDEX_FRAME_3, DEST(COORD(SizeX), 0));
 
 	// Right side
 	for (int Index = 1; Index < SizeY; Index++)
 	{
-		mFrameTiles.emplace_back(SOURCE(GLeftRightIndex), DEST(COORD(SizeX), COORD(Index)));
+		mFrameTiles.emplace_back(UI_INDEX_FRAME_6, DEST(COORD(SizeX), COORD(Index)));
 	}
 
 	// Bottom right
-	mFrameTiles.emplace_back(SOURCE(GBottomRightIndex), DEST(COORD(SizeX), COORD(SizeY)));
+	mFrameTiles.emplace_back(UI_INDEX_FRAME_4, DEST(COORD(SizeX), COORD(SizeY)));
 
 	// Bottom row
 	for (int Index = 1; Index < SizeX; Index++)
 	{
-		mFrameTiles.emplace_back(SOURCE(GTopBottomIndex), DEST(COORD(Index), COORD(SizeY)));
+		mFrameTiles.emplace_back(UI_INDEX_FRAME_5, DEST(COORD(Index), COORD(SizeY)));
 	}
 
 	// Bottom left
-	mFrameTiles.emplace_back(SOURCE(GBottomLeftIndex), DEST(0, COORD(SizeY)));
+	mFrameTiles.emplace_back(UI_INDEX_FRAME_2, DEST(0, COORD(SizeY)));
 
 	// Left side
 	for (int Index = 1; Index < SizeY; Index++)
 	{
-		mFrameTiles.emplace_back(SOURCE(GLeftRightIndex), DEST(0, COORD(Index)));
+		mFrameTiles.emplace_back(UI_INDEX_FRAME_6, DEST(0, COORD(Index)));
 	}
 }
 
@@ -74,8 +66,8 @@ void PFrame::Draw(const PRenderer* Renderer) const
 	Renderer->DrawFillRect(FRect(mFixedPosition, mFixedSize));
 
 	// Draw each border tile
-	for (const auto& [Source, Dest] : mFrameTiles)
+	for (const auto& [Index, Dest] : mFrameTiles)
 	{
-		Renderer->DrawTexture(mTexture, Source, Dest);
+		Renderer->DrawSprite(mSprite.get(), Dest, Index);
 	}
 }

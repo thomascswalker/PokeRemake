@@ -1,10 +1,11 @@
 #pragma once
+#include "Engine/Sprite.h"
 #include "Interface/Widget.h"
 
 struct SFrameTile
 {
-	FRect Source;
-	FRect Dest;
+	int32_t Index;
+	FRect	Dest;
 };
 
 /**
@@ -14,7 +15,7 @@ class PFrame : public PWidget
 {
 protected:
 	/* Texture atlas of all interface components. */
-	PTexture* mTexture = nullptr;
+	std::shared_ptr<PSprite> mSprite = nullptr;
 	/* Pre-computed vector of each tile component in the frame border.*/
 	std::vector<SFrameTile> mFrameTiles;
 

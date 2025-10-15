@@ -61,6 +61,36 @@ constexpr float DIALOG_LINE_X = COORD(1);
 constexpr float DIALOG_LINE1_Y = COORD(14);
 constexpr float DIALOG_LINE2_Y = COORD(16);
 
+#define UI_INDEX_HP_LABEL_1		0
+#define UI_INDEX_HP_LABEL_2		1
+#define UI_INDEX_HP_LEFT		2
+#define UI_INDEX_HP_1			3
+#define UI_INDEX_HP_2			4
+#define UI_INDEX_HP_3			5
+#define UI_INDEX_HP_4			6
+#define UI_INDEX_HP_5			7
+#define UI_INDEX_HP_6			8
+#define UI_INDEX_HP_7			9
+#define UI_INDEX_HP_FULL		10
+#define UI_INDEX_HP_RIGHT		11
+#define UI_INDEX_STATUS_FRAME_1 12
+#define UI_INDEX_ID				14
+#define UI_INDEX_NO				15
+#define UI_INDEX_LEVEL			16
+#define UI_INDEX_TO				17
+#define UI_INDEX_STATUS_FRAME_2 18
+#define UI_INDEX_STATUS_FRAME_3 19
+#define UI_INDEX_STATUS_FRAME_4 20
+#define UI_INDEX_STATUS_FRAME_5 21
+#define UI_INDEX_STATUS_FRAME_6 22
+#define UI_INDEX_STATUS_FRAME_7 23
+#define UI_INDEX_FRAME_1		24
+#define UI_INDEX_FRAME_2		25
+#define UI_INDEX_FRAME_3		26
+#define UI_INDEX_FRAME_4		27
+#define UI_INDEX_FRAME_5		28
+#define UI_INDEX_FRAME_6		29
+
 /* Battles */
 
 constexpr uint8_t MAX_BATTLE_MOVES = 4;
