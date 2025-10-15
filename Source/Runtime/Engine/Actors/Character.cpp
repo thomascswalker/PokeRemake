@@ -29,7 +29,7 @@ PCharacter::PCharacter()
 		auto Sprite = mSpriteComponent->GetSprite();
 
 		Sprite->SetSize(16.0f);
-		Sprite->SetIndexSize(16.0f);
+		Sprite->SetIndexWidth(16.0f);
 
 		Sprite->AddAnimation("WalkRight", { SI_WalkRight, SI_IdleRight });
 		Sprite->AddAnimation("WalkLeft", { SI_WalkLeft, SI_IdleLeft });

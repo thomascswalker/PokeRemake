@@ -1,5 +1,5 @@
 #pragma once
-#include "Frame.h"
+#include "../Frame.h"
 
 class PBattlePPMenu : public PFrame
 {

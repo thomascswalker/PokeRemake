@@ -11,15 +11,77 @@
 struct SPokemonDef;
 class PPokedexManager;
 
+enum class EPokeType
+{
+	Normal = 0x00,
+	Fighting = 0x01,
+	Flying = 0x02,
+	Poison = 0x03,
+	Ground = 0x04,
+	Rock = 0x05,
+	Bird = 0x06,
+	Bug = 0x07,
+	Ghost = 0x08,
+	Fire = 0x14,
+	Water = 0x15,
+	Grass = 0x16,
+	Electric = 0x17,
+	Psychic = 0x18,
+	Ice = 0x19,
+	Dragon = 0x1A,
+};
+
+static std::map<EPokeType, std::string> GTypes{
+	{	  EPokeType::Normal,	 "Normal" },
+	{ EPokeType::Fighting, "Fighting" },
+	{	  EPokeType::Flying,	 "Flying" },
+	{	  EPokeType::Poison,	 "Poison" },
+	{	  EPokeType::Ground,	 "Ground" },
+	{	  EPokeType::Rock,	   "Rock" },
+	{	  EPokeType::Bird,	   "Bird" },
+	{	  EPokeType::Bug,	  "Bug" },
+	{	  EPokeType::Ghost,	"Ghost" },
+	{	  EPokeType::Fire,	   "Fire" },
+	{	  EPokeType::Water,	"Water" },
+	{	  EPokeType::Grass,	"Grass" },
+	{ EPokeType::Electric, "Electric" },
+	{  EPokeType::Psychic,  "Psychic" },
+	{	  EPokeType::Ice,	  "Ice" },
+	{	  EPokeType::Dragon,	 "Dragon" }
+};
+
+static std::string GetPokeTypeString(EPokeType Type)
+{
+	return GTypes[Type];
+}
+
+enum class EMoveCategory
+{
+	Physical = 0x00,
+	Special = 0x01,
+	Status = 0x02,
+};
+
+static std::map<EMoveCategory, std::string> GMoveCategories{
+	{ EMoveCategory::Physical, "Physical" },
+	{  EMoveCategory::Special,  "Special" },
+	{	  EMoveCategory::Status,	 "Status" }
+};
+
+static std::string GetMoveCategoryString(EMoveCategory Category)
+{
+	return GMoveCategories[Category];
+}
+
 struct SMoveDef : ISerializable
 {
-	int32_t		Id;
-	std::string Name;
-	std::string Type;
-	uint32_t	Power;
-	std::string Category;
-	uint32_t	Accuracy;
-	uint32_t	PP;
+	int32_t		  Id;
+	std::string	  Name;
+	EPokeType	  Type;
+	uint32_t	  Power;
+	EMoveCategory Category;
+	uint32_t	  Accuracy;
+	uint32_t	  PP;
 
 	SMoveDef(const JSON& Json)
 	{
@@ -43,7 +105,7 @@ struct SMoveDef : ISerializable
 	{
 		Id = Json["Id"];
 		Name = Strings::ToUpper(Json["Name"]);
-		Type = Strings::ToUpper(Json["Type"]);
+		Type = Json["Type"];
 		Power = !Json.at("Power").is_null() ? Json["Power"].get<uint32_t>() : 0;
 		Accuracy = !Json.at("Accuracy").is_null() ? Json["Accuracy"].get<uint32_t>() : 0;
 		PP = !Json.at("PP").is_null() ? Json["PP"].get<uint32_t>() : 0;

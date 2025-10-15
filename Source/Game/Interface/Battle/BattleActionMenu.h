@@ -1,8 +1,7 @@
 #pragma once
-#include "../Battle/BattleManager.h"
+#include "../../Battle/BattleManager.h"
+#include "../Frame.h"
 #include "Interface/Widget.h"
-
-#include "Frame.h"
 
 class PBattleActionMenu : public PFrame
 {

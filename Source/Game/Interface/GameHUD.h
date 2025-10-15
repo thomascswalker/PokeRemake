@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Battle/BattleHUD.h"
 #include "Engine/Dialog.h"
 #include "Interface/HUD.h"
 #include "Interface/Spacer.h"
 
-#include "BattleHUD.h"
 #include "DialogBox.h"
 
 /**

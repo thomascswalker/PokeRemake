@@ -51,9 +51,14 @@ class SPokemon : public ISerializable
 public:
 	SPokemon() : mHp{ 0 }, mLevel{ 0 }, mExperience(0) {}
 	SPokemon(const SPokemonDef& Def, uint32_t Level, uint32_t Experience)
-		: mDef(Def), mHp{ 0 }, mLevel(Level), mExperience(Experience) {}
+		: mDef(Def), mHp{ Def.MaxHp }, mLevel(Level), mExperience(Experience) {}
 
 	std::string GetDisplayName() const { return mDef.Name; }
+
+	std::string GetDisplayHp() const
+	{
+		return std::format("{}/{}", mHp, mDef.MaxHp);
+	}
 
 	uint32_t	GetLevel() const { return mLevel; }
 	void		SetLevel(uint32_t Level) { this->mLevel = Level; }

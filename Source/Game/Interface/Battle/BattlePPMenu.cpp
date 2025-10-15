@@ -31,7 +31,7 @@ void PBattlePPMenu::Draw(const PRenderer* Renderer) const
 	TextRenderer::DrawText(u"TYPE/", BATTLE_PP_MENU_TYPELABEL_POS);
 
 	auto Move = GBattleManager->GetSelectedMove();
-	TextRenderer::DrawText(Move->GetDef()->Type, BATTLE_PP_MENU_TYPE_POS);
+	TextRenderer::DrawText(GetPokeTypeString(Move->GetDef()->Type), BATTLE_PP_MENU_TYPE_POS);
 
 	std::string PPRemainingText = std::format("{:2}/{}", Move->GetPP(), Move->GetDef()->PP);
 	TextRenderer::DrawText(PPRemainingText, BATTLE_PP_MENU_REMAINING);
