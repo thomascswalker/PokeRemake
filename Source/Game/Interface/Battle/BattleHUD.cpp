@@ -10,7 +10,8 @@
 #include "BattleInterfaceConstants.h"
 
 static std::vector<SFrameTile> GPlayerStatusFrameTiles = {
-	{ 10, 11,	  UI_INDEX_STATUS_FRAME_ARROW_LEFT },
+	{  9, 11,	 UI_INDEX_STATUS_FRAME_ARROW_LEFT },
+	{ 10, 11,	  UI_INDEX_STATUS_FRAME_HORIZONTAL },
 	{ 11, 11,	  UI_INDEX_STATUS_FRAME_HORIZONTAL },
 	{ 12, 11,	  UI_INDEX_STATUS_FRAME_HORIZONTAL },
 	{ 13, 11,	  UI_INDEX_STATUS_FRAME_HORIZONTAL },
@@ -24,14 +25,41 @@ static std::vector<SFrameTile> GPlayerStatusFrameTiles = {
 };
 
 static std::vector<SFrameTile> GPlayerHealthTiles = {
-	{ 11, 9, UI_INDEX_HP_LABEL_1 },
-	{ 12, 9, UI_INDEX_HP_LABEL_2 },
+	{ 10, 9, UI_INDEX_HP_LABEL_1 },
+	{ 11, 9, UI_INDEX_HP_LABEL_2 },
+	{ 12, 9,	 UI_INDEX_HP_FULL },
 	{ 13, 9,	 UI_INDEX_HP_FULL },
 	{ 14, 9,	 UI_INDEX_HP_FULL },
 	{ 15, 9,	 UI_INDEX_HP_FULL },
 	{ 16, 9,	 UI_INDEX_HP_FULL },
 	{ 17, 9,	 UI_INDEX_HP_FULL },
 	{ 18, 9,	 UI_INDEX_HP_END },
+};
+
+static std::vector<SFrameTile> GOpponentStatusFrameTiles = {
+	{  1, 2,	UI_INDEX_STATUS_FRAME_VERTICAL },
+	{  1, 3, UI_INDEX_STATUS_FRAME_CORNER_LEFT },
+	{  2, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  3, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  4, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  5, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  6, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  7, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  8, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{  9, 3,	UI_INDEX_STATUS_FRAME_HORIZONTAL },
+	{ 10, 3, UI_INDEX_STATUS_FRAME_ARROW_RIGHT },
+};
+
+static std::vector<SFrameTile> GOpponentHealthTiles = {
+	{  2, 2, UI_INDEX_HP_LABEL_1 },
+	{  3, 2, UI_INDEX_HP_LABEL_2 },
+	{  4, 2,	UI_INDEX_HP_FULL },
+	{  5, 2,	UI_INDEX_HP_FULL },
+	{  6, 2,	UI_INDEX_HP_FULL },
+	{  7, 2,	UI_INDEX_HP_FULL },
+	{  8, 2,	UI_INDEX_HP_FULL },
+	{  9, 2,	UI_INDEX_HP_FULL },
+	{ 10, 2,	 UI_INDEX_HP_END },
 };
 
 PBattleHUD::PBattleHUD()
@@ -125,6 +153,10 @@ void PBattleHUD::DrawBattleFrame(const PRenderer* Renderer) const
 		TextRenderer::DrawText(Mon->GetDisplayName(), { BATTLE_ORIGIN_X, BATTLE_ORIGIN_Y });
 		Renderer->DrawSprite(mInterfaceSprite.get(), { BATTLE_LEVEL_X - COORD(1), BATTLE_LEVEL_Y, COORD(1), COORD(1) }, UI_INDEX_LEVEL);
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
+
+		// Draw health bar
+		DrawTiles(GOpponentHealthTiles);
+		DrawTiles(GOpponentStatusFrameTiles);
 	}
 }
 
