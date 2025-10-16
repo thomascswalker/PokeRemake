@@ -155,7 +155,6 @@ bool PGame::LoadCurrentGameMode()
 	mGameMode->Start();
 	if (mGameMode->IsLoaded())
 	{
-		LogWarning("Game mode is already loaded.");
 		return true;
 	}
 	if (!mGameMode->Load())

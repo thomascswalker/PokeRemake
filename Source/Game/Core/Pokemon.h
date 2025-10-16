@@ -79,6 +79,7 @@ public:
 	}
 
 	uint32_t GetCurrentHp() const { return mHp; }
+	uint32_t GetMaxHp() const { return mDef.MaxHp; }
 	uint32_t Damage(uint32_t InDamage)
 	{
 		mHp = InDamage > mHp ? 0 : mHp - InDamage;

@@ -27,6 +27,8 @@ public:
 	PBattleHUD();
 	~PBattleHUD() override;
 
+	std::array<uint32_t, 6> ComputeHealthBarTiles(SPokemon* Mon) const;
+
 	void DrawTiles(const std::vector<SFrameTile>& Tiles) const;
 	void DrawPlayerFrame(const PRenderer* Renderer) const;
 	void DrawBattleFrame(const PRenderer* Renderer) const;
