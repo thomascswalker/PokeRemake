@@ -39,7 +39,9 @@ public:
 	}
 };
 
-DECLARE_MULTICAST_DELEGATE(DOnFainted);
+class SPokemon;
+
+DECLARE_MULTICAST_DELEGATE(DOnFainted, SPokemon*);
 
 class SPokemon : public ISerializable
 {
@@ -82,7 +84,7 @@ public:
 		mHp = InDamage > mHp ? 0 : mHp - InDamage;
 		if (mHp == 0)
 		{
-			OnFainted.Broadcast();
+			OnFainted.Broadcast(this);
 		}
 		return mHp;
 	}
@@ -95,6 +97,7 @@ public:
 	{
 		mHp = mDef.MaxHp;
 	}
+	bool IsUsable() const { return mHp > 0; }
 
 	uint32_t GetAttack() const { return mAttack; }
 	uint32_t GetDefense() const { return mDefense; }
@@ -106,7 +109,7 @@ public:
 	EPokeType GetType2() const { return mDef.Types[1]; }
 	bool	  IsAnyType(EPokeType InType) const
 	{
-		return Containers::Contains(mDef.Types, InType);
+		return mDef.Types[0] == InType || mDef.Types[1] == InType;
 	}
 
 	uint32_t	GetLevel() const { return mLevel; }

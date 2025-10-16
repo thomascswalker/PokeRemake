@@ -115,13 +115,13 @@ struct SMoveDef : ISerializable
 
 struct SPokemonDef : ISerializable
 {
-	int32_t				   Id = 0;
-	std::string			   Name;
-	std::vector<EPokeType> Types;
-	std::vector<uint32_t>  DefaultMoves;
-	std::vector<uint32_t>  LearnedMoves;
-	std::vector<uint32_t>  TMMoves;
-	std::vector<uint32_t>  HMMoves;
+	int32_t					 Id = 0;
+	std::string				 Name;
+	std::array<EPokeType, 2> Types;
+	std::vector<uint32_t>	 DefaultMoves;
+	std::vector<uint32_t>	 LearnedMoves;
+	std::vector<uint32_t>	 TMMoves;
+	std::vector<uint32_t>	 HMMoves;
 
 	uint32_t MaxHp = 0;
 	uint32_t Attack = 0;
@@ -163,7 +163,17 @@ struct SPokemonDef : ISerializable
 	{
 		Id = Json["Id"];
 		Name = Strings::ToUpper(Json["Name"]);
-		Types = Json["Type"].get<std::vector<EPokeType>>();
+
+		auto JsonTypes = Json["Type"];
+		Types[0] = JsonTypes.at(0);
+		if (JsonTypes.size() == 2)
+		{
+			Types[1] = JsonTypes.at(1);
+		}
+		else
+		{
+			Types[1] = Types[0];
+		}
 
 		const auto Stats = Json["Stats"];
 		MaxHp = Stats["HP"].get<uint32_t>();
@@ -185,7 +195,6 @@ struct SPokemonDef : ISerializable
 
 	std::string ToString() const
 	{
-
 		return Serialize().dump();
 	}
 };

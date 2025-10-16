@@ -36,6 +36,16 @@ bool PBattleMode::Load()
 	// Start with Select Action state
 	GBattleManager->SetState(EBattleState::SelectAction);
 
+	// Full heal all opponent mons
+	for (auto Mon : GBattleManager->GetCurrentBattleParty()->GetMons())
+	{
+		Mon->FullHeal();
+	}
+
+	// Bind events to handlers
+	GBattleManager->GetPlayerMon()->OnFainted.AddRaw(this, &PBattleMode::HandlePlayerMonFaint);
+	GBattleManager->GetBattleMon()->OnFainted.AddRaw(this, &PBattleMode::HandleOpponentMonFaint);
+
 	// Start the main battle HUD
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 	mHUD->StartBattleHUD();
@@ -296,6 +306,28 @@ void PBattleMode::HandleUseMove(SPokemonMove* Move, SPokemon* Attacker, SPokemon
 	uint32_t RemainingHp = Target->Damage(DamageDealt);
 
 	LogInfo("{} has {} HP remaining.", Target->GetDisplayName().c_str(), RemainingHp);
+}
+
+void PBattleMode::HandlePlayerMonFaint(SPokemon* Mon)
+{
+	LogInfo("{} fainted.", Mon->GetDisplayName().c_str());
+}
+
+void PBattleMode::HandleOpponentMonFaint(SPokemon* Mon)
+{
+	LogInfo("{} fainted.", Mon->GetDisplayName().c_str());
+	auto Party = GBattleManager->GetCurrentBattleParty();
+	if (auto NextMon = Party->GetNextUsableMon())
+	{
+		// Swap
+		GBattleManager->SetBattleMon(NextMon);
+	}
+	else
+	{
+		// win battle
+		LogInfo("Battle won with {}", GBattleManager->GetCurrentTrainerName().c_str());
+		HandleGameEvent({ this, EGameEventType::BattleEnd });
+	}
 }
 
 std::string PBattleMode::GetName()

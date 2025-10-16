@@ -116,6 +116,36 @@ public:
 		}
 		return -1;
 	}
+
+	SPokemon* GetNextUsableMon()
+	{
+		for (int32_t Index = 0; Index < 6; Index++)
+		{
+			if (!mPokemon[Index])
+			{
+				continue;
+			}
+			if (mPokemon[Index]->IsUsable())
+			{
+				return mPokemon[Index];
+			}
+		}
+		return nullptr;
+	}
+
+	std::vector<SPokemon*> GetMons()
+	{
+		std::vector<SPokemon*> Ret;
+		for (int32_t Index = 0; Index < 6; Index++)
+		{
+			if (!mPokemon[Index])
+			{
+				continue;
+			}
+			Ret.push_back(mPokemon[Index]);
+		}
+		return Ret;
+	}
 };
 
 extern PPokemonParty* GPlayerParty;
