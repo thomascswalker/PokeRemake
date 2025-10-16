@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Containers.h"
 #include "Engine/Serialization.h"
 #include "Engine/Texture.h"
 
@@ -38,6 +39,8 @@ public:
 	}
 };
 
+DECLARE_MULTICAST_DELEGATE(DOnFainted);
+
 class SPokemon : public ISerializable
 {
 	SPokemonDef mDef;
@@ -45,19 +48,65 @@ class SPokemon : public ISerializable
 	uint32_t mHp;
 	uint32_t mLevel;
 	uint32_t mExperience;
+	uint32_t mAttack;
+	uint32_t mDefense;
+	uint32_t mSpAttack;
+	uint32_t mSpDefense;
+	uint32_t mSpeed;
 
 	std::array<std::shared_ptr<SPokemonMove>, 4> mMoves;
 
 public:
+	DOnFainted OnFainted;
+
 	SPokemon() : mHp{ 0 }, mLevel{ 0 }, mExperience(0) {}
 	SPokemon(const SPokemonDef& Def, uint32_t Level, uint32_t Experience)
-		: mDef(Def), mHp{ Def.MaxHp }, mLevel(Level), mExperience(Experience) {}
+		: mDef(Def), mHp{ Def.MaxHp }, mLevel(Level), mExperience(Experience)
+	{
+		mAttack = Def.Attack;
+		mDefense = Def.Defense;
+		mSpeed = Def.Speed;
+		mSpDefense = Def.Defense;
+		mSpAttack = Def.SpAttack;
+	}
 
 	std::string GetDisplayName() const { return mDef.Name; }
-
 	std::string GetDisplayHp() const
 	{
 		return std::format("{}/{}", mHp, mDef.MaxHp);
+	}
+
+	uint32_t GetCurrentHp() const { return mHp; }
+	uint32_t Damage(uint32_t InDamage)
+	{
+		mHp = InDamage > mHp ? 0 : mHp - InDamage;
+		if (mHp == 0)
+		{
+			OnFainted.Broadcast();
+		}
+		return mHp;
+	}
+	uint32_t Heal(uint32_t InHeal)
+	{
+		mHp = std::min(mHp + InHeal, mDef.MaxHp);
+		return mHp;
+	}
+	void FullHeal()
+	{
+		mHp = mDef.MaxHp;
+	}
+
+	uint32_t GetAttack() const { return mAttack; }
+	uint32_t GetDefense() const { return mDefense; }
+	uint32_t GetSpeed() const { return mSpeed; }
+	uint32_t GetSpDefense() const { return mSpDefense; }
+	uint32_t GetSpAttack() const { return mSpAttack; }
+
+	EPokeType GetType1() const { return mDef.Types[0]; }
+	EPokeType GetType2() const { return mDef.Types[1]; }
+	bool	  IsAnyType(EPokeType InType) const
+	{
+		return Containers::Contains(mDef.Types, InType);
 	}
 
 	uint32_t	GetLevel() const { return mLevel; }
