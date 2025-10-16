@@ -118,6 +118,7 @@ void PBattleManager::SwapNextBattleMon()
 	int32_t NewIndex = Index == Count - 1 ? 0 : Index + 1;
 	SetBattleMon(NewIndex);
 }
+
 void PBattleManager::SwapPrevBattleMon()
 {
 	if (mContext.BattleMon == nullptr)
@@ -126,7 +127,7 @@ void PBattleManager::SwapPrevBattleMon()
 		return;
 	}
 
-	// If there's only one Pokemon in the party, we can't swap
+	// If there's only one Pokémon in the party, we can't swap
 	auto Count = mContext.BattleParty.GetCount();
 	if (Count == 1)
 	{

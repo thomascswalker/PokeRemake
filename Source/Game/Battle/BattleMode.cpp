@@ -36,6 +36,16 @@ bool PBattleMode::Load()
 	// Start with Select Action state
 	GBattleManager->SetState(EBattleState::SelectAction);
 
+	// Full heal all opponent mons
+	for (auto Mon : GBattleManager->GetCurrentBattleParty()->GetMons())
+	{
+		Mon->FullHeal();
+	}
+
+	// Bind events to handlers
+	GBattleManager->GetPlayerMon()->OnFainted.AddRaw(this, &PBattleMode::HandlePlayerMonFaint);
+	GBattleManager->GetBattleMon()->OnFainted.AddRaw(this, &PBattleMode::HandleOpponentMonFaint);
+
 	// Start the main battle HUD
 	mHUD = GEngine->GetGameAs<PMainGame>()->GetHUD();
 	mHUD->StartBattleHUD();
@@ -83,23 +93,30 @@ void PBattleMode::OnKeyUp(SInputEvent* Event)
 
 bool PBattleMode::HandlePressA()
 {
-	if (GBattleManager->GetState() == EBattleState::SelectAction)
+	switch (GBattleManager->GetState())
 	{
-		switch (GBattleManager->GetSelectedAction())
-		{
-			case EBattleAction::Fight:
-				HandleGameEvent({ this, EGameEventType::BattleEnterMove });
-				break;
-			case EBattleAction::Pokemon:
-				LogWarning("Pokemon selection not implemented yet.");
-				break;
-			case EBattleAction::Item:
-				LogWarning("Item selection not implemented yet.");
-				break;
-			case EBattleAction::Run:
-				HandleGameEvent({ this, EGameEventType::BattleEnd });
-				break;
-		}
+		case EBattleState::SelectAction:
+			switch (GBattleManager->GetSelectedAction())
+			{
+				case EBattleAction::Fight:
+					HandleGameEvent({ this, EGameEventType::BattleEnterMove });
+					break;
+				case EBattleAction::Pokemon:
+					LogWarning("Pokemon selection not implemented yet.");
+					break;
+				case EBattleAction::Item:
+					LogWarning("Item selection not implemented yet.");
+					break;
+				case EBattleAction::Run:
+					HandleGameEvent({ this, EGameEventType::BattleEnd });
+					break;
+			}
+			break;
+		case EBattleState::SelectMove:
+			HandleGameEvent({ this, EGameEventType::BattleUseMove });
+			break;
+		default:
+			break;
 	}
 	return true;
 }
@@ -182,6 +199,14 @@ bool PBattleMode::HandleGameEvent(const SGameEvent& GameEvent)
 				mHUD->GetBattleHUD()->ShowActionBox();
 				break;
 			}
+		case EGameEventType::BattleUseMove:
+			{
+				auto CurrentMove = GBattleManager->GetSelectedMove();
+				if (CurrentMove->GetPP() > 0)
+				{
+					HandleUseMove(CurrentMove, GBattleManager->GetPlayerMon(), GBattleManager->GetBattleMon());
+				}
+			}
 
 		default:
 			break;
@@ -220,7 +245,7 @@ void PBattleMode::HandleChangeActionSelection(uint8_t Direction)
 	uint8_t NewX = X;
 	uint8_t NewY = Y;
 
-	uint8_t NewPosition = (NewY * 2) + NewX;
+	uint8_t NewPosition = NewY * 2 + NewX;
 
 	GBattleManager->SetSelectedAction(static_cast<EBattleAction>(NewPosition));
 }
@@ -248,6 +273,61 @@ void PBattleMode::HandleChangeMoveSelection(EDPad Direction)
 			break;
 	}
 	GBattleManager->SetSelectedMoveIndex(Index);
+}
+
+uint32_t PBattleMode::ComputeDamage(SPokemonMove* Move, const SPokemon* Attacker, const SPokemon* Target)
+{
+	// https://bulbapedia.bulbagarden.net/wiki/Damage#Generation_I
+
+	// Compute base damage
+	uint32_t LevelFactor = 2 * Attacker->GetLevel() / 5 + 2;
+	uint32_t PowerFactor = Move->GetDef()->Power;
+	uint32_t StatFactor = Attacker->GetAttack() / Target->GetDefense();
+	uint32_t BaseDamage = LevelFactor * PowerFactor * StatFactor / 50 + 2;
+
+	// Compute same type effectiveness (STAT). This is 1.5 if the Move is any of the Target's types.
+	// It is 1 otherwise.
+	float SameTypeEffectiveness = Target->IsAnyType(Move->GetDef()->Type) ? 1.5f : 1.0f;
+
+	// TODO: Add type effectiveness matrix.
+
+	return BaseDamage * SameTypeEffectiveness;
+}
+
+void PBattleMode::HandleUseMove(SPokemonMove* Move, SPokemon* Attacker, SPokemon* Target)
+{
+	// TODO: Handle non-power (status, healing, etc.) moves.
+
+	LogInfo("{} used {}", Attacker->GetDisplayName().c_str(), Move->GetDef()->Name.c_str());
+
+	uint32_t DamageDealt = ComputeDamage(Move, Attacker, Target);
+	LogInfo("{} damage dealt.", DamageDealt);
+
+	uint32_t RemainingHp = Target->Damage(DamageDealt);
+
+	LogInfo("{} has {} HP remaining.", Target->GetDisplayName().c_str(), RemainingHp);
+}
+
+void PBattleMode::HandlePlayerMonFaint(SPokemon* Mon)
+{
+	LogInfo("{} fainted.", Mon->GetDisplayName().c_str());
+}
+
+void PBattleMode::HandleOpponentMonFaint(SPokemon* Mon)
+{
+	LogInfo("{} fainted.", Mon->GetDisplayName().c_str());
+	auto Party = GBattleManager->GetCurrentBattleParty();
+	if (auto NextMon = Party->GetNextUsableMon())
+	{
+		// Swap
+		GBattleManager->SetBattleMon(NextMon);
+	}
+	else
+	{
+		// win battle
+		LogInfo("Battle won with {}", GBattleManager->GetCurrentTrainerName().c_str());
+		HandleGameEvent({ this, EGameEventType::BattleEnd });
+	}
 }
 
 std::string PBattleMode::GetName()

@@ -101,6 +101,31 @@ PBattleHUD::~PBattleHUD()
 	mMoveBox = nullptr;
 }
 
+std::array<uint32_t, 6> PBattleHUD::ComputeHealthBarTiles(SPokemon* Mon) const
+{
+	// Something's off with this math
+	std::array<uint32_t, 6> HealthBarTiles;
+
+	uint32_t CurrentHp = Mon->GetCurrentHp();
+	uint32_t MaxHp = Mon->GetMaxHp();
+
+	uint32_t FullBarSize = MaxHp / 6;
+	uint32_t FullBarCount = CurrentHp / FullBarSize;
+	uint32_t PartialBar = (CurrentHp % FullBarSize);
+	uint32_t PartialBarIndex = (PartialBar / 12.5f) + 3;
+
+	for (uint32_t I = 0; I < FullBarCount; I++)
+	{
+		HealthBarTiles[I] = UI_INDEX_HP_FULL;
+	}
+	for (uint32_t I = FullBarCount; I < 6; I++)
+	{
+		HealthBarTiles[I] = UI_INDEX_HP_EMPTY;
+	}
+	HealthBarTiles[FullBarCount] = PartialBarIndex;
+	return HealthBarTiles;
+}
+
 void PBattleHUD::DrawTiles(const std::vector<SFrameTile>& Tiles) const
 {
 	for (auto& Tile : Tiles)
@@ -125,8 +150,13 @@ void PBattleHUD::DrawPlayerFrame(const PRenderer* Renderer) const
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { PLAYER_LEVEL_X + COORD(1), PLAYER_LEVEL_Y });
 
 		// Draw HP Bar
-		// TODO: Compute health
-		DrawTiles(GPlayerHealthTiles);
+		auto HealthBarIndexes = ComputeHealthBarTiles(Mon);
+		auto HealthBarTiles = GPlayerHealthTiles;
+		for (uint32_t I = 0; I < 6; I++)
+		{
+			HealthBarTiles[I + 2].Index = HealthBarIndexes[I];
+		}
+		DrawTiles(HealthBarTiles);
 
 		// Draw HP Text
 		auto	HpText = Mon->GetDisplayHp();
@@ -155,7 +185,13 @@ void PBattleHUD::DrawBattleFrame(const PRenderer* Renderer) const
 		TextRenderer::DrawText(Mon->GetDisplayLevel(), { BATTLE_LEVEL_X, BATTLE_LEVEL_Y });
 
 		// Draw health bar
-		DrawTiles(GOpponentHealthTiles);
+		auto HealthBarIndexes = ComputeHealthBarTiles(Mon);
+		auto HealthBarTiles = GOpponentHealthTiles;
+		for (uint32_t I = 0; I < 6; I++)
+		{
+			HealthBarTiles[I + 2].Index = HealthBarIndexes[I];
+		}
+		DrawTiles(HealthBarTiles);
 		DrawTiles(GOpponentStatusFrameTiles);
 	}
 }
