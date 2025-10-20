@@ -36,7 +36,7 @@ bool PMainGame::PreStart()
 	BattleMode->PreStart();
 
 	// Initialize Player Party
-	auto Mon = mPlayerStorage.Construct(MON_NIDOKING, 64);
+	auto Mon = mPlayerStorage.Construct(MON_NIDOKING, 5);
 	mPlayerParty.Add(Mon);
 
 	LogInfo("Game PreStart successful.");

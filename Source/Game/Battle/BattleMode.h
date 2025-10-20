@@ -31,4 +31,9 @@ public:
 
 	void HandleChangeActionSelection(uint8_t Direction);
 	void HandleChangeMoveSelection(EDPad Direction);
+
+	uint32_t ComputeDamage(SPokemonMove* Move, const SPokemon* Attacker, const SPokemon* Target);
+	void	 HandleUseMove(SPokemonMove* Move, SPokemon* Attacker, SPokemon* Target);
+	void	 HandlePlayerMonFaint(SPokemon* Mon);
+	void	 HandleOpponentMonFaint(SPokemon* Mon);
 };
