@@ -8,12 +8,24 @@
 
 enum class EBattleState
 {
-	Starting,
-	SelectAction = 100,
-	SelectMove,
-	PlayerAttacking = 200,
-	OpponentAttacking,
-	Ending = 1000,
+	BattleIntro,
+	PlayerActionMenu,
+	PlayerMoveMenu,
+	EnemyTurn,
+	ExecutingMoves,
+	BattleEnd,
+	Victory,
+	Defeat
+};
+
+enum class ETurnState
+{
+	AttackerMoveDialog,
+	AttackerMove,
+	AttackerDamageDialog,
+	TargetMoveDialog,
+	TargetMove,
+	TargetDamageDialog,
 };
 
 enum class EBattleAction
@@ -42,39 +54,6 @@ struct STrainerContext : ISerializable
 	void Deserialize(const JSON& Json) override;
 };
 
-struct SBattleContext
-{
-	// Pointer to the trainer definition
-	STrainerContext* Trainer = nullptr;
-
-	// The opposing party
-	PPokemonParty BattleParty;
-
-	// Pointer to the player's current Pokémon
-	SPokemon* PlayerMon = nullptr;
-
-	// Pointer to the opponent's current Pokémon
-	SPokemon* BattleMon = nullptr;
-
-	// Current battle state
-	EBattleState State = EBattleState::Starting;
-
-	// Current action selected
-	EBattleAction Action = EBattleAction::Fight;
-
-	// Current move index selected
-	uint8_t MoveIndex = 0;
-
-	static JSON Schema()
-	{
-		return {
-			{  "BattleId", nullptr },
-			{ "PlayerMon", nullptr },
-			{ "BattleMon", nullptr }
-		};
-	}
-};
-
 DECLARE_MULTICAST_DELEGATE(DBattleStateChanged, EBattleState);
 DECLARE_MULTICAST_DELEGATE(DBattleActionChanged, EBattleAction);
 DECLARE_MULTICAST_DELEGATE(DBattleMoveIndexChanged, uint8_t);
@@ -82,7 +61,27 @@ DECLARE_MULTICAST_DELEGATE(DBattleMoveIndexChanged, uint8_t);
 class PBattleManager : public PObject
 {
 	std::map<int32_t, STrainerContext> mTrainers;
-	SBattleContext					   mContext;
+
+	// Pointer to the trainer definition
+	STrainerContext* mTrainer = nullptr;
+
+	// The opposing party
+	PPokemonParty mBattleParty;
+
+	// Pointer to the player's current Pokémon
+	SPokemon* mPlayerMon = nullptr;
+
+	// Pointer to the opponent's current Pokémon
+	SPokemon* mBattleMon = nullptr;
+
+	// Current battle state
+	EBattleState mState = EBattleState::BattleIntro;
+
+	// Current action selected
+	EBattleAction mAction = EBattleAction::Fight;
+
+	// Current move index selected
+	uint8_t mMoveIndex = 0;
 
 public:
 	DBattleStateChanged		BattleStateChanged;
@@ -93,8 +92,8 @@ public:
 
 	/* Any battle */
 
-	PPokemonParty* GetCurrentBattleParty() { return &mContext.BattleParty; }
-	EPartyType	   GetCurrentBattlePartyType() const { return mContext.BattleParty.GetType(); }
+	PPokemonParty* GetCurrentBattleParty() { return &mBattleParty; }
+	EPartyType	   GetCurrentBattlePartyType() const { return mBattleParty.GetType(); }
 
 	void StartTrainerBattle(int32_t Id);
 	void StartWildBattle(int32_t Id, int32_t Level);
@@ -102,60 +101,60 @@ public:
 	/* Trainers */
 
 	STrainerContext* GetTrainer(int32_t Id);
-	int32_t			 GetCurrentTrainerId() const { return mContext.Trainer->Id; }
+	int32_t			 GetCurrentTrainerId() const { return mTrainer->Id; }
 
 	PPokemonStorage* GetCurrentTrainerStorage(int32_t Id);
 	std::string		 GetCurrentTrainerName() const;
 
 	SPokemon* GetPlayerMon() const
 	{
-		return mContext.PlayerMon;
+		return mPlayerMon;
 	}
 
 	void SetPlayerMon(SPokemon* PlayerMon)
 	{
-		mContext.PlayerMon = PlayerMon;
+		mPlayerMon = PlayerMon;
 	}
 
 	SPokemon* GetBattleMon() const
 	{
-		return mContext.BattleMon;
+		return mBattleMon;
 	}
 
 	void SetBattleMon(SPokemon* BattleMon)
 	{
-		mContext.BattleMon = BattleMon;
+		mBattleMon = BattleMon;
 	}
 
 	void SetBattleMon(int32_t Index)
 	{
-		mContext.BattleMon = mContext.BattleParty.Get(Index);
+		mBattleMon = mBattleParty.Get(Index);
 	}
 
 	void SwapNextBattleMon();
 	void SwapPrevBattleMon();
 
-	EBattleState GetState() const { return mContext.State; }
+	EBattleState GetState() const { return mState; }
 
 	void SetState(EBattleState State)
 	{
-		mContext.State = State;
+		mState = State;
 		BattleStateChanged.Broadcast(State);
 	}
 
-	EBattleAction GetSelectedAction() const { return mContext.Action; }
+	EBattleAction GetSelectedAction() const { return mAction; }
 
 	void SetSelectedAction(EBattleAction Action)
 	{
-		mContext.Action = Action;
+		mAction = Action;
 		BattleActionChanged.Broadcast(Action);
 	}
 
-	SPokemonMove* GetSelectedMove() const { return mContext.PlayerMon->GetMove(mContext.MoveIndex); }
-	uint8_t		  GetSelectedMoveIndex() const { return mContext.MoveIndex; }
+	SPokemonMove* GetSelectedMove() const { return mPlayerMon->GetMove(mMoveIndex); }
+	uint8_t		  GetSelectedMoveIndex() const { return mMoveIndex; }
 	void		  SetSelectedMoveIndex(uint8_t Index)
 	{
-		mContext.MoveIndex = Index;
+		mMoveIndex = Index;
 		BattleMoveIndexChanged.Broadcast(Index);
 	}
 	// TODO: Update this to reflect actual move count of the currently-selected player's Pokemon.

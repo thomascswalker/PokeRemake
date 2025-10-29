@@ -1,7 +1,9 @@
 #pragma once
+
 #include "Object.h"
 #include "Timer.h"
-#include "World.h"
+
+DECLARE_MULTICAST_DELEGATE(DPrinterComplete);
 
 #define DIALOG_MAX_CHAR 6
 #define DIALOG_SPEED	5
@@ -18,11 +20,14 @@ class PTextPrinter : public PObject
 	size_t		mCursor = 0;
 	FVector2	mOffset;
 	bool		mPrinting = false;
+	bool		mAutoComplete = false;
 
 	STimerHandle mTimerHandle;
 	float		 mAnimationSpeed = DEFAULT_TEXT_SPEED;
 
 public:
+	DPrinterComplete PrinterComplete;
+
 	void Play()
 	{
 		GTimerManager->SetTimer(mTimerHandle, this, &PTextPrinter::NextChar, mAnimationSpeed, true);
@@ -66,6 +71,8 @@ public:
 	}
 	std::string GetText() const { return mText; }
 	std::string GetDisplayText() const { return mText.substr(0, mCursor); }
+
+	void SetAutoComplete() { mAutoComplete = true; }
 
 	FVector2 GetOffset() const { return mOffset; }
 };

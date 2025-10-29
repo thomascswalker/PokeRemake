@@ -35,6 +35,7 @@ set(SOURCES
         Interface/Battle/BattlePPMenu.h
         Core/Ids.h
         Interface/Battle/BattleInterfaceConstants.h
+        Battle/BattleEvents.h
 )
 add_library(${PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)

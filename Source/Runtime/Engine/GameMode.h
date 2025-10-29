@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Dialog.h"
 #include "GameEvent.h"
 #include "Input.h"
 #include "Object.h"
@@ -79,5 +80,5 @@ public:
 	virtual bool HandlePressStart() { return false; }
 	virtual bool HandlePressSelect() { return false; }
 
-	virtual bool HandleGameEvent(const SGameEvent& GameEvent) = 0;
+	virtual void StartDialog(const SDialogContext& Context) = 0;
 };

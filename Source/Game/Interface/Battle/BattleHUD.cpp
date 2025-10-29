@@ -214,14 +214,15 @@ void PBattleHUD::ShowActionBox()
 
 void PBattleHUD::HideActionBox()
 {
-
 	mActionBox->SetVisible(false);
 	PWidget::RemoveChild(mActionBox);
 }
 
-void PBattleHUD::ShowDialogBox()
+void PBattleHUD::ShowDialogBox(const SDialogContext& Context)
 {
 	mDialogBox->SetVisible(true);
+	mDialogBox->SetText(Context.Message);
+	mDialogBox->Print();
 	PWidget::AddChild(mDialogBox);
 }
 
@@ -229,6 +230,7 @@ void PBattleHUD::HideDialogBox()
 {
 	mDialogBox->SetVisible(false);
 	PWidget::RemoveChild(mDialogBox);
+	OnDialogComplete.Broadcast();
 }
 
 void PBattleHUD::ShowMoveBox()

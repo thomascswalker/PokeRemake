@@ -53,27 +53,26 @@ bool PBattleManager::PreStart()
 
 void PBattleManager::StartTrainerBattle(int32_t Id)
 {
-	mContext.BattleParty.SetType(PT_Trainer);
-	auto BattleParty = &mContext.BattleParty;
+	mBattleParty.SetType(PT_Trainer);
 	if (mTrainers.contains(Id))
 	{
-		mContext.Trainer = &mTrainers[Id];
-		BattleParty->Clear();
+		mTrainer = &mTrainers[Id];
+		mBattleParty.Clear();
 		for (auto& Mon : mTrainers.at(Id).Storage.GetAll())
 		{
-			BattleParty->Add(&Mon);
+			mBattleParty.Add(&Mon);
 		}
 	}
-	mContext.BattleMon = BattleParty->Get(0);
+	mBattleMon = mBattleParty.Get(0);
 }
 
 void PBattleManager::StartWildBattle(int32_t Id, int32_t Level)
 {
-	mContext.BattleParty.SetType(PT_Wild);
-	mContext.BattleParty.Clear();
+	mBattleParty.SetType(PT_Wild);
+	mBattleParty.Clear();
 	GWildMon = SPokemon(*PPokedexManager::Instance()->GetMonById(Id), Level, 0);
-	mContext.BattleParty.Add(&GWildMon);
-	mContext.BattleMon = mContext.BattleParty.Get(0);
+	mBattleParty.Add(&GWildMon);
+	mBattleMon = mBattleParty.Get(0);
 }
 
 STrainerContext* PBattleManager::GetTrainer(int32_t Id)
@@ -92,49 +91,49 @@ PPokemonStorage* PBattleManager::GetCurrentTrainerStorage(int32_t Id)
 
 std::string PBattleManager::GetCurrentTrainerName() const
 {
-	if (!mContext.Trainer)
+	if (!mTrainer)
 	{
 		return "";
 	}
-	return mContext.Trainer->Name;
+	return mTrainer->Name;
 }
 
 void PBattleManager::SwapNextBattleMon()
 {
-	if (mContext.BattleMon == nullptr)
+	if (mBattleMon == nullptr)
 	{
 		LogError("No battle mon set.");
 		return;
 	}
 
 	// If there's only one Pokémon in the party, we can't swap
-	auto Count = mContext.BattleParty.GetCount();
+	auto Count = mBattleParty.GetCount();
 	if (Count == 1)
 	{
 		return;
 	}
 
-	int32_t Index = mContext.BattleParty.GetIndex(mContext.BattleMon);
+	int32_t Index = mBattleParty.GetIndex(mBattleMon);
 	int32_t NewIndex = Index == Count - 1 ? 0 : Index + 1;
 	SetBattleMon(NewIndex);
 }
 
 void PBattleManager::SwapPrevBattleMon()
 {
-	if (mContext.BattleMon == nullptr)
+	if (mBattleMon == nullptr)
 	{
 		LogError("No battle mon set.");
 		return;
 	}
 
 	// If there's only one Pokémon in the party, we can't swap
-	auto Count = mContext.BattleParty.GetCount();
+	auto Count = mBattleParty.GetCount();
 	if (Count == 1)
 	{
 		return;
 	}
 
-	int32_t Index = mContext.BattleParty.GetIndex(mContext.BattleMon);
+	int32_t Index = mBattleParty.GetIndex(mBattleMon);
 	int32_t NewIndex = Index == 0 ? Count - 1 : Index - 1;
 	SetBattleMon(NewIndex);
 }

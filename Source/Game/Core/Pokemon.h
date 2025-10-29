@@ -83,10 +83,6 @@ public:
 	uint32_t Damage(uint32_t InDamage)
 	{
 		mHp = InDamage > mHp ? 0 : mHp - InDamage;
-		if (mHp == 0)
-		{
-			OnFainted.Broadcast(this);
-		}
 		return mHp;
 	}
 	uint32_t Heal(uint32_t InHeal)

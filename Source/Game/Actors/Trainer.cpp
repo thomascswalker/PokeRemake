@@ -1,10 +1,13 @@
 #include "Trainer.h"
 
+#include "Battle/BattleMode.h"
 #include "Core/GameConstants.h"
 #include "Engine/Dialog.h"
+#include "Engine/Engine.h"
 #include "Engine/Game.h"
 #include "Engine/GameEvent.h"
 #include "Engine/World.h"
+#include "Modes/MapMode.h"
 
 JSON PTrainer::Serialize() const
 {
@@ -32,14 +35,11 @@ void PTrainer::HandleInteraction()
 	SDialogContext Context;
 	Context.Message = mContext.Dialog;
 	Context.DialogCompleted.AddRaw(this, &PTrainer::HandleDialogComplete);
-	SGameEvent Event(this, EGameEventType::Dialog, &Context);
-	GGameMode->HandleGameEvent(Event);
+	GGameMode->StartDialog(Context);
 }
 
 void PTrainer::HandleDialogComplete()
 {
-	SBattleContext Context;
-	Context.Trainer = &mContext;
-	SGameEvent Event(this, EGameEventType::BattleStart, &Context);
-	GGameMode->HandleGameEvent(Event);
+	GEngine->GetGameState(BATTLE_MODE)->Set(STATE_BATTLE_ID, mContext.Id);
+	GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE);
 }

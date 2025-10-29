@@ -54,6 +54,5 @@ void PSceneryActor::Deserialize(const JSON& Data)
 
 void PSceneryActor::HandleInteraction()
 {
-	SGameEvent Event(this, EGameEventType::Dialog, &mContext);
-	GGameMode->HandleGameEvent(Event);
+	GGameMode->StartDialog(mContext);
 }

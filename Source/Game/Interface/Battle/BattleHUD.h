@@ -1,10 +1,13 @@
 #pragma once
 
 #include "../DialogBox.h"
+#include "Engine/Dialog.h"
 #include "Interface/Widget.h"
 
 #include "BattleActionMenu.h"
 #include "BattleMoveMenu.h"
+
+DECLARE_MULTICAST_DELEGATE(DOnDialogComplete);
 
 #define NAME_FONT_SIZE 24
 
@@ -24,6 +27,8 @@ class PBattleHUD : public PWidget
 	PBattleMoveMenu*		 mMoveBox = nullptr;
 
 public:
+	DOnDialogComplete OnDialogComplete;
+
 	PBattleHUD();
 	~PBattleHUD() override;
 
@@ -37,7 +42,7 @@ public:
 	void ShowActionBox();
 	void HideActionBox();
 
-	void ShowDialogBox();
+	void ShowDialogBox(const SDialogContext& Context);
 	void HideDialogBox();
 
 	void ShowMoveBox();

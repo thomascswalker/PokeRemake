@@ -23,17 +23,20 @@ public:
 
 	void OnKeyUp(SInputEvent* Event) override;
 
-	bool HandleGameEvent(const SGameEvent& GameEvent) override;
-
 	bool HandlePressA() override;
 	bool HandlePressB() override;
 	bool HandlePressDPad(EDPad Direction) override;
 
-	void HandleChangeActionSelection(uint8_t Direction);
-	void HandleChangeMoveSelection(EDPad Direction);
+	void EndBattle() const;
+	void EnterMoveSelection();
+	void ExitMoveSelection();
+	void DealDamage(SPokemonMove* Move, const SPokemon* Attacker, SPokemon* Target) const;
 
-	uint32_t ComputeDamage(SPokemonMove* Move, const SPokemon* Attacker, const SPokemon* Target);
-	void	 HandleUseMove(SPokemonMove* Move, SPokemon* Attacker, SPokemon* Target);
-	void	 HandlePlayerMonFaint(SPokemon* Mon);
-	void	 HandleOpponentMonFaint(SPokemon* Mon);
+	void ExecuteTurn() const;
+	void EndTurn() const;
+
+	void ChangeActionSelection(uint8_t Direction);
+	void ChangeMoveSelection(EDPad Direction);
+
+	void StartDialog(const SDialogContext& Context) override {}
 };

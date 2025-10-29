@@ -200,15 +200,21 @@ bool PMapMode::HandlePressA()
 
 bool PMapMode::HandleReleaseA()
 {
+	// Attempt to interact with whatever actor is in front of the
+	// player character.
 	if (IsInputContext(IC_Default))
 	{
 		mPlayerCharacter->Interact();
 		return true;
 	}
+
+	// End the current dialog.
 	if (IsInputContext(IC_Dialog))
 	{
-		return HandleGameEvent(SGameEvent(this, EGameEventType::Dialog));
+		EndDialog();
+		return true;
 	}
+
 	return false;
 }
 
@@ -232,32 +238,19 @@ bool PMapMode::HandleReleaseDPad(EDPad Direction)
 	return mPlayerCharacter->TryStop(Direction);
 }
 
-bool PMapMode::HandleGameEvent(const SGameEvent& GameEvent)
+void PMapMode::StartDialog(const SDialogContext& Context)
 {
-	switch (GameEvent.Type)
-	{
-		case EGameEventType::Dialog:
-			if (!mHUD->IsDialogBoxVisible())
-			{
-				mHUD->StartDialogBox(GameEvent.GetData<SDialogContext>());
-			}
-			else
-			{
-				mHUD->EndDialogBox();
-			}
-			break;
-		case EGameEventType::BattleStart:
-			// Update the battle state with the incoming battle ID to be loaded
-			GEngine->GetGameState(BATTLE_MODE)->Set(STATE_BATTLE_ID, GameEvent.GetData<SBattleContext>().Trainer->Id);
+	mHUD->StartDialogBox(Context);
+}
 
-			// First load the new game mode
-			if (!GEngine->GetGame()->SetAndLoadCurrentGameMode(BATTLE_MODE))
-			{
-				return false;
-			}
-			break;
-		default:
-			break;
-	}
-	return true;
+void PMapMode::EndDialog()
+{
+	mHUD->EndDialogBox();
+}
+
+void PMapMode::StartBattle()
+{
+}
+void PMapMode::EndBattle()
+{
 }

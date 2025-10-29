@@ -37,8 +37,10 @@ private:
 	void* mData = nullptr;
 
 public:
-	PObject*	   Instigator;
-	EGameEventType Type;
+	PObject*	   Instigator = nullptr;
+	EGameEventType Type = EGameEventType::Default;
+
+	SGameEvent() = default;
 
 	template <typename T = uint8_t>
 	SGameEvent(PObject* InInstigator, EGameEventType InType, T* InData = nullptr)
@@ -55,7 +57,7 @@ public:
 		}
 	}
 
-	~SGameEvent()
+	virtual ~SGameEvent()
 	{
 		if (mData)
 		{
@@ -74,4 +76,6 @@ public:
 	{
 		return std::format("GameEvent: {} from {}", GameEventTypeToString(Type), Instigator->GetClassName().c_str());
 	}
+
+	virtual void Execute() const {}
 };

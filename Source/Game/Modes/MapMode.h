@@ -57,5 +57,9 @@ public:
 	bool HandleReleaseB() override;
 	bool HandlePressDPad(EDPad Direction) override;
 	bool HandleReleaseDPad(EDPad Direction) override;
-	bool HandleGameEvent(const SGameEvent& GameEvent) override;
+
+	void StartDialog(const SDialogContext& Context) override;
+	void EndDialog();
+	void StartBattle();
+	void EndBattle();
 };
